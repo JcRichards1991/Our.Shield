@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shield.IIS.Helpers
+namespace Shield.Helpers
 {
     public class IPAddressAndDomainRestrictionsHelper
     {

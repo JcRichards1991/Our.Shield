@@ -258,8 +258,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
-    <Compile Include="IIS\Helpers\IPAddressAndDomainRestrictionsHelper.cs" />
-    <Compile Include="PackageActions\AddLangKey.cs" />
+    <Compile Include="Helpers\IPAddressAndDomainRestrictionsHelper.cs" />
+    <Compile Include="PackageActions\AddLanguageFileKey.cs" />
     <Compile Include="UI\Shield\Application.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\UmbracoAccess\Controllers\UmbracoAccessTreeController.cs" />
@@ -272,7 +272,9 @@
     <None Include="packages.config" />
     <None Include="UI\package.manifest" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="IIS\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="UI\Dashboards\Settings.html" />
     <Content Include="UI\UmbracoAccess\Views\Edit.html" />
