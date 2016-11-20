@@ -275,8 +275,6 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="UI\Dashboards\Settings.html" />
-    <Content Include="UI\Lang\en.xml" />
-    <Content Include="UI\Lang\en_us.xml" />
     <Content Include="UI\UmbracoAccess\Views\Edit.html" />
     <Content Include="UI\Scripts\Shield.js" />
   </ItemGroup>
@@ -285,8 +283,7 @@
   <PropertyGroup>
     <PreBuildEvent>xcopy "$(ProjectDir)UI\Scripts\*.js" "$(solutiondir)Shield.Umbraco.UI\App_Plugins\Shield\backoffice\js\" /Y
 xcopy "$(ProjectDir)UI\Dashboards\*.html" "$(solutiondir)Shield.Umbraco.UI\App_Plugins\Shield\backoffice\Dashboards\" /Y
-xcopy "$(ProjectDir)UI\UmbracoAccess\*.html" "$(solutiondir)Shield.Umbraco.UI\App_Plugins\Shield\backoffice\UmbracoAccess\" /Y
-xcopy "$(ProjectDir)UI\Lang\*.xml" "$(solutiondir)Shield.Umbraco.UI\App_Plugins\Shield\lang\" /Y
+xcopy "$(ProjectDir)UI\UmbracoAccess\Views\*.html" "$(solutiondir)Shield.Umbraco.UI\App_Plugins\Shield\backoffice\UmbracoAccess\" /Y
 xcopy "$(ProjectDir)UI\package.manifest" "$(solutiondir)Shield.Umbraco.UI\App_Plugins\Shield\" /Y</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
