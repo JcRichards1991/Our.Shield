@@ -244,3 +244,5 @@ src/Shield.Umbraco.UI/
 !src/Shield.Umbraco.UI/packages.config
 !src/Shield.Umbraco.UI/[Uu]mbraco
 !src/Shield.Umbraco.UI/[Uu]mbraco_[Cc]lient
+!src/Shield.Umbraco.UI/App_Data/umbraco.sdf
+!src/Shield.Umbraco.UI/web.config
