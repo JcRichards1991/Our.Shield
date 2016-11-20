@@ -240,3 +240,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+src/Shield.Umbraco.UI/
+!src/Shield.Umbraco.UI/packages.config
+*.txt

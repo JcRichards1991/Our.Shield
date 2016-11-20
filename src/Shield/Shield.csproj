@@ -262,10 +262,10 @@
     <Compile Include="PackageActions\AddLangKey.cs" />
     <Compile Include="UI\Shield\Application.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\UmbracoAccess\UmbracoAccessTreeController.cs" />
+    <Compile Include="UI\UmbracoAccess\Controllers\UmbracoAccessTreeController.cs" />
     <Compile Include="Models\IP.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="UI\UmbracoAccess\UmbracoAccessApiController.cs" />
+    <Compile Include="UI\UmbracoAccess\Controllers\UmbracoAccessApiController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -277,7 +277,7 @@
     <Content Include="UI\Dashboards\Settings.html" />
     <Content Include="UI\Lang\en.xml" />
     <Content Include="UI\Lang\en_us.xml" />
-    <Content Include="UI\UmbracoAccess\Edit.html" />
+    <Content Include="UI\UmbracoAccess\Views\Edit.html" />
     <Content Include="UI\Scripts\Shield.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -11,13 +11,15 @@
         
         public class Tree
         {
-            public const string Title = "Shield";
-            public const string Alias = "UmbracoAccess";
+            public class UmbracoAccess
+            {
+                public const string Title = "Shield";
+                public const string Alias = "UmbracoAccess";
+                public const string NodeName = "Umbraco Access";
+                public const string NodeId = "-313131";
+            }
         }
 
-        public class NodeId
-        {
-            public const string RootId = "-1";
-        }
+        public const string RootNodeId = "-1";
     }
 }

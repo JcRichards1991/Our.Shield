@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
 
-namespace Shield.UI.UmbracoAccess
+namespace Shield.UI.UmbracoAccess.Controllers
 {
     [PluginController(Constants.App.Name)]
     public class UmbracoAccessApiController : UmbracoAuthorizedJsonController

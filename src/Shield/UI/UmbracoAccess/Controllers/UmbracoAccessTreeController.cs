@@ -4,10 +4,10 @@ using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.Trees;
 
-namespace Shield.UI.Shield
+namespace Shield.UI.UmbracoAccess.Controllers
 {
     [PluginController(Constants.App.Name)]
-    [Tree(Constants.App.Alias, Constants.Tree.Alias, Constants.Tree.Title)]
+    [Tree(Constants.App.Alias, Constants.Tree.UmbracoAccess.Alias, Constants.Tree.UmbracoAccess.Title)]
     public class ApplicationTreeController : TreeController
     {
         protected override MenuItemCollection GetMenuForNode(string id, FormDataCollection queryStrings)
@@ -19,9 +19,9 @@ namespace Shield.UI.Shield
         {
             var treeNodeCollection = new TreeNodeCollection();
 
-            if(id == Constants.NodeId.RootId)
+            if(id == Constants.RootNodeId)
             {
-                treeNodeCollection.Add(this.CreateTreeNode("-3131", Constants.NodeId.RootId, queryStrings, "Umbraco Access"));
+                treeNodeCollection.Add(this.CreateTreeNode("-3131", Constants.RootNodeId, queryStrings, Constants.Tree.UmbracoAccess.NodeName));
             }
 
             return treeNodeCollection;
