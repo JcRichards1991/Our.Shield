@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language alias="en_us" intName="English (US)" localName="English (US)" lcid="" culture="en-US">
+  <creator>
+    <name>Joshua Richards</name>
+    <link></link>
+  </creator>
+  <area alias="sections">
+    <key alias="shield">Shield</key>
+  </area>
+</language>
