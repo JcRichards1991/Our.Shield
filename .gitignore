@@ -242,4 +242,5 @@ ModelManifest.xml
 .fake/
 src/Shield.Umbraco.UI/
 !src/Shield.Umbraco.UI/packages.config
-*.txt
+!src/Shield.Umbraco.UI/[Uu]mbraco
+!src/Shield.Umbraco.UI/[Uu]mbraco_[Cc]lient
