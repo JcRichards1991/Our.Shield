@@ -8,7 +8,7 @@ using umbraco.interfaces;
 
 namespace Shield.PackageActions
 {
-    class AddLangKey : IPackageAction
+    class AddSectionLangKey : IPackageAction
     {
         public string Alias()
         {

@@ -240,7 +240,9 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
 src/Shield.Umbraco.UI/
+src/Shield.Umbraco.UI/App_Data
 !src/Shield.Umbraco.UI/packages.config
 !src/Shield.Umbraco.UI/[Uu]mbraco
 !src/Shield.Umbraco.UI/[Uu]mbraco_[Cc]lient
