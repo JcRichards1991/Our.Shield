@@ -1,12 +1,9 @@
 ﻿function UmbracoAccessResource($http) {
-    var apiRoot = 'backoffice/Shield/UmbracoAccessApiController/';
+    var apiRoot = 'backoffice/Shield/UmbracoAccessApi/';
 
     return {
-        PostIP: function (ip, command) {
-            return $http.post(apiRoot + 'Post', angular.toJson(new {
-                ip: ip,
-                command: command
-            }));
+        PostIP: function (ip) {
+            return $http.post(apiRoot + 'Post', angular.toJson(ip));
         },
         DeleteIP: function (name) {
             return $http.delete(apiRoot + 'Delete?name=' + name);
@@ -23,17 +20,17 @@
     };
 }
 
-angular.module('umbraco.resources').factory('UmbracoAccessService', UmbracoAccessResource);
+angular.module('umbraco.resources').factory('UmbracoAccessResource', UmbracoAccessResource);
 
-angular.module('umbraco').controller('Shield.Controllers.UmbracoAccess', function ($scope, $routeParams, notificationsService, navigationService, treeService, UmbracoAccessService) {
+angular.module('umbraco').controller('Shield.Controllers.UmbracoAccess', function ($scope, $routeParams, notificationsService, navigationService, treeService, UmbracoAccessResource) {
 
     $scope.content = {
-        tabs: [
-            { id: 1, label: 'Whitelist' },
+        tabs: [{ id: 1, label: 'Whitelist' },
             { id: 2, label: 'Blacklist' },
-            { id: 3, label: 'Log' }
-        ]
+            { id: 3, label: 'Log' }]
     };
+
+    $scope.ip = {};
 
     $scope.AddIP = function (ip) {
         UmbracoAccessResource.PostIP(ip).then(function (response) {
