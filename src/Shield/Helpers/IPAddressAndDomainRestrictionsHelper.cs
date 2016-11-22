@@ -9,16 +9,26 @@ namespace Shield.Helpers
 {
     public class IPAddressAndDomainRestrictionsHelper
     {
+        private ConfigurationElementCollection GetCollection(ServerManager serverManager)
+        {
+            Configuration config = serverManager.GetApplicationHostConfiguration();
+
+            // replace Default Web Site with 'Site + "/umbraco"'
+            //for now, going to test against vainradical.local umbraco folder.
+            //but at some point, will update to use some configuration file to populate with correct website
+
+            ConfigurationSection ipSecuritySection = config.GetSection("system.webServer/security/ipSecurity", "vainradical.local/umbraco");
+            return ipSecuritySection.GetCollection();
+        }
+
         public void AddIpAddress(Models.IP ip)
         {
             using (ServerManager serverManager = new ServerManager())
             {
-                Configuration config = serverManager.GetApplicationHostConfiguration();
-                ConfigurationSection ipSecuritySection = config.GetSection("system.webServer/security/ipSecurity", "Default Web Site");
-                ConfigurationElementCollection ipSecurityCollection = ipSecuritySection.GetCollection();
+                ConfigurationElementCollection ipSecurityCollection = GetCollection(serverManager);
 
                 ConfigurationElement addElement = ipSecurityCollection.CreateElement("add");
-                addElement["allowed"] = false;
+                addElement["allowed"] = ip.AllowDeny == Enums.Command.Allow;
 
                 if (ip.IPAddress.Contains("/"))
                 {
@@ -34,5 +44,15 @@ namespace Shield.Helpers
                 serverManager.CommitChanges();
             }
         }
+
+        //public void DeleteIpAddress(string name)
+        //{
+        //    using (ServerManager serverManager = new ServerManager())
+        //    {
+        //        ConfigurationElementCollection ipSecurityCollection = GetCollection(serverManager);
+
+        //        ConfigurationElement deleteElement = ipSecurityCollection.
+        //    }
+        //}
     }
 }

@@ -272,9 +272,7 @@
     <None Include="packages.config" />
     <None Include="UI\package.manifest" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="IIS\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="UI\Dashboards\Settings.html" />
     <Content Include="UI\UmbracoAccess\Views\Edit.html" />
