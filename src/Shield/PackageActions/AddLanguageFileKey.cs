@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
-using umbraco.BasePages;
-using umbraco.BusinessLogic;
 using umbraco.interfaces;
+using Umbraco.Core;
 using Umbraco.Core.Logging;
 using spa = umbraco.cms.businesslogic.packager.standardPackageActions;
 
@@ -59,7 +54,7 @@ namespace Shield.PackageActions
             if (insertNode)
             {
                 XmlNode newNode = document.CreateElement("key");
-                newNode.Attributes.Append(xmlHelper.addAttribute(document, "alias", key));
+                newNode.Attributes.Append(XmlHelper.AddAttribute(document, "alias", key));
                 newNode.InnerText = value;
                 
                 if (position == null || position == "end")
@@ -118,7 +113,7 @@ namespace Shield.PackageActions
             //Create the rootnode
             XmlNode node = document.CreateElement("area");
             //Append alias
-            node.Attributes.Append(xmlHelper.addAttribute(document, "alias", area));
+            node.Attributes.Append(XmlHelper.AddAttribute(document, "alias", area));
 
             //append the rootnode to xml
             document.DocumentElement.AppendChild(node);
