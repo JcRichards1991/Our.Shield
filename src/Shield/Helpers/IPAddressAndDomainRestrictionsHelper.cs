@@ -12,12 +12,7 @@ namespace Shield.Helpers
         private ConfigurationElementCollection GetCollection(ServerManager serverManager)
         {
             Configuration config = serverManager.GetApplicationHostConfiguration();
-
-            // replace Default Web Site with 'Site + "/umbraco"'
-            //for now, going to test against vainradical.local umbraco folder.
-            //but at some point, will update to use some configuration file to populate with correct website
-
-            ConfigurationSection ipSecuritySection = config.GetSection("system.webServer/security/ipSecurity", "vainradical.local/umbraco");
+            ConfigurationSection ipSecuritySection = config.GetSection("system.webServer/security/ipSecurity", "vainradical.local/umbraco"); //TODO: dynamically set the website
             return ipSecuritySection.GetCollection();
         }
 
