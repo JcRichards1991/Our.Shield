@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace Shield.Models
 {
-    public class IP
+    public class Ip
     {
-        public string IPAddress { get; set; }
+        public string IpAddress { get; set; }
 
-        public string Name { get; set; }
-
-        public Enums.Command AllowDeny { get; set; }
+        public bool Allow { get; set; }
     }
 }

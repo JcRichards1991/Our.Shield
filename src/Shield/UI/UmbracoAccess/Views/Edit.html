@@ -10,12 +10,9 @@
                 <form name="whitelistAddIP" ng-submit="AddIP(ip)">
                     <div class="tab-content form-horizontal">
                         <div class="umb-pane">
-                            <input type="hidden" value="Allow" ng-model="ip.AllowDeny" />
-                            <umb-control-group label="Name" description="Enter a name">
-                                <input type="text" class="umb-editor umb-textstring" ng-model="ip.Name" required />
-                            </umb-control-group>
+                            <input type="hidden" value="true" ng-model="ip.Allow" required />
                             <umb-control-group label="IP Address" description="Enter an IP address">
-                                <input type="text" class="umb-editor umb-textstring" ng-model="ip.IPAddress" required />
+                                <input type="text" class="umb-editor umb-textstring" ng-model="ip.IpAddress" required />
                             </umb-control-group>
                             <div class="umb-tab-buttons" detect-fold>
                                 <div class="btn-group">
@@ -30,15 +27,12 @@
             </umb-tab>
 
             <umb-tab id="tab2" rel="blacklist">
-                <form name="blacklistAddIP" ng-submit="AddIP(ip, 'Deny')">
+                <form name="blacklistAddIP" ng-submit="AddIP(ip)">
                     <div class="tab-content form-horizontal">
                         <div class="umb-pane">
-                            <input type="hidden" value="Deny" ng-model="ip.AllowDeny" />
-                            <umb-control-group label="Name" description="Enter a name">
-                                <input type="text" class="umb-editor umb-textstring" ng-model="ip.Name" required />
-                            </umb-control-group>
+                            <input type="hidden" value="false" ng-model="ip.Allow" required />
                             <umb-control-group label="IPAddress" description="Enter an IP address">
-                                <input type="text" class="umb-editor umb-textstring" ng-model="ip.IPAddress" required />
+                                <input type="text" class="umb-editor umb-textstring" ng-model="ip.IpAddress" required />
                             </umb-control-group>
                             <div class="umb-tab-buttons" detect-fold>
                                 <div class="btn-group">

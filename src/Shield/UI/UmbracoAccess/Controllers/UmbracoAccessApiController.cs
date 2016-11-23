@@ -18,7 +18,7 @@ namespace Shield.UI.UmbracoAccess.Controllers
         /// <param name="ip">The IP Object</param>
         /// <returns>Whther or not was successfully added</returns>
         [HttpPost]
-        public void Post(Models.IP ip)
+        public void Post(Models.Ip ip)
         {
             ModuleHelper.AddIpAddress(ip);
         }
@@ -29,7 +29,7 @@ namespace Shield.UI.UmbracoAccess.Controllers
         /// <param name="name"></param>
         /// <returns></returns>
         [HttpGet]
-        public Models.IP Get(string name)
+        public Models.Ip Get(string name)
         {
             throw new NotImplementedException();
         }
@@ -39,7 +39,7 @@ namespace Shield.UI.UmbracoAccess.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<Models.IP> Get()
+        public IEnumerable<Models.Ip> Get()
         {
             throw new NotImplementedException();
         }
