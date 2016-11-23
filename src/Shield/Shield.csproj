@@ -263,7 +263,7 @@
     <Compile Include="UI\Shield\Application.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\UmbracoAccess\Controllers\UmbracoAccessTreeController.cs" />
-    <Compile Include="Models\IP.cs" />
+    <Compile Include="Models\Ip.cs" />
     <Compile Include="UI\UmbracoAccess\Controllers\UmbracoAccessApiController.cs" />
   </ItemGroup>
   <ItemGroup>

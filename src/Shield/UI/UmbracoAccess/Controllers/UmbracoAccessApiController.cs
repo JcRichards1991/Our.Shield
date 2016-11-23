@@ -24,24 +24,13 @@ namespace Shield.UI.UmbracoAccess.Controllers
         }
 
         /// <summary>
-        /// Get's an IP address by it's name
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public Models.Ip Get(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Get's all IP addresses
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public IEnumerable<Models.Ip> Get()
         {
-            throw new NotImplementedException();
+            return ModuleHelper.GetIps();
         }
 
         /// <summary>
@@ -50,7 +39,12 @@ namespace Shield.UI.UmbracoAccess.Controllers
         /// <param name="name"></param>
         /// <returns></returns>
         [HttpGet]
-        public void Delete (string name)
+        public void Delete (string ipAddress)
+        {
+            ModuleHelper.RemoveIpAddress(ipAddress);
+        }
+
+        public void GetLog()
         {
             throw new NotImplementedException();
         }

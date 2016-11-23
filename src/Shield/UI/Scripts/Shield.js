@@ -2,16 +2,13 @@
     var apiRoot = 'backoffice/Shield/UmbracoAccessApi/';
 
     return {
-        PostIP: function (ip) {
+        PostIp: function (ip) {
             return $http.post(apiRoot + 'Post', angular.toJson(ip));
         },
-        DeleteIP: function (name) {
+        DeleteIp: function (name) {
             return $http.delete(apiRoot + 'Delete?name=' + name);
         },
-        GetIP: function (name) {
-            return $http.post(apiRoot + "Get?name=" + name);
-        },
-        GetAllIP: function () {
+        GetIps: function () {
             return $http.post(apiRoot + "Get");
         },
         GetLog: function () {
@@ -31,10 +28,24 @@ angular.module('umbraco').controller('Shield.Controllers.UmbracoAccess', functio
     };
 
     $scope.ip = {};
+    $scope.whitelist = [];
+    $scope.blacklist = [];
 
-    $scope.AddIP = function (ip) {
-        UmbracoAccessResource.PostIP(ip).then(function (response) {
-            if (response.data == 'null') {
+    $scope.ips = UmbracoAccessResource.GetIps().then(function (response) {
+        if (response.data !== 'null' && response.data.length !== 0) {
+            for (var i = 0; (i < response.data.length + 1) ; i++) {
+                if (response.data[i].Allow) {
+                    $scope.whitelist.push(response.data[i])
+                } else {
+                    $scope.blacklist.push(response.data[i]);
+                }
+            }
+        }
+    });
+
+    $scope.AddIp = function (ip) {
+        UmbracoAccessResource.PostIp(ip).then(function (response) {
+            if (response.data === 'null') {
                 notificationsService.error("Something went wrong, the error has been logged")
             } else {
                 notificationsService.success("Successfully added");
