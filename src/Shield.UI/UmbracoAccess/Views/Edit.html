@@ -6,9 +6,9 @@
     </umb-header>
     <div class="umb-panel-body umb-scrollable row-fluid">
         <umb-tab-view>
-            <umb-tab id="tab1" rel="whitelist">
+            <umb-tab id="tab1" rel="content">
                 <div>Whitelist listing here</div>
-                <form name="whitelistAddIP" ng-submit="AddIp(ip)">
+                <form name="ipsForm" ng-submit="AddIp(ip)">
                     <div class="tab-content form-horizontal">
                         <div class="umb-pane">
                             <input type="hidden" value="true" ng-model="ip.Allow" required />
@@ -25,31 +25,6 @@
                         </div>
                     </div>
                 </form>
-            </umb-tab>
-
-            <umb-tab id="tab2" rel="blacklist">
-                <div>Blacklist listing here</div>
-                <form name="blacklistAddIP" ng-submit="AddIp(ip)">
-                    <div class="tab-content form-horizontal">
-                        <div class="umb-pane">
-                            <input type="hidden" value="false" ng-model="ip.Allow" required />
-                            <umb-control-group label="IPAddress" description="Enter an IP address">
-                                <input type="text" class="umb-editor umb-textstring" ng-model="ip.IpAddress" required />
-                            </umb-control-group>
-                            <div class="umb-tab-buttons" detect-fold>
-                                <div class="btn-group">
-                                    <button type="submit" class="btn btn-success">
-                                        Add
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </umb-tab>
-
-            <umb-tab id="tab3" rel="log">
-
             </umb-tab>
         </umb-tab-view>
     </div>
