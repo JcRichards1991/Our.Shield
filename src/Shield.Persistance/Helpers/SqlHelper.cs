@@ -10,6 +10,7 @@ namespace Shield.Persistance.Helpers
 {
     public class SqlHelper
     {
+        public static T GetConfiguration<T>() where T : Interfaces.IConfiguration
         {
             var config = Activator.CreateInstance<T>();
 
@@ -21,6 +22,7 @@ namespace Shield.Persistance.Helpers
             return config;
         }
 
+        public static T GetLog<T>() where T : Interfaces.ILog
         {
             var config = Activator.CreateInstance<T>();
 
@@ -32,6 +34,7 @@ namespace Shield.Persistance.Helpers
             return config;
         }
 
+        public static T SaveConfiguration<T>() where T : Interfaces.IConfiguration
         {
             throw new NotImplementedException();
         }
