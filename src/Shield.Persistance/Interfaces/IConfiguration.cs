@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbraco.Core.Persistence;
 
-namespace Shield.Persistance.Models.Interfaces
+namespace Shield.Persistance.Interfaces
 {
     public interface IConfiguration
     {
-        string Name { get; }
+        string Type { get; }
+
+        DateTime Datestamp { get; set; }
 
         string Settings { get; set; }
 

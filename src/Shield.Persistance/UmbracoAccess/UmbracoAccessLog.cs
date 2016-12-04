@@ -7,7 +7,14 @@ using System.Threading.Tasks;
 
 namespace Shield.Persistance.UmbracoAccess
 {
-    public class UmbracoAccessLog : ILog
+    public class UmbracoAccessLog : Models.Log
     {
+        public override string Type
+        {
+            get
+            {
+                return "UmbracoAccess";
+            }
+        }
     }
 }

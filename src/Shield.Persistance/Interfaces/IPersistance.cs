@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shield.Persistance.Models.Interfaces
+namespace Shield.Persistance.Interfaces
 {
     public interface IPersistance
     {

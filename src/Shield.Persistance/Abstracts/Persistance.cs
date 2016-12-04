@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shield.Persistance.Models.Interfaces;
 
 namespace Shield.Persistance.Models
 {
-    public class Persistance : IPersistance
+    public class Persistance : Interfaces.IPersistance
     {
-        public IEnumerable<IConfiguration> Configurations { get; set; }
+        public IEnumerable<Interfaces.IConfiguration> Configurations { get; set; }
 
-        public IEnumerable<ILog> Logs { get; set; }
+        public IEnumerable<Interfaces.ILog> Logs { get; set; }
 
         public void Save()
         {

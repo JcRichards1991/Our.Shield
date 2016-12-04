@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Shield.Persistance.UmbracoAccess
 {
-    public class UmbracoAccessConfiguration : IConfiguration
+    public class UmbracoAccessConfiguration : Models.Configuration
     {
-        public string Name
+        public override string Type
         {
             get
             {
@@ -17,29 +17,12 @@ namespace Shield.Persistance.UmbracoAccess
             }
         }
 
-        private string settings;
-        public string Settings
-        {
-            get
-            {
-                return settings;
-            }
-
-            set
-            {
-                IsDirty = true;
-                settings = value;
-            }
-        }
-
-        public bool IsDirty { get; set; }
-
-        public bool Save()
+        public override bool Save()
         {
             throw new NotImplementedException();
         }
 
-        public IConfiguration Read()
+        public override IConfiguration Read()
         {
             throw new NotImplementedException();
         }
