@@ -18,7 +18,33 @@ namespace Shield.UI.UmbracoAccess.Controllers
 
             throw new NotImplementedException();
         }
-        
+
+        [HttpPost]
+        public bool PostBackendAccess(Models.ViewModel model)
+        {
+            var db = new Shield.Persistance.UmbracoAccess.ConfigurationContext();
+
+            var persistenceModel = new Shield.Persistance.UmbracoAccess.Configuration
+            {
+                BackendAccessUrl = model.backendAccessUrl
+            };
+
+            return db.Write(persistenceModel);
+        }
+
+        [HttpGet]
+        public Models.ViewModel GetBackendAccessModel()
+        {
+            var db = new Shield.Persistance.UmbracoAccess.ConfigurationContext();
+
+            var persistenceModel = db.Read();
+
+            return new Models.ViewModel
+            {
+                backendAccessUrl = persistenceModel.BackendAccessUrl
+            };
+        }
+
         [HttpGet]
         public IEnumerable<object> Get()
         {
