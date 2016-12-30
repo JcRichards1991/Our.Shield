@@ -1,4 +1,4 @@
-﻿using Shield.Persistance.Models.Interfaces;
+﻿using Shield.Persistance.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
