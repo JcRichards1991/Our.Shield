@@ -21,7 +21,7 @@ namespace Shield.UI.UmbracoAccess.Controllers
 
             if(id == Constants.RootNodeId)
             {
-                treeNodeCollection.Add(this.CreateTreeNode("-3131", Constants.RootNodeId, queryStrings, Constants.Tree.UmbracoAccess.NodeName));
+                treeNodeCollection.Add(this.CreateTreeNode(Constants.Tree.UmbracoAccess.NodeId, Constants.RootNodeId, queryStrings, Constants.Tree.UmbracoAccess.NodeName));
             }
 
             return treeNodeCollection;

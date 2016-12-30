@@ -252,16 +252,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\SqlHelper.cs" />
-    <Compile Include="Abstracts\Configuration.cs" />
-    <Compile Include="Interfaces\IConfiguration.cs" />
-    <Compile Include="Interfaces\ILog.cs" />
-    <Compile Include="Interfaces\IPersistance.cs" />
-    <Compile Include="Abstracts\Log.cs" />
-    <Compile Include="Abstracts\Persistance.cs" />
+    <Compile Include="Bal\Record.cs" />
+    <Compile Include="Bal\JsonValues.cs" />
+    <Compile Include="Bal\ConfigurationRecord.cs" />
+    <Compile Include="Dal\Journal.cs" />
+    <Compile Include="Dal\Configuration.cs" />
+    <Compile Include="Bal\JournalRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UmbracoAccess\UmbracoAccessConfiguration.cs" />
-    <Compile Include="UmbracoAccess\UmbracoAccessLog.cs" />
+    <Compile Include="UmbracoAccess\Record.cs" />
+    <Compile Include="UmbracoAccess\Configuration.cs" />
+    <Compile Include="UmbracoAccess\Journal.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="MediaProtect\" />
