@@ -2,7 +2,7 @@
 using Umbraco.Core.Persistence;
 using Umbraco.Core.Persistence.DatabaseAnnotations;
 
-namespace Shield.Persistance.Models
+namespace Shield.Persistance.Abstracts
 {
     [TableName("Shield.Configuration")]
     [PrimaryKey("Name", autoIncrement = false)]

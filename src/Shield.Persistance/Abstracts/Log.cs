@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shield.Persistance.Models
+namespace Shield.Persistance.Abstracts
 {
     public abstract class Log : Interfaces.ILog
     {
