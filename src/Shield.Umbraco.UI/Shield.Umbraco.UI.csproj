@@ -415,6 +415,12 @@
   </Target>
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <Import Project="..\packages\UmbracoCms.7.5.4\build\UmbracoCms.targets" Condition="Exists('..\packages\UmbracoCms.7.5.4\build\UmbracoCms.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(solutiondir)Shield.UI\UmbracoAccess\Views\*.html" "$(ProjectDir)App_Plugins\Shield\Backoffice\UmbracoAccess\" /Y
+xcopy "$(solutiondir)Shield.UI\Scripts\*.js" "$(ProjectDir)App_Plugins\Shield\Backoffice\js\" /Y
+xcopy "$(solutiondir)Shield.UI\package.manifest" "$(ProjectDir)App_Plugins\Shield\" /Y
+</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
