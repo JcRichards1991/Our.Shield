@@ -253,12 +253,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\SqlHelper.cs" />
-    <Compile Include="Models\Configuration.cs" />
-    <Compile Include="Models\Interfaces\IConfiguration.cs" />
-    <Compile Include="Models\Interfaces\ILog.cs" />
-    <Compile Include="Models\Interfaces\IPersistance.cs" />
-    <Compile Include="Models\Log.cs" />
-    <Compile Include="Models\Persistance.cs" />
+    <Compile Include="Abstracts\Configuration.cs" />
+    <Compile Include="Interfaces\IConfiguration.cs" />
+    <Compile Include="Interfaces\ILog.cs" />
+    <Compile Include="Interfaces\IPersistance.cs" />
+    <Compile Include="Abstracts\Log.cs" />
+    <Compile Include="Abstracts\Persistance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UmbracoAccess\UmbracoAccessConfiguration.cs" />
     <Compile Include="UmbracoAccess\UmbracoAccessLog.cs" />
