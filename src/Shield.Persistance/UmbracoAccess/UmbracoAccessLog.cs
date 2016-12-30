@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shield.Persistance.UmbracoAccess
 {
-    public class UmbracoAccessLog : Models.Log
+    public class UmbracoAccessLog : Abstracts.Log
     {
         public override string Type
         {

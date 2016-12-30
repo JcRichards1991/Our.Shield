@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shield.Persistance.UmbracoAccess
 {
-    public class UmbracoAccessConfiguration : Models.Configuration
+    public class UmbracoAccessConfiguration : Abstracts.Configuration
     {
         public override string Type
         {
