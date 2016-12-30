@@ -2,17 +2,11 @@
     var apiRoot = 'backoffice/Shield/UmbracoAccessApi/';
 
     return {
-        PostIp: function (ip) {
-            return $http.post(apiRoot + 'Post', angular.toJson(ip));
+        PostBackendAccess: function (model) {
+            return $http.post(apiRoot + 'PostBackendAccess', angular.toJson(model));
         },
-        DeleteIp: function (name) {
-            return $http.delete(apiRoot + 'Delete?name=' + name);
-        },
-        GetIps: function () {
-            return $http.post(apiRoot + "Get");
-        },
-        GetLog: function () {
-            return $http.post(apiRoot + "GetLog");
+        GetBackendAccessModel: function () {
+            return $http.get(apiRoot + 'GetBackendAccessModel');
         }
     };
 }
@@ -22,15 +16,15 @@ angular.module('umbraco.resources').factory('UmbracoAccessResource', UmbracoAcce
 angular.module('umbraco').controller('Shield.Controllers.UmbracoAccess', function ($scope, $routeParams, notificationsService, navigationService, treeService, UmbracoAccessResource) {
 
     $scope.content = {
-        tabs: [{ id: 1, label: 'Content' }]
+        tabs: [{ id: 1, label: 'Backend Access' }]
     };
 
-    $scope.ip = {};
+    $scope.model = UmbracoAccessResource.GetBackendAccessModel();
 
-    $scope.AddIp = function (ip) {
-        UmbracoAccessResource.PostIp(ip).then(function (response) {
+    $scope.backendAccess = function (model) {
+        UmbracoAccessResource.PostBackendAccess(model).then(function (response) {
             if (response.data === 'null') {
-                notificationsService.error("Something went wrong, the error has been logged")
+                notificationsService.error("Something went wrong, the error has been logged");
             } else {
                 notificationsService.success("Successfully added");
             }

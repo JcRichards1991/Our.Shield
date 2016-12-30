@@ -7,9 +7,9 @@ using Umbraco.Core.Persistence;
 
 namespace Shield.Persistance.Bal
 {
-    public abstract class JournalRecord : Record
+    public abstract class JournalContext : Record
     {
-        public IEnumerable<T> Read<T>(int page, int itemsPerPage)
+        protected override IEnumerable<T> Read<T>(int page, int itemsPerPage)
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
 
@@ -28,7 +28,7 @@ namespace Shield.Persistance.Bal
             return records.Items.Select(x => JsonConvert.DeserializeObject<T>(x.Value));
         }
 
-        public bool Write<T>(T values) where T : Bal.JsonValues
+        protected override bool Write<T>(T values)
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
             var record = new Dal.Journal()

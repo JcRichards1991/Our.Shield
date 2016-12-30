@@ -4,9 +4,9 @@ using Umbraco.Core;
 
 namespace Shield.Persistance.Bal
 {
-    public abstract class ConfigurationRecord : Record
+    public abstract class ConfigurationContext : Record
     {
-        public T Read<T>() where T : JsonValues, new()
+        protected override T Read<T>()
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
 
@@ -19,7 +19,7 @@ namespace Shield.Persistance.Bal
             return JsonConvert.DeserializeObject<T>(record.Value);
         }
 
-        public bool Write<T>(T values) where T : Bal.JsonValues
+        protected override bool Write<T>(T values)
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
             var record = new Dal.Configuration()

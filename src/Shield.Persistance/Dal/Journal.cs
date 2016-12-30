@@ -1,15 +1,17 @@
-﻿using System;
+﻿using Semver;
+using System;
+using System.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence;
 using Umbraco.Core.Persistence.DatabaseAnnotations;
 using Umbraco.Core.Persistence.Migrations;
 using Umbraco.Core.Persistence.SqlSyntax;
+using Umbraco.Web;
 
 namespace Shield.Persistance.Dal
 {
     [TableName("ShieldJournal")]
-    [PrimaryKey("id", autoIncrement = true)]
     [ExplicitColumns]
     internal class Journal
     {
@@ -27,12 +29,11 @@ namespace Shield.Persistance.Dal
         public DateTime CreateDate { get; set; }
         
         [Column("value")]
-        [SpecialDbType(SpecialDbTypes.NCHAR)]
         [NullSetting(NullSetting = NullSettings.Null)]
         public string Value { get; set; }
     }
 
-    [Migration("1.0.0", 1, nameof(Journal))]
+    [Migration("1.0.0", 2, "Shield")]
     public class CreateJournalTable : MigrationBase
     {
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
@@ -57,5 +58,4 @@ namespace Shield.Persistance.Dal
             _schemaHelper.DropTable<Journal>();
         }
     }
-
 }

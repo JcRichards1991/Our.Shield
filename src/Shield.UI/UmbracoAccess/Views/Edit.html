@@ -6,14 +6,12 @@
     </umb-header>
     <div class="umb-panel-body umb-scrollable row-fluid">
         <umb-tab-view>
-            <umb-tab id="tab1" rel="content">
-                <div>Whitelist listing here</div>
-                <form name="ipsForm" ng-submit="AddIp(ip)">
+            <umb-tab id="tab1" rel="BackendAccess">
+                <form name="backendAccess" ng-submit="backendAccess(model)">
                     <div class="tab-content form-horizontal">
                         <div class="umb-pane">
-                            <input type="hidden" value="true" ng-model="ip.Allow" required />
-                            <umb-control-group label="IP Address" description="Enter an IP address">
-                                <input type="text" class="umb-editor umb-textstring" ng-model="ip.IpAddress" required />
+                            <umb-control-group label="Backend Access URL" description="The URL used to access the backend office (Umbraco)">
+                                <input type="text" class="umb-editor umb-textstring" ng-model="model.backendAccessUrl" required />
                             </umb-control-group>
                             <div class="umb-tab-buttons" detect-fold>
                                 <div class="btn-group">

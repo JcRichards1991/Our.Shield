@@ -21,12 +21,11 @@ namespace Shield.Persistance.Dal
         public DateTime LastModified { get; set; }
         
         [Column("value")]
-        [SpecialDbType(SpecialDbTypes.NCHAR)]
         [NullSetting(NullSetting = NullSettings.Null)]
         public string Value { get; set; }
     }
 
-    [Migration("1.0.0", 1, nameof(Configuration))]
+    [Migration("1.0.0", 1, "Shield")]
     public class CreateConfigurationTable : MigrationBase
     {
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
