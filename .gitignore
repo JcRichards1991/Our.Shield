@@ -242,6 +242,7 @@ ModelManifest.xml
 .fake/
 
 src/Shield.Umbraco.UI/
+!src/Shield.Umbraco.UI/Properties/AssemblyInfo.cs
 src/Shield.Umbraco.UI/App_Data
 !src/Shield.Umbraco.UI/packages.config
 !src/Shield.Umbraco.UI/[Uu]mbraco
