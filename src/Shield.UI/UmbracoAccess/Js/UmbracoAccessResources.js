@@ -1,4 +1,11 @@
-﻿function UmbracoAccessResource($http) {
+﻿/**
+ * @ngdoc resource
+ * @name UmbracoAccessResource
+ * @function
+ *
+ * @description
+ * Handles the Requests for the Umbraco Access area of the custom section
+ */
     var apiRoot = 'backoffice/Shield/UmbracoAccessApi/';
 
     return {
@@ -9,6 +16,4 @@
             return $http.get(apiRoot + 'GetUmbracoAccess');
         }
     };
-}
-
-angular.module('umbraco.resources').factory('UmbracoAccessResource', UmbracoAccessResource);
+});

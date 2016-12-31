@@ -1,4 +1,12 @@
-﻿function MediaProtectResource($http) {
+﻿/**
+ * @ngdoc resource
+ * @name MediaProtectResource
+ * @function
+ *
+ * @description
+ * Handles the Requests for the Media Protect area of the custom section
+ */
+angular.module('umbraco.resources').factory('MediaProtectResource', function ($http) {
     var apiRoot = 'backoffice/Shield/MediaProtectApi/';
 
     return {
@@ -9,6 +17,4 @@
             return $http.get(apiRoot + 'GetMediaProtectConfiguration');
         }
     };
-}
-
-angular.module('umbraco.resources').factory('MediaProtectResource', MediaProtectResource);
+});

@@ -1,3 +1,11 @@
+/**
+ * @ngdoc controller
+ * @name Shield.Editors.UmbracoAccess.EditController
+ * @function
+ *
+ * @description
+ * Handles the Umbraco Access area of the custom section
+ */
 angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', function ($scope, $routeParams, notificationsService, navigationService, treeService, UmbracoAccessResource) {
 
     UmbracoAccessResource.GetUmbracoAccess().then(function (response) {
@@ -19,7 +27,15 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
         });
     };
 });
-function UmbracoAccessResource($http) {
+/**
+ * @ngdoc resource
+ * @name UmbracoAccessResource
+ * @function
+ *
+ * @description
+ * Handles the Requests for the Umbraco Access area of the custom section
+ */
+angular.module('umbraco.resources').factory('UmbracoAccessResource', function ($http) {
     var apiRoot = 'backoffice/Shield/UmbracoAccessApi/';
 
     return {
@@ -30,10 +46,16 @@ function UmbracoAccessResource($http) {
             return $http.get(apiRoot + 'GetUmbracoAccess');
         }
     };
-}
-
-angular.module('umbraco.resources').factory('UmbracoAccessResource', UmbracoAccessResource);
-function MediaProtectResource($http) {
+});
+/**
+ * @ngdoc resource
+ * @name MediaProtectResource
+ * @function
+ *
+ * @description
+ * Handles the Requests for the Media Protect area of the custom section
+ */
+angular.module('umbraco.resources').factory('MediaProtectResource', function ($http) {
     var apiRoot = 'backoffice/Shield/MediaProtectApi/';
 
     return {
@@ -44,6 +66,4 @@ function MediaProtectResource($http) {
             return $http.get(apiRoot + 'GetMediaProtectConfiguration');
         }
     };
-}
-
-angular.module('umbraco.resources').factory('MediaProtectResource', MediaProtectResource);
+});

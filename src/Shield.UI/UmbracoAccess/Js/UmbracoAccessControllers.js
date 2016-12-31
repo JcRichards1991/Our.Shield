@@ -1,4 +1,12 @@
-﻿angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', function ($scope, $routeParams, notificationsService, navigationService, treeService, UmbracoAccessResource) {
+﻿/**
+ * @ngdoc controller
+ * @name Shield.Editors.UmbracoAccess.EditController
+ * @function
+ *
+ * @description
+ * Handles the Umbraco Access area of the custom section
+ */
+angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', function ($scope, $routeParams, notificationsService, navigationService, treeService, UmbracoAccessResource) {
 
     UmbracoAccessResource.GetUmbracoAccess().then(function (response) {
         if (response.data === 'null' || response.data === undefined) {
