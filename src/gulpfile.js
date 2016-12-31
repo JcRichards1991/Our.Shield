@@ -1,4 +1,4 @@
-/// <binding AfterBuild='buildJS' />
+/// <binding BeforeBuild='buildJS' />
 //*********** IMPORTS *****************
 var gulp = require('gulp');
 var sass = require('gulp-ruby-sass');
@@ -29,7 +29,7 @@ var jsFiles = [
     jsBaseDir + 'MediaProtect/Js/**.js'
 ];
 
-var jsOutput = 'Shield.Umbraco.UI/App_Plugins/Shield/backoffice/js';
+var jsOutput = jsBaseDir + 'Scripts/';
 //END configuration
 
 

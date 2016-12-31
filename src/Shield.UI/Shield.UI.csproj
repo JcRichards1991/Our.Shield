@@ -272,6 +272,7 @@
   <ItemGroup>
     <Content Include="Dashboards\Settings.html" />
     <Content Include="MediaProtect\Js\MediaProtect.js" />
+    <Content Include="Scripts\Shield.js" />
     <Content Include="UmbracoAccess\Js\UmbracoAccessControllers.js" />
     <Content Include="UmbracoAccess\Js\UmbracoAccessResources.js" />
     <Content Include="UmbracoAccess\Views\Edit.html" />
@@ -282,6 +283,7 @@
       <Name>Shield.Persistance</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <PropertyGroup>

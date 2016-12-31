@@ -418,7 +418,7 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(solutiondir)Shield.UI\UmbracoAccess\Views\*.html" "$(ProjectDir)App_Plugins\Shield\Backoffice\UmbracoAccess\" /Y
 xcopy "$(solutiondir)Shield.UI\package.manifest" "$(ProjectDir)App_Plugins\Shield\" /Y
-</PostBuildEvent>
+xcopy "$(solutiondir)Shield.UI\Scripts\Shield.js" "$(ProjectDir)App_Plugins\Shield\backoffice\js\" /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
