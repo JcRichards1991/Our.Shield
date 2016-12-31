@@ -29,7 +29,16 @@ namespace Shield.Persistance.Bal
                 Value = JsonConvert.SerializeObject(values)
             };
 
-            db.Save(record);
+            if (db.Exists<Dal.Configuration>(Id))
+            {
+                db.Update(record);
+            }
+            else
+            {
+                db.Insert(record);
+            }
+
+            
             return true;
         }
 
