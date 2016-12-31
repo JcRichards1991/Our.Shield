@@ -25,8 +25,8 @@ var sassFiles = [
 
 var jsBaseDir = 'Shield.UI/'
 var jsFiles = [
-    jsBaseDir + 'UmbracoAccess/Js/UmbracoAccess.js',
-    jsBaseDir + 'MediaProtect/Js/MediaProtect.js'
+    jsBaseDir + 'UmbracoAccess/Js/**.js',
+    jsBaseDir + 'MediaProtect/Js/**.js'
 ];
 
 var jsOutput = 'Shield.Umbraco.UI/App_Plugins/Shield/backoffice/js';

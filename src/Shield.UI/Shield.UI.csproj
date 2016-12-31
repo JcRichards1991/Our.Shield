@@ -272,7 +272,8 @@
   <ItemGroup>
     <Content Include="Dashboards\Settings.html" />
     <Content Include="MediaProtect\Js\MediaProtect.js" />
-    <Content Include="UmbracoAccess\Js\UmbracoAccess.js" />
+    <Content Include="UmbracoAccess\Js\UmbracoAccessControllers.js" />
+    <Content Include="UmbracoAccess\Js\UmbracoAccessResources.js" />
     <Content Include="UmbracoAccess\Views\Edit.html" />
   </ItemGroup>
   <ItemGroup>

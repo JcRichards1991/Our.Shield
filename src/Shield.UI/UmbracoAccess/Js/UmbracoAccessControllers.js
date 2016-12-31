@@ -1,19 +1,4 @@
-﻿function UmbracoAccessResource($http) {
-    var apiRoot = 'backoffice/Shield/UmbracoAccessApi/';
-
-    return {
-        PostUmbracoAccess: function (model) {
-            return $http.post(apiRoot + 'PostUmbracoAccess', angular.toJson(model));
-        },
-        GetUmbracoAccess: function () {
-            return $http.get(apiRoot + 'GetUmbracoAccess');
-        }
-    };
-}
-
-angular.module('umbraco.resources').factory('UmbracoAccessResource', UmbracoAccessResource);
-
-angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', function ($scope, $routeParams, notificationsService, navigationService, treeService, UmbracoAccessResource) {
+﻿angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', function ($scope, $routeParams, notificationsService, navigationService, treeService, UmbracoAccessResource) {
 
     UmbracoAccessResource.GetUmbracoAccess().then(function (response) {
         if (response.data === 'null' || response.data === undefined) {
