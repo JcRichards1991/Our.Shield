@@ -417,7 +417,6 @@
   <Import Project="..\packages\UmbracoCms.7.5.4\build\UmbracoCms.targets" Condition="Exists('..\packages\UmbracoCms.7.5.4\build\UmbracoCms.targets')" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(solutiondir)Shield.UI\UmbracoAccess\Views\*.html" "$(ProjectDir)App_Plugins\Shield\Backoffice\UmbracoAccess\" /Y
-xcopy "$(solutiondir)Shield.UI\Scripts\*.js" "$(ProjectDir)App_Plugins\Shield\Backoffice\js\" /Y
 xcopy "$(solutiondir)Shield.UI\package.manifest" "$(ProjectDir)App_Plugins\Shield\" /Y
 </PostBuildEvent>
   </PropertyGroup>

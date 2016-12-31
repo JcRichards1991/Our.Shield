@@ -271,8 +271,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dashboards\Settings.html" />
+    <Content Include="MediaProtect\Js\MediaProtect.js" />
+    <Content Include="UmbracoAccess\Js\UmbracoAccess.js" />
     <Content Include="UmbracoAccess\Views\Edit.html" />
-    <Content Include="Scripts\Shield.js" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shield.Persistance\Shield.Persistance.csproj">

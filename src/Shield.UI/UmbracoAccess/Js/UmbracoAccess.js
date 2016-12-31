@@ -14,7 +14,7 @@
 angular.module('umbraco.resources').factory('UmbracoAccessResource', UmbracoAccessResource);
 
 angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', function ($scope, $routeParams, notificationsService, navigationService, treeService, UmbracoAccessResource) {
-    
+
     UmbracoAccessResource.GetUmbracoAccess().then(function (response) {
         if (response.data === 'null' || response.data === undefined) {
             notificationsService.error("Something went wrong getting the configuration, the error has been logged");
