@@ -1,29 +1,33 @@
-﻿<umb-pane ng-controller="Shield.Controllers.UmbracoAccess">
-    <umb-header tabs="content.tabs">
-        <div class="span12">
-            <h2>Umbraco Access</h2>
-        </div>
+﻿<umb-pane>
+    <umb-header name="Umbraco Access"
+                       hide-icon="true"
+                       hide-description="true"
+                       hide-alias="true">
+        <h1 class="headline">Umbraco Access</h1>
     </umb-header>
     <div class="umb-panel-body umb-scrollable row-fluid">
-        <umb-tab-view>
-            <umb-tab id="tab1" rel="BackendAccess">
-                <form name="backendAccess" ng-submit="backendAccess(model)">
-                    <div class="tab-content form-horizontal">
+        <form name="umbracoAccessForm" ng-controller="Shield.Controllers.UmbracoAccess" ng-submit="submitUmbracoAccess(umbracoAccess)">
+            <umb-editor-view>
+                <umb-editor-container>
+                    <div class="form-horizontal">
                         <div class="umb-pane">
                             <umb-control-group label="Backend Access URL" description="The URL used to access the backend office (Umbraco)">
-                                <input type="text" class="umb-editor umb-textstring" ng-model="model.backendAccessUrl" required />
+                                <input type="text" class="umb-editor umb-textstring" ng-model="umbracoAccess.backendAccessUrl" />
                             </umb-control-group>
-                            <div class="umb-tab-buttons" detect-fold>
-                                <div class="btn-group">
-                                    <button type="submit" class="btn btn-success">
-                                        Add
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                     </div>
-                </form>
-            </umb-tab>
-        </umb-tab-view>
+                </umb-editor-container>
+                <umb-editor-footer>
+                    <umb-editor-footer-content-right>
+                        <umb-button type="submit"
+                                    label="Update"
+                                    button-style="success"
+                                    shortcut="ctrl+s"
+                                    state="page.saveButtonState">
+                        </umb-button>
+                    </umb-editor-footer-content-right>
+                </umb-editor-footer>
+            </umb-editor-view>
+        </form>
     </div>
 </umb-pane>

@@ -20,11 +20,11 @@ namespace Shield.UI.UmbracoAccess.Controllers
         }
 
         [HttpPost]
-        public bool PostBackendAccess(Models.ViewModel model)
+        public bool PostUmbracoAccess(Models.ViewModel model)
         {
-            var db = new Shield.Persistance.UmbracoAccess.ConfigurationContext();
+            var db = new Persistance.UmbracoAccess.ConfigurationContext();
 
-            var persistenceModel = new Shield.Persistance.UmbracoAccess.Configuration
+            var persistenceModel = new Persistance.UmbracoAccess.Configuration
             {
                 BackendAccessUrl = model.backendAccessUrl
             };
@@ -33,9 +33,9 @@ namespace Shield.UI.UmbracoAccess.Controllers
         }
 
         [HttpGet]
-        public Models.ViewModel GetBackendAccessModel()
+        public Models.ViewModel GetUmbracoAccess()
         {
-            var db = new Shield.Persistance.UmbracoAccess.ConfigurationContext();
+            var db = new Persistance.UmbracoAccess.ConfigurationContext();
 
             var persistenceModel = db.Read();
 
