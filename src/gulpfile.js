@@ -62,9 +62,7 @@ gulp.task('buildJS', function () {
     gulp.src(jsFiles)
     .pipe(concat('Shield.js'))
     .pipe(gulp.dest(jsOutput))
-    .pipe(uglify({ outSourceMap: false }))
-    .pipe(rename('Shield.min.js'))
-    .pipe(gulp.dest(jsOutput));
+    .pipe(uglify({ outSourceMap: false }));
 });
 
 var sassOptions = {
