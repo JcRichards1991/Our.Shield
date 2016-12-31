@@ -2,7 +2,7 @@
 
 namespace Shield.Persistance.Bal
 {
-    public interface JsonValues
+    public interface IJsonValues
     {
     }
 }

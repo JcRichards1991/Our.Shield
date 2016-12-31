@@ -253,7 +253,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bal\Record.cs" />
-    <Compile Include="Bal\JsonValues.cs" />
+    <Compile Include="Bal\IJsonValues.cs" />
     <Compile Include="Bal\ConfigurationContext.cs" />
     <Compile Include="Dal\Register.cs" />
     <Compile Include="Dal\Journal.cs" />
