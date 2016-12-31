@@ -1,26 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Configuration;
 using System.Web.Mvc;
-using Umbraco.Core.Sync;
 using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
 
 namespace Shield.UI.UmbracoAccess.Controllers
 {
+    /// <summary>
+    /// Api Controller for the Umbraco Access area of the custom section
+    /// </summary>
     [PluginController(Constants.App.Name)]
     public class UmbracoAccessApiController : UmbracoAuthorizedJsonController
     {
+        /// <summary>
+        /// Api Endpoint for Posting the Umbraco Access Configuration.
+        /// </summary>
+        /// <param name="model">The new configuration.</param>
+        /// <returns>Whether was successfully updated.</returns>
         [HttpPost]
-        public void Post()
-        {
-            var t = ServerRegistrarResolver.Current;
-
-            throw new NotImplementedException();
-        }
-
-        [HttpPost]
-        public bool PostUmbracoAccess(Models.ViewModel model)
+        public bool PostConfiguration(Models.ViewModel model)
         {
             var db = new Persistance.UmbracoAccess.ConfigurationContext();
 
@@ -32,8 +29,12 @@ namespace Shield.UI.UmbracoAccess.Controllers
             return db.Write(persistenceModel);
         }
 
+        /// <summary>
+        /// Api Endpoint for Getting the Umbraco Access Configuration.
+        /// </summary>
+        /// <returns>The configuration for the Umbraco Access area</returns>
         [HttpGet]
-        public Models.ViewModel GetUmbracoAccess()
+        public Models.ViewModel GetConfiguration()
         {
             var db = new Persistance.UmbracoAccess.ConfigurationContext();
 
@@ -41,24 +42,17 @@ namespace Shield.UI.UmbracoAccess.Controllers
 
             return new Models.ViewModel
             {
-                backendAccessUrl = persistenceModel.BackendAccessUrl
+                backendAccessUrl = string.IsNullOrEmpty(persistenceModel.BackendAccessUrl) 
+                    ? GetDefaultBackendAccessUrl() 
+                    : persistenceModel.BackendAccessUrl
             };
         }
 
-        [HttpGet]
-        public IEnumerable<object> Get()
+        private string GetDefaultBackendAccessUrl()
         {
-            return Enumerable.Empty<object>();
-        }
-
-        
-        [HttpGet]
-        public void Delete (string ipAddress)
-        {
-        }
-
-        public void GetLog()
-        {
+            if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["umbracoPath"]))
+                return "~/umbraco";
+            return ConfigurationManager.AppSettings["umbracoPath"];
         }
     }
 }

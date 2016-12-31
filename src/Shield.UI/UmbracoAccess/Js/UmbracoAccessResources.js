@@ -10,11 +10,11 @@ angular.module('umbraco.resources').factory('UmbracoAccessResource', function ($
     var apiRoot = 'backoffice/Shield/UmbracoAccessApi/';
 
     return {
-        PostUmbracoAccess: function (model) {
-            return $http.post(apiRoot + 'PostUmbracoAccess', angular.toJson(model));
+        PostConfiguration: function (configuration) {
+            return $http.post(apiRoot + 'PostConfiguration', angular.toJson(configuration));
         },
-        GetUmbracoAccess: function () {
-            return $http.get(apiRoot + 'GetUmbracoAccess');
+        GetConfiguration: function () {
+            return $http.get(apiRoot + 'GetConfiguration');
         }
     };
 });
