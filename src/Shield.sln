@@ -17,12 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{2E101591-AF0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shield.Persistance", "Shield.Persistance\Shield.Persistance.csproj", "{4667329D-3484-46DB-9CA3-C974506D1392}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A6149727-4865-4464-BE75-54C09999DCD5}"
-	ProjectSection(SolutionItems) = preProject
-		gulpfile.js = gulpfile.js
-		package.json = package.json
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
