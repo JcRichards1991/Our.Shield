@@ -1,18 +1,13 @@
 {
   "name": "Shield",
   "version": "1.0.0",
+  "description": "",
+  "repository": "",
+  "license": "MIT",
   "dependencies": {
     "gulp": "*",
-    "gulp-concat": "*",
-    "gulp-livereload": "*",
-    "gulp-rename": "*",
-    "gulp-ruby-sass": "*",
-    "gulp-uglify": "*",
-    "gulp-util": "*",
-    "gulp-watch": "*",
-    "map-stream": "*",
-    "gulp-minify": "*",
-    "merge-stream": "*",
-    "gulp-insert": "*"
+    "gulp-concat": "2.6.1",
+    "gulp-uglify": "2.0.0",
+    "gulp-insert": "0.5.0"
   }
 }
