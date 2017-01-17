@@ -300,6 +300,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\js\Shield.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\js\Shield.min.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\UmbracoAccess\Edit.html" />
     <Content Include="packages.config" />
     <Content Include="App_Plugins\ModelsBuilder\package.manifest" />
     <Content Include="Views\Web.config" />
@@ -329,6 +333,7 @@
     <Content Include="Config\BaseRestExtensions.config" />
     <Content Include="Config\applications.config" />
     <Content Include="Config\404handlers.config" />
+    <Content Include="App_Plugins\Shield\package.manifest" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -376,9 +381,7 @@
       <Name>Shield.UI</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Plugins\Shield\Backoffice\js\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -417,8 +420,8 @@
   <Import Project="..\packages\UmbracoCms.7.5.4\build\UmbracoCms.targets" Condition="Exists('..\packages\UmbracoCms.7.5.4\build\UmbracoCms.targets')" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(solutiondir)Shield.UI\UmbracoAccess\Views\*.html" "$(ProjectDir)App_Plugins\Shield\Backoffice\UmbracoAccess\" /Y
-xcopy "$(solutiondir)Shield.UI\package.manifest" "$(ProjectDir)App_Plugins\Shield\" /Y
-xcopy "$(solutiondir)Shield.UI\Scripts\Shield.js" "$(ProjectDir)App_Plugins\Shield\backoffice\js\" /Y</PostBuildEvent>
+xcopy "$(solutiondir)Shield.UI\Scripts\*.js" "$(ProjectDir)App_Plugins\Shield\backoffice\js\" /Y
+xcopy "$(solutiondir)Shield.UI\package.manifest" "$(ProjectDir)App_Plugins\Shield\" /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
