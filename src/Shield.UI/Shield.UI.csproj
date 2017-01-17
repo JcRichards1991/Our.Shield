@@ -267,13 +267,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="package.json" />
     <None Include="packages.config" />
     <None Include="package.manifest" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dashboards\Settings.html" />
+    <Content Include="gulpfile.js" />
     <Content Include="MediaProtect\Js\MediaProtectResources.js" />
+    <Content Include="Initialise\app.js" />
     <Content Include="Scripts\Shield.js" />
+    <Content Include="Scripts\Shield.min.js" />
     <Content Include="UmbracoAccess\Js\UmbracoAccessControllers.js" />
     <Content Include="UmbracoAccess\Js\UmbracoAccessResources.js" />
     <Content Include="UmbracoAccess\Views\Edit.html" />

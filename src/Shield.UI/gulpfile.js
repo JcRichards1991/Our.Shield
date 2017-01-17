@@ -11,6 +11,7 @@ var uglify = require('gulp-uglify');
 var watch = require('gulp-watch');
 var minify = require('gulp-minify');
 var merge = require('merge-stream');
+var insert = require('gulp-insert');
 
 global.errorMessage = '';
 
@@ -23,13 +24,12 @@ var sassFiles = [
 	//}
 ];
 
-var jsBaseDir = 'Shield.UI/'
 var jsFiles = [
-    jsBaseDir + 'UmbracoAccess/Js/**.js',
-    jsBaseDir + 'MediaProtect/Js/**.js'
+    'Initialise/app.js',
+    'UmbracoAccess/Js/**.js'
 ];
 
-var jsOutput = jsBaseDir + 'Scripts/';
+var jsOutput = 'Scripts/';
 //END configuration
 
 
@@ -61,8 +61,11 @@ gulp.task('default', ['buildJS']);
 gulp.task('buildJS', function () {
     gulp.src(jsFiles)
     .pipe(concat('Shield.js'))
+    .pipe(insert.wrap('(function(){ \n', '\n})();'))
     .pipe(gulp.dest(jsOutput))
-    .pipe(uglify({ outSourceMap: false }));
+    .pipe(uglify({ outSourceMap: false }))
+    .pipe(rename('Shield.min.js'))
+    .pipe(gulp.dest(jsOutput));
 });
 
 var sassOptions = {

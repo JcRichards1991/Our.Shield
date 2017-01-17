@@ -12,6 +12,7 @@
     "gulp-watch": "*",
     "map-stream": "*",
     "gulp-minify": "*",
-    "merge-stream": "*"
+    "merge-stream": "*",
+    "gulp-insert": "*"
   }
 }
