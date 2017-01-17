@@ -6,7 +6,7 @@
  * @description
  * Handles the Requests for the Media Protect area of the custom section
  */
-angular.module('umbraco.resources').factory('MediaProtectResource', function ($http) {
+angular.module('umbraco.resources').factory('MediaProtectResource', ['$http', function ($http) {
     var apiRoot = 'backoffice/Shield/MediaProtectApi/';
 
     return {
@@ -17,4 +17,4 @@ angular.module('umbraco.resources').factory('MediaProtectResource', function ($h
             return $http.get(apiRoot + 'GetMediaProtectConfiguration');
         }
     };
-});
+}]);
