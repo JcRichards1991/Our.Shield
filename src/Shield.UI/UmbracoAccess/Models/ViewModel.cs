@@ -20,7 +20,7 @@ namespace Shield.UI.UmbracoAccess.Models
         /// <summary>
         /// Gets or sets the Status Code
         /// </summary>
-        public string statusCode { get; set; }
+        public int statusCode { get; set; }
 
         /// <summary>
         /// Gets or sets the Ip Addresses.

@@ -21,5 +21,11 @@
         }
 
         public static readonly string RootNodeId = global::Umbraco.Core.Constants.System.Root.ToString();
+
+        public class Defaults
+        {
+            public const string BackendAccessUrl = "~/umbraco";
+            public const int StatusCode = 404;
+        }
     }
 }
