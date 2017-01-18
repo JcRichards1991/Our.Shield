@@ -8,17 +8,31 @@ using Umbraco.Web;
 
 namespace Shield.Persistance.Dal
 {
+    /// <summary>
+    /// Initialization class
+    /// </summary>
     public class Register : ApplicationEventHandler
     {
+        /// <summary>
+        /// Overrides the ApplicationEventHandler ApplicationStarted method
+        /// </summary>
+        /// <param name="umbracoApplication">
+        /// The Umbraco Application.
+        /// </param>
+        /// <param name="applicationContext">
+        /// The Application Context.
+        /// </param>
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        {
+            RunMigrations();
+        }
+        
+        private void RunMigrations()
         {
             const string productName = "Shield";
             var currentVersion = new SemVersion(0, 0, 0);
 
-            // get all migrations for "Statistics" already executed
             var migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName);
-
-            // get the latest migration for "Statistics" executed
             var latestMigration = migrations.OrderByDescending(x => x.Version).FirstOrDefault();
 
             if (latestMigration != null)
