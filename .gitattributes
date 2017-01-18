@@ -61,7 +61,3 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
-*.cs filter=lfs diff=lfs merge=lfs -text
-*.cshtml filter=lfs diff=lfs merge=lfs -text
-*.html filter=lfs diff=lfs merge=lfs -text
-*.js filter=lfs diff=lfs merge=lfs -text
