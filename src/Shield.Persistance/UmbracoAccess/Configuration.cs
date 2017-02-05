@@ -26,6 +26,30 @@ namespace Shield.Persistance.UmbracoAccess
         /// Gets or set the Ip Addresses.
         /// </summary>
         [JsonProperty]
-        public IEnumerable<object> IpAddresses { get; set; }
+        public IEnumerable<string> IpAddresses { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Unauthorised URL by XPath.
+        /// </summary>
+        [JsonProperty]
+        public string UnauthorisedUrlXPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Unauthorised URL Type.
+        /// </summary>
+        [JsonProperty]
+        public int UnauthorisedUrlType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Unauthorised URL by Content Picker.
+        /// </summary>
+        [JsonProperty]
+        public string UnauthorisedUrlContentPicker { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Unauthorised URL.
+        /// </summary>
+        [JsonProperty]
+        public string UnauthorisedUrl { get; set; }
     }
 }

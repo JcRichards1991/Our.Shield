@@ -14,44 +14,6 @@
                             <umb-property property="property" ng-repeat="property in properties track by $index" ng-show="property.visible">
                                 <umb-editor model="property"></umb-editor>
                             </umb-property>
-
-                            <!--<fieldset>
-                        <umb-control-group label="IP Addresses" description="The allowed IP Address(es) to access the Backend Office URL">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            IP Address
-                                        </th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="ipAddress in configuration.ipAddresses">
-                                        <td>
-                                            <umb-control-group label="{{ipAddress.Ip}}">
-                                            </umb-control-group>
-                                        </td>
-                                        <td>
-                                            <button ng-click="configuration.ipAddresses.splice($index, 1)">Remove</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td>
-                                            <umb-control-group>
-                                                <input type="text" ng-model="newIp.Ip" />
-                                            </umb-control-group>
-                                        </td>
-                                        <td>
-                                            <button ng-click="addIp()">Add</button>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </umb-control-group>
-                    </fieldset>-->
                         </div>
                     </div>
                 </umb-editor-container>

@@ -108,6 +108,15 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 },
                 value: $scope.configuration.unauthorisedUrlContentPicker,
                 visible: $scope.configuration.unauthorisedUrlType === 2
+            },
+            {
+                label: 'Allowed IPs',
+                description: 'The allowed IPs that can access the Backend Access Url. Localost (127.0.0.1) is added by default.',
+                view: '/App_Plugins/Shield/backoffice/PropertyEditors/Views/allowedIps.html',
+                alias: 'allowedIPs',
+                config: { },
+                value: $scope.configuration.ipAddresses,
+                visible: true
             }];
 
             angular.forEach($scope.properties, function (property, key) {
@@ -163,6 +172,10 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                         case 'unauthorisedUrlContentPicker':
                             $scope.configuration.unauthorisedUrlContentPicker = newVal;
                             break;
+
+                        case 'allowedIPs':
+                            $scope.configuration.ipAddresses = newVal;
+                            break;
                     }
                 });
             });
@@ -170,12 +183,6 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
             $scope.loading--;
         });
     };
-
-    $scope.addIpAddress = function () {
-        $scope.configuration.push($scope.newIp)
-
-        $scope.newIp.Ip = '';
-    }
 
     $scope.submitUmbracoAccess = function () {
         $scope.loading++;
@@ -215,5 +222,16 @@ angular.module('umbraco.resources').factory('ShieldUmbracoAccessResource', ['$ht
             return $http.get(apiRoot + 'GetConfiguration');
         }
     };
+}]);
+/**
+ * @ngdoc controller
+ * @name PropertyEditors.AllowedIpsController
+ * @function
+ *
+ * @description
+ * Handles the Umbraco Access area of the custom section
+ */
+angular.module('umbraco').controller('Shield.PropertyEditors.AllowedIpsController', ['$scope', function ($scope) {
+
 }]);
 }(window));

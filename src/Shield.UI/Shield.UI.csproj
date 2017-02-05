@@ -278,9 +278,11 @@
     <Content Include="MediaProtect\Js\MediaProtectResources.js" />
     <Content Include="Scripts\Shield.js" />
     <Content Include="Scripts\Shield.min.js" />
+    <Content Include="PropertyEditors\Js\AllowedIpsController.js" />
     <Content Include="UmbracoAccess\Js\UmbracoAccessControllers.js" />
     <Content Include="UmbracoAccess\Js\UmbracoAccessResources.js" />
     <Content Include="UmbracoAccess\Views\Edit.html" />
+    <Content Include="PropertyEditors\Views\allowedIps.html" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shield.Persistance\Shield.Persistance.csproj">

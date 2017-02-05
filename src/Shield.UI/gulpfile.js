@@ -9,7 +9,8 @@ var uglify = require('gulp-uglify');
 var insert = require('gulp-insert');
 
 var jsFiles = [
-    'UmbracoAccess/Js/**.js'
+    'UmbracoAccess/Js/**.js',
+    'PropertyEditors/Js/**.js'
 ];
 
 var jsOutput = 'Scripts/';

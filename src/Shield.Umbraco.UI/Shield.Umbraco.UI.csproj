@@ -303,6 +303,7 @@
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
     <Content Include="App_Plugins\Shield\Backoffice\js\Shield.js" />
     <Content Include="App_Plugins\Shield\Backoffice\js\Shield.min.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\PropertyEditors\allowedIps.html" />
     <Content Include="App_Plugins\Shield\Backoffice\UmbracoAccess\Edit.html" />
     <Content Include="packages.config" />
     <Content Include="App_Plugins\ModelsBuilder\package.manifest" />
@@ -420,6 +421,7 @@
   <Import Project="..\packages\UmbracoCms.7.5.4\build\UmbracoCms.targets" Condition="Exists('..\packages\UmbracoCms.7.5.4\build\UmbracoCms.targets')" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(solutiondir)Shield.UI\UmbracoAccess\Views\*.html" "$(ProjectDir)App_Plugins\Shield\Backoffice\UmbracoAccess\" /Y
+xcopy "$(solutiondir)Shield.UI\PropertyEditors\Views\*.html" "$(ProjectDir)App_Plugins\Shield\Backoffice\PropertyEditors\" /Y
 xcopy "$(solutiondir)Shield.UI\Scripts\*.js" "$(ProjectDir)App_Plugins\Shield\backoffice\js\" /Y
 xcopy "$(solutiondir)Shield.UI\package.manifest" "$(ProjectDir)App_Plugins\Shield\" /Y</PostBuildEvent>
   </PropertyGroup>
