@@ -26,6 +26,7 @@
         {
             public const string BackendAccessUrl = "~/umbraco";
             public const int StatusCode = 404;
+            public const string UnauthorisedUrl = "/404";
         }
     }
 }

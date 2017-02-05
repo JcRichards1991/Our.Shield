@@ -9,7 +9,6 @@ var uglify = require('gulp-uglify');
 var insert = require('gulp-insert');
 
 var jsFiles = [
-    'Initialise/app.js',
     'UmbracoAccess/Js/**.js'
 ];
 
@@ -21,7 +20,7 @@ gulp.task('default', ['buildJS']);
 gulp.task('buildJS', function () {
     gulp.src(jsFiles)
     .pipe(concat('Shield.js'))
-    .pipe(insert.wrap('(function(){ \n', '\n})();'))
+    .pipe(insert.wrap('(function(root){ \n', '\n}(window));'))
     .pipe(gulp.dest(jsOutput))
     .pipe(uglify({ outSourceMap: false }))
     .pipe(rename('Shield.min.js'))

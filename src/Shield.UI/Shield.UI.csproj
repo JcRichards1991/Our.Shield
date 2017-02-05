@@ -263,6 +263,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UmbracoAccess\Controllers\UmbracoAccessTreeController.cs" />
     <Compile Include="UmbracoAccess\Controllers\UmbracoAccessApiController.cs" />
+    <Compile Include="UmbracoAccess\Enums\UnauthorisedUrlType.cs" />
     <Compile Include="UmbracoAccess\Models\ViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -275,7 +276,6 @@
     <Content Include="Dashboards\Settings.html" />
     <Content Include="gulpfile.js" />
     <Content Include="MediaProtect\Js\MediaProtectResources.js" />
-    <Content Include="Initialise\app.js" />
     <Content Include="Scripts\Shield.js" />
     <Content Include="Scripts\Shield.min.js" />
     <Content Include="UmbracoAccess\Js\UmbracoAccessControllers.js" />

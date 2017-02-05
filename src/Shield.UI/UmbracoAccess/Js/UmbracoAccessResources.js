@@ -6,7 +6,7 @@
  * @description
  * Handles the Requests for the Umbraco Access area of the custom section
 */
-angular.module('shield.resources').factory('UmbracoAccessResource', ['$http', function ($http) {
+angular.module('umbraco.resources').factory('ShieldUmbracoAccessResource', ['$http', function ($http) {
     var apiRoot = 'backoffice/Shield/UmbracoAccessApi/';
 
     return {

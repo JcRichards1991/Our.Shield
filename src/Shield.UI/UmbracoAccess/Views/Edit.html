@@ -1,76 +1,71 @@
 ﻿<umb-pane>
     <umb-header name="Umbraco Access"
-                       hide-icon="true"
-                       hide-description="true"
-                       hide-alias="true">
+                hide-icon="true"
+                hide-description="true"
+                hide-alias="true">
         <h1>Umbraco Access</h1>
     </umb-header>
-    <div class="umb-panel-body umb-scrollable row-fluid">
-        <div ng-isolate-app="shield">
-            <form name="umbracoAccessForm" ng-controller="UmbracoAccess.EditController" ng-submit="submitUmbracoAccess(configuration)">
-                <umb-editor-view>
-                    <umb-editor-container>
-                        <div class="form-horizontal">
-                            <div class="umb-pane">
+    <div class="umb-panel-body umb-scrollable row-fluid" ng-controller="Shield.Editors.UmbracoAccess.EditController" ng-init="init()">
+        <umb-editor-view>
+            <form novalidate ng-submit="submitUmbracoAccess()">
+                <umb-editor-container>
+                    <div class="form-horizontal">
+                        <div class="umb-pane">
+                            <umb-property property="property" ng-repeat="property in properties track by $index" ng-show="property.visible">
+                                <umb-editor model="property"></umb-editor>
+                            </umb-property>
 
-                                <umb-control-group label="Backend Office Access URL" description="The URL used to access the backend office (Umbraco)">
-                                    <input type="text" class="umb-editor umb-textstring" ng-model="configuration.backendAccessUrl" required />
-                                </umb-control-group>
-
-                                <umb-control-group label="Status Code" ng-if="configuration.ipAddresses.length" description="The Status code to display to the user when accessing the Backend Access URL from a disallowed IP address">
-                                    <input type="text" class="umb-editor umb-textstring" ng-model="configuration.statusCode" required />
-                                </umb-control-group>
-
-                                <umb-control-group label="IP Addresses" description="The allowed IP Address(es) to access the Backend Office URL">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    IP Address
-                                                </th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="ipAddress in configuration.ipAddresses">
-                                                <td>
-                                                    <umb-control-group label="{{ipAddress.Ip}}">
-                                                    </umb-control-group>
-                                                </td>
-                                                <td>
-                                                    <button>Remove</button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td>
-                                                    <umb-control-group>
-                                                        <input />
-                                                    </umb-control-group>
-                                                </td>
-                                                <td>
-                                                    <button>Add</button>
-                                                </td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </umb-control-group>
-                            </div>
+                            <!--<fieldset>
+                        <umb-control-group label="IP Addresses" description="The allowed IP Address(es) to access the Backend Office URL">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            IP Address
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="ipAddress in configuration.ipAddresses">
+                                        <td>
+                                            <umb-control-group label="{{ipAddress.Ip}}">
+                                            </umb-control-group>
+                                        </td>
+                                        <td>
+                                            <button ng-click="configuration.ipAddresses.splice($index, 1)">Remove</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>
+                                            <umb-control-group>
+                                                <input type="text" ng-model="newIp.Ip" />
+                                            </umb-control-group>
+                                        </td>
+                                        <td>
+                                            <button ng-click="addIp()">Add</button>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </umb-control-group>
+                    </fieldset>-->
                         </div>
-                    </umb-editor-container>
-                    <umb-editor-footer>
-                        <umb-editor-footer-content-right>
-                            <umb-button type="submit"
-                                        label="Update"
-                                        button-style="success"
-                                        shortcut="ctrl+s"
-                                        state="page.saveButtonState">
-                            </umb-button>
-                        </umb-editor-footer-content-right>
-                    </umb-editor-footer>
-                </umb-editor-view>
+                    </div>
+                </umb-editor-container>
+                <umb-editor-footer>
+                    <umb-editor-footer-content-right>
+                        <umb-button type="submit"
+                                    label="Update"
+                                    button-style="success"
+                                    shortcut="ctrl+s"
+                                    state="page.saveButtonState">
+                        </umb-button>
+                    </umb-editor-footer-content-right>
+                </umb-editor-footer>
             </form>
-        </div>
+        </umb-editor-view>
     </div>
 </umb-pane>

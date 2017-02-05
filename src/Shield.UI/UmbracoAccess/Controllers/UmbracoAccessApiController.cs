@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
 using Umbraco.Web.Editors;
@@ -30,7 +31,11 @@ namespace Shield.UI.UmbracoAccess.Controllers
             {
                 BackendAccessUrl = model.backendAccessUrl,
                 StatusCode = model.statusCode,
-                IpAddresses = model.ipAddresses
+                IpAddresses = model.ipAddresses,
+                UnauthorisedUrl = model.unauthorisedUrl,
+                UnauthorisedUrlContentPicker = model.unauthorisedUrlContentPicker,
+                UnauthorisedUrlType = (int)model.unauthorisedUrlType,
+                UnauthorisedUrlXPath = model. unauthorisedUrlXPath
             };
 
             return db.Write(dataModel);
@@ -55,7 +60,15 @@ namespace Shield.UI.UmbracoAccess.Controllers
                     ? GetDefaultBackendAccessUrl() 
                     : dataModel.BackendAccessUrl,
                 statusCode = dataModel.StatusCode == 0 ? Constants.Defaults.StatusCode : dataModel.StatusCode,
-                ipAddresses = dataModel.IpAddresses ?? Enumerable.Empty<object>()
+                unauthorisedUrl = string.IsNullOrEmpty(dataModel.UnauthorisedUrl) ? Constants.Defaults.UnauthorisedUrl : dataModel.UnauthorisedUrl,
+                unauthorisedUrlXPath = string.IsNullOrEmpty(dataModel.UnauthorisedUrlXPath) ? string.Empty : dataModel.UnauthorisedUrlXPath,
+                unauthorisedUrlContentPicker = string.IsNullOrEmpty(dataModel.UnauthorisedUrlContentPicker) ? string.Empty : dataModel.UnauthorisedUrlContentPicker,
+                ipAddresses = dataModel.IpAddresses ?? Enumerable.Empty<string>(),
+                unauthorisedUrlType = dataModel.UnauthorisedUrlType == 0
+                    ? Enums.UnautorisedUrlType.String
+                    : dataModel.UnauthorisedUrlType == 1
+                        ? Enums.UnautorisedUrlType.XPath
+                        : Enums.UnautorisedUrlType.ContentPicker
             };
         }
 
