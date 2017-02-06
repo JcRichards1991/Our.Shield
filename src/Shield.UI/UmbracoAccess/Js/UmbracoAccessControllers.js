@@ -51,7 +51,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
             },
             {
                 label: 'Unauthorised Url Type',
-                description: 'The type of selector for the Unautorised Url',
+                description: 'The type of selector for the Unauthorised Url',
                 view: 'dropdown',
                 alias: 'unauthorisedUrlType',
                 config: {
@@ -110,7 +110,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
             },
             {
                 label: 'Allowed IPs',
-                description: 'The allowed IPs that can access the Backend Access Url. Localost (127.0.0.1) is added by default.',
+                description: 'The allowed IPs that can access the Backend Office Access Url. Localost (127.0.0.1) is added by default.',
                 view: '/App_Plugins/Shield/backoffice/PropertyEditors/allowedIps.html',
                 alias: 'allowedIPs',
                 config: { },
