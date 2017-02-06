@@ -112,72 +112,39 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
             {
                 label: 'Allowed IPs',
                 description: 'The allowed IPs that can access the Backend Access Url. Localost (127.0.0.1) is added by default.',
-                view: '/App_Plugins/Shield/backoffice/PropertyEditors/Views/allowedIps.html',
+                view: '/App_Plugins/Shield/backoffice/PropertyEditors/allowedIps.html',
                 alias: 'allowedIPs',
                 config: { },
                 value: $scope.configuration.ipAddresses,
                 visible: true
             }];
 
-            angular.forEach($scope.properties, function (property, key) {
-                $scope.$watch('properties[' + key + '].value', function (newVal, oldVal) {
-                    switch (property.alias) {
-                        case 'backOfficeAccessUrl':
-                            $scope.configuration.backendAccessUrl = newVal;
-                            break;
+            $scope.unauthorisedUrlType = $scope.properties.filter((property) => property.alias === 'unauthorisedUrlType')[0];
 
-                        case 'statusCode':
-                            $scope.configuration.statusCode = newVal;
-                            break;
+            $scope.$watch('unauthorisedUrlType.value', function (newVal, oldVal) {
+                var unauthorisedUrlProperty = $scope.properties.filter((property) => property.alias === 'unauthorisedUrl')[0],
+                    unauthorisedUrlXPathProperty = $scope.properties.filter((property) => property.alias === 'unauthorisedUrlXPath')[0],
+                    unauthorisedUrlContentPickerProperty = $scope.properties.filter((property) => property.alias === 'unauthorisedUrlContentPicker')[0];
 
-                        case 'unauthorisedUrlType':
-                            $scope.configuration.unauthorisedUrlType = newVal;
-                            angular.forEach($scope.properties, function (item, key) {
-                                switch (newVal) {
-                                    case 0:
-                                        if (item.alias === 'unauthorisedUrlXPath' || item.alias === 'unauthorisedUrlContentPicker') {
-                                            item.visible = false;
-                                        } else if (item.alias === 'unauthorisedUrl') {
-                                            item.visible = true;
-                                        }
-                                        break;
+                switch (newVal) {
+                    case 0:
+                        unauthorisedUrlProperty.visible = true;
+                        unauthorisedUrlXPathProperty.visible = false;
+                        unauthorisedUrlContentPickerProperty.visible = false;
+                        break;
 
-                                    case 1:
-                                        if (item.alias === 'unauthorisedUrl' || item.alias === 'unauthorisedUrlContentPicker') {
-                                            item.visible = false;
-                                        } else if (item.alias === 'unauthorisedUrlXPath') {
-                                            item.visible = true;
-                                        }
-                                        break;
+                    case 1:
+                        unauthorisedUrlProperty.visible = false;
+                        unauthorisedUrlXPathProperty.visible = true;
+                        unauthorisedUrlContentPickerProperty.visible = false;
+                        break;
 
-                                    case 2:
-                                        if (item.alias === 'unauthorisedUrl' || item.alias === 'unauthorisedUrlXPath') {
-                                            item.visible = false;
-                                        } else if (item.alias === 'unauthorisedUrlContentPicker') {
-                                            item.visible = true;
-                                        }
-                                        break;
-                                }
-                            });
-                            break;
-
-                        case 'unauthorisedUrl':
-                            $scope.configuration.unauthorisedUrl = newVal;
-                            break;
-
-                        case 'unauthorisedUrlXPath':
-                            $scope.configuration.unauthorisedUrlXPath = newVal;
-                            break;
-
-                        case 'unauthorisedUrlContentPicker':
-                            $scope.configuration.unauthorisedUrlContentPicker = newVal;
-                            break;
-
-                        case 'allowedIPs':
-                            $scope.configuration.ipAddresses = newVal;
-                            break;
-                    }
-                });
+                    case 2:
+                        unauthorisedUrlProperty.visible = false;
+                        unauthorisedUrlXPathProperty.visible = false;
+                        unauthorisedUrlContentPickerProperty.visible = true;
+                        break;
+                }
             });
 
             $scope.loading--;
@@ -186,6 +153,38 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
 
     $scope.submitUmbracoAccess = function () {
         $scope.loading++;
+
+        angular.forEach($scope.properties, function (property, key) {
+            switch (property.alias) {
+                case 'backOfficeAccessUrl':
+                    $scope.configuration.backendAccessUrl = property.value;
+                    break;
+
+                case 'statusCode':
+                    $scope.configuration.statusCode = property.value;
+                    break;
+
+                case 'unauthorisedUrlType':
+                    $scope.configuration.unauthorisedUrlType = property.value;
+                    break;
+
+                case 'unauthorisedUrl':
+                    $scope.configuration.unauthorisedUrl = property.value;
+                    break;
+
+                case 'unauthorisedUrlXPath':
+                    $scope.configuration.unauthorisedUrlXPath = property.value;
+                    break;
+
+                case 'unauthorisedUrlContentPicker':
+                    $scope.configuration.unauthorisedUrlContentPicker = property.value;
+                    break;
+
+                case 'allowedIPs':
+                    $scope.configuration.ipAddresses = property.value;
+                    break;
+            }
+        });
 
         resource.PostConfiguration($scope.configuration).then(function (response) {
             if (response.data === 'null' || response.data === undefined || response.data === 'false') {
@@ -232,6 +231,7 @@ angular.module('umbraco.resources').factory('ShieldUmbracoAccessResource', ['$ht
  * Handles the Umbraco Access area of the custom section
  */
 angular.module('umbraco').controller('Shield.PropertyEditors.AllowedIpsController', ['$scope', function ($scope) {
+    $scope.ips = [];
 
 }]);
 }(window));
