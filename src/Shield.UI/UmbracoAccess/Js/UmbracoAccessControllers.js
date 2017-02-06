@@ -118,9 +118,9 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 visible: true
             }];
 
-            $scope.unauthorisedUrlType = $scope.properties.filter((property) => property.alias === 'unauthorisedUrlType')[0];
+            $scope.unauthorisedUrlTypeProperty = $scope.properties.filter((property) => property.alias === 'unauthorisedUrlType')[0];
 
-            $scope.$watch('unauthorisedUrlType.value', function (newVal, oldVal) {
+            $scope.$watch('unauthorisedUrlTypeProperty.value', function (newVal, oldVal) {
                 var unauthorisedUrlProperty = $scope.properties.filter((property) => property.alias === 'unauthorisedUrl')[0],
                     unauthorisedUrlXPathProperty = $scope.properties.filter((property) => property.alias === 'unauthorisedUrlXPath')[0],
                     unauthorisedUrlContentPickerProperty = $scope.properties.filter((property) => property.alias === 'unauthorisedUrlContentPicker')[0];
