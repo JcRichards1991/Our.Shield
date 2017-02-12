@@ -1,4 +1,5 @@
-﻿/**
+﻿
+/**
  * @ngdoc resource
  * @name UmbracoAccessResource
  * @function
