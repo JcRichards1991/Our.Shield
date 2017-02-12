@@ -5,7 +5,7 @@ using umbraco.interfaces;
 using Umbraco.Core;
 using Umbraco.Core.Sync;
 
-namespace Shield.UI.Initialse
+namespace Shield.Initialse
 {
     /// <summary>
     /// Shield custom section

@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shield.Umbraco.UI", "Shield.Umbraco.UI\Shield.Umbraco.UI.csproj", "{BC5E53A2-8250-4179-9FCE-AD51D8A8650C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shield.UI", "Shield.UI\Shield.UI.csproj", "{3F7AA491-5E6D-499C-BB1B-EFC5D8E4D598}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shield", "Shield\Shield.csproj", "{3F7AA491-5E6D-499C-BB1B-EFC5D8E4D598}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shield.Operation", "Shield.Operation\Shield.Operation.csproj", "{12EECA5B-BDD3-47C8-951A-34B643908622}"
 EndProject

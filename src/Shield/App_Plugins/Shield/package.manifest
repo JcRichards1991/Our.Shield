@@ -1,0 +1,5 @@
+﻿{
+  "javascript": [
+    "~/App_Plugins/Shield/Backoffice/UmbracoAccess/Js/UmbracoAccess.js"
+  ]
+}

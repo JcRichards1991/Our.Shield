@@ -5,7 +5,7 @@ using System.Web.Mvc;
 using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
 
-namespace Shield.UI.UmbracoAccess.Controllers
+namespace Shield.UmbracoAccess.Controllers
 {
     /// <summary>
     /// Api Controller for the Umbraco Access area of the custom section

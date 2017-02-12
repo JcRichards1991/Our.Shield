@@ -4,7 +4,7 @@ using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.Trees;
 
-namespace Shield.UI.UmbracoAccess.Controllers
+namespace Shield.UmbracoAccess.Controllers
 {
     /// <summary>
     /// The Umbraco Access Tree Controller for the custom section

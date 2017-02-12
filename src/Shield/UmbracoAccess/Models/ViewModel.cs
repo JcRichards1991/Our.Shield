@@ -5,7 +5,7 @@ using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.Trees;
 
-namespace Shield.UI.UmbracoAccess.Models
+namespace Shield.UmbracoAccess.Models
 {
     /// <summary>
     /// Umbraco Access View Model for the edit view.

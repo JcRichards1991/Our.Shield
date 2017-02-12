@@ -7,8 +7,8 @@
     <ProjectGuid>{3F7AA491-5E6D-499C-BB1B-EFC5D8E4D598}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Shield.UI</RootNamespace>
-    <AssemblyName>Shield.UI</AssemblyName>
+    <RootNamespace>Shield</RootNamespace>
+    <AssemblyName>Shield</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -270,19 +270,17 @@
     <None Include="app.config" />
     <None Include="package.json" />
     <None Include="packages.config" />
-    <None Include="package.manifest" />
+    <None Include="App_Plugins\Shield\package.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Dashboards\Settings.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
     <Content Include="gulpfile.js" />
-    <Content Include="MediaProtect\Js\MediaProtectResources.js" />
-    <Content Include="Scripts\Shield.js" />
-    <Content Include="Scripts\Shield.min.js" />
-    <Content Include="PropertyEditors\Js\AllowedIpsController.js" />
-    <Content Include="UmbracoAccess\Js\UmbracoAccessControllers.js" />
-    <Content Include="UmbracoAccess\Js\UmbracoAccessResources.js" />
-    <Content Include="UmbracoAccess\Views\Edit.html" />
-    <Content Include="PropertyEditors\Views\allowedIps.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\MediaProtect\Js\MediaProtectResources.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\PropertyEditors\Js\AllowedIpsController.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\UmbracoAccess\Js\UmbracoAccessControllers.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\UmbracoAccess\Js\UmbracoAccessResources.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\UmbracoAccess\Views\Edit.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\PropertyEditors\Views\allowedIps.html" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shield.Persistance\Shield.Persistance.csproj">

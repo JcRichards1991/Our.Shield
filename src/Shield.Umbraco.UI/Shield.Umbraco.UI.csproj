@@ -301,12 +301,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\js\Shield.js" />
-    <Content Include="App_Plugins\Shield\Backoffice\js\Shield.min.js" />
-    <Content Include="App_Plugins\Shield\Backoffice\PropertyEditors\allowedIps.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\UmbracoAccess\Edit.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\MediaProtect\Js\MediaProtectResources.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\PropertyEditors\Js\AllowedIpsController.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\PropertyEditors\Views\allowedIps.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\UmbracoAccess\Js\UmbracoAccessControllers.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\UmbracoAccess\Js\UmbracoAccessResources.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\UmbracoAccess\Views\Edit.html" />
     <Content Include="packages.config" />
-    <Content Include="App_Plugins\ModelsBuilder\package.manifest" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
@@ -343,9 +344,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.controller.js" />
-    <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.htm" />
-    <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.resource.js" />
     <Content Include="Config\grid.editors.config.js" />
     <Content Include="Config\Lang\cs-CZ.user.xml" />
     <Content Include="Config\Lang\da-DK.user.xml" />
@@ -377,9 +375,9 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shield.UI\Shield.UI.csproj">
+    <ProjectReference Include="..\Shield\Shield.csproj">
       <Project>{3f7aa491-5e6d-499c-bb1b-efc5d8e4d598}</Project>
-      <Name>Shield.UI</Name>
+      <Name>Shield</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
@@ -420,10 +418,7 @@
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <Import Project="..\packages\UmbracoCms.7.5.4\build\UmbracoCms.targets" Condition="Exists('..\packages\UmbracoCms.7.5.4\build\UmbracoCms.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(solutiondir)Shield.UI\UmbracoAccess\Views\*.html" "$(ProjectDir)App_Plugins\Shield\Backoffice\UmbracoAccess\" /Y
-xcopy "$(solutiondir)Shield.UI\PropertyEditors\Views\*.html" "$(ProjectDir)App_Plugins\Shield\Backoffice\PropertyEditors\" /Y
-xcopy "$(solutiondir)Shield.UI\Scripts\*.js" "$(ProjectDir)App_Plugins\Shield\backoffice\js\" /Y
-xcopy "$(solutiondir)Shield.UI\package.manifest" "$(ProjectDir)App_Plugins\Shield\" /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(solutiondir)Shield\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

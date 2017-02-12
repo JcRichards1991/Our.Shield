@@ -1,4 +1,4 @@
-﻿namespace Shield.UI
+﻿namespace Shield
 {
     public class Constants
     {
