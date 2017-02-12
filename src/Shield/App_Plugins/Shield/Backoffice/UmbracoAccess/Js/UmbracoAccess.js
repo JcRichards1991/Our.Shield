@@ -113,7 +113,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
             {
                 label: 'Allowed IPs',
                 description: 'The allowed IPs that can access the Backend Office Access Url. Localost (127.0.0.1) is added by default.',
-                view: '/App_Plugins/Shield/backoffice/PropertyEditors/allowedIps.html',
+                view: '/App_Plugins/Shield/backoffice/PropertyEditors/Views/allowedIps.html',
                 alias: 'allowedIPs',
                 config: { },
                 value: $scope.configuration.ipAddresses,

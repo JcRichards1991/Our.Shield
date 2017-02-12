@@ -1,5 +1,6 @@
 ﻿{
   "javascript": [
-    "~/App_Plugins/Shield/Backoffice/UmbracoAccess/Js/UmbracoAccess.js"
+    "~/App_Plugins/Shield/Backoffice/UmbracoAccess/Js/UmbracoAccess.js",
+    "~/App_Plugins/Shield/Backoffice/PropertyEditors/Js/AllowedIpsController.js"
   ]
 }
