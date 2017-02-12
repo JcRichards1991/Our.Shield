@@ -29,6 +29,6 @@ gulp.task('buildJS', function () {
 function buildscript (jsData) {
     gulp.src(jsData.subFiles)
     .pipe(concat(jsData.name))
-    .pipe(insert.wrap('(function(root){ \n', '\n }(windows));'))
+    .pipe(insert.wrap('(function(root){ \n', '\n }(window));'))
     .pipe(gulp.dest(jsData.output));
 }

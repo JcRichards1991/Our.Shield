@@ -11,7 +11,7 @@ namespace Shield.UmbracoAccess.Controllers
     /// </summary>
     [PluginController(Constants.App.Name)]
     [Tree(Constants.App.Alias, Constants.Tree.UmbracoAccess.Alias, Constants.Tree.UmbracoAccess.Title)]
-    public class ApplicationTreeController : TreeController
+    public class UmbracoAccessTreeController : TreeController
     {
         /// <summary>
         /// Gets the menu for a node by it's Id.

@@ -224,4 +224,4 @@ angular.module('umbraco.resources').factory('ShieldUmbracoAccessResource', ['$ht
         }
     };
 }]);
- }(windows));
+ }(window));
