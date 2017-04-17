@@ -241,12 +241,9 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
-src/Shield.Umbraco.UI/
-src/Shield.Umbraco.UI/App_Data
-!src/Shield.Umbraco.UI/[Pp]roperties/AssemblyInfo.cs
-!src/Shield.Umbraco.UI/packages.config
-!src/Shield.Umbraco.UI/[Uu]mbraco
-!src/Shield.Umbraco.UI/[Uu]mbraco_[Cc]lient
-!src/Shield.Umbraco.UI/App_Data/umbraco.sdf
-!src/Shield.Umbraco.UI/web.config
 *.txt
+src/Shield.TestSite/App_Data/Logs/
+src/Shield.TestSite/App_Data/TEMP/
+src/Shield.TestSite/App_Plugins/
+src/Shield.TestSite/[Uu]mbraco/
+src/Shield.TestSite/[Uu]mbraco_[Cc]lient/
