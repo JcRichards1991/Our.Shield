@@ -1,0 +1,28 @@
+{
+  "name": "shield",
+  "version": "1.0.0",
+  "description": "1. Install node.js : https://nodejs.org/en/download/\r 2. command prompt: \"npm install gulp\" from directory containing gulpfile.js\r 3. command prompt: \"npm link\"",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-insert": "^0.5.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-ruby-sass": "^2.1.1",
+    "gulp-uglify": "^2.1.2",
+    "gulp-util": "^3.0.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JcRichards1991/Shield.git"
+  },
+  "author": "Joshua Richards",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JcRichards1991/Shield/issues"
+  },
+  "homepage": "https://github.com/JcRichards1991/Shield#readme",
+  "devDependencies": {
+    "gulp-ruby-sass": "^2.1.1"
+  }
+}
