@@ -1,53 +1,47 @@
 ﻿<div class="umb-editor" ng-controller="Shield.PropertyEditors.AllowedIpsController">
-    <ng-form>
-        <table class="ips-container">
-            <thead>
-                <tr>
-                    <th ng-show="model.config.showIpv4">
-                        IP Address
-                    </th>
-                    <th ng-show="!model.config.showIpv4">
-                        IP Address
-                    </th>
-                    <th>
-                        Descripton
-                    </th>
-                    <th colspan="2"></th>
-                </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="ip in model.value">
-                <td ng-show="model.config.showIpv4">
-                    <span ng-show="!ip.editMode">{{ip.ipAddress}}</span>
-                    <input type="text" ng-show="ip.editMode" ng-model="ip.ipAddress" />
+    <table class="ips-container">
+        <thead>
+            <tr>
+                <th>
+                    IP Address
+                </th>
+                <th>
+                    Description
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody ng-class="{ model.value.length > 6 ? 'scroll' : '' }">
+        <tr ng-repeat="ip in model.value">
+            <td>
+                <span ng-show="!ip.editMode">{{ip.ipAddress}}</span>
+                <input type="text" ng-show="ip.editMode" ng-model="ip.ipAddress" />
+                <span ng-show="ip.editMode && !ip.valid" class="help-inline">{{ip.errorMsg}}</span>
+            </td>
+            <td>
+                <span ng-show="!ip.editMode">{{ip.description}}</span>
+                <input type="text" ng-show="ip.editMode" ng-model="ip.description" />
+            </td>
+            <td>
+                <span class="btn btn-info" ng-show="!ip.editMode" ng-click="editIp(ip, false)">Edit</span>
+                <span class="btn btn-success" ng-show="ip.editMode" ng-click="editIp({{ip}}, true)">Update</span>
+                <span class="btn btn-danger" ng-click="removeIp(ip)">Remove</span>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>
+                    <input type="text" ng-model="newIp.ipAddress" />
+                    <span ng-show="!newIp.valid" class="help-inline">{{newIp.errorMsg}}</span>
                 </td>
                 <td>
-                    <span ng-show="!ip.editMode">{{ip.description}}</span>
-                    <input type="text" ng-show="ip.editMode" ng-model="ip.description" />
+                    <input type="text" ng-model="newIp.description" />
                 </td>
                 <td>
-                    <span class="btn btn-info" ng-show="!ip.editMode" ng-click="editIp(ip, false)">Edit</span>
-                    <span class="btn btn-success" ng-show="ip.editMode" ng-click="editIp(ip, true)">Update</span>
-                </td>
-                <td>
-                    <span class="btn btn-danger" ng-click="removeIp(ip)">Remove</span>
+                    <span class="btn btn-success" ng-click="addIp()">Add</span>
                 </td>
             </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>
-                        <input type="text" ng-model="newIp.ipAddress" />
-                        <span ng-show="!newIp.valid" class="">{{newIp.errorMsg}}</span>
-                    </td>
-                    <td>
-                        <input type="text" ng-model="newIp.description" />
-                    </td>
-                    <td colspan="2">
-                        <span class="btn btn-success" ng-click="addIp()">Add</span>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </ng-form>
+        </tfoot>
+    </table>
 </div>
