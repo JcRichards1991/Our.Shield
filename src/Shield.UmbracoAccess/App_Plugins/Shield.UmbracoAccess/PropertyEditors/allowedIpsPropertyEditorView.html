@@ -1,0 +1,53 @@
+﻿<div class="umb-editor" ng-controller="Shield.PropertyEditors.AllowedIpsController">
+    <ng-form>
+        <table class="ips-container">
+            <thead>
+                <tr>
+                    <th ng-show="model.config.showIpv4">
+                        IP Address
+                    </th>
+                    <th ng-show="!model.config.showIpv4">
+                        IP Address
+                    </th>
+                    <th>
+                        Descripton
+                    </th>
+                    <th colspan="2"></th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="ip in model.value">
+                <td ng-show="model.config.showIpv4">
+                    <span ng-show="!ip.editMode">{{ip.ipAddress}}</span>
+                    <input type="text" ng-show="ip.editMode" ng-model="ip.ipAddress" />
+                </td>
+                <td>
+                    <span ng-show="!ip.editMode">{{ip.description}}</span>
+                    <input type="text" ng-show="ip.editMode" ng-model="ip.description" />
+                </td>
+                <td>
+                    <span class="btn btn-info" ng-show="!ip.editMode" ng-click="editIp(ip, false)">Edit</span>
+                    <span class="btn btn-success" ng-show="ip.editMode" ng-click="editIp(ip, true)">Update</span>
+                </td>
+                <td>
+                    <span class="btn btn-danger" ng-click="removeIp(ip)">Remove</span>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>
+                        <input type="text" ng-model="newIp.ipAddress" />
+                        <span ng-show="!newIp.valid" class="">{{newIp.errorMsg}}</span>
+                    </td>
+                    <td>
+                        <input type="text" ng-model="newIp.description" />
+                    </td>
+                    <td colspan="2">
+                        <span class="btn btn-success" ng-click="addIp()">Add</span>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </ng-form>
+</div>

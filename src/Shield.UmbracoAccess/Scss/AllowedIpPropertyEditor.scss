@@ -1,0 +1,24 @@
+﻿table.ips-container {
+    min-width: 66.6%;
+
+    th {
+        text-align: left;
+    }
+    tbody {
+        tr:nth-child(even) {
+            background: #e3e3e3;
+
+            td:nth-child(n + 4) {
+                background: #fff;
+            }
+        }
+    }
+    span.btn {
+        float: right;
+
+        &:after {
+            content: '';
+            clear: both;
+        }
+    }
+}

@@ -5,17 +5,21 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shield.Umbraco.UI", "Shield.Umbraco.UI\Shield.Umbraco.UI.csproj", "{BC5E53A2-8250-4179-9FCE-AD51D8A8650C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shield", "Shield\Shield.csproj", "{3F7AA491-5E6D-499C-BB1B-EFC5D8E4D598}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shield.Operation", "Shield.Operation\Shield.Operation.csproj", "{12EECA5B-BDD3-47C8-951A-34B643908622}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{7E2C7447-0892-4C71-A251-70EAED04D8E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shield.UI", "Shield.UI\Shield.UI.csproj", "{3F7AA491-5E6D-499C-BB1B-EFC5D8E4D598}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8BC9BCE4-5CF6-4713-A22E-5D3249022CE1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{2E101591-AF0A-4442-BE43-12DF0DC6ED17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shield.Persistance", "Shield.Persistance\Shield.Persistance.csproj", "{4667329D-3484-46DB-9CA3-C974506D1392}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shield.UmbracoAccess", "Shield.UmbracoAccess\Shield.UmbracoAccess.csproj", "{58FDCE32-1389-4768-882E-281CEEC508CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gulp", "Gulp", "{25F416C7-6C9E-4928-A54D-9D65565E6E4F}"
+	ProjectSection(SolutionItems) = preProject
+		..\gulpfile.js = ..\gulpfile.js
+		..\package.json = ..\package.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shield.Core", "Shield.Core\Shield.Core.csproj", "{69737067-AB31-4C68-9C69-5E6CE00D1AB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,14 +35,14 @@ Global
 		{3F7AA491-5E6D-499C-BB1B-EFC5D8E4D598}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F7AA491-5E6D-499C-BB1B-EFC5D8E4D598}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F7AA491-5E6D-499C-BB1B-EFC5D8E4D598}.Release|Any CPU.Build.0 = Release|Any CPU
-		{12EECA5B-BDD3-47C8-951A-34B643908622}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{12EECA5B-BDD3-47C8-951A-34B643908622}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{12EECA5B-BDD3-47C8-951A-34B643908622}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{12EECA5B-BDD3-47C8-951A-34B643908622}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4667329D-3484-46DB-9CA3-C974506D1392}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4667329D-3484-46DB-9CA3-C974506D1392}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4667329D-3484-46DB-9CA3-C974506D1392}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4667329D-3484-46DB-9CA3-C974506D1392}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58FDCE32-1389-4768-882E-281CEEC508CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58FDCE32-1389-4768-882E-281CEEC508CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58FDCE32-1389-4768-882E-281CEEC508CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58FDCE32-1389-4768-882E-281CEEC508CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69737067-AB31-4C68-9C69-5E6CE00D1AB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69737067-AB31-4C68-9C69-5E6CE00D1AB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69737067-AB31-4C68-9C69-5E6CE00D1AB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69737067-AB31-4C68-9C69-5E6CE00D1AB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,7 +50,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{BC5E53A2-8250-4179-9FCE-AD51D8A8650C} = {8BC9BCE4-5CF6-4713-A22E-5D3249022CE1}
 		{3F7AA491-5E6D-499C-BB1B-EFC5D8E4D598} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
-		{12EECA5B-BDD3-47C8-951A-34B643908622} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
-		{4667329D-3484-46DB-9CA3-C974506D1392} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
+		{58FDCE32-1389-4768-882E-281CEEC508CD} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
+		{69737067-AB31-4C68-9C69-5E6CE00D1AB3} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
 	EndGlobalSection
 EndGlobal

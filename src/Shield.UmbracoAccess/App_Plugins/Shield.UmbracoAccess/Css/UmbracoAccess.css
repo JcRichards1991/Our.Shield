@@ -1,0 +1,13 @@
+table.ips-container {
+  min-width: 66.6%; }
+  table.ips-container th {
+    text-align: left; }
+  table.ips-container tbody tr:nth-child(even) {
+    background: #e3e3e3; }
+    table.ips-container tbody tr:nth-child(even) td:nth-child(n + 4) {
+      background: #fff; }
+  table.ips-container span.btn {
+    float: right; }
+    table.ips-container span.btn:after {
+      content: '';
+      clear: both; }
