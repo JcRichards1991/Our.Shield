@@ -1,22 +1,23 @@
-table.ips-container thead tr, table.ips-container tbody tr, table.ips-container tfoot tr {
-  height: 72px; }
-  table.ips-container thead tr td, table.ips-container thead tr th, table.ips-container tbody tr td, table.ips-container tbody tr th, table.ips-container tfoot tr td, table.ips-container tfoot tr th {
-    max-width: 300px; }
-    table.ips-container thead tr td:last-child, table.ips-container thead tr th:last-child, table.ips-container tbody tr td:last-child, table.ips-container tbody tr th:last-child, table.ips-container tfoot tr td:last-child, table.ips-container tfoot tr th:last-child {
-      text-align: right;
-      min-width: 160px;
-      max-width: 160px; }
-  table.ips-container thead tr td input, table.ips-container tbody tr td input, table.ips-container tfoot tr td input {
-    display: block; }
-  table.ips-container thead tr td span.help-inline, table.ips-container tbody tr td span.help-inline, table.ips-container tfoot tr td span.help-inline {
-    position: absolute;
-    color: #9d261d; }
-  table.ips-container thead tr td:last-child span.btn:last-child, table.ips-container tbody tr td:last-child span.btn:last-child, table.ips-container tfoot tr td:last-child span.btn:last-child {
-    margin-left: 4px; }
-  table.ips-container thead tr th, table.ips-container tbody tr th, table.ips-container tfoot tr th {
-    text-align: left; }
-
-table.ips-container tbody tr {
-  border-top: 1px solid #000; }
-  table.ips-container tbody tr:last-child {
-    border-bottom: 1px solid #000; }
+table.ips-container {
+  width: 75%; }
+  table.ips-container thead tr, table.ips-container tbody tr, table.ips-container tfoot tr {
+    height: 72px; }
+    table.ips-container thead tr td, table.ips-container thead tr th, table.ips-container tbody tr td, table.ips-container tbody tr th, table.ips-container tfoot tr td, table.ips-container tfoot tr th {
+      max-width: 300px; }
+      table.ips-container thead tr td:last-child, table.ips-container thead tr th:last-child, table.ips-container tbody tr td:last-child, table.ips-container tbody tr th:last-child, table.ips-container tfoot tr td:last-child, table.ips-container tfoot tr th:last-child {
+        text-align: right;
+        min-width: 160px;
+        max-width: 160px; }
+    table.ips-container thead tr td input, table.ips-container tbody tr td input, table.ips-container tfoot tr td input {
+      display: block; }
+    table.ips-container thead tr td span.help-inline, table.ips-container tbody tr td span.help-inline, table.ips-container tfoot tr td span.help-inline {
+      position: absolute;
+      color: #9d261d; }
+    table.ips-container thead tr td:last-child span.btn:last-child, table.ips-container tbody tr td:last-child span.btn:last-child, table.ips-container tfoot tr td:last-child span.btn:last-child {
+      margin-left: 4px; }
+    table.ips-container thead tr th, table.ips-container tbody tr th, table.ips-container tfoot tr th {
+      text-align: left; }
+  table.ips-container tbody tr {
+    border-top: 1px solid #000; }
+    table.ips-container tbody tr:last-child {
+      border-bottom: 1px solid #000; }

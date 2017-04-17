@@ -11,7 +11,7 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody ng-class="{ model.value.length > 6 ? 'scroll' : '' }">
+        <tbody>
         <tr ng-repeat="ip in model.value">
             <td>
                 <span ng-show="!ip.editMode">{{ip.ipAddress}}</span>
