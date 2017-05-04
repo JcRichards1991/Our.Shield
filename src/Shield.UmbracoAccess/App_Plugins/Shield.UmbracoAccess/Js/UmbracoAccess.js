@@ -8,7 +8,7 @@
  * @description
  * Edit Controller for the Umbraco Access Edit view
  */
-angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', ['$scope', 'notificationsService', 'ShieldUmbracoAccessResource', function ($scope, notificationsService, resource) {
+angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', ['$scope', 'notificationsService', 'localizationService', 'ShieldUmbracoAccessResource', function ($scope, notificationsService, localizationService, resource) {
     $scope.loading = 0;
     $scope.error = null;
 
@@ -33,24 +33,24 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
             }
 
             $scope.properties = [{
-                label: 'Backend Office Access URL',
-                description: 'The URL used to access the backend office (Umbraco)',
+                label: localizationService.localize('Shield.UmbracoAccess.Properties_BackendAccessUrlLabel'),
+                description: localizationService.localize('Shield.UmbracoAccess.Properties_BackendAccessUrlDescription'),
                 view: 'textbox',
                 alias: 'backOfficeAccessUrl',
                 value: $scope.configuration.backendAccessUrl,
                 visible: true
             },
             {
-                label: 'Status Code',
-                description: 'The Status code to display to the user when accessing the Backend Access URL from a disallowed IP address',
+                label: localizationService.localize('Shield.UmbracoAccess.Properties_StatusCodeLabel'),
+                description: localizationService.localize('Shield.UmbracoAccess.Properties_StatusCodeDescription'),
                 view: 'integer',
                 alias: 'statusCode',
                 value: $scope.configuration.statusCode,
                 visible: true
             },
             {
-                label: 'Unauthorised Url Type',
-                description: 'The type of selector for the Unauthorised Url',
+                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeLabel'),
+                description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeDescription'),
                 view: 'dropdown',
                 alias: 'unauthorisedUrlType',
                 config: {
@@ -72,24 +72,24 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 visible: true
             },
             {
-                label: 'Unautorised Url',
-                description: 'The URL to redirect the user to when from a disallowed IP Address',
+                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel'),
+                description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlDescription'),
                 view: 'textbox',
                 alias: 'unauthorisedUrl',
                 value: $scope.configuration.unauthorisedUrl,
                 visible: $scope.configuration.unauthorisedUrlType === 0
             },
             {
-                label: 'Unautorised Url by XPath',
-                description: 'The XPath to the content node to redirect the user to when from a disallowed IP Address',
+                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlXPathLabel'),
+                description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlXPathDescription'),
                 view: 'textbox',
                 alias: 'unauthorisedUrlXPath',
                 value: $scope.configuration.unauthorisedUrlXPath,
                 visible: $scope.configuration.unauthorisedUrlType === 1
             },
             {
-                label: 'Unauthorised Url by Content Picker',
-                description: 'Select the content node to redirect the user to when from a disallowed IP Address',
+                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlContentPickerLabel'),
+                description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlContentPickerDescription'),
                 view: 'contentpicker',
                 alias: 'unauthorisedUrlContentPicker',
                 config: {
@@ -108,8 +108,8 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 visible: $scope.configuration.unauthorisedUrlType === 2
             },
             {
-                label: 'Allowed IPs',
-                description: 'The allowed IPs that can access the Backend Office Access Url.',
+                label: localizationService.localize('Shield.UmbracoAccess.Properties_AllowedIPsLabel'),
+                description: localizationService.localize('Shield.UmbracoAccess.Properties_AllowedIPsDescription'),
                 view: '/App_Plugins/Shield.UmbracoAccess/PropertyEditors/allowedIpsPropertyEditorView.html',
                 alias: 'allowedIPs',
                 config: {
