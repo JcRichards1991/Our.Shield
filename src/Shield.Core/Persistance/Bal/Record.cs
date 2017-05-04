@@ -1,7 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Umbraco.Core;
 
 namespace Shield.Core.Persistance.Bal
 {

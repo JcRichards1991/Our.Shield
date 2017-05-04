@@ -258,8 +258,6 @@
     <Compile Include="Controllers\UmbracoAccessApiController.cs" />
     <Compile Include="Controllers\UmbracoAccessTreeController.cs" />
     <Compile Include="Enums\UnauthorisedUrlType.cs" />
-    <Compile Include="Http\Handler.cs" />
-    <Compile Include="Http\Model.cs" />
     <Compile Include="Models\ViewModel.cs" />
     <Compile Include="Persistance\Configuration.cs" />
     <Compile Include="Persistance\ConfigurationContext.cs" />
