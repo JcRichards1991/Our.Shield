@@ -11,7 +11,7 @@ namespace Shield.UmbracoAccess.Persistance
         /// <summary>
         /// Gets the Id of the Journal Context.
         /// </summary>
-        public override Guid Id { get { return ConfigurationContext.id; } }
+        public override string Id { get { return ConfigurationContext._Id; } }
 
         /// <summary>
         /// Reads the Journal from the database.

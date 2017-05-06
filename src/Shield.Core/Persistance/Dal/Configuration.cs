@@ -11,37 +11,38 @@ namespace Shield.Core.Persistance.Dal
     /// <summary>
     /// Defines the Configuration table.
     /// </summary>
-    [TableName("ShieldConfiguration")]
-    [PrimaryKey("id", autoIncrement = false)]
-    [ExplicitColumns]
+    [TableName(nameof(Shield) + nameof(Configuration))]
+    [PrimaryKey("Id", autoIncrement = false)]
     internal class Configuration
     {
         /// <summary>
         /// Gets or sets the Id.
         /// </summary>
-        [Column("id")]
-        [PrimaryKeyColumn(AutoIncrement = false)]
-        public Guid Id { get; set; }
+        [PrimaryKeyColumn(Name = "PK_id", AutoIncrement = false)]
+        public string Id { get; set; }
 
         /// <summary>
         /// Gets or sets the Last Modified date.
         /// </summary>
-        [Column("lastmodified")]
         public DateTime LastModified { get; set; }
         
         /// <summary>
         /// Gets or sets the Value (should be json).
         /// </summary>
-        [Column("value")]
         [NullSetting(NullSetting = NullSettings.Null)]
         [SpecialDbType(SpecialDbTypes.NTEXT)]
         public string Value { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool Enable {get; set; }
     }
 
     /// <summary>
     /// Handles Creating/Editing the Configuration table.
     /// </summary>
-    [Migration("1.0.0", 1, "Shield")]
+    [Migration("1.0.0", 1, nameof(Shield))]
     public class ConfigurationMigration : MigrationBase
     {
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;

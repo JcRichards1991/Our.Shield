@@ -5,7 +5,7 @@ namespace Shield.Core.Persistance.Bal
 {
     public abstract class Record
     {
-        public abstract Guid Id { get; }
+        public abstract string Id { get; }
 
         protected virtual T Read<T>() where T : IJsonValues, new()
         {

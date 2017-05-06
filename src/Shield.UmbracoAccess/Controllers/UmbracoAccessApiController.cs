@@ -11,7 +11,7 @@ namespace Shield.UmbracoAccess.Controllers
     /// <summary>
     /// Api Controller for the Umbraco Access area of the custom section
     /// </summary>
-    [PluginController(UI.Constants.App.Name)]
+    [PluginController(Core.Constants.App.Name)]
     public class UmbracoAccessApiController : UmbracoAuthorizedJsonController
     {
         /// <summary>
@@ -36,7 +36,7 @@ namespace Shield.UmbracoAccess.Controllers
                 UnauthorisedUrl = model.unauthorisedUrl,
                 UnauthorisedUrlContentPicker = model.unauthorisedUrlContentPicker,
                 UnauthorisedUrlType = (int)model.unauthorisedUrlType,
-                UnauthorisedUrlXPath = model. unauthorisedUrlXPath
+                UnauthorisedUrlXPath = model.unauthorisedUrlXPath
             };
 
             return db.Write(dataModel);

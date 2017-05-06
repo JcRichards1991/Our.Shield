@@ -14,35 +14,35 @@ namespace Shield.Core.Persistance.Dal
     /// <summary>
     /// Defines the Journal database table.
     /// </summary>
-    [TableName("ShieldJournal")]
+    [TableName(nameof(Shield) + nameof(Journal))]
     [ExplicitColumns]
     internal class Journal
     {
         /// <summary>
         /// Gets or sets the Id.
         /// </summary>
-        [Column("id")]
+        [Column(nameof(Id))]
         [PrimaryKeyColumn(AutoIncrement = true)]
         public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the Configuration Id.
         /// </summary>
-        [Column("configuration")]
+        [Column(nameof(ConfigurationId))]
         [ForeignKey(typeof(Configuration), Name = "FK_Journal_Configuration")]
         [IndexAttribute(IndexTypes.NonClustered, Name = "IX_ConfigurationId")]
-        public Guid ConfigurationId { get; set; }
+        public string ConfigurationId { get; set; }
 
         /// <summary>
         /// Gets or sets the Create Date of the Journal.
         /// </summary>
-        [Column("createdate")]
+        [Column(nameof(CreateDate))]
         public DateTime CreateDate { get; set; }
         
         /// <summary>
         /// Gets or sets the Value (Should be json).
         /// </summary>
-        [Column("value")]
+        [Column(nameof(Value))]
         [NullSetting(NullSetting = NullSettings.Null)]
         public string Value { get; set; }
     }
@@ -50,7 +50,7 @@ namespace Shield.Core.Persistance.Dal
     /// <summary>
     /// Handles Creating/Editing the Journal table.
     /// </summary>
-    [Migration("1.0.0", 2, "Shield")]
+    [Migration("1.0.0", 2, nameof(Shield))]
     public class JournalMigration : MigrationBase
     {
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;

@@ -260,6 +260,9 @@
     <Compile Include="Enums\RedirectRewrite.cs" />
     <Compile Include="Enums\UnauthorisedUrlType.cs" />
     <Compile Include="Models\ViewModel.cs" />
+    <Compile Include="Operation\Configuration.cs" />
+    <Compile Include="Operation\Journal.cs" />
+    <Compile Include="Operation\Operation.cs" />
     <Compile Include="Persistance\Configuration.cs" />
     <Compile Include="Persistance\ConfigurationContext.cs" />
     <Compile Include="Persistance\Journal.cs" />
@@ -271,10 +274,6 @@
     <ProjectReference Include="..\Shield.Core\Shield.Core.csproj">
       <Project>{69737067-ab31-4c68-9c69-5e6ce00d1ab3}</Project>
       <Name>Shield.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Shield.UI\Shield.UI.csproj">
-      <Project>{3f7aa491-5e6d-499c-bb1b-efc5d8e4d598}</Project>
-      <Name>Shield.UI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -293,9 +292,7 @@
     <Content Include="Js\UmbracoAccessControllers.js" />
     <Content Include="Js\UmbracoAccessResources.js" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Operations\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

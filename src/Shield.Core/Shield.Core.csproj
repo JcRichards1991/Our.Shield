@@ -252,21 +252,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Initialise\Application.cs" />
+    <Compile Include="Operation\Configuration.cs" />
+    <Compile Include="Operation\Executor.cs" />
+    <Compile Include="Operation\IOperation.cs" />
+    <Compile Include="Operation\Journal.cs" />
+    <Compile Include="Operation\Operation.cs" />
+    <Compile Include="Operation\Frisk.cs" />
     <Compile Include="Persistance\Bal\ConfigurationContext.cs" />
     <Compile Include="Persistance\Bal\IJsonValues.cs" />
     <Compile Include="Persistance\Bal\JournalContext.cs" />
     <Compile Include="Persistance\Bal\Record.cs" />
     <Compile Include="Persistance\Dal\Configuration.cs" />
     <Compile Include="Persistance\Dal\Journal.cs" />
-    <Compile Include="Persistance\Dal\Register.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="App_Plugins\Shield\package.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Operation\" />
+    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
+    <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using Umbraco.Core;
+using Umbraco.Core.Persistence;
 
 namespace Shield.Core.Persistance.Bal
 {
@@ -22,7 +23,22 @@ namespace Shield.Core.Persistance.Bal
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
 
+            var sql = new Sql();
+
             var record = db.SingleOrDefault<Dal.Configuration>(Id);
+
+            if (record == null)
+            {
+                return new T();
+            }
+            return JsonConvert.DeserializeObject<T>(record.Value);
+        }
+
+        protected T Read<T>(string id) where T : new()
+        {
+            var db = ApplicationContext.Current.DatabaseContext.Database;
+
+            var record = db.SingleOrDefault<Dal.Configuration>(id as object);
 
             if (record == null)
             {
