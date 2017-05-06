@@ -13,9 +13,9 @@ namespace Shield.UmbracoAccess.Models
         public string backendAccessUrl { get; set; }
 
         /// <summary>
-        /// Gets or sets the Status Code
+        /// Gets or sets whether or not to redirect or rewrite.
         /// </summary>
-        public int statusCode { get; set; }
+        public Enums.RedirectRewrite RedirectRewrite { get; set; }
 
         /// <summary>
         /// Gets or sets the Unauthorised URL Type.

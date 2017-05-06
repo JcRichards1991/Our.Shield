@@ -31,7 +31,7 @@ namespace Shield.UmbracoAccess.Controllers
             var dataModel = new Persistance.Configuration
             {
                 BackendAccessUrl = model.backendAccessUrl,
-                StatusCode = model.statusCode,
+                RedirectRewrite = model.RedirectRewrite,
                 IpAddresses = model.ipAddresses,
                 UnauthorisedUrl = model.unauthorisedUrl,
                 UnauthorisedUrlContentPicker = model.unauthorisedUrlContentPicker,
@@ -60,7 +60,7 @@ namespace Shield.UmbracoAccess.Controllers
                 backendAccessUrl = string.IsNullOrEmpty(dataModel.BackendAccessUrl) 
                     ? GetDefaultBackendAccessUrl() 
                     : dataModel.BackendAccessUrl,
-                statusCode = dataModel.StatusCode == 0 ? Constants.Defaults.StatusCode : dataModel.StatusCode,
+                RedirectRewrite = dataModel.RedirectRewrite,
                 unauthorisedUrl = string.IsNullOrEmpty(dataModel.UnauthorisedUrl) ? Constants.Defaults.UnauthorisedUrl : dataModel.UnauthorisedUrl,
                 unauthorisedUrlXPath = string.IsNullOrEmpty(dataModel.UnauthorisedUrlXPath) ? string.Empty : dataModel.UnauthorisedUrlXPath,
                 unauthorisedUrlContentPicker = string.IsNullOrEmpty(dataModel.UnauthorisedUrlContentPicker) ? string.Empty : dataModel.UnauthorisedUrlContentPicker,

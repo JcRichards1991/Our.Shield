@@ -5,18 +5,23 @@
   </creator>
 
   <area alias="Shield.UmbracoAccess">
-    <key alias="UmbracoAccess">Umbraco Access</key>
+    <key alias="HeaderName">Umbraco Access tttttttttt</key>
   </area>
 
   <area alias="Shield.UmbracoAccess.Properties">
     <key alias="BackendAccessUrlLabel">Backend Office Access URL</key>
     <key alias="BackendAccessUrlDescription">The URL used to access the backend office (Umbraco)</key>
     
-    <key alias="StatusCodeLabel">Status Code</key>
-    <key alias="StatusCodeDescription">The Status code to display to the user when accessing the Backend Access URL from a disallowed IP address</key>
+    <key alias="RedirectRewriteLabel">Redirect or Rewrite</key>
+    <key alias="RedirectRewriteDescription">Whether or not to redirect the user or to rewrite.</key>
+    <key alias="RedirectRewriteRedirectText">Redirect</key>
+    <key alias="RedirectRewriteRewriteText">Rewrite</key>
     
     <key alias="UnauthorisedUrlTypeLabel">Unauthorised Url Type</key>
     <key alias="UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url</key>
+    <key alias="UnauthorisedUrlTypeUrlText">Url</key>
+    <key alias="UnauthorisedUrlTypeXPathText">XPath</key>
+    <key alias="UnauthorisedUrlTypeContentPickerText">Content Picker</key>
 
     <key alias="UnauthorisedUrlLabel">Unautorised Url</key>
     <key alias="UnauthorisedUrlDescription">The URL to redirect the user to when from a disallowed IP Address</key>
@@ -29,5 +34,10 @@
 
     <key alias="AllowedIPsLabel">Allowed IPs</key>
     <key alias="AllowedIPsDescription">The allowed IPs that can access the Backend Office Access Url</key>
+  </area>
+
+  <area alias="Shield.UmbracoAccess.ErrorMessages">
+    <key alias="GetConfiguration">Something went wrong getting the configuration, the error has been logged</key>
+    <key alias="UpdateConfiguration">Something went wrong saving the changes. The error has been logged</key>
   </area>
 </language>

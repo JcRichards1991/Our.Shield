@@ -14,18 +14,19 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
     $scope.init = function () {
         $scope.loading++;
 
+        $scope.headerName = localizationService.localize('Shield.UmbracoAccess_HeaderName');
+
         resource.GetConfiguration().then(function success(response) {
             if (response.data === null || angular.isUndefined(response.data)) {
-                notificationsService.error("Something went wrong getting the configuration, the error has been logged");
+                notificationsService.error(localizationService.localize('Shield.UmbracoAccess.ErrorMessages_GetConfiguration'));
                 $scope.configuration = {
                     backendAccessUrl: '~/umbraco',
-                    statusCode: '404',
+                    redirectRewrite: 'Redirect',
                     unauthorisedUrlType: 0,
                     unauthorisedUrl: '/404',
                     unauthorisedUrlXPath: '',
                     unauthorisedUrlContentPicker: '',
-                    ipAddresses: [],
-                    isDirty: false
+                    ipAddresses: []
                 };
             } else {
                 $scope.configuration = response.data;
@@ -40,11 +41,20 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 visible: true
             },
             {
-                label: localizationService.localize('Shield.UmbracoAccess.Properties_StatusCodeLabel'),
-                description: localizationService.localize('Shield.UmbracoAccess.Properties_StatusCodeDescription'),
-                view: 'integer',
-                alias: 'statusCode',
-                value: $scope.configuration.statusCode,
+                label: localizationService.localize('Shield.UmbracoAccess.Properties_RedirectRewriteLabel'),
+                description: localizationService.localize('Shield.UmbracoAccess.Properties_RedirectRewriteDescription'),
+                view: 'dropdown',
+                alias: 'redirectRewrite',
+                config: {
+                    items: [{
+                        value: localizationService.localize('Shield.UmbracoAccess.Properties_RedirectRewriteRedirectText'),
+                        id: 0
+                    }, {
+                        value: localizationService.localize('Shield.UmbracoAccess.Properties_RedirectRewriteRewriteText'),
+                        id: 1
+                    }]
+                },
+                value: $scope.configuration.redirectRewrite,
                 visible: true
             },
             {
@@ -54,15 +64,15 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 alias: 'unauthorisedUrlType',
                 config: {
                     items: [{
-                        value: 'String',
+                        value: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeUrlText'),
                         id: 0
                     },
                     {
-                        value: 'XPath',
+                        value: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeXPathText'),
                         id: 1
                     },
                     {
-                        value: 'Content Picker',
+                        value: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeContentPickerText'),
                         id: 2
                     }],
                     multiple: false
@@ -187,7 +197,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
 
         resource.PostConfiguration($scope.configuration).then(function (response) {
             if (response.data === 'null' || response.data === undefined || response.data === 'false') {
-                notificationsService.error("Something went wrong, the error has been logged");
+                notificationsService.error(localizationService.localize('Shield.UmbracoAccess.ErrorMessages_UpdateConfiguration'));
             } else {
                 notificationsService.success("Successfully updated");
 

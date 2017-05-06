@@ -19,7 +19,7 @@ namespace Shield.UmbracoAccess.Persistance
         /// Gets or sets the Status Code.
         /// </summary>
         [JsonProperty]
-        public int StatusCode { get; set; }
+        public Enums.RedirectRewrite RedirectRewrite { get; set; }
 
         /// <summary>
         /// Gets or set the Ip Addresses.
