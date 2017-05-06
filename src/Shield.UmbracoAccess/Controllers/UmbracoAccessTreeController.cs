@@ -8,8 +8,8 @@ namespace Shield.UmbracoAccess.Controllers
     /// <summary>
     /// The Umbraco Access Tree Controller for the custom section
     /// </summary>
-    [PluginController(UI.Constants.App.Name)]
-    [Tree(UI.Constants.App.Alias, Constants.Tree.Alias, Constants.Tree.Title)]
+    [PluginController(Core.Constants.App.Name)]
+    [Tree(Core.Constants.App.Alias, Constants.Tree.Alias, Constants.Tree.Title)]
     public class UmbracoAccessTreeController : TreeController
     {
         /// <summary>

@@ -7,12 +7,12 @@ namespace Shield.UmbracoAccess.Persistance
     /// </summary>
     public class ConfigurationContext : Core.Persistance.Bal.ConfigurationContext
     {
-        internal static readonly Guid id = new Guid("fa3bfb2e-b98d-40c3-ab2c-fa33b27f89ba");
+        internal static readonly string _Id = nameof(Shield.UmbracoAccess);
 
         /// <summary>
         /// The Id of the Configuration Context.
         /// </summary>
-        public override Guid Id { get { return id; } }
+        public override string Id { get { return _Id; } }
 
         /// <summary>
         /// Reads the Configuration from the database.
@@ -38,6 +38,5 @@ namespace Shield.UmbracoAccess.Persistance
         {
             return Write<Configuration>(model);
         }
-
     }
 }
