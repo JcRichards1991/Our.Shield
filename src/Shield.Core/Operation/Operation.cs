@@ -62,5 +62,10 @@ namespace Shield.Core.Operation
         {
             return Executor.Instance.Save(this.Id, enable, config);
         }
+
+        public Configuration Read()
+        {
+            return Executor.Instance.Read(this.Id);
+        }
     }
 }

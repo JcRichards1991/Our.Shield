@@ -50,5 +50,6 @@ namespace Shield.UmbracoAccess.Operation
         /// Gets or sets the Unauthorised URL.
         /// </summary>
         [JsonProperty]
-        public string UnauthorisedUrl { get; set; }    }
+        public string UnauthorisedUrl { get; set; }
+    }
 }

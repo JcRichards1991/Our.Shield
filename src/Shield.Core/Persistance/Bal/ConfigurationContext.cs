@@ -8,68 +8,62 @@ namespace Shield.Core.Persistance.Bal
     /// <summary>
     /// The Configuration Context.
     /// </summary>
-    public abstract class ConfigurationContext : Record
+    public static class ConfigurationContext
     {
         /// <summary>
         /// Reads a Configuration from the database.
         /// </summary>
-        /// <typeparam name="T">
-        /// The type of Configuration to read.
-        /// </typeparam>
+        /// <param name="id">
+        /// The id of the configuration.
+        /// </param>
+        /// <param name="type">
+        /// The type of configuration to return;
+        /// </param>
         /// <returns>
         /// The Configuration as the desired type.
         /// </returns>
-        protected override T Read<T>()
+        public static Operation.Configuration Read(string id, Type type)
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
+            var record = db.SingleOrDefault<Dal.Configuration>((object)id);
 
-            var sql = new Sql();
-
-            var record = db.SingleOrDefault<Dal.Configuration>(Id);
-
-            if (record == null)
+            if (string.IsNullOrEmpty(record?.Value))
             {
-                return new T();
+                return null;
             }
-            return JsonConvert.DeserializeObject<T>(record.Value);
-        }
 
-        protected T Read<T>(string id) where T : new()
-        {
-            var db = ApplicationContext.Current.DatabaseContext.Database;
+            var config = (Operation.Configuration)JsonConvert.DeserializeObject(record.Value, type);
 
-            var record = db.SingleOrDefault<Dal.Configuration>(id as object);
-
-            if (record == null)
-            {
-                return new T();
-            }
-            return JsonConvert.DeserializeObject<T>(record.Value);
+            return config;
         }
 
         /// <summary>
         /// Writes a Configuration to the database.
         /// </summary>
-        /// <typeparam name="T">
-        /// The type of Configuration to write.
-        /// </typeparam>
-        /// <param name="model">
-        /// The Model containing the Configuration settings to be serialized.
+        /// <param name="id">
+        /// The id of Configuration to write.
+        /// </param>
+        /// <param name="enable">
+        /// Whether or not the configuration is enabled.
+        /// </param>
+        /// <param name="config">
+        /// The configuration to write to the database
         /// </param>
         /// <returns>
         /// If successfull, returns true, otherwise false.
         /// </returns>
-        protected override bool Write<T>(T model)
+        public static bool Write(string id, bool enable, Operation.Configuration config)
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
-            var record = new Dal.Configuration()
+            var record = new Dal.Configuration
             {
-                Id = Id,
+                Id = id,
                 LastModified = DateTime.UtcNow,
-                Value = JsonConvert.SerializeObject(model)
+                Enable = enable,
+                Value = JsonConvert.SerializeObject(config)
             };
 
-            if (db.Exists<Dal.Configuration>(Id))
+            if (db.Exists<Dal.Configuration>(id))
             {
                 db.Update(record);
             }
@@ -77,6 +71,7 @@ namespace Shield.Core.Persistance.Bal
             {
                 db.Insert(record);
             }
+
             return true;
         }
     }

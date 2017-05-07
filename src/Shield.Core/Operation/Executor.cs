@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Umbraco.Core;
 
 namespace Shield.Core.Operation
@@ -37,7 +34,7 @@ namespace Shield.Core.Operation
                 if(o.Init())
                 {
                     Register(o);
-                    var record = db.SingleOrDefault<Persistance.Dal.Configuration>((object) o.Id);
+                    var record = db.SingleOrDefault<Persistance.Dal.Configuration>((object)o.Id);
 
                     if (record != null && record.Enable)
                     {
@@ -50,24 +47,13 @@ namespace Shield.Core.Operation
 
         public bool Save(string id, bool enable, Configuration config)
         {
-            var db = ApplicationContext.Current.DatabaseContext.Database;
-            var record = new Persistance.Dal.Configuration()
-            {
-                Id = id,
-                LastModified = DateTime.UtcNow,
-                Enable = enable,
-                Value = JsonConvert.SerializeObject(config)
-            };
+            return Persistance.Bal.ConfigurationContext.Write(id, enable, config);
+        }
 
-            if (db.Exists<Persistance.Dal.Configuration>(id))
-            {
-                db.Update(record);
-            }
-            else
-            {
-                db.Insert(record);
-            }
-            return true;
+        public Configuration Read(string id)
+        {
+            return Persistance.Bal.ConfigurationContext.Read(id,
+                    Operation<Configuration>.Register[id].GenericTypeArguments[0].GetType());
         }
 
         public bool Execute(string id, Configuration config = null)
@@ -81,14 +67,8 @@ namespace Shield.Core.Operation
 
             if (config == null)
             {
-                var db = ApplicationContext.Current.DatabaseContext.Database;
-                var record = db.SingleOrDefault<Persistance.Dal.Configuration>((object) id);
-                if (record == null)
-                {
-                    return false;
-                }
-                config = (Configuration) JsonConvert.DeserializeObject(record.Value, 
-                    Operation<Configuration>.Register[id].GenericTypeArguments[0].GetType());
+                config = Read(id);
+
                 if (config == null)
                 {
                     return false;

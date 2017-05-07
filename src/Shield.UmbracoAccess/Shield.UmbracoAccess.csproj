@@ -259,14 +259,9 @@
     <Compile Include="Controllers\UmbracoAccessTreeController.cs" />
     <Compile Include="Enums\RedirectRewrite.cs" />
     <Compile Include="Enums\UnauthorisedUrlType.cs" />
-    <Compile Include="Models\ViewModel.cs" />
     <Compile Include="Operation\Configuration.cs" />
     <Compile Include="Operation\Journal.cs" />
     <Compile Include="Operation\Operation.cs" />
-    <Compile Include="Persistance\Configuration.cs" />
-    <Compile Include="Persistance\ConfigurationContext.cs" />
-    <Compile Include="Persistance\Journal.cs" />
-    <Compile Include="Persistance\JournalContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyEditors\IpAddress\Models\IpAddress.cs" />
   </ItemGroup>

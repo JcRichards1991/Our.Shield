@@ -47,24 +47,28 @@ namespace Shield.Core.Operation
                         IFrisk derivedObject = null;
                         if (type.ContainsGenericParameters)
                         {
-                            var cn = type.GetTypeInfo().GenericTypeParameters[0].Namespace + "." + type.GetTypeInfo().GenericTypeParameters[0].Name;
-                            var ci = Activator.CreateInstance(currAssembly.FullName, cn);
+                            //TEST CODE - Not needed currently, keep for now
 
-                            var pn = type.GetTypeInfo().Namespace + "." + type.GetTypeInfo().Name;
 
-                            var t = type.GetGenericTypeDefinition().Name;
-                            var t1 = type.GetTypeInfo().GenericTypeParameters;
-                            Type tt = Type.GetType(pn).MakeGenericType(ci.GetType());
+                            //var cn = type.GetTypeInfo().GenericTypeParameters[0].Namespace + "." + type.GetTypeInfo().GenericTypeParameters[0].Name;
+                            //var ci = Activator.CreateInstance(currAssembly.FullName, cn);
 
-                            var f = Activator.CreateInstance(tt);
+                            //var pn = type.GetTypeInfo().Namespace + "." + type.GetTypeInfo().Name;
+
+                            //var t = type.GetGenericTypeDefinition().Name;
+                            //var t1 = type.GetTypeInfo().GenericTypeParameters;
+                            //Type tt = Type.GetType(pn).MakeGenericType(ci.GetType());
+
+                            //var f = Activator.CreateInstance(tt);
                                
 
-                            derivedObject = System.Activator.CreateInstance(type.GetGenericTypeDefinition().MakeGenericType(type.GetTypeInfo().GenericTypeParameters)) as IFrisk;
+                            //derivedObject = System.Activator.CreateInstance(type.GetGenericTypeDefinition().MakeGenericType(type.GetTypeInfo().GenericTypeParameters)) as IFrisk;
                         }
                         else
                         {
                             derivedObject = System.Activator.CreateInstance(type) as IFrisk;
                         }
+
                         if (derivedObject != null)
                         {
                             installed[interest.FullName].Add(derivedObject.Id, derivedObject.GetType());

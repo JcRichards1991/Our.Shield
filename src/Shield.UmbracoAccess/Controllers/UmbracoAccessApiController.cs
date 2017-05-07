@@ -14,9 +14,20 @@ namespace Shield.UmbracoAccess.Controllers
     [PluginController(Core.Constants.App.Name)]
     public class UmbracoAccessApiController : UmbracoAuthorizedJsonController
     {
+        private static Operation.Operation Operation
+        {
+            get
+            {
+                return new Operation.Operation();
+            }
+        }
+
         /// <summary>
         /// Api Endpoint for Posting the Umbraco Access Configuration.
         /// </summary>
+        /// <param name="enable">
+        /// Whether or not Umbraco Access is enabled
+        /// </param>
         /// <param name="model">
         /// The new configuration.
         /// </param>
@@ -24,22 +35,9 @@ namespace Shield.UmbracoAccess.Controllers
         /// Whether was successfully updated.
         /// </returns>
         [HttpPost]
-        public bool PostConfiguration(Models.ViewModel model)
+        public bool PostConfiguration(bool enable, Operation.Configuration model)
         {
-            var db = new Persistance.ConfigurationContext();
-
-            var dataModel = new Persistance.Configuration
-            {
-                BackendAccessUrl = model.backendAccessUrl,
-                RedirectRewrite = model.RedirectRewrite,
-                IpAddresses = model.ipAddresses,
-                UnauthorisedUrl = model.unauthorisedUrl,
-                UnauthorisedUrlContentPicker = model.unauthorisedUrlContentPicker,
-                UnauthorisedUrlType = (int)model.unauthorisedUrlType,
-                UnauthorisedUrlXPath = model.unauthorisedUrlXPath
-            };
-
-            return db.Write(dataModel);
+            return Operation.Write(enable, model);
         }
 
         /// <summary>
@@ -49,28 +47,26 @@ namespace Shield.UmbracoAccess.Controllers
         /// The configuration for the Umbraco Access area.
         /// </returns>
         [HttpGet]
-        public Models.ViewModel GetConfiguration()
+        public JsonResult GetConfiguration()
         {
-            var db = new Persistance.ConfigurationContext();
+            var configuration = Operation.Read() as Operation.Configuration;
 
-            var dataModel = db.Read();
-
-            return new Models.ViewModel
+            if(configuration == null)
             {
-                backendAccessUrl = string.IsNullOrEmpty(dataModel.BackendAccessUrl) 
-                    ? GetDefaultBackendAccessUrl() 
-                    : dataModel.BackendAccessUrl,
-                RedirectRewrite = dataModel.RedirectRewrite,
-                unauthorisedUrl = string.IsNullOrEmpty(dataModel.UnauthorisedUrl) ? Constants.Defaults.UnauthorisedUrl : dataModel.UnauthorisedUrl,
-                unauthorisedUrlXPath = string.IsNullOrEmpty(dataModel.UnauthorisedUrlXPath) ? string.Empty : dataModel.UnauthorisedUrlXPath,
-                unauthorisedUrlContentPicker = string.IsNullOrEmpty(dataModel.UnauthorisedUrlContentPicker) ? string.Empty : dataModel.UnauthorisedUrlContentPicker,
-                ipAddresses = dataModel.IpAddresses ?? new PropertyEditors.IpAddress.Models.IpAddress[0],
-                unauthorisedUrlType = dataModel.UnauthorisedUrlType == 0
-                    ? Enums.UnautorisedUrlType.String
-                    : dataModel.UnauthorisedUrlType == 1
-                        ? Enums.UnautorisedUrlType.XPath
-                        : Enums.UnautorisedUrlType.ContentPicker
+                configuration = new Operation.Configuration
+                {
+                    BackendAccessUrl = GetDefaultBackendAccessUrl(),
+                    RedirectRewrite = (int)Enums.RedirectRewrite.Redirect,
+                    UnauthorisedUrlType = (int)Enums.UnautorisedUrlType.String
+                };
+            }
+
+            var response = new JsonResult
+            {
+                Data = configuration
             };
+
+            return response;
         }
 
         private string GetDefaultBackendAccessUrl()

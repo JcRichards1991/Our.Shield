@@ -10,7 +10,7 @@ namespace Shield.Core.Persistance.Bal
     /// <summary>
     /// The Journal context
     /// </summary>
-    public abstract class JournalContext : Record
+    public abstract class JournalContext
     {
         /// <summary>
         /// Reads a Journal from the database.
@@ -27,23 +27,23 @@ namespace Shield.Core.Persistance.Bal
         /// <returns>
         /// The Journal as the desired type.
         /// </returns>
-        protected override IEnumerable<T> Read<T>(int page, int itemsPerPage)
+        protected IEnumerable<Operation.Journal> Read(string id, int page, int itemsPerPage, Type type)
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
 
             var sql = new Sql()
                .Select("*")
                .From()
-               .Where("configuration = @0", Id)
+               .Where("configuration = @0", id)
                .OrderByDescending("createdate");
 
             var records = db.Page<Dal.Journal>(page, itemsPerPage, sql);
             if (records == null || records.Items == null || records.Items.Count == 0)
             {
-                return Enumerable.Empty<T>();
+                return Enumerable.Empty<Operation.Journal>();
             }
 
-            return records.Items.Select(x => JsonConvert.DeserializeObject<T>(x.Value));
+            return (IEnumerable<Operation.Journal>)records.Items.Select(x => JsonConvert.DeserializeObject(x.Value, type));
         }
 
         /// <summary>
@@ -58,14 +58,14 @@ namespace Shield.Core.Persistance.Bal
         /// <returns>
         /// If successful, returns true; otherwise false.
         /// </returns>
-        protected override bool Write<T>(T values)
+        protected bool Write(string id, Operation.Journal journal)
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
             var record = new Dal.Journal()
             {
-                ConfigurationId = Id,
+                ConfigurationId = id,
                 CreateDate = DateTime.UtcNow,
-                Value = JsonConvert.SerializeObject(values)
+                Value = JsonConvert.SerializeObject(journal)
             };
 
             db.Insert(record);

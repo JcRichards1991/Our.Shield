@@ -21,7 +21,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 notificationsService.error(localizationService.localize('Shield.UmbracoAccess.ErrorMessages_GetConfiguration'));
                 $scope.configuration = {
                     backendAccessUrl: '~/umbraco',
-                    redirectRewrite: 'Redirect',
+                    redirectRewrite: '0',
                     unauthorisedUrlType: 0,
                     unauthorisedUrl: '/404',
                     unauthorisedUrlXPath: '',
