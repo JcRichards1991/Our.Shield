@@ -38,7 +38,7 @@ namespace Shield.Core.Operation
 
                     if (record != null && record.Enable)
                     {
-                        var sc = (Configuration) JsonConvert.DeserializeObject(record.Value, op.Value.GenericTypeArguments[0].GetType());
+                        var sc = (Configuration) JsonConvert.DeserializeObject(record.Value, op.Value.BaseType.GenericTypeArguments[0]);
                         o.Execute(sc);
                     }
                 }  
@@ -53,7 +53,7 @@ namespace Shield.Core.Operation
         public Configuration Read(string id)
         {
             return Persistance.Bal.ConfigurationContext.Read(id,
-                    Operation<Configuration>.Register[id].GenericTypeArguments[0].GetType());
+                    Operation<Configuration>.Register[id].BaseType.GenericTypeArguments[0]);
         }
 
         public bool Execute(string id, Configuration config = null)

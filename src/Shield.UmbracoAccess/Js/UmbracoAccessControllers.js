@@ -17,19 +17,19 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
         $scope.headerName = localizationService.localize('Shield.UmbracoAccess_HeaderName');
 
         resource.GetConfiguration().then(function success(response) {
-            if (response.data === null || angular.isUndefined(response.data)) {
+            if (response.data && response.data.Data) {
+                $scope.configuration = response.data.Data;
+            } else {
                 notificationsService.error(localizationService.localize('Shield.UmbracoAccess.ErrorMessages_GetConfiguration'));
                 $scope.configuration = {
-                    backendAccessUrl: '~/umbraco',
-                    redirectRewrite: '0',
-                    unauthorisedUrlType: 0,
-                    unauthorisedUrl: '/404',
-                    unauthorisedUrlXPath: '',
-                    unauthorisedUrlContentPicker: '',
-                    ipAddresses: []
+                    BackendAccessUrl: '~/umbraco',
+                    RedirectRewrite: '0',
+                    UnauthorisedUrlType: 0,
+                    UnauthorisedUrl: '/404',
+                    UnauthorisedUrlXPath: '',
+                    UnauthorisedUrlContentPicker: '',
+                    IpAddresses: []
                 };
-            } else {
-                $scope.configuration = response.data;
             }
 
             $scope.properties = [{
@@ -37,7 +37,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 description: localizationService.localize('Shield.UmbracoAccess.Properties_BackendAccessUrlDescription'),
                 view: 'textbox',
                 alias: 'backOfficeAccessUrl',
-                value: $scope.configuration.backendAccessUrl,
+                value: $scope.configuration.BackendAccessUrl,
                 visible: true
             },
             {
@@ -54,7 +54,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                         id: 1
                     }]
                 },
-                value: $scope.configuration.redirectRewrite,
+                value: $scope.configuration.RedirectRewrite,
                 visible: true
             },
             {
@@ -77,7 +77,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                     }],
                     multiple: false
                 },
-                value: $scope.configuration.unauthorisedUrlType,
+                value: $scope.configuration.UnauthorisedUrlType,
                 visible: true
             },
             {
@@ -85,16 +85,16 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlDescription'),
                 view: 'textbox',
                 alias: 'unauthorisedUrl',
-                value: $scope.configuration.unauthorisedUrl,
-                visible: $scope.configuration.unauthorisedUrlType === 0
+                value: $scope.configuration.UnauthorisedUrl,
+                visible: $scope.configuration.UnauthorisedUrlType === 0
             },
             {
                 label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlXPathLabel'),
                 description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlXPathDescription'),
                 view: 'textbox',
                 alias: 'unauthorisedUrlXPath',
-                value: $scope.configuration.unauthorisedUrlXPath,
-                visible: $scope.configuration.unauthorisedUrlType === 1
+                value: $scope.configuration.UnauthorisedUrlXPath,
+                visible: $scope.configuration.UnauthorisedUrlType === 1
             },
             {
                 label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlContentPickerLabel'),
@@ -113,8 +113,8 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                     minNumber: 0,
                     maxNumber: 1
                 },
-                value: $scope.configuration.unauthorisedUrlContentPicker,
-                visible: $scope.configuration.unauthorisedUrlType === 2
+                value: $scope.configuration.UnauthorisedUrlContentPicker,
+                visible: $scope.configuration.UnauthorisedUrlType === 2
             },
             {
                 label: localizationService.localize('Shield.UmbracoAccess.Properties_AllowedIPsLabel'),
@@ -124,7 +124,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 config: {
                     showIpv4: true
                 },
-                value: $scope.configuration.ipAddresses,
+                value: $scope.configuration.IpAddresses,
                 visible: true
             }];
 
@@ -166,45 +166,45 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
         angular.forEach($scope.properties, function (property, key) {
             switch (property.alias) {
                 case 'backOfficeAccessUrl':
-                    $scope.configuration.backendAccessUrl = property.value;
+                    $scope.configuration.BackendAccessUrl = property.value;
                     break;
 
-                case 'statusCode':
-                    $scope.configuration.statusCode = property.value;
+                case 'redirectRewrite':
+                    $scope.configuration.RedirectRewrite = property.value;
                     break;
 
                 case 'unauthorisedUrlType':
-                    $scope.configuration.unauthorisedUrlType = property.value;
+                    $scope.configuration.UnauthorisedUrlType = property.value;
                     break;
 
                 case 'unauthorisedUrl':
-                    $scope.configuration.unauthorisedUrl = property.value;
+                    $scope.configuration.UnauthorisedUrl = property.value;
                     break;
 
                 case 'unauthorisedUrlXPath':
-                    $scope.configuration.unauthorisedUrlXPath = property.value;
+                    $scope.configuration.UnauthorisedUrlXPath = property.value;
                     break;
 
                 case 'unauthorisedUrlContentPicker':
-                    $scope.configuration.unauthorisedUrlContentPicker = property.value;
+                    $scope.configuration.UnauthorisedUrlContentPicker = property.value;
                     break;
 
                 case 'allowedIPs':
-                    $scope.configuration.ipAddresses = property.value;
+                    $scope.configuration.IpAddresses = property.value;
                     break;
             }
         });
 
         resource.PostConfiguration($scope.configuration).then(function (response) {
-            if (response.data === 'null' || response.data === undefined || response.data === 'false') {
-                notificationsService.error(localizationService.localize('Shield.UmbracoAccess.ErrorMessages_UpdateConfiguration'));
-            } else {
+            if (response.data) {
                 notificationsService.success("Successfully updated");
 
                 $scope.defaultConfiguration = {
                     backendAccessUrl: $scope.configuration.backendAccessUrl
                 }
                 $scope.displayUmbracoAccessWarningMessage = false;
+            } else {
+                notificationsService.error(localizationService.localize('Shield.UmbracoAccess.ErrorMessages_UpdateConfiguration'));
             }
 
             $scope.loading--;

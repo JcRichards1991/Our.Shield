@@ -252,8 +252,13 @@
       <HintPath>..\packages\UrlRewritingNet.2.0.7\lib\UrlRewritingNet.UrlRewriter.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationSettings.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\UmbracoAccessApiController.cs" />
     <Compile Include="Controllers\UmbracoAccessTreeController.cs" />
@@ -261,6 +266,7 @@
     <Compile Include="Enums\UnauthorisedUrlType.cs" />
     <Compile Include="Operation\Configuration.cs" />
     <Compile Include="Operation\Journal.cs" />
+    <Compile Include="Operation\Module.cs" />
     <Compile Include="Operation\Operation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyEditors\IpAddress\Models\IpAddress.cs" />

@@ -14,7 +14,6 @@ namespace Shield.Core.Operation
         /// </summary>
         public abstract string Id { get; }
 
-
         public virtual bool Init()
         {
             return true;

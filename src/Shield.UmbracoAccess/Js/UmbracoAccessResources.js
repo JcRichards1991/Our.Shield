@@ -12,6 +12,10 @@ angular.module('umbraco.resources').factory('ShieldUmbracoAccessResource', ['$ht
 
     return {
         PostConfiguration: function (data) {
+            //return $http.post(apiRoot + 'PostConfiguration', {
+            //    enable: true,
+            //    model: angular.toJson(data)
+            //});
             return $http.post(apiRoot + 'PostConfiguration', angular.toJson(data));
         },
         GetConfiguration: function () {

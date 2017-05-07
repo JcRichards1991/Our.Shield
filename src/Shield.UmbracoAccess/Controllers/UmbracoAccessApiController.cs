@@ -14,14 +14,6 @@ namespace Shield.UmbracoAccess.Controllers
     [PluginController(Core.Constants.App.Name)]
     public class UmbracoAccessApiController : UmbracoAuthorizedJsonController
     {
-        private static Operation.Operation Operation
-        {
-            get
-            {
-                return new Operation.Operation();
-            }
-        }
-
         /// <summary>
         /// Api Endpoint for Posting the Umbraco Access Configuration.
         /// </summary>
@@ -37,8 +29,15 @@ namespace Shield.UmbracoAccess.Controllers
         [HttpPost]
         public bool PostConfiguration(bool enable, Operation.Configuration model)
         {
-            return Operation.Write(enable, model);
+            return new Operation.Operation().Write(enable, model);
         }
+
+        [HttpPost]
+        public bool PostConfiguration(Operation.Configuration model)
+        {
+            return new Operation.Operation().Write(true, model);
+        }
+
 
         /// <summary>
         /// Api Endpoint for Getting the Umbraco Access Configuration.
@@ -49,15 +48,16 @@ namespace Shield.UmbracoAccess.Controllers
         [HttpGet]
         public JsonResult GetConfiguration()
         {
-            var configuration = Operation.Read() as Operation.Configuration;
+            var configuration = new Operation.Operation().Read() as Operation.Configuration;
 
             if(configuration == null)
             {
                 configuration = new Operation.Configuration
                 {
-                    BackendAccessUrl = GetDefaultBackendAccessUrl(),
+                    BackendAccessUrl = ApplicationSettings.GetUmbracoPath(),
                     RedirectRewrite = (int)Enums.RedirectRewrite.Redirect,
-                    UnauthorisedUrlType = (int)Enums.UnautorisedUrlType.String
+                    UnauthorisedUrlType = (int)Enums.UnautorisedUrlType.String,
+                    IpAddresses = new PropertyEditors.IpAddress.Models.IpAddress[0]
                 };
             }
 
@@ -67,13 +67,6 @@ namespace Shield.UmbracoAccess.Controllers
             };
 
             return response;
-        }
-
-        private string GetDefaultBackendAccessUrl()
-        {
-            if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["umbracoPath"]))
-                return Constants.Defaults.BackendAccessUrl;
-            return ConfigurationManager.AppSettings["umbracoPath"];
         }
     }
 }
