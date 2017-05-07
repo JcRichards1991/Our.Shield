@@ -33,13 +33,13 @@ namespace Shield.UmbracoAccess.ViewModels
         /// Gets or sets the Unauthorised URL Type.
         /// </summary>
         [JsonProperty("unauthorisedUrlType")]
-        public int UnauthorisedUrlType { get; set; }
+        public Enums.UnautorisedUrlType UnauthorisedUrlType { get; set; }
 
         /// <summary>
         /// Gets or sets the Unauthorised URL by Content Picker.
         /// </summary>
         [JsonProperty("unauthorisedUrlContentPicker")]
-        public string UnauthorisedUrlContentPicker { get; set; }
+        public int UnauthorisedUrlContentPicker { get; set; }
 
         /// <summary>
         /// Gets or sets the Unauthorised URL.

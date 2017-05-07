@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
 using System.Web.Mvc;
 using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
@@ -45,7 +43,7 @@ namespace Shield.UmbracoAccess.Controllers
         /// The configuration for the Umbraco Access area.
         /// </returns>
         [HttpGet]
-        public ViewModels.Configuration GetConfiguration()
+        public System.Web.Http.Results.JsonResult<ViewModels.Configuration> GetConfiguration()
         {
             var configuration = new Operation.Operation().ReadConfiguration() as ViewModels.Configuration;
 
@@ -60,7 +58,7 @@ namespace Shield.UmbracoAccess.Controllers
                 };
             }
 
-            return configuration;
+            return Json(configuration);
         }
 
         /// <summary>

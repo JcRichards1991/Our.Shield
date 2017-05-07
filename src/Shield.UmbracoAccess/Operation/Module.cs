@@ -1,6 +1,8 @@
 ﻿using System.Web;
 using System;
+using System.Linq;
 using System.Threading;
+using Umbraco.Web;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Shield.UmbracoAccess.Operation.Module), nameof(Shield.UmbracoAccess.Operation.Module.Register))]
 namespace Shield.UmbracoAccess.Operation
@@ -66,6 +68,11 @@ namespace Shield.UmbracoAccess.Operation
             HttpContext context = application.Context;
             string filePath = context.Request.FilePath;
 
+            if(config == null || !config.Enable)
+            {
+                return;
+            }
+
             if (configLock.TryEnterReadLock(configLockTimeout))
             {
                 try
@@ -75,7 +82,36 @@ namespace Shield.UmbracoAccess.Operation
                         //If starts with umbraco path or config backend url
                         // Let request through
 
-                        context.RewritePath("");
+                        if (!config.IpAddresses.Any(x => x.ipAddress == ""))
+                        {
+                            string url = null;
+                            switch (config.UnauthorisedUrlType)
+                            {
+                                case Enums.UnautorisedUrlType.Url:
+                                    url = config.UnauthorisedUrl;
+                                    break;
+
+                                case Enums.UnautorisedUrlType.XPath:
+                                    var xpathNode = UmbracoContext.Current.ContentCache.GetByXPath(config.UnauthorisedUrlXPath).FirstOrDefault();
+                                    url = xpathNode.Url;
+                                    break;
+
+                                case Enums.UnautorisedUrlType.ContentPicker:
+                                    var contentPickerNode = UmbracoContext.Current.ContentCache.GetById(config.UnauthorisedUrlContentPicker);
+                                    url = contentPickerNode.Url;
+                                    break;
+                            }
+
+                            if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
+                            {
+                                context.Response.Redirect(url);
+                            }
+                            else
+                            {
+                                context.RewritePath(url);
+                            }
+                        }
+                        return;
                     }
                 }
                 finally
