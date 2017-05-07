@@ -16,6 +16,7 @@ namespace Shield.Core.Persistance.Dal
         /// </summary>
         [PrimaryKeyColumn(Name = "PK_id", AutoIncrement = false)]
         [NullSetting(NullSetting = NullSettings.NotNull)]
+        [Length(255)]
         public string Id { get; set; }
 
         /// <summary>
@@ -28,7 +29,7 @@ namespace Shield.Core.Persistance.Dal
         /// Gets or sets the Value (should be json).
         /// </summary>
         [NullSetting(NullSetting = NullSettings.Null)]
-        [SpecialDbType(SpecialDbTypes.NTEXT)]
+        [Length(4000)]
         public string Value { get; set; }
 
         /// <summary>

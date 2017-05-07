@@ -4,14 +4,9 @@
     {
         public override string Id => nameof(UmbracoAccess);
 
-
-        public Operation()
-        {
-        }
-
         public bool Execute(Configuration config)
         {
-            return true;
+            return Module.Config(config);
         }
     }
 }

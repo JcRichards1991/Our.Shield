@@ -27,12 +27,12 @@ namespace Shield.Core.Persistance.Bal
             var db = ApplicationContext.Current.DatabaseContext.Database;
             var record = db.SingleOrDefault<Dal.Configuration>((object)id);
 
-            if (string.IsNullOrEmpty(record?.Value))
+            if (record == null || string.IsNullOrEmpty(record.Value))
             {
                 return null;
             }
 
-            var config = (Operation.Configuration)JsonConvert.DeserializeObject(record.Value, type);
+            var config = JsonConvert.DeserializeObject(record.Value, type) as Operation.Configuration;
 
             return config;
         }
