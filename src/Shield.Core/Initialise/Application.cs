@@ -56,8 +56,8 @@ namespace Shield.Core.Initialse
 
             var scriptsForMigration = new IMigration[]
             {
-                new Persistance.Bal.ConfigurationMigration (sqlSyntax, logger),
-                new Persistance.Bal.JournalMigration (sqlSyntax, logger)
+                new Persistance.Dal.ConfigurationMigration (sqlSyntax, logger),
+                new Persistance.Dal.JournalMigration (sqlSyntax, logger)
             };
 
             var migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName);

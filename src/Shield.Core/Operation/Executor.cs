@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Umbraco.Core;
 
@@ -25,40 +24,50 @@ namespace Shield.Core.Operation
         public void Init()
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
-            var ops = Operation<Configuration>.Register;
+            var ops = Operation<Models.Configuration, IEnumerable<Models.Journal>>.Register;
 
             foreach(var op in ops)
             {
-                var o = Operation<Configuration>.Create(op.Key);
+                var o = Operation<Models.Configuration, IEnumerable<Models.Journal>>.Create(op.Key);
 
                 if(o.Init())
                 {
                     Register(o);
-                    var record = db.SingleOrDefault<Persistance.Dal.Configuration>((object)o.Id);
+                    var config = ReadConfiguration(o.Id);
 
-                    if (record != null && record.Enable)
+                    if (config != null && config.Enable)
                     {
-                        var sc = (Configuration) JsonConvert.DeserializeObject(record.Value, op.Value.BaseType.GenericTypeArguments[0]);
-                        o.Execute(sc);
+                        o.Execute(config);
                     }
                 }  
             }
         }
 
-        public bool Save(string id, bool enable, Configuration config)
+        public bool WriteConfiguration(string id, Models.Configuration config)
         {
-            return Persistance.Bal.ConfigurationContext.Write(id, enable, config);
+            return Persistance.Bal.ConfigurationContext.Write(id, config);
         }
 
-        public Configuration Read(string id)
+        public bool WriteJournal(string id, Models.Journal journal)
+        {
+            return Persistance.Bal.JournalContext.Write(id, journal);
+        }
+
+        public Models.Configuration ReadConfiguration(string id)
         {
             return Persistance.Bal.ConfigurationContext.Read(id,
-                    Operation<Configuration>.Register[id].BaseType.GenericTypeArguments[0]);
+                    Operation<Models.Configuration, IEnumerable<Models.Journal>>.Register[id].BaseType.GenericTypeArguments[0]);
         }
 
-        public bool Execute(string id, Configuration config = null)
+        public IEnumerable<Models.Journal> ReadJournals(string id, int page, int itemsPerPage)
         {
-            var o = Operation<Configuration>.Create(id);
+            return Persistance.Bal.JournalContext.Read(id, page, itemsPerPage,
+                Operation<Models.Configuration, IEnumerable<Models.Journal>>.Register[id].BaseType.GenericTypeArguments[1]);
+        }
+
+        public bool Execute(string id, Models.Configuration config = null)
+        {
+            var o = Operation<Models.Configuration, IEnumerable<Models.Journal>>.Create(id);
 
             if (o == null)
             {
@@ -67,7 +76,7 @@ namespace Shield.Core.Operation
 
             if (config == null)
             {
-                config = Read(id);
+                config = ReadConfiguration(id);
 
                 if (config == null)
                 {
@@ -78,10 +87,11 @@ namespace Shield.Core.Operation
             return o.Execute(config);
         }
 
-        private static readonly Lazy<IDictionary<string, IOperation>> _register = 
-            new Lazy<IDictionary<string, IOperation>>(() => new Dictionary<string, IOperation>());
+        
+        private static readonly Lazy<IDictionary<string, Models.Interfaces.IOperation>> _register = 
+            new Lazy<IDictionary<string, Models.Interfaces.IOperation>>(() => new Dictionary<string, Models.Interfaces.IOperation>());
 
-        public bool Register(IOperation o)
+        public bool Register(Models.Interfaces.IOperation o)
         {
             lock (_register)
             {
@@ -107,7 +117,7 @@ namespace Shield.Core.Operation
             return false;
         }
 
-        public bool Unregister(IOperation o)
+        public bool Unregister(Models.Interfaces.IOperation o)
         {
             lock (_register)
             {

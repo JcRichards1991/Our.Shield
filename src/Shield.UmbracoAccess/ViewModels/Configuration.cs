@@ -1,55 +1,50 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Shield.UmbracoAccess.Operation
+namespace Shield.UmbracoAccess.ViewModels
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class Configuration : Core.Operation.Configuration
+    public class Configuration : Core.Models.Configuration
     {
         /// <summary>
         /// Gets or sets the Backend Access URL.
         /// </summary>
-        [JsonProperty]
+        [JsonProperty("backendAccessUrl")]
         public string BackendAccessUrl { get; set; }
 
         /// <summary>
         /// Gets or sets the Status Code.
         /// </summary>
-        [JsonProperty]
+        [JsonProperty("redirectRewrite")]
         public Enums.RedirectRewrite RedirectRewrite { get; set; }
 
         /// <summary>
         /// Gets or set the Ip Addresses.
         /// </summary>
-        [JsonProperty]
+        [JsonProperty("ipAddresses")]
         public PropertyEditors.IpAddress.Models.IpAddress[] IpAddresses { get; set; }
 
         /// <summary>
         /// Gets or sets the Unauthorised URL by XPath.
         /// </summary>
-        [JsonProperty]
+        [JsonProperty("unauthorisedUrlXPath")]
         public string UnauthorisedUrlXPath { get; set; }
 
         /// <summary>
         /// Gets or sets the Unauthorised URL Type.
         /// </summary>
-        [JsonProperty]
+        [JsonProperty("unauthorisedUrlType")]
         public int UnauthorisedUrlType { get; set; }
 
         /// <summary>
         /// Gets or sets the Unauthorised URL by Content Picker.
         /// </summary>
-        [JsonProperty]
+        [JsonProperty("unauthorisedUrlContentPicker")]
         public string UnauthorisedUrlContentPicker { get; set; }
 
         /// <summary>
         /// Gets or sets the Unauthorised URL.
         /// </summary>
-        [JsonProperty]
+        [JsonProperty("unauthorisedUrl")]
         public string UnauthorisedUrl { get; set; }
     }
 }

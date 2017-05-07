@@ -254,16 +254,16 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Initialise\Application.cs" />
-    <Compile Include="Operation\Configuration.cs" />
+    <Compile Include="Models\Configuration.cs" />
     <Compile Include="Operation\Executor.cs" />
-    <Compile Include="Operation\IOperation.cs" />
-    <Compile Include="Operation\Journal.cs" />
+    <Compile Include="Models\Interfaces\IOperation.cs" />
+    <Compile Include="Models\Journal.cs" />
     <Compile Include="Operation\Operation.cs" />
     <Compile Include="Operation\Frisk.cs" />
     <Compile Include="Persistance\Bal\ConfigurationContext.cs" />
-    <Compile Include="Persistance\Bal\ConfigurationMigration.cs" />
+    <Compile Include="Persistance\Dal\ConfigurationMigration.cs" />
     <Compile Include="Persistance\Bal\JournalContext.cs" />
-    <Compile Include="Persistance\Bal\JournalMigration.cs" />
+    <Compile Include="Persistance\Dal\JournalMigration.cs" />
     <Compile Include="Persistance\Dal\Configuration.cs" />
     <Compile Include="Persistance\Dal\Journal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

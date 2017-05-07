@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shield.Core.Operation
 {
@@ -18,7 +15,7 @@ namespace Shield.Core.Operation
 
         private static readonly Type[] interests = new Type[]
         {
-            typeof(Operation<Configuration>)
+            typeof(Operation<Models.Configuration, IEnumerable<Models.Journal>>)
         };
 
         private static void registerAssembly(Assembly currAssembly, ref Dictionary<string, Dictionary<string, Type>> installed)
@@ -136,6 +133,5 @@ namespace Shield.Core.Operation
             }
             return new Dictionary<string, Type>();  //  Return empty dictionary
         }
-
     }
 }

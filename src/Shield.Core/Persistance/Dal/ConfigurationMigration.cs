@@ -4,7 +4,7 @@ using Umbraco.Core.Persistence;
 using Umbraco.Core.Persistence.Migrations;
 using Umbraco.Core.Persistence.SqlSyntax;
 
-namespace Shield.Core.Persistance.Bal
+namespace Shield.Core.Persistance.Dal
 {
     /// <summary>
     /// Handles Creating/Editing the Configuration table.

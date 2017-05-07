@@ -262,10 +262,8 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\UmbracoAccessApiController.cs" />
     <Compile Include="Controllers\UmbracoAccessTreeController.cs" />
-    <Compile Include="Enums\RedirectRewrite.cs" />
-    <Compile Include="Enums\UnauthorisedUrlType.cs" />
-    <Compile Include="Operation\Configuration.cs" />
-    <Compile Include="Operation\Journal.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="ViewModels\Configuration.cs" />
     <Compile Include="Operation\Module.cs" />
     <Compile Include="Operation\Operation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

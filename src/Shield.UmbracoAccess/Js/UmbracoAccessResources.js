@@ -11,12 +11,11 @@ angular.module('umbraco.resources').factory('ShieldUmbracoAccessResource', ['$ht
     var apiRoot = 'backoffice/Shield/UmbracoAccessApi/';
 
     return {
-        PostConfiguration: function (data) {
-            //return $http.post(apiRoot + 'PostConfiguration', {
-            //    enable: true,
-            //    model: angular.toJson(data)
-            //});
-            return $http.post(apiRoot + 'PostConfiguration', angular.toJson(data));
+        PostConfiguration: function (data, userId) {
+            return $http.post(apiRoot + 'PostConfiguration', angular.toJson({
+                curUserId: userId,
+                model: data
+            }));
         },
         GetConfiguration: function () {
             return $http.get(apiRoot + 'GetConfiguration');

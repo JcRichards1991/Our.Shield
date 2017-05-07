@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using Umbraco.Core;
-using Umbraco.Core.Persistence;
 
 namespace Shield.Core.Persistance.Bal
 {
@@ -22,7 +21,7 @@ namespace Shield.Core.Persistance.Bal
         /// <returns>
         /// The Configuration as the desired type.
         /// </returns>
-        public static Operation.Configuration Read(string id, Type type)
+        public static Models.Configuration Read(string id, Type type)
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
             var record = db.SingleOrDefault<Dal.Configuration>((object)id);
@@ -32,7 +31,7 @@ namespace Shield.Core.Persistance.Bal
                 return null;
             }
 
-            var config = JsonConvert.DeserializeObject(record.Value, type) as Operation.Configuration;
+            var config = JsonConvert.DeserializeObject(record.Value, type) as Models.Configuration;
 
             return config;
         }
@@ -43,23 +42,19 @@ namespace Shield.Core.Persistance.Bal
         /// <param name="id">
         /// The id of Configuration to write.
         /// </param>
-        /// <param name="enable">
-        /// Whether or not the configuration is enabled.
-        /// </param>
         /// <param name="config">
         /// The configuration to write to the database
         /// </param>
         /// <returns>
         /// If successfull, returns true, otherwise false.
         /// </returns>
-        public static bool Write(string id, bool enable, Operation.Configuration config)
+        public static bool Write(string id, Models.Configuration config)
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
             var record = new Dal.Configuration
             {
                 Id = id,
                 LastModified = DateTime.UtcNow,
-                Enable = enable,
                 Value = JsonConvert.SerializeObject(config)
             };
 

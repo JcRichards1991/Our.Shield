@@ -7,7 +7,7 @@
  * @description
  * Edit Controller for the Umbraco Access Edit view
  */
-angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', ['$scope', 'notificationsService', 'localizationService', 'ShieldUmbracoAccessResource', function ($scope, notificationsService, localizationService, resource) {
+angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', ['$scope', 'notificationsService', 'localizationService', 'userService', 'ShieldUmbracoAccessResource', function ($scope, notificationsService, localizationService, userService, resource) {
     $scope.loading = 0;
     $scope.error = null;
 
@@ -17,22 +17,25 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
         $scope.headerName = localizationService.localize('Shield.UmbracoAccess_HeaderName');
 
         resource.GetConfiguration().then(function success(response) {
-            if (response.data && response.data.Data) {
-                $scope.configuration = response.data.Data;
+            if (response.data) {
+                $scope.configuration = response.data;
             } else {
                 notificationsService.error(localizationService.localize('Shield.UmbracoAccess.ErrorMessages_GetConfiguration'));
                 $scope.configuration = {
-                    BackendAccessUrl: '~/umbraco',
-                    RedirectRewrite: '0',
-                    UnauthorisedUrlType: 0,
-                    UnauthorisedUrl: '/404',
-                    UnauthorisedUrlXPath: '',
-                    UnauthorisedUrlContentPicker: '',
-                    IpAddresses: []
+                    backendAccessUrl: '~/umbraco',
+                    redirectRewrite: 0,
+                    unauthorisedUrlType: 0,
+                    IipAddresses: []
                 };
             }
 
             $scope.properties = [{
+                label: localizationService.localize('Shield.UmbracoAccess.Properties_EnabledLabel'),
+                description: localizationService.localize('Shield.UmbracoAccess.Properties_EnabledDescription'),
+                view: 'boolean',
+                value: $scope.configuration.enable,
+                visible: true
+            }, {
                 label: localizationService.localize('Shield.UmbracoAccess.Properties_BackendAccessUrlLabel'),
                 description: localizationService.localize('Shield.UmbracoAccess.Properties_BackendAccessUrlDescription'),
                 view: 'textbox',
@@ -89,7 +92,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 visible: $scope.configuration.UnauthorisedUrlType === 0
             },
             {
-                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlXPathLabel'),
+                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel'),
                 description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlXPathDescription'),
                 view: 'textbox',
                 alias: 'unauthorisedUrlXPath',
@@ -97,7 +100,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 visible: $scope.configuration.UnauthorisedUrlType === 1
             },
             {
-                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlContentPickerLabel'),
+                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel'),
                 description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlContentPickerDescription'),
                 view: 'contentpicker',
                 alias: 'unauthorisedUrlContentPicker',
@@ -195,9 +198,9 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
             }
         });
 
-        resource.PostConfiguration($scope.configuration).then(function (response) {
+        resource.PostConfiguration($scope.configuration, userService.getCurrentUser()).then(function (response) {
             if (response.data) {
-                notificationsService.success("Successfully updated");
+                notificationsService.success(localizationService.localize('Shield.UmbracoAccess.SuccessMessages_Updated'));
 
                 $scope.defaultConfiguration = {
                     backendAccessUrl: $scope.configuration.backendAccessUrl

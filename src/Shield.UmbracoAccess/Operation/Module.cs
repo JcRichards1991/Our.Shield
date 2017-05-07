@@ -11,9 +11,9 @@ namespace Shield.UmbracoAccess.Operation
 
         private static ReaderWriterLockSlim configLock = new ReaderWriterLockSlim();
 
-        private static Configuration config = null;
+        private static ViewModels.Configuration config = null;
 
-        public static bool Config(Configuration value)
+        public static bool Config(ViewModels.Configuration value)
         {
             if (configLock.TryEnterWriteLock(configLockTimeout))
             {

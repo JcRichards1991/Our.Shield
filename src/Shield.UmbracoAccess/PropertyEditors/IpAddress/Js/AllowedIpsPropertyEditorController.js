@@ -6,7 +6,7 @@
  * @description
  * Handles the Umbraco Access area of the custom section
  */
-angular.module('umbraco').controller('Shield.PropertyEditors.AllowedIpsController', ['$scope', function ($scope) {
+angular.module('umbraco').controller('Shield.PropertyEditors.AllowedIpsController', ['$scope', 'localizationService', function ($scope, localizationService) {
 
     function IsValidIpAddress(ip, edit) {
         ip.valid = true;
@@ -15,7 +15,7 @@ angular.module('umbraco').controller('Shield.PropertyEditors.AllowedIpsControlle
 
         if (ip.ipAddress === '') {
             ip.valid = false;
-            ip.errorMsg = 'IP Address is required';
+            ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpRequired');
             ip.errorState = 'Required';
             return false;
         }
@@ -31,7 +31,7 @@ angular.module('umbraco').controller('Shield.PropertyEditors.AllowedIpsControlle
 
             if (!valid) {
                 ip.valid = false;
-                ip.errorMsg = 'Invalid IP Address. Please enter a valid IPv4 or IPv6 address';
+                ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpInvalid');
                 ip.errorState = "Invalid";
                 return false;
             }
@@ -41,7 +41,7 @@ angular.module('umbraco').controller('Shield.PropertyEditors.AllowedIpsControlle
 
         if ($scope.model.value.filter((x) => x.ipAddress === ip.ipAddress)[index] !== undefined) {
             ip.valid = false;
-            ip.errorMsg = 'IP Address has already been added';
+            ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpDuplicate');
             ip.errorState = "Duplicate";
             return false;
         }
@@ -98,7 +98,7 @@ angular.module('umbraco').controller('Shield.PropertyEditors.AllowedIpsControlle
     };
 
     $scope.removeIp = function (ip) {
-        if (confirm('Are you sure you want to remove IP Address: ' + ip.ipAddress + ' - ' + ip.description )) {
+        if (confirm(localizationService.localize('Shield.UmbracoAccess.AlertMessages_ConfirmRemoveIp') + ip.ipAddress + ' - ' + ip.description)) {
             var index = $scope.model.value.indexOf(ip);
 
             if (index !== -1) {

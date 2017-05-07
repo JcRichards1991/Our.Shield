@@ -25,10 +25,10 @@ namespace Shield.Core.Persistance.Dal
         public string ConfigurationId { get; set; }
 
         /// <summary>
-        /// Gets or sets the Create Date of the Journal.
+        /// Gets or sets the Date Stamp of the Journal.
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        public DateTime CreateDate { get; set; }
+        public DateTime Datestamp { get; set; }
         
         /// <summary>
         /// Gets or sets the Value (Should be json).

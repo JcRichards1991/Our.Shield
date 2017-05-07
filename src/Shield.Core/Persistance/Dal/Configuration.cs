@@ -31,11 +31,5 @@ namespace Shield.Core.Persistance.Dal
         [NullSetting(NullSetting = NullSettings.Null)]
         [Length(4000)]
         public string Value { get; set; }
-
-        /// <summary>
-        /// Gets or sets whether the configuration is Enabled.
-        /// </summary>
-        [NullSetting(NullSetting = NullSettings.NotNull)]
-        public bool Enable {get; set; }
     }
 }

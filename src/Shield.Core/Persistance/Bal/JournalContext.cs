@@ -10,7 +10,7 @@ namespace Shield.Core.Persistance.Bal
     /// <summary>
     /// The Journal context
     /// </summary>
-    public abstract class JournalContext
+    public static class JournalContext
     {
         /// <summary>
         /// Reads a Journal from the database.
@@ -27,7 +27,7 @@ namespace Shield.Core.Persistance.Bal
         /// <returns>
         /// The Journal as the desired type.
         /// </returns>
-        protected IEnumerable<Operation.Journal> Read(string id, int page, int itemsPerPage, Type type)
+        public static IEnumerable<Models.Journal> Read(string id, int page, int itemsPerPage, Type type)
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
 
@@ -35,15 +35,20 @@ namespace Shield.Core.Persistance.Bal
                .Select("*")
                .From()
                .Where("configuration = @0", id)
-               .OrderByDescending("createdate");
+               .OrderByDescending("datestamp");
 
             var records = db.Page<Dal.Journal>(page, itemsPerPage, sql);
-            if (records == null || records.Items == null || records.Items.Count == 0)
+            if (records?.Items?.Count == 0)
             {
-                return Enumerable.Empty<Operation.Journal>();
+                return Enumerable.Empty<Models.Journal>();
             }
 
-            return (IEnumerable<Operation.Journal>)records.Items.Select(x => JsonConvert.DeserializeObject(x.Value, type));
+            return records.Items.Select(x =>
+            {
+                var retItem = JsonConvert.DeserializeObject(x.Value, type) as Models.Journal;
+                retItem.Datestamp = x.Datestamp;
+                return retItem;
+            });
         }
 
         /// <summary>
@@ -58,13 +63,13 @@ namespace Shield.Core.Persistance.Bal
         /// <returns>
         /// If successful, returns true; otherwise false.
         /// </returns>
-        protected bool Write(string id, Operation.Journal journal)
+        public static bool Write(string id, Models.Journal journal)
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
             var record = new Dal.Journal()
             {
                 ConfigurationId = id,
-                CreateDate = DateTime.UtcNow,
+                Datestamp = DateTime.UtcNow,
                 Value = JsonConvert.SerializeObject(journal)
             };
 

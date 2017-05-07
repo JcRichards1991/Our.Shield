@@ -9,35 +9,45 @@
   </area>
 
   <area alias="Shield.UmbracoAccess.Properties">
+    <key alias="EnableLabel">Enabled?</key>
+    <key alias="EnableDescription">Whether or not this section is enabled,</key>
+
     <key alias="BackendAccessUrlLabel">Backend Office Access URL</key>
-    <key alias="BackendAccessUrlDescription">The URL used to access the backend office (Umbraco)</key>
+    <key alias="BackendAccessUrlDescription">The URL used to access the CMS.</key>
     
     <key alias="RedirectRewriteLabel">Redirect or Rewrite</key>
-    <key alias="RedirectRewriteDescription">Whether or not to redirect the user or to rewrite.</key>
+    <key alias="RedirectRewriteDescription">Whether or not to redirect the user or to rewrite the url.</key>
     <key alias="RedirectRewriteRedirectText">Redirect</key>
     <key alias="RedirectRewriteRewriteText">Rewrite</key>
     
     <key alias="UnauthorisedUrlTypeLabel">Unauthorised Url Type</key>
-    <key alias="UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url</key>
+    <key alias="UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</key>
     <key alias="UnauthorisedUrlTypeUrlText">Url</key>
     <key alias="UnauthorisedUrlTypeXPathText">XPath</key>
     <key alias="UnauthorisedUrlTypeContentPickerText">Content Picker</key>
 
     <key alias="UnauthorisedUrlLabel">Unautorised Url</key>
-    <key alias="UnauthorisedUrlDescription">The URL to redirect the user to when from a disallowed IP Address</key>
+    <key alias="UnauthorisedUrlDescription">The URL to redirect/rewrite the user to when from a disallowed IP Address.</key>
+    <key alias="UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a disallowed IP Address.</key>
+    <key alias="UnauthorisedUrlContentPickerDescription">Select the content node to redirect/rewrite the user to when from a disallowed IP Address.</key>
 
-    <key alias="UnauthorisedUrlXPathLabel">Unautorised Url by XPath</key>
-    <key alias="UnauthorisedUrlXPathDescription">The XPath to the content node to redirect the user to when from a disallowed IP Address</key>
+    <key alias="AllowedIPsLabel">"White-listed IP address(es)</key>
+    <key alias="AllowedIPsDescription">The allowed IP address(es) that can access the Backend Office Access Url.</key>
+  </area>
 
-    <key alias="UnauthorisedUrlContentPickerLabel">Unauthorised Url by Content Picker</key>
-    <key alias="UnauthorisedUrlContentPickerDescription">Select the content node to redirect the user to when from a disallowed IP Address</key>
+  <area alias="Shield.UmbracoAccess.SuccessMessages">
+    <key alias="Updated">Successfully Updated!</key>
+  </area>
 
-    <key alias="AllowedIPsLabel">Allowed IPs</key>
-    <key alias="AllowedIPsDescription">The allowed IPs that can access the Backend Office Access Url</key>
+  <area alias="Shield.UmbracoAccess.AlertMessages">
+    <key alias="ConfirmRemoveIp">Are you sure you want to remove IP Address: </key>
   </area>
 
   <area alias="Shield.UmbracoAccess.ErrorMessages">
-    <key alias="GetConfiguration">Something went wrong getting the configuration, the error has been logged</key>
-    <key alias="UpdateConfiguration">Something went wrong saving the changes. The error has been logged</key>
+    <key alias="GetConfiguration">Something went wrong getting the configuration, the error has been logged.</key>
+    <key alias="UpdateConfiguration">Something went wrong saving the changes. The error has been logged.</key>
+    <key alias="IpRequired">IP Address is required.</key>
+    <key alias="IpInvalid">Invalid IP Address. Please enter a valid IPv4 or IPv6 address (cidr optional).</key>
+    <key alias="IpDuplicate">IP Address has already been added</key>
   </area>
 </language>
