@@ -6,6 +6,8 @@ using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence.Migrations;
 using Umbraco.Web;
 using umbraco.businesslogic;
+using Umbraco.Core.Persistence.SqlSyntax;
+using Umbraco.Core.Services;
 
 namespace Shield.Core.Initialse
 {
@@ -43,14 +45,20 @@ namespace Shield.Core.Initialse
         {
             base.ApplicationStarted(umbracoApplication, applicationContext);
 
-            RunMigrations();
+            RunMigrations(applicationContext.DatabaseContext.SqlSyntax, applicationContext.Services.MigrationEntryService, applicationContext.ProfilingLogger.Logger);
             Operation.Executor.Instance.Init();
         }
         
-        private void RunMigrations()
+        private void RunMigrations(ISqlSyntaxProvider sqlSyntax, IMigrationEntryService migrationEntryService, ILogger logger)
         {
             const string productName = nameof(Shield);
             var currentVersion = new SemVersion(0, 0, 0);
+
+            var scriptsForMigration = new IMigration[]
+            {
+                new Persistance.Bal.ConfigurationMigration (sqlSyntax, logger),
+                new Persistance.Bal.JournalMigration (sqlSyntax, logger)
+            };
 
             var migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName);
             var latestMigration = migrations.OrderByDescending(x => x.Version).FirstOrDefault();
@@ -62,20 +70,15 @@ namespace Shield.Core.Initialse
             if (targetVersion == currentVersion)
                 return;
 
-            var migrationsRunner = new MigrationRunner(
-              ApplicationContext.Current.Services.MigrationEntryService,
-              ApplicationContext.Current.ProfilingLogger.Logger,
-              currentVersion,
-              targetVersion,
-              productName);
+            MigrationRunner migrationsRunner = new MigrationRunner(migrationEntryService, logger, currentVersion, targetVersion, productName, scriptsForMigration);
 
             try
             {
                 migrationsRunner.Execute(UmbracoContext.Current.Application.DatabaseContext.Database);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                LogHelper.Error<Register>("Error running Shield migration", e);
+                LogHelper.Error<Register>("Error running Shield migration", ex);
             }
         }
     }

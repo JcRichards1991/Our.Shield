@@ -261,8 +261,10 @@
     <Compile Include="Operation\Operation.cs" />
     <Compile Include="Operation\Frisk.cs" />
     <Compile Include="Persistance\Bal\ConfigurationContext.cs" />
+    <Compile Include="Persistance\Bal\ConfigurationMigration.cs" />
     <Compile Include="Persistance\Bal\IJsonValues.cs" />
     <Compile Include="Persistance\Bal\JournalContext.cs" />
+    <Compile Include="Persistance\Bal\JournalMigration.cs" />
     <Compile Include="Persistance\Bal\Record.cs" />
     <Compile Include="Persistance\Dal\Configuration.cs" />
     <Compile Include="Persistance\Dal\Journal.cs" />
