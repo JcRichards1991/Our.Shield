@@ -1,12 +1,12 @@
-﻿using System.Web;
-using System;
-using System.Linq;
-using System.Threading;
-using Umbraco.Web;
-
-[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Shield.UmbracoAccess.Operation.Module), nameof(Shield.UmbracoAccess.Operation.Module.Register))]
+﻿[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Shield.UmbracoAccess.Operation.Module), nameof(Shield.UmbracoAccess.Operation.Module.Register))]
 namespace Shield.UmbracoAccess.Operation
 {
+    using System.Web;
+    using System;
+    using System.Linq;
+    using System.Threading;
+    using Umbraco.Web;
+
     public class Module : IHttpModule
     {
         private const int configLockTimeout = 1000;

@@ -1,12 +1,12 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Umbraco.Core;
-using Umbraco.Core.Persistence;
-
-namespace Shield.Core.Persistance.Bal
+﻿namespace Shield.Core.Persistance.Bal
 {
+    using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Umbraco.Core;
+    using Umbraco.Core.Persistence;
+
     /// <summary>
     /// The Journal context
     /// </summary>

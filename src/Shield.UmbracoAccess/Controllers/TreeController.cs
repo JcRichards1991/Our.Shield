@@ -1,16 +1,15 @@
-﻿using System.Net.Http.Formatting;
-using Umbraco.Web.Models.Trees;
-using Umbraco.Web.Mvc;
-using Umbraco.Web.Trees;
-
-namespace Shield.UmbracoAccess.Controllers
+﻿namespace Shield.UmbracoAccess.Controllers
 {
+    using System.Net.Http.Formatting;
+    using Umbraco.Web.Models.Trees;
+    using Umbraco.Web.Mvc;
+
     /// <summary>
     /// The Umbraco Access Tree Controller for the custom section
     /// </summary>
     [PluginController(Core.Constants.App.Name)]
-    [Tree(Core.Constants.App.Alias, Constants.Tree.Alias, Constants.Tree.Title)]
-    public class UmbracoAccessTreeController : TreeController
+    [Umbraco.Web.Trees.Tree(Core.Constants.App.Alias, Constants.Tree.Alias, Constants.Tree.Title)]
+    public class TreeController : Umbraco.Web.Trees.TreeController
     {
         /// <summary>
         /// Gets the menu for a node by it's Id.

@@ -1,9 +1,9 @@
-﻿using System;
-using Umbraco.Core.Persistence;
-using Umbraco.Core.Persistence.DatabaseAnnotations;
-
-namespace Shield.Core.Persistance.Dal
+﻿namespace Shield.Core.Persistance.Dal
 {
+    using System;
+    using Umbraco.Core.Persistence;
+    using Umbraco.Core.Persistence.DatabaseAnnotations;
+
     /// <summary>
     /// Defines the Configuration table.
     /// </summary>

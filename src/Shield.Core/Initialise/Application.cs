@@ -1,20 +1,20 @@
-﻿using System;
-using System.Linq;
-using Semver;
-using Umbraco.Core;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Persistence.Migrations;
-using Umbraco.Web;
-using umbraco.businesslogic;
-using Umbraco.Core.Persistence.SqlSyntax;
-using Umbraco.Core.Services;
-
-namespace Shield.Core.Initialse
+﻿namespace Shield.Core.Initialse
 {
+    using System;
+    using System.Linq;
+    using Semver;
+    using Umbraco.Core;
+    using Umbraco.Core.Logging;
+    using Umbraco.Core.Persistence.Migrations;
+    using Umbraco.Web;
+    using umbraco.businesslogic;
+    using Umbraco.Core.Persistence.SqlSyntax;
+    using Umbraco.Core.Services;
+
     /// <summary>
     /// Shield custom section
     /// </summary>
-    [Application(Constants.App.Alias, Constants.App.Name, Constants.App.Icon, 1000)]
+    [Application(Core.Constants.App.Alias, Core.Constants.App.Name, Core.Constants.App.Icon, 1000)]
     public class Application : umbraco.interfaces.IApplication
     {
 

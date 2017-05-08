@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
-using Umbraco.Core;
-
-namespace Shield.Core.Persistance.Bal
+﻿namespace Shield.Core.Persistance.Bal
 {
+    using Newtonsoft.Json;
+    using System;
+    using Umbraco.Core;
+
     /// <summary>
     /// The Configuration Context.
     /// </summary>

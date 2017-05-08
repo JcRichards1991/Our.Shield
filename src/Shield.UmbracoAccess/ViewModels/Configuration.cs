@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-
-namespace Shield.UmbracoAccess.ViewModels
+﻿namespace Shield.UmbracoAccess.ViewModels
 {
+    using Newtonsoft.Json;
+
     [JsonObject(MemberSerialization.OptIn)]
     public class Configuration : Core.Models.Configuration
     {

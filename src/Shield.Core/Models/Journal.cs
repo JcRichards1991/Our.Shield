@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Shield.Core.Models
+﻿namespace Shield.Core.Models
 {
+    using System;
+
     public class Journal
     {
         /// <summary>

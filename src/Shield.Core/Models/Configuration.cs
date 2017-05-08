@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-
-namespace Shield.Core.Models
+﻿namespace Shield.Core.Models
 {
+    using Newtonsoft.Json;
+
     [JsonObject(MemberSerialization.OptIn)]
     public abstract class Configuration
     {

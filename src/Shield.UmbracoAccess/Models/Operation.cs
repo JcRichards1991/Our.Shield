@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Shield.UmbracoAccess.Operation
+﻿namespace Shield.UmbracoAccess.Models
 {
     public class Operation : Core.Models.Operation<ViewModels.Configuration>
     {
@@ -8,7 +6,7 @@ namespace Shield.UmbracoAccess.Operation
 
         public bool Execute(ViewModels.Configuration config)
         {
-            return Module.Config(config);
+            return UmbracoAccess.Operation.Module.Config(config);
         }
     }
 }

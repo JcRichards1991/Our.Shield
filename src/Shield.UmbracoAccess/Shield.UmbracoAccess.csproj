@@ -260,12 +260,12 @@
   <ItemGroup>
     <Compile Include="ApplicationSettings.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Controllers\UmbracoAccessApiController.cs" />
-    <Compile Include="Controllers\UmbracoAccessTreeController.cs" />
+    <Compile Include="Controllers\ApiController.cs" />
+    <Compile Include="Controllers\TreeController.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="ViewModels\Configuration.cs" />
     <Compile Include="Operation\Module.cs" />
-    <Compile Include="Operation\Operation.cs" />
+    <Compile Include="Models\Operation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyEditors\IpAddress\Models\IpAddress.cs" />
   </ItemGroup>
@@ -288,8 +288,8 @@
     <Content Include="App_Plugins\Shield\Backoffice\UmbracoAccess\Edit.html" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\Lang\en-us.xml" />
     <Content Include="PropertyEditors\IpAddress\Js\AllowedIpsPropertyEditorController.js" />
-    <Content Include="Js\UmbracoAccessControllers.js" />
-    <Content Include="Js\UmbracoAccessResources.js" />
+    <Content Include="Js\Controllers.js" />
+    <Content Include="Js\Resources.js" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

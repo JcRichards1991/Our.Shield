@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web.Mvc;
-using Umbraco.Web.Editors;
-using Umbraco.Web.Mvc;
-
-namespace Shield.UmbracoAccess.Controllers
+﻿namespace Shield.UmbracoAccess.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Web.Mvc;
+    using Umbraco.Web.Editors;
+    using Umbraco.Web.Mvc;
+
     /// <summary>
     /// Api Controller for the Umbraco Access area of the custom section
     /// </summary>
@@ -24,7 +24,8 @@ namespace Shield.UmbracoAccess.Controllers
         [HttpPost]
         public bool PostConfiguration(ViewModels.Configuration model, int curUserId)
         {
-            var op = new Operation.Operation();
+            var op = new Models.Operation();
+            var t = Core.Operation.Executor.Instance.Execute("");
             var curUmbracoUser = UmbracoContext.Application.Services.UserService.GetByProviderKey(curUserId);
 
             op.WriteJournal(new Core.Models.Journal {
@@ -45,7 +46,7 @@ namespace Shield.UmbracoAccess.Controllers
         [HttpGet]
         public System.Web.Http.Results.JsonResult<ViewModels.Configuration> GetConfiguration()
         {
-            var configuration = new Operation.Operation().ReadConfiguration() as ViewModels.Configuration;
+            var configuration = new Models.Operation().ReadConfiguration() as ViewModels.Configuration;
 
             if(configuration == null)
             {
@@ -68,7 +69,7 @@ namespace Shield.UmbracoAccess.Controllers
         [HttpGet]
         public IEnumerable<Core.Models.Journal> GetJournals(int page, int itemsPerPage)
         {
-            return new Operation.Operation().ReadJournals(page, itemsPerPage) as IEnumerable<Core.Models.Journal>;
+            return new Models.Operation().ReadJournals(page, itemsPerPage) as IEnumerable<Core.Models.Journal>;
         }
     }
 }

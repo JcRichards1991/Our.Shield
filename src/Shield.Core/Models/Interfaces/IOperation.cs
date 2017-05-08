@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Shield.Core.Models.Interfaces
+﻿namespace Shield.Core.Models.Interfaces
 {
+    using System.Collections.Generic;
+
     public interface IOperation : IFrisk
     {
         bool Init();

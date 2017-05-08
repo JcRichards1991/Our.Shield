@@ -1,11 +1,11 @@
-﻿using Umbraco.Core;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Persistence;
-using Umbraco.Core.Persistence.Migrations;
-using Umbraco.Core.Persistence.SqlSyntax;
-
-namespace Shield.Core.Persistance.Dal
+﻿namespace Shield.Core.Persistance.Dal
 {
+    using Umbraco.Core;
+    using Umbraco.Core.Logging;
+    using Umbraco.Core.Persistence;
+    using Umbraco.Core.Persistence.Migrations;
+    using Umbraco.Core.Persistence.SqlSyntax;
+
     /// <summary>
     /// Handles Creating/Editing the Configuration table.
     /// </summary>
@@ -24,8 +24,7 @@ namespace Shield.Core.Persistance.Dal
         /// <param name="logger">
         /// The Logger.
         /// </param>
-        public ConfigurationMigration(ISqlSyntaxProvider sqlSyntax, ILogger logger)
-          : base(sqlSyntax, logger)
+        public ConfigurationMigration(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
         {
             _schemaHelper = new DatabaseSchemaHelper(_database, logger, sqlSyntax);
         }
