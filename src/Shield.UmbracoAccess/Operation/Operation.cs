@@ -2,7 +2,7 @@
 
 namespace Shield.UmbracoAccess.Operation
 {
-    public class Operation : Core.Operation.Operation<ViewModels.Configuration, IEnumerable<Core.Models.Journal>>
+    public class Operation : Core.Models.Operation<ViewModels.Configuration>
     {
         public override string Id => nameof(UmbracoAccess);
 

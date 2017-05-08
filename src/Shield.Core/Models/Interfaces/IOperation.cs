@@ -2,7 +2,7 @@
 
 namespace Shield.Core.Models.Interfaces
 {
-    public interface IOperation : Operation.IFrisk
+    public interface IOperation : IFrisk
     {
         bool Init();
 

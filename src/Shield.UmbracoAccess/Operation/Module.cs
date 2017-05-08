@@ -92,7 +92,7 @@ namespace Shield.UmbracoAccess.Operation
                                     break;
 
                                 case Enums.UnautorisedUrlType.XPath:
-                                    var xpathNode = UmbracoContext.Current.ContentCache.GetByXPath(config.UnauthorisedUrlXPath).FirstOrDefault();
+                                    var xpathNode = UmbracoContext.Current.ContentCache.GetSingleByXPath(config.UnauthorisedUrlXPath);
                                     url = xpathNode.Url;
                                     break;
 

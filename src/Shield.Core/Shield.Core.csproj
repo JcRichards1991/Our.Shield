@@ -258,8 +258,8 @@
     <Compile Include="Operation\Executor.cs" />
     <Compile Include="Models\Interfaces\IOperation.cs" />
     <Compile Include="Models\Journal.cs" />
-    <Compile Include="Operation\Operation.cs" />
-    <Compile Include="Operation\Frisk.cs" />
+    <Compile Include="Models\Operation.cs" />
+    <Compile Include="Frisk.cs" />
     <Compile Include="Persistance\Bal\ConfigurationContext.cs" />
     <Compile Include="Persistance\Dal\ConfigurationMigration.cs" />
     <Compile Include="Persistance\Bal\JournalContext.cs" />

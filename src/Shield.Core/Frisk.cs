@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-
-namespace Shield.Core.Operation
+﻿namespace Shield.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Reflection;
+
     public interface IFrisk
     {
         string Id { get; }
@@ -15,7 +15,7 @@ namespace Shield.Core.Operation
 
         private static readonly Type[] interests = new Type[]
         {
-            typeof(Operation<Models.Configuration, IEnumerable<Models.Journal>>)
+            typeof(Models.Operation<Models.Configuration>)
         };
 
         private static void registerAssembly(Assembly currAssembly, ref Dictionary<string, Dictionary<string, Type>> installed)

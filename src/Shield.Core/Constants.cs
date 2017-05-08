@@ -13,7 +13,7 @@
             /// <summary>
             /// Custom section Name
             /// </summary>
-            public const string Name = "Shield";
+            public const string Name = nameof(Shield);
 
             /// <summary>
             /// Custom section Alias
@@ -24,6 +24,13 @@
             /// Custom section Icon
             /// </summary>
             public const string Icon = "icon-shield";
+        }
+
+        public static class Tree
+        {
+            public const string Alias = nameof(Shield) + nameof(Tree);
+
+            public const string Title = App.Name;
         }
     }
 }

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Shield.Core.Operation
+﻿namespace Shield.Core.Models
 {
-    public abstract class Operation<C, J> : Models.Interfaces.IOperation
-        where C : Models.Configuration
-        where J : IEnumerable<Models.Journal>
+    using System;
+    using System.Collections.Generic;
+
+    public abstract class Operation<C> : Interfaces.IOperation where C : Configuration
     {
         /// <summary>
         /// Unique identifier of the plugin
@@ -25,7 +23,7 @@ namespace Shield.Core.Operation
         {
             get
             {
-                return Frisk.Register<Operation<C, J>>();
+                return Frisk.Register<Operation<C>>();
             }
         }
 
@@ -34,12 +32,12 @@ namespace Shield.Core.Operation
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static Models.Interfaces.IOperation Create(string id)
+        public static Interfaces.IOperation Create(string id)
         {
             Type derivedType = null;
             if (Register.TryGetValue(id, out derivedType))
             {
-                return System.Activator.CreateInstance(derivedType) as Models.Interfaces.IOperation;
+                return Activator.CreateInstance(derivedType) as Interfaces.IOperation;
             }
             return null;
         }
@@ -49,9 +47,9 @@ namespace Shield.Core.Operation
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Models.Interfaces.IOperation Create(Type type)
+        public static Interfaces.IOperation Create(Type type)
         {
-            return System.Activator.CreateInstance(type) as Models.Interfaces.IOperation;
+            return Activator.CreateInstance(type) as Interfaces.IOperation;
         }
 
         /// <summary>
@@ -59,7 +57,7 @@ namespace Shield.Core.Operation
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>
-        public virtual bool Execute(Models.Configuration config)
+        public virtual bool Execute(Configuration config)
         {
             return true;
         }
@@ -73,9 +71,9 @@ namespace Shield.Core.Operation
         /// <returns>
         /// Whether or not was successfully written to the database.
         /// </returns>
-        public bool WriteConfiguration(Models.Configuration config)
+        public bool WriteConfiguration(Configuration config)
         {
-            return Executor.Instance.WriteConfiguration(this.Id, config);
+            return Operation.Executor.Instance.WriteConfiguration(this.Id, config);
         }
 
         /// <summary>
@@ -84,9 +82,9 @@ namespace Shield.Core.Operation
         /// <returns>
         /// The configuration
         /// </returns>
-        public Models.Configuration ReadConfiguration()
+        public Configuration ReadConfiguration()
         {
-            return Executor.Instance.ReadConfiguration(this.Id);
+            return Operation.Executor.Instance.ReadConfiguration(this.Id);
         }
 
         /// <summary>
@@ -98,9 +96,9 @@ namespace Shield.Core.Operation
         /// <returns>
         /// Whether or not was successfully written to the database
         /// </returns>
-        public bool WriteJournal(Models.Journal journal)
+        public bool WriteJournal(Journal journal)
         {
-            return Executor.Instance.WriteJournal(this.Id, journal);
+            return Operation.Executor.Instance.WriteJournal(this.Id, journal);
         }
 
         /// <summary>
@@ -115,9 +113,9 @@ namespace Shield.Core.Operation
         /// <returns>
         /// A collection of Journals for the Configuration
         /// </returns>
-        public IEnumerable<Models.Journal> ReadJournals(int page, int itemsPerPage)
+        public IEnumerable<Journal> ReadJournals(int page, int itemsPerPage)
         {
-            return Executor.Instance.ReadJournals(this.Id, page, itemsPerPage);
+            return Operation.Executor.Instance.ReadJournals(this.Id, page, itemsPerPage);
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Umbraco.Core;
-
-namespace Shield.Core.Operation
+﻿namespace Shield.Core.Operation
 {
+    using System;
+    using System.Collections.Generic;
+    using Umbraco.Core;
+
     public class Executor
     {
         private static readonly Lazy<Executor> _instance = new Lazy<Executor>(() => new Executor());
@@ -24,11 +24,11 @@ namespace Shield.Core.Operation
         public void Init()
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
-            var ops = Operation<Models.Configuration, IEnumerable<Models.Journal>>.Register;
+            var ops = Models.Operation<Models.Configuration>.Register;
 
             foreach(var op in ops)
             {
-                var o = Operation<Models.Configuration, IEnumerable<Models.Journal>>.Create(op.Key);
+                var o = Models.Operation<Models.Configuration>.Create(op.Key);
 
                 if(o.Init())
                 {
@@ -56,18 +56,18 @@ namespace Shield.Core.Operation
         public Models.Configuration ReadConfiguration(string id)
         {
             return Persistance.Bal.ConfigurationContext.Read(id,
-                    Operation<Models.Configuration, IEnumerable<Models.Journal>>.Register[id].BaseType.GenericTypeArguments[0]);
+                    Models.Operation<Models.Configuration>.Register[id].BaseType.GenericTypeArguments[0]);
         }
 
         public IEnumerable<Models.Journal> ReadJournals(string id, int page, int itemsPerPage)
         {
             return Persistance.Bal.JournalContext.Read(id, page, itemsPerPage,
-                Operation<Models.Configuration, IEnumerable<Models.Journal>>.Register[id].BaseType.GenericTypeArguments[1]);
+                Models.Operation<Models.Configuration>.Register[id].BaseType.GenericTypeArguments[1]);
         }
 
         public bool Execute(string id, Models.Configuration config = null)
         {
-            var o = Operation<Models.Configuration, IEnumerable<Models.Journal>>.Create(id);
+            var o = Models.Operation<Models.Configuration>.Create(id);
 
             if (o == null)
             {
