@@ -26,11 +26,25 @@
             public const string Icon = "icon-shield";
         }
 
+        /// <summary>
+        /// Contants for the tree controller
+        /// </summary>
         public static class Tree
         {
+            /// <summary>
+            /// Tree Alias
+            /// </summary>
             public const string Alias = nameof(Shield) + nameof(Tree);
 
+            /// <summary>
+            /// Tree Title
+            /// </summary>
             public const string Title = App.Name;
+
+            /// <summary>
+            /// Tree root node id
+            /// </summary>
+            public static string RootNodeId = Umbraco.Core.Constants.System.Root.ToString();
         }
     }
 }

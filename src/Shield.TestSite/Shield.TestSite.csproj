@@ -300,11 +300,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\Shield.MediaProtection\Js\MediaProtection.js" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\Css\UmbracoAccess.css" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\Js\UmbracoAccess.js" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\PropertyEditors\allowedIpsPropertyEditorView.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\MediaProtection\Edit.html" />
     <Content Include="App_Plugins\Shield\Backoffice\UmbracoAccess\Edit.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
     <Content Include="packages.config" />
@@ -337,6 +339,7 @@
     <Content Include="Config\404handlers.config" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\package.manifest" />
     <Content Include="App_Plugins\Shield\package.manifest" />
+    <Content Include="App_Plugins\Shield.MediaProtection\package.manifest" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -385,7 +388,9 @@
       <Name>Shield.UmbracoAccess</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Plugins\Shield.MediaProtection\Lang\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

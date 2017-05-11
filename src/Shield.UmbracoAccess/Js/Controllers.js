@@ -7,14 +7,14 @@
  * @description
  * Edit Controller for the Umbraco Access Edit view
  */
-angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', ['$scope', 'notificationsService', 'localizationService', 'userService', 'ShieldUmbracoAccessResource', function ($scope, notificationsService, localizationService, userService, resource) {
+angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', ['$scope', 'notificationsService', 'localizationService', 'ShieldResource', function ($scope, notificationsService, localizationService, resource) {
     $scope.loading = 0;
     $scope.error = null;
 
     $scope.init = function () {
         $scope.loading++;
 
-        resource.GetConfiguration().then(function success(response) {
+        resource.GetConfiguration('UmbracoAccess').then(function success(response) {
             if (response.data) {
                 $scope.configuration = response.data;
             } else {
@@ -196,7 +196,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
             }
         });
 
-        resource.PostConfiguration($scope.configuration, userService.getCurrentUser()).then(function (response) {
+        resource.PostConfiguration('UmbracoAccess', $scope.configuration).then(function (response) {
             if (response.data) {
                 notificationsService.success(localizationService.localize('Shield.UmbracoAccess.SuccessMessages_Updated'));
             } else {

@@ -260,8 +260,11 @@
   <ItemGroup>
     <Compile Include="ApplicationSettings.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Controllers\ApiController.cs" />
+    <Compile Include="Controllers\TreeController.cs" />
     <Compile Include="Initialise\Application.cs" />
     <Compile Include="Models\Configuration.cs" />
+    <Compile Include="Models\TreeNode.cs" />
     <Compile Include="Operation\Executor.cs" />
     <Compile Include="Models\Interfaces\IOperation.cs" />
     <Compile Include="Models\Journal.cs" />
@@ -283,6 +286,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Js\Resources.js" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

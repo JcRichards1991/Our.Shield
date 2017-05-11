@@ -15,7 +15,8 @@
 
         private static readonly Type[] interests = new Type[]
         {
-            typeof(Models.Operation<Models.Configuration>)
+            typeof(Models.Operation<Models.Configuration>),
+            typeof(Models.TreeNode)
         };
 
         private static void registerAssembly(Assembly currAssembly, ref Dictionary<string, Dictionary<string, Type>> installed)

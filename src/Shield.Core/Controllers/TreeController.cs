@@ -1,5 +1,6 @@
-﻿namespace Shield.UmbracoAccess.Controllers
+﻿namespace Shield.Core.Controllers
 {
+    using System.Linq;
     using System.Net.Http.Formatting;
     using Umbraco.Web.Models.Trees;
     using Umbraco.Web.Mvc;
@@ -7,8 +8,8 @@
     /// <summary>
     /// The Umbraco Access Tree Controller for the custom section
     /// </summary>
-    [PluginController(Core.Constants.App.Name)]
-    [Umbraco.Web.Trees.Tree(Core.Constants.App.Alias, Constants.Tree.Alias, Constants.Tree.Title)]
+    [PluginController(Constants.App.Name)]
+    [Umbraco.Web.Trees.Tree(Constants.App.Alias, Constants.Tree.Alias, Constants.Tree.Title)]
     public class TreeController : Umbraco.Web.Trees.TreeController
     {
         /// <summary>
@@ -43,10 +44,19 @@
         protected override TreeNodeCollection GetTreeNodes(string id, FormDataCollection queryStrings)
         {
             var treeNodeCollection = new TreeNodeCollection();
+            var treeNodes = Models.TreeNode.Register;
 
-            if(id == Constants.Tree.RootNodeId)
+            if(treeNodes != null && treeNodes.Any())
             {
-                treeNodeCollection.Add(this.CreateTreeNode(Constants.Tree.NodeId, Constants.Tree.RootNodeId, queryStrings, Constants.Tree.NodeName));
+                foreach(var treeNode in treeNodes)
+                {
+                    var tNode = Models.TreeNode.Create(treeNode.Key);
+
+                    if (id.Equals(tNode.ParentId))
+                    {
+                        treeNodeCollection.Add(this.CreateTreeNode(tNode.Id, tNode.ParentId, queryStrings, tNode.Name, tNode.Icon, tNode.HasChildNodes, tNode.RoutePath));
+                    }
+                }
             }
             return treeNodeCollection;
         }

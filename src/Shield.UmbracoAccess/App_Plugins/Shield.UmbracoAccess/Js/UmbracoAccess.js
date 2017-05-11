@@ -8,14 +8,14 @@
  * @description
  * Edit Controller for the Umbraco Access Edit view
  */
-angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', ['$scope', 'notificationsService', 'localizationService', 'userService', 'ShieldUmbracoAccessResource', function ($scope, notificationsService, localizationService, userService, resource) {
+angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', ['$scope', 'notificationsService', 'localizationService', 'ShieldResource', function ($scope, notificationsService, localizationService, resource) {
     $scope.loading = 0;
     $scope.error = null;
 
     $scope.init = function () {
         $scope.loading++;
 
-        resource.GetConfiguration().then(function success(response) {
+        resource.GetConfiguration('UmbracoAccess').then(function success(response) {
             if (response.data) {
                 $scope.configuration = response.data;
             } else {
@@ -197,7 +197,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
             }
         });
 
-        resource.PostConfiguration($scope.configuration, userService.getCurrentUser()).then(function (response) {
+        resource.PostConfiguration('UmbracoAccess', $scope.configuration).then(function (response) {
             if (response.data) {
                 notificationsService.success(localizationService.localize('Shield.UmbracoAccess.SuccessMessages_Updated'));
             } else {
@@ -206,30 +206,6 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
 
             $scope.loading--;
         });
-    };
-}]);
-
-/**
- * @ngdoc resource
- * @name UmbracoAccessResource
- * @function
- *
- * @description
- * Api resource for the Umbraco Access area
-*/
-angular.module('umbraco.resources').factory('ShieldUmbracoAccessResource', ['$http', function ($http) {
-    var apiRoot = Umbraco.Sys.ServerVariables.umbracoSettings.umbracoPath + 'backoffice/Shield/UmbracoAccessApi/';
-
-    return {
-        PostConfiguration: function (data, userId) {
-            return $http.post(apiRoot + 'PostConfiguration', angular.toJson({
-                curUserId: userId,
-                model: data
-            }));
-        },
-        GetConfiguration: function () {
-            return $http.get(apiRoot + 'GetConfiguration');
-        }
     };
 }]);
 /**
