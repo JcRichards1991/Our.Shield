@@ -159,6 +159,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.5.4\lib\System.Data.SqlServerCe.dll</HintPath>
@@ -172,6 +173,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
       <Private>True</Private>
@@ -250,8 +252,13 @@
       <HintPath>..\packages\UrlRewritingNet.2.0.7\lib\UrlRewritingNet.UrlRewriter.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationSettings.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Initialise\Application.cs" />
     <Compile Include="Models\Configuration.cs" />
@@ -260,6 +267,7 @@
     <Compile Include="Models\Journal.cs" />
     <Compile Include="Models\Operation.cs" />
     <Compile Include="Frisk.cs" />
+    <Compile Include="Operation\Module.cs" />
     <Compile Include="Persistance\Bal\ConfigurationContext.cs" />
     <Compile Include="Persistance\Dal\ConfigurationMigration.cs" />
     <Compile Include="Persistance\Bal\JournalContext.cs" />

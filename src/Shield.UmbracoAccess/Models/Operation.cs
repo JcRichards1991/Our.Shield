@@ -6,7 +6,7 @@
 
         public bool Execute(ViewModels.Configuration config)
         {
-            return UmbracoAccess.Operation.Module.Config(config);
+            return true;
         }
     }
 }
