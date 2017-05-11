@@ -17,6 +17,10 @@
 
         public abstract string ParentId { get; }
 
+        public abstract string ConfigurationId { get; }
+
+        public abstract int SortOrder { get; }
+
         public static IDictionary<string, Type> Register
         {
             get

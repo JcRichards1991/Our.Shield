@@ -301,13 +301,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield.MediaProtection\Js\MediaProtection.js" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\Css\UmbracoAccess.css" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\Js\UmbracoAccess.js" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\PropertyEditors\allowedIpsPropertyEditorView.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\MediaProtection\Edit.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\UmbracoAccess\Edit.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Js\Resources.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\MediaProtection.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\UmbracoAccess.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
     <Content Include="packages.config" />
     <Content Include="Views\Web.config" />
@@ -337,9 +339,9 @@
     <Content Include="Config\BaseRestExtensions.config" />
     <Content Include="Config\applications.config" />
     <Content Include="Config\404handlers.config" />
+    <Content Include="App_Plugins\Shield.MediaProtection\package.manifest" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\package.manifest" />
     <Content Include="App_Plugins\Shield\package.manifest" />
-    <Content Include="App_Plugins\Shield.MediaProtection\package.manifest" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -383,14 +385,16 @@
       <Project>{69737067-ab31-4c68-9c69-5e6ce00d1ab3}</Project>
       <Name>Shield.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Shield.MediaProtection\Shield.MediaProtection.csproj">
+      <Project>{3c5eda13-8468-4386-8f74-3d5678695abe}</Project>
+      <Name>Shield.MediaProtection</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Shield.UmbracoAccess\Shield.UmbracoAccess.csproj">
       <Project>{58fdce32-1389-4768-882e-281ceec508cd}</Project>
       <Name>Shield.UmbracoAccess</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Plugins\Shield.MediaProtection\Lang\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

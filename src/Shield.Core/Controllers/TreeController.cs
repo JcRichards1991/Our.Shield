@@ -1,5 +1,6 @@
 ﻿namespace Shield.Core.Controllers
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http.Formatting;
     using Umbraco.Web.Models.Trees;
@@ -48,13 +49,24 @@
 
             if(treeNodes != null && treeNodes.Any())
             {
-                foreach(var treeNode in treeNodes)
+                var tNodes = treeNodes.Select(x => Models.TreeNode.Create(x.Key)).OrderBy(x => x.SortOrder);
+                foreach(var treeNode in tNodes)
                 {
-                    var tNode = Models.TreeNode.Create(treeNode.Key);
-
-                    if (id.Equals(tNode.ParentId))
+                    if (id.Equals(treeNode.ParentId))
                     {
-                        treeNodeCollection.Add(this.CreateTreeNode(tNode.Id, tNode.ParentId, queryStrings, tNode.Name, tNode.Icon, tNode.HasChildNodes, tNode.RoutePath));
+                        var qsList = queryStrings.ToList();
+                        qsList.Add(new KeyValuePair<string, string>("configurationId", treeNode.ConfigurationId));
+
+                        var qs = new FormDataCollection(qsList);
+
+                        treeNodeCollection.Add(
+                            this.CreateTreeNode(treeNode.Id,
+                                treeNode.ParentId,
+                                qs,
+                                treeNode.Name,
+                                treeNode.Icon,
+                                treeNode.HasChildNodes,
+                                treeNode.RoutePath));
                     }
                 }
             }

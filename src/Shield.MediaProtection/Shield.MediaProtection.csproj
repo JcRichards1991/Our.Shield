@@ -189,7 +189,9 @@
     <Compile Include="ViewModels\Configuration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\Shield\Backoffice\MediaProtection\Edit.html" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Js\MediaProtection.js" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Lang\en-us.xml" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\MediaProtection.html" />
     <Content Include="Js\Controllers.js" />
   </ItemGroup>
   <ItemGroup>
@@ -197,10 +199,7 @@
     <None Include="App_Plugins\Shield.MediaProtection\package.manifest" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Plugins\Shield.MediaProtection\Js\" />
-    <Folder Include="App_Plugins\Shield.MediaProtection\Lang\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Shield.Core\Shield.Core.csproj">
       <Project>{69737067-ab31-4c68-9c69-5e6ce00d1ab3}</Project>

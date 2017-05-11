@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language alias="en" intName="English (US)" localName="English (US)" lcid="" culture="en-US">
+  <creator>
+    <name>Joshua Richards</name>
+  </creator>
+
+  <area alias="Shield.MediaProtection">
+  </area>
+
+  <area alias="Shield.MediaProtection.Properties">
+  </area>
+
+  <area alias="Shield.MediaProtection.SuccessMessages">
+  </area>
+
+  <area alias="Shield.UmbracoAccess.AlertMessages">
+  </area>
+
+  <area alias="Shield.MediaProtection.ErrorMessages">
+  </area>
+</language>

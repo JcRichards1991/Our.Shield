@@ -8,7 +8,7 @@
  * @description
  * Edit Controller for the Umbraco Access Edit view
  */
-angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', ['$scope', 'notificationsService', 'localizationService', 'ShieldResource', function ($scope, notificationsService, localizationService, resource) {
+angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', ['$scope', '$routeParams', 'notificationsService', 'localizationService', 'ShieldResource', function ($scope, $routeParams, notificationsService, localizationService, resource) {
     $scope.loading = 0;
     $scope.error = null;
 

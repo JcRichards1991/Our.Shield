@@ -10,10 +10,14 @@ namespace Shield.UmbracoAccess.Models
 
         public override bool HasChildNodes => false;
 
-        public override string Icon => "";
+        public override string Icon => "icon-shield";
 
-        public override string RoutePath => "";
+        public override string RoutePath => $"{Core.Constants.App.Alias}/{Core.Constants.Tree.Alias}/{nameof(UmbracoAccess)}/{this.Id}";
 
         public override string ParentId => Core.Constants.Tree.RootNodeId;
+
+        public override string ConfigurationId => nameof(UmbracoAccess);
+
+        public override int SortOrder => 0;
     }
 }

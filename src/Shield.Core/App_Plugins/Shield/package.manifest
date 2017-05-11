@@ -1,2 +1,5 @@
 ﻿{
+  "javascript": [
+    "~/App_Plugins/Shield/Backoffice/Js/Resources.js"
+  ]
 }

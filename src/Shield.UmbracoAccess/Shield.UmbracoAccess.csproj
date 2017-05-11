@@ -205,7 +205,7 @@
     <Content Include="App_Plugins\Shield.UmbracoAccess\Css\UmbracoAccess.css" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\Js\UmbracoAccess.js" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\PropertyEditors\allowedIpsPropertyEditorView.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\UmbracoAccess\Edit.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\UmbracoAccess.html" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\Lang\en-us.xml" />
     <Content Include="PropertyEditors\IpAddress\Js\AllowedIpsPropertyEditorController.js" />
     <Content Include="Js\Controllers.js" />

@@ -4,16 +4,20 @@ namespace Shield.MediaProtection.Models
 {
     public class TreeNode : Core.Models.TreeNode
     {
-        public override bool HasChildNodes => false;
-
-        public override string Icon => "";
-
         public override string Id => "-323232";
 
         public override string Name => "Media Protection";
 
+        public override bool HasChildNodes => false;
+
+        public override string Icon => "icon-shield";
+
+        public override string RoutePath => $"{Core.Constants.App.Alias}/{Core.Constants.Tree.Alias}/{nameof(MediaProtection)}/{this.Id}";
+
         public override string ParentId => Core.Constants.Tree.RootNodeId;
 
-        public override string RoutePath => "";
+        public override string ConfigurationId => nameof(MediaProtection);
+
+        public override int SortOrder => 1;
     }
 }
