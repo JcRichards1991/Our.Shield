@@ -13,7 +13,7 @@ var insert = require('gulp-insert');
 var src = 'src/Shield'
 var jsOutput = 'App_Plugins/Shield';
 var jsFiles = [
-	{
+    {
 	    subFiles: [
             src + '.UmbracoAccess/Js/*.js',
             src + '.UmbracoAccess/PropertyEditors/IpAddress/Js/*.js'
@@ -21,7 +21,15 @@ var jsFiles = [
         output: src + '.UmbracoAccess/' + jsOutput + '.UmbracoAccess/js',
 	    name: 'UmbracoAccess.js',
 	    nameMin: 'UmbracoAccess.min.js'
-	}
+    },
+    {
+        subFiles: [
+            src + '.MediaProtection/Js/*.js'
+        ],
+        output: src + '.MediaProtection/' + jsOutput + '.MediaProtection/js',
+        name: 'MediaProtection.js',
+        nameMin: 'MediaProtection.min.js'
+    }
 ];
 
 var cssOutput = 'App_Plugins/Shield';
