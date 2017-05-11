@@ -8,7 +8,7 @@
  * Api resource for the Umbraco Access area
 */
 angular.module('umbraco.resources').factory('ShieldUmbracoAccessResource', ['$http', function ($http) {
-    var apiRoot = 'backoffice/Shield/UmbracoAccessApi/';
+    var apiRoot = Umbraco.Sys.ServerVariables.umbracoSettings.umbracoPath + 'backoffice/Shield/UmbracoAccessApi/';
 
     return {
         PostConfiguration: function (data, userId) {
