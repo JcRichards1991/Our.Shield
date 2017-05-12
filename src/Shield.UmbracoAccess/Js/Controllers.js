@@ -15,8 +15,8 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
         $scope.loading++;
 
         resource.GetConfiguration('UmbracoAccess').then(function success(response) {
-            if (response.data) {
-                $scope.configuration = response.data;
+            if (response.data && response.data.Data) {
+                $scope.configuration = response.data.Data;
             } else {
                 notificationsService.error(localizationService.localize('Shield.UmbracoAccess.ErrorMessages_GetConfiguration'));
                 $scope.configuration = {
