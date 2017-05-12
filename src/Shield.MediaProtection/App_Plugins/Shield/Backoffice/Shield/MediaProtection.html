@@ -1,11 +1,33 @@
-﻿<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+﻿<umb-pane>
+    <umb-header name="Media Protection"
+                hide-icon="true"
+                hide-description="true"
+                hide-alias="true">
+        <h1>Media Protection</h1>
+    </umb-header>
+    <div class="umb-panel-body umb-scrollable row-fluid" ng-controller="Shield.Editors.MediaProtection.EditController" ng-init="init()">
+        <umb-editor-view>
+            <form novalidate>
+                <umb-editor-container>
+                    <div class="form-horizontal">
+                        <div class="umb-pane">
+                            <umb-property property="property" ng-repeat="property in properties track by $index" ng-show="property.visible">
+                                <umb-editor model="property"></umb-editor>
+                            </umb-property>
+                        </div>
+                    </div>
+                </umb-editor-container>
+                <umb-editor-footer>
+                    <umb-editor-footer-content-right>
+                        <umb-button type="submit"
+                                    label="Update"
+                                    button-style="success"
+                                    shortcut="ctrl+s"
+                                    state="page.saveButtonState">
+                        </umb-button>
+                    </umb-editor-footer-content-right>
+                </umb-editor-footer>
+            </form>
+        </umb-editor-view>
+    </div>
+</umb-pane>

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Web.Helpers;
     using System.Web.Mvc;
     using Umbraco.Web.Editors;
     using Umbraco.Web.Mvc;
@@ -13,7 +14,7 @@
     /// <example>
     /// Endpoint: /umbraco/backoffice/Shield/ShieldApi/{Action}
     /// </example>
-    [PluginController(Constants.App.Name)]
+    [PluginController(Constants.App.Alias)]
     public class ShieldApiController : UmbracoAuthorizedJsonController
     {
         /// <summary>
@@ -66,17 +67,24 @@
         /// <returns>
         /// The configuration for the Umbraco Access area.
         /// </returns>
-        [HttpGet]
-        public Models.Configuration GetConfiguration(string id)
+        public JsonNetResult GetConfiguration(string id)
         {
             var op = Models.Operation<Models.Configuration>.Create(id);
 
             if(op == null)
             {
-                return null;
+                return new JsonNetResult
+                {
+                    Data = null
+                };
             }
 
-            return op.ReadConfiguration();
+            var config = op.ReadConfiguration();
+
+            return new JsonNetResult
+            {
+                Data = config
+            };
         }
 
         /// <summary>
@@ -84,16 +92,24 @@
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<Models.Journal> GetJournals(string id, int page, int itemsPerPage)
+        public JsonNetResult GetJournals(string id, int page, int itemsPerPage)
         {
             var op = Models.Operation<Models.Configuration>.Create(id);
 
             if(op == null)
             {
-                return Enumerable.Empty<Models.Journal>();
+                return new JsonNetResult
+                {
+                    Data = null
+                };
             }
 
-            return op.ReadJournals(page, itemsPerPage);
+            var journals = op.ReadJournals(page, itemsPerPage).ToArray();
+
+            return new JsonNetResult
+            {
+                Data = journals
+            };
         }
     }
 }
