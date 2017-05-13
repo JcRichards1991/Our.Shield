@@ -4,6 +4,11 @@
     {
         public override string Id => nameof(MediaProtection);
 
+        public override bool Init()
+        {
+            return false;
+        }
+
         public bool Execute(ViewModels.Configuration config)
         {
             return true;

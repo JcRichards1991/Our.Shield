@@ -18,12 +18,6 @@
         [NullSetting(NullSetting = NullSettings.NotNull)]
         [Length(255)]
         public string Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Last Modified date.
-        /// </summary>
-        [NullSetting(NullSetting = NullSettings.NotNull)]
-        public DateTime LastModified { get; set; }
         
         /// <summary>
         /// Gets or sets the Value (should be json).

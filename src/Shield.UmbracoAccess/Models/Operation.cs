@@ -19,12 +19,16 @@ namespace Shield.UmbracoAccess.Models
             }
         }
 
-        public override bool Execute(Core.Models.Configuration config)
+        public override bool Execute(Core.Models.Configuration c)
         {
+            System.Diagnostics.Debug.WriteLine("START running execute");
+            var config = c as ViewModels.Configuration;
+
             Fortress.UnwatchAll(Id);
 
-            var id = Fortress.Watch(Id, new System.Text.RegularExpressions.Regex("(.*)"), 2, (count, app) =>
+            var id = Fortress.Watch(Id, new System.Text.RegularExpressions.Regex("joniff"), 2, (count, app) =>
             {
+                System.Diagnostics.Debug.WriteLine("woohoo Joniff");
                 return Fortress.Cycle.Continue;
 
                 //if(config == null || !config.Enable)

@@ -55,11 +55,12 @@
         /// </returns>
         public static bool Write(string id, Models.Configuration config)
         {
+            config.LastModified = DateTime.UtcNow;
+
             var db = ApplicationContext.Current.DatabaseContext.Database;
             var record = new Dal.Configuration
             {
                 Id = id,
-                LastModified = DateTime.UtcNow,
                 Value = JsonConvert.SerializeObject(config)
             };
 
