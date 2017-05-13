@@ -21,19 +21,24 @@
         /// <returns>
         /// The Configuration as the desired type.
         /// </returns>
-        public static Models.Configuration Read(string id, Type type)
+        public static Models.Configuration Read(string id, Type type, Models.Configuration defaultConfiguration)
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
             var record = db.SingleOrDefault<Dal.Configuration>((object)id);
 
             if (record == null || string.IsNullOrEmpty(record.Value))
             {
-                return null;
+                return defaultConfiguration;
             }
 
-            var config = JsonConvert.DeserializeObject(record.Value, type) as Models.Configuration;
-
-            return config;
+            try
+            {
+                return JsonConvert.DeserializeObject(record.Value, type) as Models.Configuration;
+            }
+            catch (JsonSerializationException)
+            {
+                return defaultConfiguration;
+            }
         }
 
         /// <summary>

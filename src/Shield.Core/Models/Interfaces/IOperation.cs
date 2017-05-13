@@ -15,5 +15,7 @@
         Configuration ReadConfiguration();
 
         IEnumerable<Journal> ReadJournals(int page, int itemsPerPage);
+
+        Configuration DefaultConfiguration { get; }
     }
 }

@@ -33,7 +33,7 @@
                 if(o.Init())
                 {
                     Register(o);
-                    var config = ReadConfiguration(o.Id);
+                    var config = ReadConfiguration(o.Id, o.DefaultConfiguration);
 
                     if (config != null && config.Enable)
                     {
@@ -53,10 +53,10 @@
             return Persistance.Bal.JournalContext.Write(id, journal);
         }
 
-        public Models.Configuration ReadConfiguration(string id)
+        public Models.Configuration ReadConfiguration(string id, Models.Configuration defaultConfiguration)
         {
             return Persistance.Bal.ConfigurationContext.Read(id,
-                    Models.Operation<Models.Configuration>.Register[id].BaseType.GenericTypeArguments[0]);
+                    Models.Operation<Models.Configuration>.Register[id].BaseType.GenericTypeArguments[0], defaultConfiguration);
         }
 
         public IEnumerable<Models.Journal> ReadJournals(string id, int page, int itemsPerPage)
@@ -76,7 +76,7 @@
 
             if (config == null)
             {
-                config = ReadConfiguration(id);
+                config = ReadConfiguration(id, o.DefaultConfiguration);
 
                 if (config == null)
                 {

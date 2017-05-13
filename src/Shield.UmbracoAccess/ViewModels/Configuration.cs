@@ -39,7 +39,7 @@
         /// Gets or sets the Unauthorised URL by Content Picker.
         /// </summary>
         [JsonProperty("unauthorisedUrlContentPicker")]
-        public int UnauthorisedUrlContentPicker { get; set; }
+        public int? UnauthorisedUrlContentPicker { get; set; }
 
         /// <summary>
         /// Gets or sets the Unauthorised URL.

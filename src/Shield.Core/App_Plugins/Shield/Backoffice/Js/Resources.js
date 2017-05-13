@@ -12,14 +12,26 @@
 
         return {
             PostConfiguration: function (id, model) {
-                var data = {
-                    id: id,
-                    model: model
-                }
-                return $http.post(apiRoot + 'PostConfiguration', data);
+                return $http({
+                    method: 'POST',
+                    url: apiRoot + 'PostConfiguration?id=' + id,
+                    data: angular.toJson(model),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+
+                //return $.ajax({
+                //    type: "POST",
+                //    data: JSON.stringify(model),
+                //    url: apiRoot + 'PostConfiguration?id=' + id,
+                //    contentType: "application/json"
+                //});
+
+                //return $http.post(apiRoot + 'PostConfiguration?id=' + id, { model: model });
             },
             GetConfiguration: function (id) {
-                return $http.Get(apiRoot + 'GetConfiguration?id=' + id);
+                return $http.get(apiRoot + 'GetConfiguration?id=' + id);
             }
         };
     }]);
