@@ -27,6 +27,14 @@
             }
         }
 
+        public virtual Configuration DefaultConfiguration
+        {
+            get
+            {
+                return default(C);
+            }
+        }
+
         /// <summary>
         /// Create a derived Position with a particular Id
         /// </summary>
@@ -84,7 +92,7 @@
         /// </returns>
         public Configuration ReadConfiguration()
         {
-            return Operation.Executor.Instance.ReadConfiguration(this.Id);
+            return Operation.Executor.Instance.ReadConfiguration(this.Id, DefaultConfiguration);
         }
 
         /// <summary>

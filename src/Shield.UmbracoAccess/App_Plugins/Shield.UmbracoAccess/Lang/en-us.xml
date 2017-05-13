@@ -31,7 +31,7 @@
     <key alias="UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a disallowed IP Address.</key>
     <key alias="UnauthorisedUrlContentPickerDescription">Select the content node to redirect/rewrite the user to when from a disallowed IP Address.</key>
 
-    <key alias="AllowedIPsLabel">"White-listed IP address(es)</key>
+    <key alias="AllowedIPsLabel">White-listed IP address(es)</key>
     <key alias="AllowedIPsDescription">The allowed IP address(es) that can access the Backend Office Access Url.</key>
   </area>
 

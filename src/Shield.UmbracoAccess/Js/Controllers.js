@@ -20,9 +20,6 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
             } else {
                 notificationsService.error(localizationService.localize('Shield.UmbracoAccess.ErrorMessages_GetConfiguration'));
                 $scope.configuration = {
-                    backendAccessUrl: '~/umbraco',
-                    redirectRewrite: 0,
-                    unauthorisedUrlType: 0,
                     ipAddresses: []
                 };
             }
@@ -31,13 +28,14 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 label: localizationService.localize('Shield.UmbracoAccess.Properties_EnableLabel'),
                 description: localizationService.localize('Shield.UmbracoAccess.Properties_EnableDescription'),
                 view: 'boolean',
+                alias: 'enable',
                 value: $scope.configuration.enable,
                 visible: true
             }, {
                 label: localizationService.localize('Shield.UmbracoAccess.Properties_BackendAccessUrlLabel'),
                 description: localizationService.localize('Shield.UmbracoAccess.Properties_BackendAccessUrlDescription'),
                 view: 'textbox',
-                alias: 'backOfficeAccessUrl',
+                alias: 'backendAccessUrl',
                 value: $scope.configuration.backendAccessUrl,
                 visible: true
             },
@@ -121,7 +119,7 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
                 label: localizationService.localize('Shield.UmbracoAccess.Properties_AllowedIPsLabel'),
                 description: localizationService.localize('Shield.UmbracoAccess.Properties_AllowedIPsDescription'),
                 view: '/App_Plugins/Shield.UmbracoAccess/PropertyEditors/allowedIpsPropertyEditorView.html',
-                alias: 'allowedIPs',
+                alias: 'ipAddresses',
                 config: {
                     showIpv4: true
                 },
@@ -165,34 +163,9 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditControlle
         $scope.loading++;
 
         angular.forEach($scope.properties, function (property, key) {
-            switch (property.alias) {
-                case 'backOfficeAccessUrl':
-                    $scope.configuration.backendAccessUrl = property.value;
-                    break;
-
-                case 'redirectRewrite':
-                    $scope.configuration.redirectRewrite = property.value;
-                    break;
-
-                case 'unauthorisedUrlType':
-                    $scope.configuration.unauthorisedUrlType = property.value;
-                    break;
-
-                case 'unauthorisedUrl':
-                    $scope.configuration.unauthorisedUrl = property.value;
-                    break;
-
-                case 'unauthorisedUrlXPath':
-                    $scope.configuration.unauthorisedUrlXPath = property.value;
-                    break;
-
-                case 'unauthorisedUrlContentPicker':
-                    $scope.configuration.unauthorisedUrlContentPicker = property.value;
-                    break;
-
-                case 'allowedIPs':
-                    $scope.configuration.ipAddresses = property.value;
-                    break;
+            $scope.configuration[property.alias] = property.value;
+            if (property.alias == 'enable') {
+                $scope.configuration.enable = parseInt(property.value) === 1 ? true : false;
             }
         });
 

@@ -270,7 +270,7 @@
     <Compile Include="Models\Journal.cs" />
     <Compile Include="Models\Operation.cs" />
     <Compile Include="Frisk.cs" />
-    <Compile Include="Operation\Module.cs" />
+    <Compile Include="Operation\Fortress.cs" />
     <Compile Include="Persistance\Bal\ConfigurationContext.cs" />
     <Compile Include="Persistance\Dal\ConfigurationMigration.cs" />
     <Compile Include="Persistance\Bal\JournalContext.cs" />
