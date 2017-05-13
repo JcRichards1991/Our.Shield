@@ -221,6 +221,8 @@ namespace Shield.Core.Operation
 
         private void Application_BeginRequest(object source, EventArgs e)
         {
+            Executor.Instance.Poll();
+            
             string filePath = ((HttpApplication)source).Context.Request.FilePath;
             int count = 0;
 

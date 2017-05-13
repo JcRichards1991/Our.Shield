@@ -45,12 +45,8 @@
             //});
 
             var config = model.ToObject(op.GetType().BaseType.GenericTypeArguments[0]) as Models.Configuration;
-            if (op.WriteConfiguration(config))
-            {
-                op.Execute(config);
-                return true;
-            }
-            return false;
+
+            return op.WriteConfiguration(config);
         }
 
 
