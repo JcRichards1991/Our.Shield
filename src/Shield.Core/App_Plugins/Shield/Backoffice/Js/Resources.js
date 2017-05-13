@@ -11,24 +11,15 @@
         var apiRoot = 'backoffice/Shield/ShieldApi/';
 
         return {
-            PostConfiguration: function (id, data) {
-                return $http({
-                    method: 'POST',
-                    url: apiRoot + 'PostConfiguration',
-                    data: {
-                        'id': id,
-                        'model': data
-                    },
-                });
+            PostConfiguration: function (id, model) {
+                var data = {
+                    id: id,
+                    model: model
+                }
+                return $http.post(apiRoot + 'PostConfiguration', data);
             },
             GetConfiguration: function (id) {
-                return $http({
-                    method: 'GET',
-                    url: apiRoot + 'GetConfiguration',
-                    params: {
-                        id: id
-                    }
-                });
+                return $http.Get(apiRoot + 'GetConfiguration?id=' + id);
             }
         };
     }]);
