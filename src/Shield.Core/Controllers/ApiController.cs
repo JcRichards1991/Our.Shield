@@ -1,12 +1,10 @@
 ﻿namespace Shield.Core.Controllers
 {
-    using System;
     using System.Linq;
     using System.Web.Http;
     using Umbraco.Web.Editors;
     using Umbraco.Web.Mvc;
     using Newtonsoft.Json.Linq;
-    using Newtonsoft.Json;
 
     /// <summary>
     /// Api Controller for the Umbraco Access area of the custom section
@@ -36,6 +34,12 @@
         public bool PostConfiguration(string id, [FromBody] JObject model)
         {
             var op = Models.Operation<Models.Configuration>.Create(id);
+
+            if(op == null)
+            {
+                return false;
+            }
+
             var curUmbracoUser = UmbracoContext.Security.CurrentUser;
 
             //op.WriteJournal(new Models.Journal

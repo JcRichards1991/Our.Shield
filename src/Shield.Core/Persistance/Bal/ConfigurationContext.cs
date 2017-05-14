@@ -3,6 +3,7 @@
     using Newtonsoft.Json;
     using System;
     using Umbraco.Core;
+    using Umbraco.Core.Logging;
 
     /// <summary>
     /// The Configuration Context.
@@ -23,21 +24,27 @@
         /// </returns>
         public static Models.Configuration Read(string id, Type type, Models.Configuration defaultConfiguration)
         {
-            var db = ApplicationContext.Current.DatabaseContext.Database;
-            var record = db.SingleOrDefault<Dal.Configuration>((object)id);
-
-            if (record == null || string.IsNullOrEmpty(record.Value))
-            {
-                return defaultConfiguration;
-            }
-
             try
             {
+                var db = ApplicationContext.Current.DatabaseContext.Database;
+                var record = db.SingleOrDefault<Dal.Configuration>((object)id);
+
+                if (record == null || string.IsNullOrEmpty(record.Value))
+                {
+                    return defaultConfiguration;
+                }
+
                 return JsonConvert.DeserializeObject(record.Value, type) as Models.Configuration;
             }
-            catch (JsonSerializationException)
+            catch (JsonSerializationException jEx)
             {
-                return defaultConfiguration;
+                LogHelper.Error(typeof(ConfigurationContext), $"Error Deserialising configuration with id: {id}; to type:{type}", jEx);
+                return null;
+            }
+            catch(Exception ex)
+            {
+                LogHelper.Error(typeof(ConfigurationContext), $"Error reading configuration with id: {id}", ex);
+                return null;
             }
         }
 
@@ -57,23 +64,31 @@
         {
             config.LastModified = DateTime.UtcNow;
 
-            var db = ApplicationContext.Current.DatabaseContext.Database;
             var record = new Dal.Configuration
             {
                 Id = id,
                 Value = JsonConvert.SerializeObject(config)
             };
 
-            if (db.Exists<Dal.Configuration>(id))
+            try
             {
-                db.Update(record);
-            }
-            else
-            {
-                db.Insert(record);
-            }
+                var db = ApplicationContext.Current.DatabaseContext.Database;
+                if (db.Exists<Dal.Configuration>(id))
+                {
+                    db.Update(record);
+                }
+                else
+                {
+                    db.Insert(record);
+                }
 
-            return true;
+                return true;
+            }
+            catch(Exception ex)
+            {
+                LogHelper.Error(typeof(ConfigurationContext), $"Error writing configuration with id: {id}; With data: {record.Value}", ex);
+            }
+            return false;
         }
     }
 }

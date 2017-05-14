@@ -9,7 +9,11 @@
     public class Executor
     {
         private const int taskLockTimeout = 1000;       //  in millisecs
-        private const int poll = 60 ;               //  in secs
+#if DEBUG
+        private const int poll = 60;                    //  in secs
+#else
+        private const int poll = 60 * 10;               //in secs
+#endif
 
         private static readonly Lazy<Executor> _instance = new Lazy<Executor>(() => new Executor());
 

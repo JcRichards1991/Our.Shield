@@ -1,293 +1,189 @@
-(function(root){ 
+﻿$(function (root) {
+    /**
+     * @ngdoc controller
+     * @name UmbracoAccess.EditController
+     * @function
+     *
+     * @description
+     * Edit Controller for the Umbraco Access Edit view
+     */
+    angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', ['$scope', '$routeParams', 'notificationsService', 'localizationService', 'ShieldResource', function ($scope, $routeParams, notificationsService, localizationService, resource) {
+        function IsValidIpAddress(ip, edit) {
+            ip.valid = true;
+            ip.errorMsg = '';
+            ip.errorState = null;
 
-/**
- * @ngdoc controller
- * @name UmbracoAccess.EditController
- * @function
- *
- * @description
- * Edit Controller for the Umbraco Access Edit view
- */
-angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', ['$scope', '$routeParams', 'notificationsService', 'localizationService', 'ShieldResource', function ($scope, $routeParams, notificationsService, localizationService, resource) {
-    $scope.loading = 0;
-    $scope.error = null;
-
-    $scope.init = function () {
-        $scope.loading++;
-
-        resource.GetConfiguration('UmbracoAccess').then(function success(response) {
-            if (response.data && response.data.Data) {
-                $scope.configuration = response.data.Data;
-            } else {
-                notificationsService.error(localizationService.localize('Shield.UmbracoAccess.ErrorMessages_GetConfiguration'));
-                $scope.configuration = {
-                    ipAddresses: []
-                };
+            if (ip.ipAddress === '') {
+                ip.valid = false;
+                ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpRequired');
+                ip.errorState = 'Required';
+                return false;
             }
 
-            $scope.properties = [{
-                label: localizationService.localize('Shield.UmbracoAccess.Properties_EnableLabel'),
-                description: localizationService.localize('Shield.UmbracoAccess.Properties_EnableDescription'),
-                view: 'boolean',
-                alias: 'enable',
-                value: $scope.configuration.enable,
-                visible: true
-            }, {
-                label: localizationService.localize('Shield.UmbracoAccess.Properties_BackendAccessUrlLabel'),
-                description: localizationService.localize('Shield.UmbracoAccess.Properties_BackendAccessUrlDescription'),
-                view: 'textbox',
-                alias: 'backendAccessUrl',
-                value: $scope.configuration.backendAccessUrl,
-                visible: true
-            },
-            {
-                label: localizationService.localize('Shield.UmbracoAccess.Properties_RedirectRewriteLabel'),
-                description: localizationService.localize('Shield.UmbracoAccess.Properties_RedirectRewriteDescription'),
-                view: 'dropdown',
-                alias: 'redirectRewrite',
-                config: {
-                    items: [{
-                        value: localizationService.localize('Shield.UmbracoAccess.Properties_RedirectRewriteRedirectText'),
-                        id: 0
-                    }, {
-                        value: localizationService.localize('Shield.UmbracoAccess.Properties_RedirectRewriteRewriteText'),
-                        id: 1
-                    }]
-                },
-                value: $scope.configuration.redirectRewrite,
-                visible: true
-            },
-            {
-                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeLabel'),
-                description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeDescription'),
-                view: 'dropdown',
-                alias: 'unauthorisedUrlType',
-                config: {
-                    items: [{
-                        value: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeUrlText'),
-                        id: 0
-                    },
-                    {
-                        value: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeXPathText'),
-                        id: 1
-                    },
-                    {
-                        value: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeContentPickerText'),
-                        id: 2
-                    }],
-                    multiple: false
-                },
-                value: $scope.configuration.unauthorisedUrlType,
-                visible: true
-            },
-            {
-                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel'),
-                description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlDescription'),
-                view: 'textbox',
-                alias: 'unauthorisedUrl',
-                value: $scope.configuration.unauthorisedUrl,
-                visible: $scope.configuration.unauthorisedUrlType === 0
-            },
-            {
-                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel'),
-                description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlXPathDescription'),
-                view: 'textbox',
-                alias: 'unauthorisedUrlXPath',
-                value: $scope.configuration.unauthorisedUrlXPath,
-                visible: $scope.configuration.unauthorisedUrlType === 1
-            },
-            {
-                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel'),
-                description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlContentPickerDescription'),
-                view: 'contentpicker',
-                alias: 'unauthorisedUrlContentPicker',
-                config: {
-                    multiPicker: "0",
-                    entityType: "Document",
-                    startNode: {
-                        query: "",
-                        type: "content",
-                        id: -1
-                    },
-                    filter: "",
-                    minNumber: 0,
-                    maxNumber: 1
-                },
-                value: $scope.configuration.unauthorisedUrlContentPicker,
-                visible: $scope.configuration.unauthorisedUrlType === 2
-            },
-            {
-                label: localizationService.localize('Shield.UmbracoAccess.Properties_AllowedIPsLabel'),
-                description: localizationService.localize('Shield.UmbracoAccess.Properties_AllowedIPsDescription'),
-                view: '/App_Plugins/Shield.UmbracoAccess/PropertyEditors/allowedIpsPropertyEditorView.html',
-                alias: 'ipAddresses',
-                config: {
-                    showIpv4: true
-                },
-                value: $scope.configuration.ipAddresses,
-                visible: true
-            }];
-
-            $scope.unauthorisedUrlTypeProperty = $scope.properties.filter((property) => property.alias === 'unauthorisedUrlType')[0];
-
-            $scope.$watch('unauthorisedUrlTypeProperty.value', function (newVal, oldVal) {
-                var unauthorisedUrlProperty = $scope.properties.filter((property) => property.alias === 'unauthorisedUrl')[0],
-                    unauthorisedUrlXPathProperty = $scope.properties.filter((property) => property.alias === 'unauthorisedUrlXPath')[0],
-                    unauthorisedUrlContentPickerProperty = $scope.properties.filter((property) => property.alias === 'unauthorisedUrlContentPicker')[0];
-
-                switch (newVal) {
-                    case 0:
-                        unauthorisedUrlProperty.visible = true;
-                        unauthorisedUrlXPathProperty.visible = false;
-                        unauthorisedUrlContentPickerProperty.visible = false;
-                        break;
-
-                    case 1:
-                        unauthorisedUrlProperty.visible = false;
-                        unauthorisedUrlXPathProperty.visible = true;
-                        unauthorisedUrlContentPickerProperty.visible = false;
-                        break;
-
-                    case 2:
-                        unauthorisedUrlProperty.visible = false;
-                        unauthorisedUrlXPathProperty.visible = false;
-                        unauthorisedUrlContentPickerProperty.visible = true;
-                        break;
-                }
-            });
-
-            $scope.loading--;
-        });
-    };
-
-    $scope.submitUmbracoAccess = function () {
-        $scope.loading++;
-
-        angular.forEach($scope.properties, function (property, key) {
-            $scope.configuration[property.alias] = property.value;
-            if (property.alias == 'enable') {
-                $scope.configuration.enable = parseInt(property.value) === 1 ? true : false;
-            }
-        });
-
-        resource.PostConfiguration('UmbracoAccess', $scope.configuration).then(function (response) {
-            if (response.data) {
-                notificationsService.success(localizationService.localize('Shield.UmbracoAccess.SuccessMessages_Updated'));
-            } else {
-                notificationsService.error(localizationService.localize('Shield.UmbracoAccess.ErrorMessages_UpdateConfiguration'));
-            }
-
-            $scope.loading--;
-        });
-    };
-}]);
-/**
- * @ngdoc controller
- * @name PropertyEditors.AllowedIpsController
- * @function
- *
- * @description
- * Handles the Umbraco Access area of the custom section
- */
-angular.module('umbraco').controller('Shield.PropertyEditors.AllowedIpsController', ['$scope', 'localizationService', function ($scope, localizationService) {
-
-    function IsValidIpAddress(ip, edit) {
-        ip.valid = true;
-        ip.errorMsg = '';
-        ip.errorState = null;
-
-        if (ip.ipAddress === '') {
-            ip.valid = false;
-            ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpRequired');
-            ip.errorState = 'Required';
-            return false;
-        }
-
-        //Check if IPv4 with optional cidr
-        var pattern = /^(?=\d+\.\d+\.\d+\.\d+($|\/))(([1-9]?\d|1\d\d|2[0-4]\d|25[0-5])\.?){4}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/g;
-        var valid = pattern.test(ip.ipAddress);
-
-        if (!valid) {
-            //Check if IPv6 with optional cidr
-            pattern = /^s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:)))(%.+)?s*(\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))?$/g;
-            valid = pattern.test(ip.ipAddress)
+            //Check if IPv4 with optional cidr
+            var pattern = /^(?=\d+\.\d+\.\d+\.\d+($|\/))(([1-9]?\d|1\d\d|2[0-4]\d|25[0-5])\.?){4}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/g;
+            var valid = pattern.test(ip.ipAddress);
 
             if (!valid) {
+                //Check if IPv6 with optional cidr
+                pattern = /^s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:)))(%.+)?s*(\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))?$/g;
+                valid = pattern.test(ip.ipAddress)
+
+                if (!valid) {
+                    ip.valid = false;
+                    ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpInvalid');
+                    ip.errorState = "Invalid";
+                    return false;
+                }
+            }
+
+            var index = edit ? 1 : 0;
+
+            if ($scope.IpAddressProperty.value.filter((x) => x.ipAddress === ip.ipAddress)[index] !== undefined) {
                 ip.valid = false;
-                ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpInvalid');
-                ip.errorState = "Invalid";
+                ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpDuplicate');
+                ip.errorState = "Duplicate";
                 return false;
+            }
+
+            return true;
+        };
+
+        $scope.loading = 0;
+        $scope.error = null;
+
+        $scope.IpAddressProperty = {
+            value: [],
+            newIp: {
+                ipAddress: '',
+                description: '',
+                valid: true,
+                errorMsg: '',
+                errorState: null
             }
         }
 
-        var index = edit ? 1 : 0;
+        $scope.init = function () {
+            $scope.loading++;
 
-        if ($scope.model.value.filter((x) => x.ipAddress === ip.ipAddress)[index] !== undefined) {
-            ip.valid = false;
-            ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpDuplicate');
-            ip.errorState = "Duplicate";
-            return false;
-        }
+            resource.GetConfiguration('UmbracoAccess').then(function success(response) {
+                if (response.data && response.data.Data) {
+                    $scope.configuration = response.data.Data;
 
-        return true;
-    };
+                    angular.forEach($scope.configuration.ipAddresses, function (ip, index) {
+                        $scope.IpAddressProperty.value.push({
+                            ipAddress: ip.ipAddress,
+                            description: ip.description,
+                            editMode: false,
+                            valid: true,
+                            errorMsg: '',
+                            errorState: null
+                        });
+                    });
 
-    $scope.newIp = {
-        ipAddress: '',
-        description: '',
-        valid: true,
-        errorMsg: '',
-        errorState: null
-    };
+                } else {
+                    notificationsService.error(localizationService.localize('Shield.UmbracoAccess.ErrorMessages_GetConfiguration'));
+                    $scope.configuration = {
+                        ipAddresses: []
+                    };
+                }
 
-    angular.forEach($scope.model.value, function (ip, index) {
-        ip.editMode = false;
-        ip.valid = true;
-        ip.errorMsg = '';
-        ip.errorState = null;
-    });
+                $scope.contentPickerProperty = {
+                    label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel'),
+                    description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlContentPickerDescription'),
+                    view: 'contentpicker',
+                    alias: 'unauthorisedUrlContentPicker',
+                    config: {
+                        multiPicker: "0",
+                        entityType: "Document",
+                        startNode: {
+                            query: "",
+                            type: "content",
+                            id: -1
+                        },
+                        filter: "",
+                        minNumber: 0,
+                        maxNumber: 1
+                    },
+                    value: $scope.configuration.unauthorisedUrlContentPicker
+                };
 
-    $scope.addIp = function () {
-        if (!IsValidIpAddress($scope.newIp, false)) {
-            return false;
-        }
+                $scope.loading--;
+            });
+        };
 
-        $scope.model.value.push({
-            ipAddress: $scope.newIp.ipAddress,
-            description: $scope.newIp.description,
-            editMode: false
+        $scope.$watch('configuration.unauthorisedUrlType', function (newVal, oldVal) {
+            if (newVal === undefined)
+                return;
+            $scope.configuration.unauthorisedUrlType = parseInt(newVal);
         });
 
-        $scope.newIp.ipAddress = '';
-        $scope.newIp.description = '';
-    };
+        $scope.$watch('configuration.enable', function (newVal, oldVal) {
+            if (newVal === undefined)
+                return;
+            $scope.configuration.enable = newVal === true || newVal === 1 || newVal === "1" ? true : false;
+        });
 
-    $scope.editIp = function (ip, update) {
-        var curEditIp = $scope.model.value.filter((ip) => ip.editMode === true)[0];
-
-        if (curEditIp && !update) {
-            return false;
-        }
-
-        if (!update) {
-            ip.editMode = true;
-        } else {
-            if (!IsValidIpAddress(curEditIp, true)) {
+        $scope.addIp = function () {
+            if (!IsValidIpAddress($scope.IpAddressProperty.newIp, false)) {
                 return false;
             }
 
-            curEditIp.editMode = false;
-        }
-    };
+            $scope.IpAddressProperty.value.push({
+                ipAddress: $scope.IpAddressProperty.newIp.ipAddress,
+                description: $scope.IpAddressProperty.newIp.description,
+                editMode: false
+            });
 
-    $scope.removeIp = function (ip) {
-        if (confirm(localizationService.localize('Shield.UmbracoAccess.AlertMessages_ConfirmRemoveIp') + ip.ipAddress + ' - ' + ip.description)) {
-            var index = $scope.model.value.indexOf(ip);
+            $scope.IpAddressProperty.newIp.ipAddress = '';
+            $scope.IpAddressProperty.newIp.description = '';
+        };
 
-            if (index !== -1) {
-                $scope.model.value.splice(index, 1);
+        $scope.editIp = function (ip, update) {
+            var curEditIp = $scope.IpAddressProperty.value.filter((ip) => ip.editMode === true)[0];
+
+            if (curEditIp && !update) {
+                return false;
             }
-        }
-    };
-}]);
- }(window));
+
+            if (!update) {
+                ip.editMode = true;
+            } else {
+                if (!IsValidIpAddress(curEditIp, true)) {
+                    return false;
+                }
+
+                curEditIp.editMode = false;
+            }
+        };
+
+        $scope.removeIp = function (ip) {
+            localizationService.localize('Shield.UmbracoAccess.AlertMessages_ConfirmRemoveIp').then(function (warningMsg) {
+                if (confirm(warningMsg + ip.ipAddress + ' - ' + ip.description)) {
+                    var index = $scope.IpAddressProperty.value.indexOf(ip);
+
+                    if (index !== -1) {
+                        $scope.IpAddressProperty.value.splice(index, 1);
+                    }
+                }
+            });
+        };
+
+        $scope.submitUmbracoAccess = function () {
+            $scope.loading++;
+
+            $scope.configuration.unauthorisedUrlContentPicker = $scope.contentPickerProperty.value;
+            $scope.configuration.ipAddresses = $scope.IpAddressProperty.value;
+
+            resource.PostConfiguration('UmbracoAccess', $scope.configuration).then(function (response) {
+                if (response.data) {
+                    notificationsService.success(localizationService.localize('Shield.UmbracoAccess.SuccessMessages_Updated'));
+                } else {
+                    notificationsService.error(localizationService.localize('Shield.UmbracoAccess.ErrorMessages_UpdateConfiguration'));
+                }
+
+                $scope.loading--;
+            });
+        };
+    }]);
+}(window));

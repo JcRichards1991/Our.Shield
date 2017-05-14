@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Umbraco.Core;
+    using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence;
 
     /// <summary>
@@ -29,26 +30,41 @@
         /// </returns>
         public static IEnumerable<Models.Journal> Read(string id, int page, int itemsPerPage, Type type)
         {
-            var db = ApplicationContext.Current.DatabaseContext.Database;
-
             var sql = new Sql()
                .Select("*")
                .From()
                .Where("configuration = @0", id)
                .OrderByDescending("datestamp");
 
-            var records = db.Page<Dal.Journal>(page, itemsPerPage, sql);
-            if (records?.Items?.Count == 0)
+            try
             {
-                return Enumerable.Empty<Models.Journal>();
-            }
+                var db = ApplicationContext.Current.DatabaseContext.Database;
+                var records = db.Page<Dal.Journal>(page, itemsPerPage, sql);
 
-            return records.Items.Select(x =>
+                if (records?.Items?.Count == 0)
+                {
+                    return Enumerable.Empty<Models.Journal>();
+                }
+
+                return records.Items.Select(x =>
+                {
+                    try
+                    {
+                        return JsonConvert.DeserializeObject(x.Value, type) as Models.Journal;
+                    }
+                    catch (JsonSerializationException jEx)
+                    {
+                        LogHelper.Error(typeof(ConfigurationContext), $"Error Deserialising journal for plugin with Id: {id}; Record Id: {x.Id}; Type:{type}", jEx);
+                        return null;
+                    }
+                    
+                }).Where(x => x != null);
+            }
+            catch (Exception ex)
             {
-                var retItem = JsonConvert.DeserializeObject(x.Value, type) as Models.Journal;
-                retItem.Datestamp = x.Datestamp;
-                return retItem;
-            });
+                LogHelper.Error(typeof(JournalContext), $"Error getting journals for plugin with Id: {id}", ex);
+            }
+            return Enumerable.Empty<Models.Journal>();
         }
 
         /// <summary>
@@ -65,17 +81,25 @@
         /// </returns>
         public static bool Write(string id, Models.Journal journal)
         {
-            var db = ApplicationContext.Current.DatabaseContext.Database;
+            journal.Datestamp = DateTime.UtcNow;
+
             var record = new Dal.Journal()
             {
                 ConfigurationId = id,
-                Datestamp = DateTime.UtcNow,
                 Value = JsonConvert.SerializeObject(journal)
             };
 
-            db.Insert(record);
-            return true;
+            try
+            {
+                var db = ApplicationContext.Current.DatabaseContext.Database;
+                db.Insert(record);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                LogHelper.Error(typeof(JournalContext), $"Error writing Journal for plugin with id: {id}; with message: {journal.Message}", ex);
+            }
+            return false;
         }
-
     }
 }

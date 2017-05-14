@@ -21,12 +21,12 @@
         /// Gets or set the Ip Addresses.
         /// </summary>
         [JsonProperty("ipAddresses")]
-        public PropertyEditors.IpAddress.Models.IpAddress[] IpAddresses { get; set; }
+        public Models.IpAddress[] IpAddresses { get; set; }
 
-        /// <summary>
-        /// Gets or sets the Unauthorised URL by XPath.
-        /// </summary>
-        [JsonProperty("unauthorisedUrlXPath")]
+    /// <summary>
+    /// Gets or sets the Unauthorised URL by XPath.
+    /// </summary>
+    [JsonProperty("unauthorisedUrlXPath")]
         public string UnauthorisedUrlXPath { get; set; }
 
         /// <summary>

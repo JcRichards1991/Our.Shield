@@ -23,12 +23,6 @@
         [IndexAttribute(IndexTypes.NonClustered, Name = "IX_ConfigurationId")]
         [NullSetting(NullSetting = NullSettings.NotNull)]
         public string ConfigurationId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Date Stamp of the Journal.
-        /// </summary>
-        [NullSetting(NullSetting = NullSettings.NotNull)]
-        public DateTime Datestamp { get; set; }
         
         /// <summary>
         /// Gets or sets the Value (Should be json).

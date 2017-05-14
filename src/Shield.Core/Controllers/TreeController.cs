@@ -49,7 +49,7 @@
 
             if(treeNodes != null && treeNodes.Any())
             {
-                var tNodes = treeNodes.Select(x => Models.TreeNode.Create(x.Key)).OrderBy(x => x.SortOrder);
+                var tNodes = treeNodes.Select(x => Models.TreeNode.Create(x.Key)).OrderBy(x => x.Name);
                 foreach(var treeNode in tNodes)
                 {
                     if (id.Equals(treeNode.ParentId))

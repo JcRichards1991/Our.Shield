@@ -11,9 +11,137 @@
                 <umb-editor-container>
                     <div class="form-horizontal">
                         <div class="umb-pane">
-                            <umb-property property="property" ng-repeat="property in properties track by $index" ng-show="property.visible">
-                                <umb-editor model="property"></umb-editor>
-                            </umb-property>
+                            <div class="umb-el-wrap control-group umb-control-group">
+                                <label for="enable" class="control-label">
+                                    <localize key="Shield.UmbracoAccess.Properties_EnableLabel">Enable</localize>
+                                    <small>
+                                        <localize key="Shield.UmbracoAccess.Properties_EnableDescription">Whether or not this plugin is active.</localize>
+                                    </small>
+                                </label>
+                                <div class="controls">
+                                    <input type="checkbox" id="enable" ng-model="configuration.enable" />
+                                </div>
+                            </div>
+                            <div ng-show="configuration.enable">
+                                <div class="umb-el-wrap control-group umb-control-group">
+                                    <label for="backendAccessUrl" class="control-label">
+                                        <localize key="Shield.UmbracoAccess.Properties_BackendAccessUrlLabel">Backend Office Access URL</localize>
+                                        <small>
+                                            <localize key="Shield.UmbracoAccess.Properties_BackendAccessUrlDescription">The URL used to access the CMS.</localize>
+                                        </small>
+                                    </label>
+                                    <div class="controls">
+                                        <input type="text" id="backendAccessUrl" ng-model="configuration.backendAccessUrl" />
+                                    </div>
+                                </div>
+                                <div class="umb-el-wrap control-group umb-control-group">
+                                    <label for="redirectRewrite" class="control-label">
+                                        <localize key="Shield.UmbracoAccess.Properties_RedirectRewriteLabel">Redirect or Rewrite</localize>
+                                        <small>
+                                            <localize key="Shield.UmbracoAccess.Properties_RedirectRewriteDescription">Whether or not to redirect the user or to rewrite the url to another location.</localize>
+                                        </small>
+                                    </label>
+                                    <div class="controls">
+                                        <select id="redirectRewrite" ng-model="configuration.redirectRewrite">
+                                            <option value="0">Redirect</option>
+                                            <option value="1">Rewrite</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="umb-el-wrap control-group umb-control-group">
+                                    <label for="unauthorisedUrlType" class="control-label">
+                                        <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeLabel">Unauthorised Url Type</localize>
+                                        <small>
+                                            <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</localize>
+                                        </small>
+                                    </label>
+                                    <div class="controls">
+                                        <select id="unauthorisedUrlType" ng-model="configuration.unauthorisedUrlType">
+                                            <option value="0">Url</option>
+                                            <option value="1">XPath</option>
+                                            <option value="2">Content Picker</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="umb-el-wrap control-group umb-control-group" ng-if="configuration.unauthorisedUrlType === 0">
+                                    <label for="unauthorisedUrl" class="control-label">
+                                        <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
+                                        <small>
+                                            <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlDescription">The Url to redirect/rewrite the user to when from a disallowed IP Address.</localize>
+                                        </small>
+                                    </label>
+                                    <div class="controls">
+                                        <input type="text" id="unauthorisedUrl" ng-model="configuration.unauthorisedUrl" />
+                                    </div>
+                                </div>
+                                <div class="umb-el-wrap control-group umb-control-group" ng-if="configuration.unauthorisedUrlType === 1">
+                                    <label for="unauthorisedUrlXPath" class="control-label">
+                                        <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
+                                        <small>
+                                            <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a disallowed IP Address.</localize>
+                                        </small>
+                                    </label>
+                                    <div class="controls">
+                                        <input type="text" id="unauthorisedUrlXPath" ng-model="configuration.unauthorisedUrlXPath" />
+                                    </div>
+                                </div>
+                                <umb-property property="contentPickerProperty" ng-if="configuration.unauthorisedUrlType === 2">
+                                    <umb-editor model="contentPickerProperty"></umb-editor>
+                                </umb-property>
+                                <div class="umb-el-wrap control-group umb-control-group">
+                                    <label class="control-label">
+                                        <localize key="Shield.UmbracoAccess.Properties_AllowedIPsLabel">White-listed IP address(es)</localize>
+                                        <small>
+                                            <localize key="Shield.UmbracoAccess.Properties_AllowedIPsDescription">The allowed IP address(es) that can access the Backend Office Access Url.</localize>
+                                        </small>
+                                    </label>
+                                    <div class="controls">
+                                        <div class="umb-editor">
+                                            <table class="ips-container">
+                                                <thead>
+                                                    <tr>
+                                                        <th>IP Address</th>
+                                                        <th>Description</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="ip in IpAddressProperty.value">
+                                                        <td>
+                                                            <span ng-show="!ip.editMode">{{ip.ipAddress}}</span>
+                                                            <input type="text" ng-show="ip.editMode" ng-model="ip.ipAddress" />
+                                                            <span ng-show="ip.editMode && !ip.valid" class="help-inline">{{ip.errorMsg}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span ng-show="!ip.editMode">{{ip.description}}</span>
+                                                            <input type="text" ng-show="ip.editMode" ng-model="ip.description" />
+                                                        </td>
+                                                        <td>
+                                                            <span class="btn btn-info" ng-show="!ip.editMode" ng-click="editIp(ip, false)">Edit</span>
+                                                            <span class="btn btn-success" ng-show="ip.editMode" ng-click="editIp({{ip}}, true)">Update</span>
+                                                            <span class="btn btn-danger" ng-click="removeIp(ip)">Remove</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>
+                                                            <input type="text" ng-model="IpAddressProperty.newIp.ipAddress" />
+                                                            <span ng-show="!IpAddressProperty.newIp.valid" class="help-inline">{{IpAddressProperty.newIp.errorMsg}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" ng-model="IpAddressProperty.newIp.description" />
+                                                        </td>
+                                                        <td>
+                                                            <span class="btn btn-success" ng-click="addIp()">Add</span>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </umb-editor-container>

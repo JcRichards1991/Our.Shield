@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Shield.UmbracoAccess.Models
+﻿namespace Shield.UmbracoAccess.Models
 {
     public class TreeNode : Core.Models.TreeNode
     {
@@ -12,12 +10,10 @@ namespace Shield.UmbracoAccess.Models
 
         public override string Icon => "icon-shield";
 
-        public override string RoutePath => $"{Core.Constants.App.Alias}/{Core.Constants.Tree.Alias}/{nameof(UmbracoAccess)}/{this.Id}";
+        public override string RoutePath => $"{Core.Constants.App.Alias}/{Core.Constants.Tree.Alias}/{this.ConfigurationId}/{this.Id}";
 
         public override string ParentId => Core.Constants.Tree.RootNodeId;
 
         public override string ConfigurationId => nameof(UmbracoAccess);
-
-        public override int SortOrder => 0;
     }
 }

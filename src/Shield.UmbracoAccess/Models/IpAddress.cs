@@ -1,4 +1,4 @@
-﻿namespace Shield.UmbracoAccess.PropertyEditors.IpAddress.Models
+﻿namespace Shield.UmbracoAccess.Models
 {
     /// <summary>
     /// IP Address Model

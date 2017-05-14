@@ -1,7 +1,7 @@
-﻿using Shield.Core.Operation;
-
-namespace Shield.UmbracoAccess.Models
+﻿namespace Shield.UmbracoAccess.Models
 {
+    using Core.Operation;
+
     public class Operation : Core.Models.Operation<ViewModels.Configuration>
     {
         public override string Id => nameof(UmbracoAccess);
@@ -13,8 +13,8 @@ namespace Shield.UmbracoAccess.Models
             {
                 return new ViewModels.Configuration
                 {
-                    BackendAccessUrl = "/umbraco",
-                    IpAddresses = new PropertyEditors.IpAddress.Models.IpAddress[0]
+                    BackendAccessUrl = Core.ApplicationSettings.UmbracoPath,
+                    IpAddresses = new IpAddress[0]
                 };
             }
         }
