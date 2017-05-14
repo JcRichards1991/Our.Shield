@@ -5,6 +5,7 @@
   </creator>
 
   <area alias="Shield.UmbracoAccess.General">
+    <key alias="AreaName">Umbraco Access</key>
     <key alias="IpAddress">IP Address</key>
     <key alias="Description">Description</key>
   </area>
