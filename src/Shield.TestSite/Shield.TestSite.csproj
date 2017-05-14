@@ -302,15 +302,17 @@
   <ItemGroup>
     <Content Include="App_Plugins\Shield.MediaProtection\Js\MediaProtection.js" />
     <Content Include="App_Plugins\Shield.MediaProtection\Lang\en-us.xml" />
+    <Content Include="App_Plugins\Shield.MediaProtection\package.manifest" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\Css\UmbracoAccess.css" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\Js\UmbracoAccess.js" />
     <Content Include="App_Plugins\Shield.UmbracoAccess\Lang\en-us.xml" />
-    <Content Include="App_Plugins\Shield.UmbracoAccess\PropertyEditors\allowedIpsPropertyEditorView.html" />
+    <Content Include="App_Plugins\Shield.UmbracoAccess\package.manifest" />
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Js\Resources.js" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\MediaProtection.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\UmbracoAccess.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
+    <Content Include="App_Plugins\Shield\package.manifest" />
     <Content Include="packages.config" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
@@ -339,9 +341,6 @@
     <Content Include="Config\BaseRestExtensions.config" />
     <Content Include="Config\applications.config" />
     <Content Include="Config\404handlers.config" />
-    <Content Include="App_Plugins\Shield.MediaProtection\package.manifest" />
-    <Content Include="App_Plugins\Shield.UmbracoAccess\package.manifest" />
-    <Content Include="App_Plugins\Shield\package.manifest" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

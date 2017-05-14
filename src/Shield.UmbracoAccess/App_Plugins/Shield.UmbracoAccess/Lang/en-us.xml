@@ -4,8 +4,9 @@
     <name>Joshua Richards</name>
   </creator>
 
-  <area alias="Shield.UmbracoAccess">
-    <key alias="HeaderName">Umbraco Access tttttttttt</key>
+  <area alias="Shield.UmbracoAccess.General">
+    <key alias="IpAddress">IP Address</key>
+    <key alias="Description">Description</key>
   </area>
 
   <area alias="Shield.UmbracoAccess.Properties">

@@ -1,9 +1,8 @@
 ﻿<umb-pane>
-    <umb-header name="Umbraco Access"
-                hide-icon="true"
+    <umb-header hide-icon="true"
                 hide-description="true"
                 hide-alias="true">
-        <h1>Umbraco Access</h1>
+        <h1><localize key="Shield.UmbracoAccess.General_AreaName">Umbraco Access</localize></h1>
     </umb-header>
     <div class="umb-panel-body umb-scrollable row-fluid" ng-controller="Shield.Editors.UmbracoAccess.EditController" ng-init="init()">
         <umb-editor-view>
@@ -100,8 +99,8 @@
                                             <table class="ips-container">
                                                 <thead>
                                                     <tr>
-                                                        <th>IP Address</th>
-                                                        <th>Description</th>
+                                                        <th><localize key="Shield.UmbracoAccess.General_IpAddress">IP Address</localize></th>
+                                                        <th><localize key="Shield.UmbracoAccess.General_Description">Description</localize></th>
                                                         <th></th>
                                                     </tr>
                                                 </thead>
@@ -117,9 +116,15 @@
                                                             <input type="text" ng-show="ip.editMode" ng-model="ip.description" />
                                                         </td>
                                                         <td>
-                                                            <span class="btn btn-info" ng-show="!ip.editMode" ng-click="editIp(ip, false)">Edit</span>
-                                                            <span class="btn btn-success" ng-show="ip.editMode" ng-click="editIp({{ip}}, true)">Update</span>
-                                                            <span class="btn btn-danger" ng-click="removeIp(ip)">Remove</span>
+                                                            <span class="btn btn-info" ng-show="!ip.editMode" ng-click="editIp(ip, false)">
+                                                                <localize key="Shield.General_Edit">Edit</localize>
+                                                            </span>
+                                                            <span class="btn btn-success" ng-show="ip.editMode" ng-click="editIp({{ip}}, true)">
+                                                                <localize key="Shield.General_Update">Update</localize>
+                                                            </span>
+                                                            <span class="btn btn-danger" ng-click="removeIp(ip)">
+                                                                <localize key="Shield.General_Remove">Remove</localize>
+                                                            </span>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -133,7 +138,9 @@
                                                             <input type="text" ng-model="IpAddressProperty.newIp.description" />
                                                         </td>
                                                         <td>
-                                                            <span class="btn btn-success" ng-click="addIp()">Add</span>
+                                                            <span class="btn btn-success" ng-click="addIp()">
+                                                                <localize key="Shield.General_Add">Add</localize>
+                                                            </span>
                                                         </td>
                                                     </tr>
                                                 </tfoot>
@@ -147,8 +154,8 @@
                 </umb-editor-container>
                 <umb-editor-footer>
                     <umb-editor-footer-content-right>
-                        <umb-button type="submit"
-                                    label="Update"
+                        <umb-button label="Update"
+                                    type="submit"
                                     button-style="success"
                                     shortcut="ctrl+s"
                                     state="page.saveButtonState">

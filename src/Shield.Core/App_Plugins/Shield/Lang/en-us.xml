@@ -8,7 +8,11 @@
     <key alias="shield">Shield</key>
   </area>
 
-  <area alias="Shield">
-    <key alias="name">Shield</key>
+  <area alias="Shield.General">
+    <key alias="Name">Shield</key>
+    <key alias="Add">Add</key>
+    <key alias="Edit">Edit</key>
+    <key alias="Update">Update</key>
+    <key alias="Remove">Remove</key>
   </area>
 </language>
