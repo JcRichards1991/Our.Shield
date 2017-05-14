@@ -23,10 +23,10 @@
         [JsonProperty("ipAddresses")]
         public Models.IpAddress[] IpAddresses { get; set; }
 
-    /// <summary>
-    /// Gets or sets the Unauthorised URL by XPath.
-    /// </summary>
-    [JsonProperty("unauthorisedUrlXPath")]
+        /// <summary>
+        /// Gets or sets the Unauthorised URL by XPath.
+        /// </summary>
+        [JsonProperty("unauthorisedUrlXPath")]
         public string UnauthorisedUrlXPath { get; set; }
 
         /// <summary>
@@ -39,7 +39,7 @@
         /// Gets or sets the Unauthorised URL by Content Picker.
         /// </summary>
         [JsonProperty("unauthorisedUrlContentPicker")]
-        public int? UnauthorisedUrlContentPicker { get; set; }
+        public string UnauthorisedUrlContentPicker { get; set; }
 
         /// <summary>
         /// Gets or sets the Unauthorised URL.

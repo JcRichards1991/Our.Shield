@@ -1,6 +1,10 @@
 ﻿namespace Shield.UmbracoAccess.Models
 {
-    using Core.Operation;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Web;
 
     public class Operation : Core.Models.Operation<ViewModels.Configuration>
     {
@@ -19,79 +23,69 @@
             }
         }
 
+        private static List<int> Ids = new List<int>();
+
         public override bool Execute(Core.Models.Configuration c)
         {
-            System.Diagnostics.Debug.WriteLine("START running execute");
             var config = c as ViewModels.Configuration;
 
-            Fortress.UnwatchAll(Id);
+            Core.Operation.Fortress.UnwatchAll(Id);
 
-            var id = Fortress.Watch(Id, new System.Text.RegularExpressions.Regex("joniff"), 2, (count, app) =>
+            if (!config.Enable)
             {
-                System.Diagnostics.Debug.WriteLine("woohoo Joniff");
-                return Fortress.Cycle.Continue;
+                return true;
+            }
 
-                //if(config == null || !config.Enable)
-                //{
-                //    return;
-                //}
+            string url = string.Empty;
+            switch (config.UnauthorisedUrlType)
+            {
+                case Enums.UnautorisedUrlType.Url:
+                    url = config.UnauthorisedUrl;
+                    break;
 
-                //if (configLock.TryEnterReadLock(configLockTimeout))
-                //{
-                //    try
-                //    {
-                //        if(filePath == UmbracoPath || filePath == config.BackendAccessUrl)
-                //        {
-                //            //If starts with umbraco path or config backend url
-                //            // Let request through
+                case Enums.UnautorisedUrlType.XPath:
+                    url = Core.Helpers.UrlHelper.GetUrl(config.UnauthorisedUrlXPath);
+                    break;
 
-                //            if (!config.IpAddresses.Any(x => x.ipAddress == ""))
-                //            {
-                //                string url = null;
-                //                switch (config.UnauthorisedUrlType)
-                //                {
-                //                    case Enums.UnautorisedUrlType.Url:
-                //                        url = config.UnauthorisedUrl;
-                //                        break;
+                case Enums.UnautorisedUrlType.ContentPicker:
+                    url = Core.Helpers.UrlHelper.GetUrl(Convert.ToInt32(config.UnauthorisedUrlContentPicker));
+                    break;
+            }
 
-                //                    case Enums.UnautorisedUrlType.XPath:
-                //                        var xpathNode = UmbracoContext.Current.ContentCache.GetSingleByXPath(config.UnauthorisedUrlXPath);
-                //                        url = xpathNode.Url;
-                //                        break;
+            var id = Core.Operation.Fortress.Watch(Id, new Regex(config.BackendAccessUrl), 2, (count, app) =>
+            {
+                var userIp = GetUserIp(app);
+                if (!config.IpAddresses.Any(x => x.ipAddress == userIp))
+                {
+                    if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
+                    {
+                        app.Context.Response.Redirect(url, true);
+                    }
+                    else
+                    {
+                        app.Context.RewritePath(url);
+                    }
+                    return Core.Operation.Fortress.Cycle.Stop;
+                }
 
-                //                    case Enums.UnautorisedUrlType.ContentPicker:
-                //                        var contentPickerNode = UmbracoContext.Current.ContentCache.GetById(config.UnauthorisedUrlContentPicker);
-                //                        url = contentPickerNode.Url;
-                //                        break;
-                //                }
+                return Core.Operation.Fortress.Cycle.Continue;
+            }, 0, null);
 
-                //                if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
-                //                {
-                //                    context.Response.Redirect(url);
-                //                }
-                //                else
-                //                {
-                //                    context.RewritePath(url);
-                //                }
-                //            }
-                //            return;
-                //        }
-                //    }
-                //    finally
-                //    {
-                //        configLock.ExitReadLock();
-                //    }
-                //}
+            Ids.Add(id);
+
+            id = Core.Operation.Fortress.Watch(Id, null, 1, (count, app) => {
+                return Core.Operation.Fortress.Cycle.Continue;
 
             }, 0, null);
 
-            id = Fortress.Watch(Id, null, 1, (count, app) => {
-                return Fortress.Cycle.Continue;
-
-            }, 0, null);
-            
+            Ids.Add(id);
 
             return true;
+        }
+
+        private static string GetUserIp(HttpApplication app)
+        {
+            return string.Empty;
         }
     }
 }

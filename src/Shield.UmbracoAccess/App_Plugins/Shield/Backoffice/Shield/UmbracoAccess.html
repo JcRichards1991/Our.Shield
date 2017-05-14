@@ -116,13 +116,13 @@
                                                             <input type="text" ng-show="ip.editMode" ng-model="ip.description" />
                                                         </td>
                                                         <td>
-                                                            <span class="btn btn-info" ng-show="!ip.editMode" ng-click="editIp(ip, false)">
+                                                            <span class="btn btn-info" ng-show="!ip.editMode" ng-click="IpAddressProperty.editIp(ip, false)">
                                                                 <localize key="Shield.General_Edit">Edit</localize>
                                                             </span>
-                                                            <span class="btn btn-success" ng-show="ip.editMode" ng-click="editIp({{ip}}, true)">
+                                                            <span class="btn btn-success" ng-show="ip.editMode" ng-click="IpAddressProperty.editIp({{ip}}, true)">
                                                                 <localize key="Shield.General_Update">Update</localize>
                                                             </span>
-                                                            <span class="btn btn-danger" ng-click="removeIp(ip)">
+                                                            <span class="btn btn-danger" ng-click="IpAddressProperty.removeIp(ip)">
                                                                 <localize key="Shield.General_Remove">Remove</localize>
                                                             </span>
                                                         </td>
@@ -138,7 +138,7 @@
                                                             <input type="text" ng-model="IpAddressProperty.newIp.description" />
                                                         </td>
                                                         <td>
-                                                            <span class="btn btn-success" ng-click="addIp()">
+                                                            <span class="btn btn-success" ng-click="IpAddressProperty.addIp()">
                                                                 <localize key="Shield.General_Add">Add</localize>
                                                             </span>
                                                         </td>

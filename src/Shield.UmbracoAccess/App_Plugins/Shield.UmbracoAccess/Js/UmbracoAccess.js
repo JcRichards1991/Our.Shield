@@ -63,6 +63,26 @@
             }
         }
 
+        $scope.contentPickerProperty = {
+            label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel'),
+            description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlContentPickerDescription'),
+            view: 'contentpicker',
+            alias: 'unauthorisedUrlContentPicker',
+            config: {
+                multiPicker: "0",
+                entityType: "Document",
+                startNode: {
+                    query: "",
+                    type: "content",
+                    id: -1
+                },
+                filter: "",
+                minNumber: 0,
+                maxNumber: 1
+            },
+            value: ''
+        };
+
         $scope.init = function () {
             $scope.loading++;
 
@@ -70,6 +90,7 @@
                 if (response.data && response.data.Data) {
                     $scope.configuration = response.data.Data;
 
+                    $scope.contentPickerProperty.value = $scope.configuration.unauthorisedUrlContentPicker
                     angular.forEach($scope.configuration.ipAddresses, function (ip, index) {
                         $scope.IpAddressProperty.value.push({
                             ipAddress: ip.ipAddress,
@@ -88,26 +109,6 @@
                     };
                 }
 
-                $scope.contentPickerProperty = {
-                    label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel'),
-                    description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlContentPickerDescription'),
-                    view: 'contentpicker',
-                    alias: 'unauthorisedUrlContentPicker',
-                    config: {
-                        multiPicker: "0",
-                        entityType: "Document",
-                        startNode: {
-                            query: "",
-                            type: "content",
-                            id: -1
-                        },
-                        filter: "",
-                        minNumber: 0,
-                        maxNumber: 1
-                    },
-                    value: $scope.configuration.unauthorisedUrlContentPicker
-                };
-
                 $scope.loading--;
             });
         };
@@ -124,7 +125,7 @@
             $scope.configuration.enable = newVal === true || newVal === 1 || newVal === "1" ? true : false;
         });
 
-        $scope.addIp = function () {
+        $scope.IpAddressProperty.addIp = function () {
             if (!IsValidIpAddress($scope.IpAddressProperty.newIp, false)) {
                 return false;
             }
@@ -139,7 +140,7 @@
             $scope.IpAddressProperty.newIp.description = '';
         };
 
-        $scope.editIp = function (ip, update) {
+        $scope.IpAddressProperty.editIp = function (ip, update) {
             var curEditIp = $scope.IpAddressProperty.value.filter((ip) => ip.editMode === true)[0];
 
             if (curEditIp && !update) {
@@ -157,7 +158,7 @@
             }
         };
 
-        $scope.removeIp = function (ip) {
+        $scope.IpAddressProperty.removeIp = function (ip) {
             localizationService.localize('Shield.UmbracoAccess.AlertMessages_ConfirmRemoveIp').then(function (warningMsg) {
                 if (confirm(warningMsg + ip.ipAddress + ' - ' + ip.description)) {
                     var index = $scope.IpAddressProperty.value.indexOf(ip);
