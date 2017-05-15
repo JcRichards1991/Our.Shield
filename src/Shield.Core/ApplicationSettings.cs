@@ -29,19 +29,9 @@
                 if (!string.IsNullOrEmpty(umbracoPath))
                     return umbracoPath;
 
-                var url = GetAppKeyValue("umbracoPath", "/umbraco");
+                var url = GetAppKeyValue("umbracoPath", "~/umbraco");
 
-                if (url.StartsWith("~"))
-                {
-                    url = url.Remove(0, 1);
-                }
-
-                if (!url.StartsWith("/"))
-                {
-                    url = "/" + url;
-                }
-
-                return umbracoPath = url;
+                return umbracoPath = Umbraco.Core.IO.IOHelper.ResolveUrl(url);
             }
         }
     }
