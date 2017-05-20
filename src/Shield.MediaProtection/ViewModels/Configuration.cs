@@ -1,20 +1,20 @@
-﻿namespace Shield.MediaProtection.ViewModels
-{
-    using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
+namespace Shield.MediaProtection.ViewModels
+{
     [JsonObject(MemberSerialization.OptIn)]
     public class Configuration : Core.Models.Configuration
     {
         /// <summary>
-        /// Gets or sets the Media URL.
+        /// HotLinking Protection
         /// </summary>
-        [JsonProperty("backendAccessUrl")]
-        public string MediaUrl { get; set; }
+        [JsonProperty("enableHotLinkingProtection")]
+        public bool EnableHotLinkingProtection { get; set; }
 
         /// <summary>
-        /// Gets or sets the Collection of urls that can access media.
+        /// Member Only media
         /// </summary>
-        [JsonProperty("backendAccessUrl")]
-        public string[] ExceptionUrls { get; set; }
+        [JsonProperty("enableMemberOnlyMedia")]
+        public bool EnableMembersOnlyMedia { get; set; }
     }
 }
