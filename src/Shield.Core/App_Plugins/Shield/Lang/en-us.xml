@@ -15,4 +15,9 @@
     <key alias="Update">Update</key>
     <key alias="Remove">Remove</key>
   </area>
+
+  <area alias="Shield.General.Properties">
+    <key alias="EnableLabel">Enable</key>
+    <key alias="EnableDescription">Whether or not this plugin is active</key>
+  </area>
 </language>
