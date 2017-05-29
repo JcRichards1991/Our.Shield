@@ -262,6 +262,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\TreeController.cs" />
+    <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="Initialise\Application.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\TreeNode.cs" />
