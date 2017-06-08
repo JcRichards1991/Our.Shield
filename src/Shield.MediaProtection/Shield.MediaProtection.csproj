@@ -259,6 +259,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="Models\Operation.cs" />
     <Compile Include="Models\TreeNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -268,12 +269,12 @@
     <Content Include="App_Plugins\Shield.MediaProtection\Js\MediaProtection.js" />
     <Content Include="App_Plugins\Shield.MediaProtection\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\MediaProtection.html" />
-    <Content Include="Js\Controllers.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="App_Plugins\Shield.MediaProtection\package.manifest" />
     <None Include="packages.config" />
+    <None Include="Shield.MediaProtection.nuspec" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -284,6 +285,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>nuget pack $(ProjectPath) -Symbols -Properties Configuration=$(ConfigurationName) -IncludeReferencedProjects</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

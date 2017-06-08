@@ -1,16 +1,14 @@
-﻿using System;
-
-namespace Shield.MediaProtection.Models
+﻿namespace Shield.MediaProtection.Models
 {
     public class TreeNode : Core.Models.TreeNode
     {
-        public override string Id => "-323232";
+        public override string Id => Constants.Tree.NodeId;
 
-        public override string Name => "Media Protection";
+        public override string Name => Constants.Tree.Title;
 
         public override bool HasChildNodes => false;
 
-        public override string Icon => "icon-shield";
+        public override string Icon => Constants.Tree.Icon;
 
         public override string RoutePath => $"{Core.Constants.App.Alias}/{Core.Constants.Tree.Alias}/{this.ConfigurationId}/{this.Id}";
 
