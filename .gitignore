@@ -243,6 +243,7 @@ ModelManifest.xml
 
 *.txt
 src/Shield.TestSite/App_Data/Logs/
+src/Shield.TestSite/App_Data/NuGetBackup
 src/Shield.TestSite/App_Data/TEMP/
 src/Shield.TestSite/App_Plugins/
 src/Shield.TestSite/[Uu]mbraco/
