@@ -74,7 +74,7 @@
 
             try
             {
-                migrationsRunner.Execute(UmbracoContext.Current.Application.DatabaseContext.Database);
+                migrationsRunner.Execute(ApplicationContext.Current.DatabaseContext.Database);
             }
             catch (Exception ex)
             {

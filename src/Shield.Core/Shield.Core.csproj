@@ -286,16 +286,23 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="App_Plugins\Shield\Backoffice\Dashboards\Dashboard.config.install.xdt" />
+    <None Include="App_Plugins\Shield\Backoffice\Dashboards\Dashboard.config.uninstall.xdt" />
     <None Include="packages.config" />
     <None Include="App_Plugins\Shield\package.manifest" />
+    <None Include="Shield.Core.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\GetStarted.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\HttpModuleConfig.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Js\Resources.js" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>nuget pack $(ProjectPath) -Symbols -Properties Configuration=$(ConfigurationName) -IncludeReferencedProjects</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
