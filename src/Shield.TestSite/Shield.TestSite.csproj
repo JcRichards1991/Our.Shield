@@ -393,6 +393,10 @@
       <Project>{69737067-ab31-4c68-9c69-5e6ce00d1ab3}</Project>
       <Name>Shield.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Shield.MediaProtection\Shield.MediaProtection.csproj">
+      <Project>{3c5eda13-8468-4386-8f74-3d5678695abe}</Project>
+      <Name>Shield.MediaProtection</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Shield.UmbracoAccess\Shield.UmbracoAccess.csproj">
       <Project>{58fdce32-1389-4768-882e-281ceec508cd}</Project>
       <Name>Shield.UmbracoAccess</Name>
