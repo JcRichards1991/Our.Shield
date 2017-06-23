@@ -15,4 +15,7 @@
       <dependency id="Shield.Core" version="1.0.0.1" />
     </dependencies>
   </metadata>
+  <files>
+    <file src="App_Plugins\$id$\package.manifest" target="Content\App_Plugins\$id$" />
+  </files>
 </package>

@@ -1,1 +1,34 @@
-﻿
+﻿<div ng-controller="Shield.Editors.HttpModuleConfig.EditController">
+    <umb-editor-view>
+        <form novalidate ng-submit="submit()">
+            <umb-editor-container>
+                <div class="form-horizontal">
+                    <div class="umb-pane">
+                        <div class="umb-el-wrap control-group umb-control-group">
+                            <label for="enable" class="control-label">
+                                <localize key="Shield.HttpModuleConfig.Properties_EnablePollingLabel">Enable Polling</localize>
+                                <small>
+                                    <localize key="Shield.HttpModuleConfig.Properties_EnableDescription">
+                                        Whether or not the shield plugins should check for updates to the configuration. This is usefull when the site is running in a cluster, you can update the master, and the slaves will update when polled.
+                                    </localize>
+                                </small>
+                            </label>
+                            <div class="controls">
+                                <input type="checkbox" id="enable" ng-model="configuration.enable" />
+                            </div>
+                            <label for="enable" class="control-label">
+                                <localize key="Shield.HttpModuleConfig.Properties_PollingTimeLabel">Polling Time</localize>
+                                <small>
+                                    <localize key="Shield.HttpModuleConfig.Properties_EnableDescription">Whether or not this plugin is active.</localize>
+                                </small>
+                            </label>
+                            <div class="controls">
+                                <input type="text" id="enable" ng-model="configuration.enable" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </umb-editor-container>
+        </form>
+    </umb-editor-view>
+</div>

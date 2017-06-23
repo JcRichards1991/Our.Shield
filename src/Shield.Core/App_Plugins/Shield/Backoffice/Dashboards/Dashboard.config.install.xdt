@@ -2,18 +2,18 @@
 <dashBoard xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
   <section alias="shieldGetStarted" xdt:Locator="Match(alias)" xdt:Transform="InsertIfMissing">
     <areas>
-      <area>Shield</area>
+      <area>shield</area>
     </areas>
     <tab caption="Get Started">
-      <control>/App_Plugins/Shield/Backoffice/GetStarted.html</control>
+      <control>/App_Plugins/Shield/Backoffice/Dashboards/GetStarted.html</control>
     </tab>
   </section>
   <section alias="shieldHttpModuleConfig" xdt:Locator="Match(alias)" xdt:Transform="InsertIfMissing">
     <areas>
-      <area>Shield</area>
+      <area>shield</area>
     </areas>
     <tab caption="Http Module Config">
-      <control>/App_Plugins/Shield/Backoffice/HttpModuleConfig.html</control>
+      <control>/App_Plugins/Shield/Backoffice/Dashboards/HttpModuleConfig.html</control>
     </tab>
   </section>
 </dashBoard>
