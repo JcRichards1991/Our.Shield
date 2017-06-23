@@ -1,3 +1,4 @@
 ﻿<dashBoard xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
-  <section alias="Shield" xdt:Locator="Match(alias)" xdt:Transform="Remove" />
+  <section alias="shieldGetStarted" xdt:Locator="Match(alias)" xdt:Transform="Remove" />
+  <section alias="shieldHttpModuleConfig" xdt:Locator="Match(alias)" xdt:Transform="Remove" />
 </dashBoard>

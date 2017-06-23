@@ -12,4 +12,8 @@
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security</tags>
   </metadata>
+  <files>
+    <file src="App_Plugins\**\*.*" target="Content\App_Plugins" exclude="App_Plugins\Shield\Backoffice\Dashboards\*.xdt" />
+    <file src="App_Plugins\Shield\Backoffice\Dashboards\*.xdt" target="Content\config" />
+  </files>
 </package>
