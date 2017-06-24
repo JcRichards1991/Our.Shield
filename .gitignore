@@ -242,8 +242,11 @@ ModelManifest.xml
 .fake/
 
 *.txt
+!src/Shield.TestSite/App_Data/*.sdf
 src/Shield.TestSite/App_Data/Logs/
+src/Shield.TestSite/App_Data/NuGetBackup
 src/Shield.TestSite/App_Data/TEMP/
 src/Shield.TestSite/App_Plugins/
 src/Shield.TestSite/[Uu]mbraco/
 src/Shield.TestSite/[Uu]mbraco_[Cc]lient/
+src/Shield.TestSite/Media/created-packages/Shield_1.0.0.1.zip
