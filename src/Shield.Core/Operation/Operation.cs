@@ -1,9 +1,9 @@
-﻿namespace Shield.Core.Models
+﻿namespace Shield.Core.Operation
 {
     using System;
     using System.Collections.Generic;
 
-    public abstract class Operation<C> : Interfaces.IOperation where C : Configuration
+    public abstract class Operation<C> : IOperation where C : Persistance.Serialization.Configuration
     {
         /// <summary>
         /// Unique identifier of the plugin
@@ -27,7 +27,7 @@
             }
         }
 
-        public virtual Configuration DefaultConfiguration
+        public virtual Persistance.Serialization.Configuration DefaultConfiguration
         {
             get
             {
@@ -40,12 +40,12 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static Interfaces.IOperation Create(string id)
+        public static IOperation Create(string id)
         {
             Type derivedType = null;
             if (Register.TryGetValue(id, out derivedType))
             {
-                return Activator.CreateInstance(derivedType) as Interfaces.IOperation;
+                return Activator.CreateInstance(derivedType) as IOperation;
             }
             return null;
         }
@@ -55,9 +55,9 @@
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Interfaces.IOperation Create(Type type)
+        public static IOperation Create(Type type)
         {
-            return Activator.CreateInstance(type) as Interfaces.IOperation;
+            return Activator.CreateInstance(type) as IOperation;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>
-        public virtual bool Execute(Configuration config)
+        public virtual bool Execute(Persistance.Serialization.Configuration config)
         {
             return true;
         }
@@ -79,7 +79,7 @@
         /// <returns>
         /// Whether or not was successfully written to the database.
         /// </returns>
-        public bool WriteConfiguration(Configuration config)
+        public bool WriteConfiguration(Persistance.Serialization.Configuration config)
         {
             return Operation.Executor.Instance.WriteConfiguration(this.Id, config);
         }
@@ -90,7 +90,7 @@
         /// <returns>
         /// The configuration
         /// </returns>
-        public Configuration ReadConfiguration()
+        public Persistance.Serialization.Configuration ReadConfiguration()
         {
             return Operation.Executor.Instance.ReadConfiguration(this.Id, DefaultConfiguration);
         }
@@ -104,7 +104,7 @@
         /// <returns>
         /// Whether or not was successfully written to the database
         /// </returns>
-        public bool WriteJournal(Journal journal)
+        public bool WriteJournal(Persistance.Serialization.Journal journal)
         {
             return Operation.Executor.Instance.WriteJournal(this.Id, journal);
         }
@@ -121,7 +121,7 @@
         /// <returns>
         /// A collection of Journals for the Configuration
         /// </returns>
-        public IEnumerable<Journal> ReadJournals(int page, int itemsPerPage)
+        public IEnumerable<Persistance.Serialization.Journal> ReadJournals(int page, int itemsPerPage)
         {
             return Operation.Executor.Instance.ReadJournals(this.Id, page, itemsPerPage);
         }

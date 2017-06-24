@@ -1,4 +1,4 @@
-﻿namespace Shield.Core.Models
+﻿namespace Shield.Core.Persistance.Serialization
 {
     using Newtonsoft.Json;
     using System;

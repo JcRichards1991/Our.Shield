@@ -1,6 +1,6 @@
 ﻿namespace Shield.MediaProtection.Models
 {
-    public class TreeNode : Core.Models.TreeNode
+    public class TreeNode : Core.UI.TreeNode
     {
         public override string Id => Constants.Tree.NodeId;
 

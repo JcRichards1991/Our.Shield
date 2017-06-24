@@ -1,9 +1,9 @@
-﻿namespace Shield.Core.Models
+﻿namespace Shield.Core.UI
 {
     using System;
     using System.Collections.Generic;
 
-    public abstract class TreeNode : IFrisk
+    public abstract class TreeNode : Operation.IFrisk
     {
         public abstract string Name { get; }
 
@@ -23,7 +23,7 @@
         {
             get
             {
-                return Frisk.Register<TreeNode>();
+                return Operation.Frisk.Register<TreeNode>();
             }
         }
 

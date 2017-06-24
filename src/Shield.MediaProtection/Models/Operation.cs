@@ -12,7 +12,7 @@ using Umbraco.Core.Services;
 
 namespace Shield.MediaProtection.Models
 {
-   public class Operation : Core.Models.Operation<ViewModels.Configuration>
+   public class Operation : Core.Operation.Operation<ViewModels.Configuration>
     {
         /// <summary>
         /// Alias that denotes whether a media item only allowed to be accessed by members or not
@@ -31,7 +31,7 @@ namespace Shield.MediaProtection.Models
 
         public override string Id => nameof(MediaProtection);
 
-        public override Core.Models.Configuration DefaultConfiguration
+        public override Core.Persistance.Serialization.Configuration DefaultConfiguration
         {
             get
             {
@@ -45,7 +45,7 @@ namespace Shield.MediaProtection.Models
 
         private static List<int> Ids = new List<int>();
 
-        public override bool Execute(Core.Models.Configuration c)
+        public override bool Execute(Core.Persistance.Serialization.Configuration c)
         {
             var config = c as ViewModels.Configuration;
 

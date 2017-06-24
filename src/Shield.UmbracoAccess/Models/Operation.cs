@@ -6,12 +6,12 @@
     using System.Text.RegularExpressions;
     using System.Web;
 
-    public class Operation : Core.Models.Operation<ViewModels.Configuration>
+    public class Operation : Core.Operation.Operation<ViewModels.Configuration>
     {
         public override string Id => nameof(UmbracoAccess);
 
 
-        public override Core.Models.Configuration DefaultConfiguration
+        public override Core.Persistance.Serialization.Configuration DefaultConfiguration
         {
             get
             {
@@ -25,7 +25,7 @@
 
         private static List<int> Ids = new List<int>();
 
-        public override bool Execute(Core.Models.Configuration c)
+        public override bool Execute(Core.Persistance.Serialization.Configuration c)
         {
             var config = c as ViewModels.Configuration;
 

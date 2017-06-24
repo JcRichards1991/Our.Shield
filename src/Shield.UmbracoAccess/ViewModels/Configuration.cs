@@ -3,7 +3,7 @@
     using Newtonsoft.Json;
 
     [JsonObject(MemberSerialization.OptIn)]
-    public class Configuration : Core.Models.Configuration
+    public class Configuration : Core.Persistance.Serialization.Configuration
     {
         /// <summary>
         /// Gets or sets the Backend Access URL.

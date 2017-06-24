@@ -264,24 +264,26 @@
   <ItemGroup>
     <Compile Include="ApplicationSettings.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Controllers\ApiController.cs" />
-    <Compile Include="Controllers\TreeController.cs" />
+    <Compile Include="Persistance\Data\Migration.cs" />
+    <Compile Include="UI\ApiController.cs" />
+    <Compile Include="UI\Register.cs" />
+    <Compile Include="UI\TreeController.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
-    <Compile Include="Initialise\Application.cs" />
-    <Compile Include="Models\Configuration.cs" />
-    <Compile Include="Models\TreeNode.cs" />
+    <Compile Include="Operation\Register.cs" />
+    <Compile Include="Persistance\Serialization\Configuration.cs" />
+    <Compile Include="UI\TreeNode.cs" />
     <Compile Include="Operation\Executor.cs" />
-    <Compile Include="Models\Interfaces\IOperation.cs" />
-    <Compile Include="Models\Journal.cs" />
-    <Compile Include="Models\Operation.cs" />
-    <Compile Include="Frisk.cs" />
+    <Compile Include="Operation\IOperation.cs" />
+    <Compile Include="Persistance\Serialization\Journal.cs" />
+    <Compile Include="Operation\Operation.cs" />
+    <Compile Include="Operation\Frisk.cs" />
     <Compile Include="Operation\Fortress.cs" />
-    <Compile Include="Persistance\Bal\ConfigurationContext.cs" />
-    <Compile Include="Persistance\Dal\ConfigurationMigration.cs" />
-    <Compile Include="Persistance\Bal\JournalContext.cs" />
-    <Compile Include="Persistance\Dal\JournalMigration.cs" />
-    <Compile Include="Persistance\Dal\Configuration.cs" />
-    <Compile Include="Persistance\Dal\Journal.cs" />
+    <Compile Include="Persistance\Business\ConfigurationContext.cs" />
+    <Compile Include="Persistance\Data\ConfigurationMigration.cs" />
+    <Compile Include="Persistance\Business\JournalContext.cs" />
+    <Compile Include="Persistance\Data\JournalMigration.cs" />
+    <Compile Include="Persistance\Data\Configuration.cs" />
+    <Compile Include="Persistance\Data\Journal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -298,6 +300,7 @@
     <Content Include="App_Plugins\Shield\Backoffice\Js\Resources.js" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <PropertyGroup>

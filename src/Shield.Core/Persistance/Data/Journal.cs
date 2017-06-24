@@ -1,4 +1,4 @@
-﻿namespace Shield.Core.Persistance.Dal
+﻿namespace Shield.Core.Persistance.Data
 {
     using System;
     using Umbraco.Core.Persistence;

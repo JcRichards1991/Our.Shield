@@ -3,7 +3,7 @@
 namespace Shield.MediaProtection.ViewModels
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class Configuration : Core.Models.Configuration
+    public class Configuration : Core.Persistance.Serialization.Configuration
     {
         /// <summary>
         /// HotLinking Protection

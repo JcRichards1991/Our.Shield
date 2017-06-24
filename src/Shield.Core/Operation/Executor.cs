@@ -34,7 +34,7 @@
 
         private class ExecuteStatus
         {
-            public Models.Interfaces.IOperation Operation;
+            public IOperation Operation;
             public DateTime? LastRan;
             public Task<bool> Task;
             public CancellationTokenSource CancelToken;
@@ -47,11 +47,11 @@
         public void Init()
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
-            var ops = Models.Operation<Models.Configuration>.Register;
+            var ops = Operation.Operation<Persistance.Serialization.Configuration>.Register;
 
             foreach(var op in ops)
             {
-                var o = Models.Operation<Models.Configuration>.Create(op.Key);
+                var o = Operation.Operation<Persistance.Serialization.Configuration>.Create(op.Key);
 
                 if(o.Init())
                 {
@@ -175,9 +175,9 @@
             return false;
         }
 
-        public bool WriteConfiguration(string id, Models.Configuration config)
+        public bool WriteConfiguration(string id, Persistance.Serialization.Configuration config)
         {
-            if (!Persistance.Bal.ConfigurationContext.Write(id, config))
+            if (!Persistance.Business.ConfigurationContext.Write(id, config))
             {
                 return false;
             }
@@ -188,26 +188,26 @@
             return true;
         }
 
-        public bool WriteJournal(string id, Models.Journal journal)
+        public bool WriteJournal(string id, Persistance.Serialization.Journal journal)
         {
-            return Persistance.Bal.JournalContext.Write(id, journal);
+            return Persistance.Business.JournalContext.Write(id, journal);
         }
 
-        public Models.Configuration ReadConfiguration(string id, Models.Configuration defaultConfiguration)
+        public Persistance.Serialization.Configuration ReadConfiguration(string id, Persistance.Serialization.Configuration defaultConfiguration)
         {
-            return Persistance.Bal.ConfigurationContext.Read(id,
-                    Models.Operation<Models.Configuration>.Register[id].BaseType.GenericTypeArguments[0], defaultConfiguration);
+            return Persistance.Business.ConfigurationContext.Read(id,
+                    Operation.Operation<Persistance.Serialization.Configuration>.Register[id].BaseType.GenericTypeArguments[0], defaultConfiguration);
         }
 
-        public IEnumerable<Models.Journal> ReadJournals(string id, int page, int itemsPerPage)
+        public IEnumerable<Persistance.Serialization.Journal> ReadJournals(string id, int page, int itemsPerPage)
         {
-            return Persistance.Bal.JournalContext.Read(id, page, itemsPerPage,
-                Models.Operation<Models.Configuration>.Register[id].BaseType.GenericTypeArguments[1]);
+            return Persistance.Business.JournalContext.Read(id, page, itemsPerPage,
+                Operation.Operation<Persistance.Serialization.Configuration>.Register[id].BaseType.GenericTypeArguments[1]);
         }
 
-        public bool Execute(string id, Models.Configuration config = null)
+        public bool Execute(string id, Persistance.Serialization.Configuration config = null)
         {
-            var o = Models.Operation<Models.Configuration>.Create(id);
+            var o = Operation.Operation<Persistance.Serialization.Configuration>.Create(id);
 
             if (o == null)
             {
@@ -228,7 +228,7 @@
         }
 
         
-        public bool Register(Models.Interfaces.IOperation o)
+        public bool Register(IOperation o)
         {
             if (registerLock.TryEnterWriteLock(taskLockTimeout))
             {
@@ -276,7 +276,7 @@
             return false;
         }
 
-        public bool Unregister(Models.Interfaces.IOperation o)
+        public bool Unregister(Operation.IOperation o)
         {
             return Unregister(o.Id);
         }

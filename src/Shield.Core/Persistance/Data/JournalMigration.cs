@@ -1,4 +1,4 @@
-﻿namespace Shield.Core.Persistance.Dal
+﻿namespace Shield.Core.Persistance.Data
 {
     using Umbraco.Core;
     using Umbraco.Core.Logging;
@@ -34,7 +34,7 @@
         /// </summary>
         public override void Up()
         {
-            _schemaHelper.CreateTable<Dal.Journal>(false);
+            _schemaHelper.CreateTable<Data.Journal>(false);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@
         /// </summary>
         public override void Down()
         {
-            _schemaHelper.DropTable<Dal.Journal>();
+            _schemaHelper.DropTable<Data.Journal>();
         }
     }
 }

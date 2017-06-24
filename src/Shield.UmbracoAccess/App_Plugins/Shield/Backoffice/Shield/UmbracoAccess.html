@@ -21,7 +21,7 @@
                                     <input type="checkbox" id="enable" ng-model="configuration.enable" />
                                 </div>
                             </div>
-                            <div ng-show="configuration.enable">
+                            <div ng-show="configuration.enable == true">
                                 <div class="umb-el-wrap control-group umb-control-group">
                                     <label for="backendAccessUrl" class="control-label">
                                         <localize key="Shield.UmbracoAccess.Properties_BackendAccessUrlLabel">Backend Office Access URL</localize>
@@ -55,7 +55,7 @@
                                         </small>
                                     </label>
                                     <div class="controls">
-                                        <select id="unauthorisedUrlType" ng-model="configuration.unauthorisedUrlType">
+                                        <select id="unauthorisedUrlType" ng-model="configuration.unauthorisedUrlType" convert-to-number>
                                             <option value="0">Url</option>
                                             <option value="1">XPath</option>
                                             <option value="2">Content Picker</option>

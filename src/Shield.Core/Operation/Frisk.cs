@@ -1,4 +1,4 @@
-﻿namespace Shield.Core
+﻿namespace Shield.Core.Operation
 {
     using System;
     using System.Collections.Generic;
@@ -15,8 +15,8 @@
 
         private static readonly Type[] interests = new Type[]
         {
-            typeof(Models.Operation<Models.Configuration>),
-            typeof(Models.TreeNode)
+            typeof(Operation.Operation<Persistance.Serialization.Configuration>),
+            typeof(UI.TreeNode)
         };
 
         private static void registerAssembly(Assembly currAssembly, ref Dictionary<string, Dictionary<string, Type>> installed)

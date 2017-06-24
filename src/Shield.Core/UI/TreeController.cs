@@ -1,4 +1,4 @@
-﻿namespace Shield.Core.Controllers
+﻿namespace Shield.Core.UI
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -45,11 +45,11 @@
         protected override TreeNodeCollection GetTreeNodes(string id, FormDataCollection queryStrings)
         {
             var treeNodeCollection = new TreeNodeCollection();
-            var treeNodes = Models.TreeNode.Register;
+            var treeNodes = UI.TreeNode.Register;
 
             if(treeNodes != null && treeNodes.Any())
             {
-                var tNodes = treeNodes.Select(x => Models.TreeNode.Create(x.Key)).OrderBy(x => x.Name);
+                var tNodes = treeNodes.Select(x => UI.TreeNode.Create(x.Key)).OrderBy(x => x.Name);
                 foreach(var treeNode in tNodes)
                 {
                     if (id.Equals(treeNode.ParentId))

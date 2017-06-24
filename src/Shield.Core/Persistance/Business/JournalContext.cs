@@ -1,4 +1,4 @@
-﻿namespace Shield.Core.Persistance.Bal
+﻿namespace Shield.Core.Persistance.Business
 {
     using Newtonsoft.Json;
     using System;
@@ -28,7 +28,7 @@
         /// <returns>
         /// The Journal as the desired type.
         /// </returns>
-        public static IEnumerable<Models.Journal> Read(string id, int page, int itemsPerPage, Type type)
+        public static IEnumerable<Serialization.Journal> Read(string id, int page, int itemsPerPage, Type type)
         {
             var sql = new Sql()
                .Select("*")
@@ -39,18 +39,18 @@
             try
             {
                 var db = ApplicationContext.Current.DatabaseContext.Database;
-                var records = db.Page<Dal.Journal>(page, itemsPerPage, sql);
+                var records = db.Page<Data.Journal>(page, itemsPerPage, sql);
 
                 if (records?.Items?.Count == 0)
                 {
-                    return Enumerable.Empty<Models.Journal>();
+                    return Enumerable.Empty<Serialization.Journal>();
                 }
 
                 return records.Items.Select(x =>
                 {
                     try
                     {
-                        return JsonConvert.DeserializeObject(x.Value, type) as Models.Journal;
+                        return JsonConvert.DeserializeObject(x.Value, type) as Serialization.Journal;
                     }
                     catch (JsonSerializationException jEx)
                     {
@@ -64,7 +64,7 @@
             {
                 LogHelper.Error(typeof(JournalContext), $"Error getting journals for plugin with Id: {id}", ex);
             }
-            return Enumerable.Empty<Models.Journal>();
+            return Enumerable.Empty<Serialization.Journal>();
         }
 
         /// <summary>
@@ -79,11 +79,11 @@
         /// <returns>
         /// If successful, returns true; otherwise false.
         /// </returns>
-        public static bool Write(string id, Models.Journal journal)
+        public static bool Write(string id, Serialization.Journal journal)
         {
             journal.Datestamp = DateTime.UtcNow;
 
-            var record = new Dal.Journal()
+            var record = new Data.Journal()
             {
                 ConfigurationId = id,
                 Value = JsonConvert.SerializeObject(journal)

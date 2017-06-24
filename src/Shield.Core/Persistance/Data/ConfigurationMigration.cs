@@ -1,4 +1,4 @@
-﻿namespace Shield.Core.Persistance.Dal
+﻿namespace Shield.Core.Persistance.Data
 {
     using Umbraco.Core;
     using Umbraco.Core.Logging;
@@ -34,7 +34,7 @@
         /// </summary>
         public override void Up()
         {
-            _schemaHelper.CreateTable<Dal.Configuration>(false);
+            _schemaHelper.CreateTable<Data.Configuration>(false);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@
         /// </summary>
         public override void Down()
         {
-            _schemaHelper.DropTable<Dal.Configuration>();
+            _schemaHelper.DropTable<Data.Configuration>();
         }
     }
 }

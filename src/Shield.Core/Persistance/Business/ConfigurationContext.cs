@@ -1,4 +1,4 @@
-﻿namespace Shield.Core.Persistance.Bal
+﻿namespace Shield.Core.Persistance.Business
 {
     using Newtonsoft.Json;
     using System;
@@ -22,19 +22,19 @@
         /// <returns>
         /// The Configuration as the desired type.
         /// </returns>
-        public static Models.Configuration Read(string id, Type type, Models.Configuration defaultConfiguration)
+        public static Serialization.Configuration Read(string id, Type type, Serialization.Configuration defaultConfiguration)
         {
             try
             {
                 var db = ApplicationContext.Current.DatabaseContext.Database;
-                var record = db.SingleOrDefault<Dal.Configuration>((object)id);
+                var record = db.SingleOrDefault<Data.Configuration>((object)id);
 
                 if (record == null || string.IsNullOrEmpty(record.Value))
                 {
                     return defaultConfiguration;
                 }
 
-                return JsonConvert.DeserializeObject(record.Value, type) as Models.Configuration;
+                return JsonConvert.DeserializeObject(record.Value, type) as Serialization.Configuration;
             }
             catch (JsonSerializationException jEx)
             {
@@ -60,11 +60,11 @@
         /// <returns>
         /// If successfull, returns true, otherwise false.
         /// </returns>
-        public static bool Write(string id, Models.Configuration config)
+        public static bool Write(string id, Serialization.Configuration config)
         {
             config.LastModified = DateTime.UtcNow;
 
-            var record = new Dal.Configuration
+            var record = new Data.Configuration
             {
                 Id = id,
                 Value = JsonConvert.SerializeObject(config)
@@ -73,7 +73,7 @@
             try
             {
                 var db = ApplicationContext.Current.DatabaseContext.Database;
-                if (db.Exists<Dal.Configuration>(id))
+                if (db.Exists<Data.Configuration>(id))
                 {
                     db.Update(record);
                 }

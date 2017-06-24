@@ -113,17 +113,17 @@
             });
         };
 
-        $scope.$watch('configuration.unauthorisedUrlType', function (newVal, oldVal) {
-            if (newVal === undefined)
-                return;
-            $scope.configuration.unauthorisedUrlType = parseInt(newVal);
-        });
+        //$scope.$watch('configuration.unauthorisedUrlType', function (newVal, oldVal) {
+        //    if (newVal === undefined)
+        //        return;
+        //    $scope.configuration.unauthorisedUrlType = parseInt(newVal);
+        //});
 
-        $scope.$watch('configuration.enable', function (newVal, oldVal) {
-            if (newVal === undefined)
-                return;
-            $scope.configuration.enable = newVal === true || newVal === 1 || newVal === "1" ? true : false;
-        });
+        //$scope.$watch('configuration.enable', function (newVal, oldVal) {
+        //    if (newVal === undefined)
+        //        return;
+        //    $scope.configuration.enable = newVal === true || newVal === 1 || newVal === "1" ? true : false;
+        //});
 
         $scope.IpAddressProperty.addIp = function () {
             if (!IsValidIpAddress($scope.IpAddressProperty.newIp, false)) {

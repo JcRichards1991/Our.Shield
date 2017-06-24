@@ -1,4 +1,4 @@
-﻿namespace Shield.Core.Controllers
+﻿namespace Shield.Core.UI
 {
     using System.Linq;
     using System.Web.Http;
@@ -33,7 +33,7 @@
         [HttpPost]
         public bool PostConfiguration(string id, [FromBody] JObject model)
         {
-            var op = Models.Operation<Models.Configuration>.Create(id);
+            var op = Operation.Operation<Persistance.Serialization.Configuration>.Create(id);
 
             if(op == null)
             {
@@ -48,7 +48,7 @@
             //    Message = $"{curUmbracoUser.Name} has updated configuration."
             //});
 
-            var config = model.ToObject(op.GetType().BaseType.GenericTypeArguments[0]) as Models.Configuration;
+            var config = model.ToObject(op.GetType().BaseType.GenericTypeArguments[0]) as Persistance.Serialization.Configuration;
 
             return op.WriteConfiguration(config);
         }
@@ -69,7 +69,7 @@
         [HttpGet]
         public JsonNetResult GetConfiguration(string id)
         {
-            var op = Models.Operation<Models.Configuration>.Create(id);
+            var op = Operation.Operation<Persistance.Serialization.Configuration>.Create(id);
 
             if(op == null)
             {
@@ -105,7 +105,7 @@
         [HttpGet]
         public JsonNetResult GetJournals(string id, int page, int itemsPerPage)
         {
-            var op = Models.Operation<Models.Configuration>.Create(id);
+            var op = Operation.Operation<Persistance.Serialization.Configuration>.Create(id);
 
             if(op == null)
             {
