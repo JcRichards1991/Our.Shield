@@ -6,7 +6,6 @@
     [JsonObject(MemberSerialization.OptIn)]
     public abstract class Configuration
     {
-
         /// <summary>
         /// Gets or sets whether the Configuration is Enabled.
         /// </summary>

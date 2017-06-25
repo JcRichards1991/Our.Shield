@@ -13,8 +13,11 @@
         /// <summary>
         /// Reads a Configuration from the database.
         /// </summary>
-        /// <param name="id">
-        /// The id of the configuration.
+        /// <param name="environmentId">
+        /// The environmentId of the configuration.
+        /// </param>
+        /// <param name="appId">
+        /// The appId of the configuration.
         /// </param>
         /// <param name="type">
         /// The type of configuration to return;
@@ -22,13 +25,17 @@
         /// <returns>
         /// The Configuration as the desired type.
         /// </returns>
-        public static Serialization.Configuration Read(string id, Type type, Serialization.Configuration defaultConfiguration)
+        public static Serialization.Configuration Read(int environmentId, string appId, Type type, 
+            Serialization.Configuration defaultConfiguration)
         {
             try
             {
                 var db = ApplicationContext.Current.DatabaseContext.Database;
-                var record = db.SingleOrDefault<Data.Configuration>((object)id);
-
+                var record = db.SingleOrDefault<Data.Dto.Configuration>(
+                    "WHERE " + 
+                    nameof(Data.Dto.Configuration.EnvironmentId) + " = @0 AND " +
+                    nameof(Data.Dto.Configuration.AppId) + " = @1",
+                    environmentId, appId);
                 if (record == null || string.IsNullOrEmpty(record.Value))
                 {
                     return defaultConfiguration;
@@ -38,13 +45,13 @@
             }
             catch (JsonSerializationException jEx)
             {
-                LogHelper.Error(typeof(ConfigurationContext), $"Error Deserialising configuration with id: {id}; to type:{type}", jEx);
-                return null;
+                LogHelper.Error(typeof(ConfigurationContext), $"Error Deserialising configuration with environmentId: {environmentId} for appId: {appId}; to type:{type}", jEx);
+                return defaultConfiguration;
             }
             catch(Exception ex)
             {
-                LogHelper.Error(typeof(ConfigurationContext), $"Error reading configuration with id: {id}", ex);
-                return null;
+                LogHelper.Error(typeof(ConfigurationContext), $"Error reading configuration with environmentId: {environmentId} for appId: {appId}; to type:{type}", ex);
+                return defaultConfiguration;
             }
         }
 
@@ -60,33 +67,38 @@
         /// <returns>
         /// If successfull, returns true, otherwise false.
         /// </returns>
-        public static bool Write(string id, Serialization.Configuration config)
+        public static bool Write(int environmentId, string appId, Serialization.Configuration config)
         {
             config.LastModified = DateTime.UtcNow;
-
-            var record = new Data.Configuration
-            {
-                Id = id,
-                Value = JsonConvert.SerializeObject(config)
-            };
 
             try
             {
                 var db = ApplicationContext.Current.DatabaseContext.Database;
-                if (db.Exists<Data.Configuration>(id))
+                var record = db.SingleOrDefault<Data.Dto.Configuration>(
+                    "WHERE " + 
+                    nameof(Data.Dto.Configuration.EnvironmentId) + " = @0 AND " +
+                    nameof(Data.Dto.Configuration.AppId) + " = @1",
+                    environmentId, appId);
+                if (record == null)
                 {
-                    db.Update(record);
+                    record = new Data.Dto.Configuration
+                    {
+                        EnvironmentId = environmentId,
+                        AppId = appId,
+                        Value = JsonConvert.SerializeObject(config)
+                    };                                 
+                    db.Insert(record);
                 }
                 else
                 {
-                    db.Insert(record);
+                    record.Value = JsonConvert.SerializeObject(config);
+                    db.Update(record);
                 }
-
                 return true;
             }
             catch(Exception ex)
             {
-                LogHelper.Error(typeof(ConfigurationContext), $"Error writing configuration with id: {id}; With data: {record.Value}", ex);
+                LogHelper.Error(typeof(ConfigurationContext), $"Error writing configuration with environmentId: {environmentId} for appId: {appId}", ex);
             }
             return false;
         }

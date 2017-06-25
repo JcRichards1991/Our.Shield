@@ -1,4 +1,4 @@
-﻿namespace Shield.Core.Persistance.Data
+﻿namespace Shield.Core.Persistance.Data.Migrations
 {
     using Umbraco.Core;
     using Umbraco.Core.Logging;
@@ -7,10 +7,10 @@
     using Umbraco.Core.Persistence.SqlSyntax;
 
     /// <summary>
-    /// Handles Creating/Editing the Configuration table.
+    /// Handles Creating/Editing the Domain table.
     /// </summary>
     [Migration("1.0.0", 1, nameof(Shield))]
-    public class ConfigurationMigration : MigrationBase
+    public class DomainMigration : MigrationBase
     {
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
         private readonly DatabaseSchemaHelper _schemaHelper;
@@ -24,7 +24,7 @@
         /// <param name="logger">
         /// The Logger.
         /// </param>
-        public ConfigurationMigration(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
+        public DomainMigration(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
         {
             _schemaHelper = new DatabaseSchemaHelper(_database, logger, sqlSyntax);
         }
@@ -34,7 +34,7 @@
         /// </summary>
         public override void Up()
         {
-            _schemaHelper.CreateTable<Data.Configuration>(false);
+            _schemaHelper.CreateTable<Dto.Domain>(false);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@
         /// </summary>
         public override void Down()
         {
-            _schemaHelper.DropTable<Data.Configuration>();
+            _schemaHelper.DropTable<Dto.Domain>();
         }
     }
 }

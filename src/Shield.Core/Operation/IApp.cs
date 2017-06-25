@@ -2,8 +2,24 @@
 {
     using System.Collections.Generic;
 
-    public interface IOperation : IFrisk
+    public interface IApp : IFrisk
     {
+
+        /// <summary>
+        /// Name of the plugin
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// Description of the plugin
+        /// </summary>
+        string Description { get; }
+
+        /// <summary>
+        /// Css class of icon
+        /// </summary>
+        string Icon { get; }
+
         bool Init();
 
         bool Execute(Persistance.Serialization.Configuration config);

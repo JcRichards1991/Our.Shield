@@ -33,7 +33,7 @@
         [HttpPost]
         public bool PostConfiguration(string id, [FromBody] JObject model)
         {
-            var op = Operation.Operation<Persistance.Serialization.Configuration>.Create(id);
+            var op = Operation.App<Persistance.Serialization.Configuration>.Create(id);
 
             if(op == null)
             {
@@ -69,7 +69,7 @@
         [HttpGet]
         public JsonNetResult GetConfiguration(string id)
         {
-            var op = Operation.Operation<Persistance.Serialization.Configuration>.Create(id);
+            var op = Operation.App<Persistance.Serialization.Configuration>.Create(id);
 
             if(op == null)
             {
@@ -105,7 +105,7 @@
         [HttpGet]
         public JsonNetResult GetJournals(string id, int page, int itemsPerPage)
         {
-            var op = Operation.Operation<Persistance.Serialization.Configuration>.Create(id);
+            var op = Operation.App<Persistance.Serialization.Configuration>.Create(id);
 
             if(op == null)
             {

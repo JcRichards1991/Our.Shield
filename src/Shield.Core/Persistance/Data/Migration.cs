@@ -18,8 +18,10 @@ namespace Shield.Core.Persistance.Data
 
             var scriptsForMigration = new IMigration[]
             {
-                new Persistance.Data.ConfigurationMigration (sqlSyntax, logger),
-                new Persistance.Data.JournalMigration (sqlSyntax, logger)
+                new Persistance.Data.Migrations.ConfigurationMigration (sqlSyntax, logger),
+                new Persistance.Data.Migrations.JournalMigration (sqlSyntax, logger),
+                new Persistance.Data.Migrations.EnvironmentMigration (sqlSyntax, logger),
+                new Persistance.Data.Migrations.DomainMigration (sqlSyntax,logger)
             };
 
             var migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName);

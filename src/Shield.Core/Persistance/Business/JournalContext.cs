@@ -28,18 +28,26 @@
         /// <returns>
         /// The Journal as the desired type.
         /// </returns>
-        public static IEnumerable<Serialization.Journal> Read(string id, int page, int itemsPerPage, Type type)
+        public static IEnumerable<Serialization.Journal> Read(int environmentId, string appId, int page, int itemsPerPage, Type type)
         {
-            var sql = new Sql()
-               .Select("*")
-               .From()
-               .Where("configuration = @0", id)
-               .OrderByDescending("datestamp");
+            var syntax = ApplicationContext.Current.DatabaseContext.SqlSyntax;
+
+            var sql = new Sql();
+            sql.Select("j.*")
+                .From<Data.Dto.Journal>(syntax)
+                .InnerJoin<Data.Dto.Domain>(syntax).On<Data.Dto.Journal,Data.Dto.Domain>(syntax, j => j.DomainId, d => d.Id)
+                .Where<Data.Dto.Domain>(d => d.EnvironmentId == environmentId, syntax);
+            
+            if (!string.IsNullOrWhiteSpace(appId))
+            {
+                sql.Where<Data.Dto.Journal>(j => j.appId == appId, syntax);
+            }
 
             try
             {
                 var db = ApplicationContext.Current.DatabaseContext.Database;
-                var records = db.Page<Data.Journal>(page, itemsPerPage, sql);
+
+                var records = db.Page<Data.Dto.Journal>(page, itemsPerPage, sql);
 
                 if (records?.Items?.Count == 0)
                 {
@@ -54,7 +62,7 @@
                     }
                     catch (JsonSerializationException jEx)
                     {
-                        LogHelper.Error(typeof(ConfigurationContext), $"Error Deserialising journal for plugin with Id: {id}; Record Id: {x.Id}; Type:{type}", jEx);
+                        LogHelper.Error(typeof(ConfigurationContext), $"Error Deserialising journal for environment with Id: {environmentId}; Record Id: {x.Id}; Type:{type}", jEx);
                         return null;
                     }
                     
@@ -62,7 +70,7 @@
             }
             catch (Exception ex)
             {
-                LogHelper.Error(typeof(JournalContext), $"Error getting journals for plugin with Id: {id}", ex);
+                LogHelper.Error(typeof(JournalContext), $"Error getting journals for environment with Id: {environmentId}", ex);
             }
             return Enumerable.Empty<Serialization.Journal>();
         }
@@ -79,13 +87,14 @@
         /// <returns>
         /// If successful, returns true; otherwise false.
         /// </returns>
-        public static bool Write(string id, Serialization.Journal journal)
+        public static bool Write(int domainId, string appId, Serialization.Journal journal)
         {
             journal.Datestamp = DateTime.UtcNow;
 
-            var record = new Data.Journal()
+            var record = new Data.Dto.Journal()
             {
-                ConfigurationId = id,
+                DomainId = domainId,
+                appId = appId,
                 Value = JsonConvert.SerializeObject(journal)
             };
 
@@ -97,7 +106,7 @@
             }
             catch(Exception ex)
             {
-                LogHelper.Error(typeof(JournalContext), $"Error writing Journal for plugin with id: {id}; with message: {journal.Message}", ex);
+                LogHelper.Error(typeof(JournalContext), $"Error writing Journal for app name: {appId}; with message: {journal.Message}", ex);
             }
             return false;
         }

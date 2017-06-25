@@ -45,6 +45,11 @@
             /// Tree root node id
             /// </summary>
             public static string RootNodeId = Umbraco.Core.Constants.System.Root.ToString();
+
+            /// <summary>
+            /// The Environment Node Root Id
+            /// </summary>
+            public const string EnvironmentsRootId = "-313131";
         }
     }
 }

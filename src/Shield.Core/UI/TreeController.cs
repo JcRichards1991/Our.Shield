@@ -27,7 +27,14 @@
         /// </returns>
         protected override MenuItemCollection GetMenuForNode(string id, FormDataCollection queryStrings)
         {
-            return null;
+            var menu = new MenuItemCollection();
+
+            if(id == Constants.Tree.RootNodeId || id == Constants.Tree.EnvironmentsRootId)
+            {
+                menu.Items.Add(new MenuItem("createEnvironment", "Create Environment"));
+            }
+
+            return menu;
         }
 
         /// <summary>
@@ -45,29 +52,56 @@
         protected override TreeNodeCollection GetTreeNodes(string id, FormDataCollection queryStrings)
         {
             var treeNodeCollection = new TreeNodeCollection();
-            var treeNodes = UI.TreeNode.Register;
+            
+            if(id == Constants.Tree.RootNodeId)
+            {
+                treeNodeCollection.Add(
+                    this.CreateTreeNode(
+                        Constants.Tree.EnvironmentsRootId,
+                        Constants.Tree.RootNodeId,
+                        queryStrings,
+                        "Environments",
+                        "icon-folder",
+                        true));
 
+                return treeNodeCollection;
+            }
+
+            if(id == Constants.Tree.EnvironmentsRootId)
+            {
+                var environments = Persistance.Business.EnvironmentContext.List();
+
+                if(environments != null && environments.Any())
+                {
+                    foreach(var environment in environments)
+                    {
+                        treeNodeCollection.Add(this.CreateTreeNode(
+                            environment.Id.ToString(),
+                            Constants.Tree.EnvironmentsRootId,
+                            queryStrings,
+                            environment.Name));
+                    }
+                }
+                return treeNodeCollection;
+            }
+            
+            var treeNodes = Operation.App<Persistance.Serialization.Configuration>.Register;
             if(treeNodes != null && treeNodes.Any())
             {
-                var tNodes = treeNodes.Select(x => UI.TreeNode.Create(x.Key)).OrderBy(x => x.Name);
-                foreach(var treeNode in tNodes)
+                var tNodes = treeNodes.Select(x => Operation.App<Persistance.Serialization.Configuration>.Create(x.Key)).OrderBy(x => x.Name);
+
+                var index = 0;
+
+                foreach (var treeNode in tNodes)
                 {
-                    if (id.Equals(treeNode.ParentId))
-                    {
-                        var qsList = queryStrings.ToList();
-                        qsList.Add(new KeyValuePair<string, string>("configurationId", treeNode.ConfigurationId));
+                    treeNodeCollection.Add(
+                        this.CreateTreeNode(index.ToString(),
+                            Constants.Tree.RootNodeId,
+                            queryStrings,
+                            treeNode.Name,
+                            treeNode.Icon));
 
-                        var qs = new FormDataCollection(qsList);
-
-                        treeNodeCollection.Add(
-                            this.CreateTreeNode(treeNode.Id,
-                                treeNode.ParentId,
-                                qs,
-                                treeNode.Name,
-                                treeNode.Icon,
-                                treeNode.HasChildNodes,
-                                treeNode.RoutePath));
-                    }
+                    index++;
                 }
             }
             return treeNodeCollection;

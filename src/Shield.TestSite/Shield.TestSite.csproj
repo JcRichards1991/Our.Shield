@@ -304,19 +304,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\Shield.MediaProtection\Js\MediaProtection.js" />
-    <Content Include="App_Plugins\Shield.MediaProtection\Lang\en-us.xml" />
-    <Content Include="App_Plugins\Shield.MediaProtection\package.manifest" />
-    <Content Include="App_Plugins\Shield.UmbracoAccess\Css\UmbracoAccess.css" />
-    <Content Include="App_Plugins\Shield.UmbracoAccess\Js\UmbracoAccess.js" />
-    <Content Include="App_Plugins\Shield.UmbracoAccess\Lang\en-us.xml" />
-    <Content Include="App_Plugins\Shield.UmbracoAccess\package.manifest" />
-    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Js\Resources.js" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\MediaProtection.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\UmbracoAccess.html" />
-    <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
-    <Content Include="App_Plugins\Shield\package.manifest" />
     <Content Include="Config\grid.editors.config.js" />
     <Content Include="Config\Lang\cs-CZ.user.xml" />
     <Content Include="Config\Lang\da-DK.user.xml" />

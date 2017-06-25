@@ -34,7 +34,8 @@
 
         private class ExecuteStatus
         {
-            public IOperation Operation;
+            public Persistance.Data.Dto.Environment Environment;
+            public IApp App;
             public DateTime? LastRan;
             public Task<bool> Task;
             public CancellationTokenSource CancelToken;
@@ -44,21 +45,30 @@
             new Lazy<IDictionary<string, ExecuteStatus>>(() => 
             new Dictionary<string, ExecuteStatus>());
 
+        private string RegisterKey(Persistance.Data.Dto.Environment ev, IApp app)
+        {
+            return ev.Id.ToString() + ":" + app.Name;
+        }
+
         public void Init()
         {
             var db = ApplicationContext.Current.DatabaseContext.Database;
-            var ops = Operation.Operation<Persistance.Serialization.Configuration>.Register;
 
-            foreach(var op in ops)
+            var evs = Persistance.Business.EnvironmentContext.List();
+            var apps = Operation.App<Persistance.Serialization.Configuration>.Register;
+
+            foreach (var ev in evs)
             {
-                var o = Operation.Operation<Persistance.Serialization.Configuration>.Create(op.Key);
-
-                if(o.Init())
+                foreach(var app in apps)
                 {
-                    Register(o);
-                }  
-            }
+                    var a = Operation.App<Persistance.Serialization.Configuration>.Create(app.Key);
 
+                    if(a.Init())
+                    {
+                        Register(ev, a);
+                    }  
+                }
+            }
             Poll();
             
         }
@@ -136,7 +146,7 @@
             {
                 es.CancelToken.Token.ThrowIfCancellationRequested();
 
-                var config = es.Operation.ReadConfiguration();
+                var config = es.App.ReadConfiguration();
                 if (registerLock.TryEnterReadLock(taskLockTimeout))
                 {
                     try
@@ -152,7 +162,7 @@
                     }
                 }
 
-                if (es.Operation.Execute(config))
+                if (es.App.Execute(config))
                 {
                     if (registerLock.TryEnterWriteLock(taskLockTimeout))
                     {
@@ -175,9 +185,9 @@
             return false;
         }
 
-        public bool WriteConfiguration(string id, Persistance.Serialization.Configuration config)
+        public bool WriteConfiguration(Persistance.Data.Dto.Environment environment, IApp app, Persistance.Serialization.Configuration config)
         {
-            if (!Persistance.Business.ConfigurationContext.Write(id, config))
+            if (!Persistance.Business.ConfigurationContext.Write((int) environment.Id, app.Id, config))
             {
                 return false;
             }
@@ -188,26 +198,28 @@
             return true;
         }
 
-        public bool WriteJournal(string id, Persistance.Serialization.Journal journal)
+        public bool WriteJournal(Persistance.Data.Dto.Domain domain, IApp app, Persistance.Serialization.Journal journal)
         {
-            return Persistance.Business.JournalContext.Write(id, journal);
+            return Persistance.Business.JournalContext.Write((int) domain.Id, app.Id, journal);
         }
 
-        public Persistance.Serialization.Configuration ReadConfiguration(string id, Persistance.Serialization.Configuration defaultConfiguration)
+        public Persistance.Serialization.Configuration ReadConfiguration(Persistance.Data.Dto.Environment environment, IApp app, 
+            Persistance.Serialization.Configuration defaultConfiguration)
         {
-            return Persistance.Business.ConfigurationContext.Read(id,
-                    Operation.Operation<Persistance.Serialization.Configuration>.Register[id].BaseType.GenericTypeArguments[0], defaultConfiguration);
+            return Persistance.Business.ConfigurationContext.Read((int) environment.Id, app.Id,
+                    Operation.App<Persistance.Serialization.Configuration>.Register[app.Id].BaseType.GenericTypeArguments[0], defaultConfiguration);
         }
 
-        public IEnumerable<Persistance.Serialization.Journal> ReadJournals(string id, int page, int itemsPerPage)
+        public IEnumerable<Persistance.Serialization.Journal> ReadJournals(Persistance.Data.Dto.Environment environment, IApp app, 
+            int page, int itemsPerPage)
         {
-            return Persistance.Business.JournalContext.Read(id, page, itemsPerPage,
-                Operation.Operation<Persistance.Serialization.Configuration>.Register[id].BaseType.GenericTypeArguments[1]);
+            return Persistance.Business.JournalContext.Read((int) environment.Id, app.Id, page, itemsPerPage,
+                Operation.App<Persistance.Serialization.Configuration>.Register[app.Id].BaseType.GenericTypeArguments[1]);
         }
 
-        public bool Execute(string id, Persistance.Serialization.Configuration config = null)
+        public bool Execute(Persistance.Data.Dto.Environment environment, IApp app, Persistance.Serialization.Configuration config = null)
         {
-            var o = Operation.Operation<Persistance.Serialization.Configuration>.Create(id);
+            var o = Operation.App<Persistance.Serialization.Configuration>.Create(app.Id);
 
             if (o == null)
             {
@@ -216,7 +228,7 @@
 
             if (config == null)
             {
-                config = ReadConfiguration(id, o.DefaultConfiguration);
+                config = ReadConfiguration(environment, app, o.DefaultConfiguration);
 
                 if (config == null)
                 {
@@ -228,17 +240,19 @@
         }
 
         
-        public bool Register(IOperation o)
+        public bool Register(Persistance.Data.Dto.Environment e, IApp a)
         {
             if (registerLock.TryEnterWriteLock(taskLockTimeout))
             {
                 try
                 {
-                    if (!_register.Value.ContainsKey(o.Id))
+                    var key = RegisterKey(e, a);
+                    if (!_register.Value.ContainsKey(key))
                     {
-                        _register.Value.Add(o.Id, new ExecuteStatus
+                        _register.Value.Add(key, new ExecuteStatus
                         {
-                            Operation = o
+                            Environment = e,
+                            App = a
                         });
                         return true;
                     }
@@ -251,20 +265,21 @@
             return false;
         }
 
-        public bool Unregister(string id)
+        public bool Unregister(Persistance.Data.Dto.Environment e , IApp a)
         {
             if (registerLock.TryEnterWriteLock(taskLockTimeout))
             {
                 try
                 {
                     ExecuteStatus es = null;
-                    if (_register.Value.TryGetValue(id, out es))
+                    var key = RegisterKey(e, a);
+                    if (_register.Value.TryGetValue(key, out es))
                     {
                         if (es.Task != null && !es.Task.IsCanceled && !es.Task.IsCompleted && !es.CancelToken.IsCancellationRequested)
                         {
                             es.CancelToken.Cancel();
                         }
-                        _register.Value.Remove(id);
+                        _register.Value.Remove(key);
                         return true;
                     }
                 }
@@ -276,9 +291,37 @@
             return false;
         }
 
-        public bool Unregister(Operation.IOperation o)
+        public bool Unregister(IApp a)
         {
-            return Unregister(o.Id);
+            if (registerLock.TryEnterWriteLock(taskLockTimeout))
+            {
+                try
+                {
+                    var removeItems = new List<string>();
+                    ExecuteStatus es = null;
+                    foreach (var reg in _register.Value)
+                    {
+                        if (reg.Value.App.Id == a.Id)
+                        {
+                            if (es.Task != null && !es.Task.IsCanceled && !es.Task.IsCompleted && !es.CancelToken.IsCancellationRequested)
+                            {
+                                es.CancelToken.Cancel();
+                            }
+                            removeItems.Add(reg.Key);
+                        }
+                    }
+                    foreach (var item in removeItems)
+                    {
+                        _register.Value.Remove(item);
+                    }
+                    return true;
+                }
+                finally
+                {
+                    registerLock.ExitWriteLock();
+                }
+            }
+            return false;
         }
 
     }

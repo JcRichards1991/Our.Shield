@@ -5,6 +5,8 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using ClientDependency.Core;
+using Shield.Core.UI;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.Membership;
@@ -12,7 +14,9 @@ using Umbraco.Core.Services;
 
 namespace Shield.MediaProtection.Models
 {
-   public class Operation : Core.Operation.Operation<ViewModels.Configuration>
+    [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?v=1.0.1")]
+    [AppAsset(ClientDependencyType.Javascript, "/App_Plugins/Shield.MediaProtection/Scripts/MediaProtection.js?v=1.0.1")]
+    public class MediaProtectApp : Core.Operation.App<ViewModels.Configuration>
     {
         /// <summary>
         /// Alias that denotes whether a media item only allowed to be accessed by members or not
@@ -30,6 +34,13 @@ namespace Shield.MediaProtection.Models
         private const string CacheKey = ",e&yL2maXa?CVfWy";
 
         public override string Id => nameof(MediaProtection);
+
+        public override string Name => "Media Protection";
+
+        public override string Description => "Secure your media by stopping unauthorised access";
+
+        public override string Icon => "icon-picture red";
+
 
         public override Core.Persistance.Serialization.Configuration DefaultConfiguration
         {

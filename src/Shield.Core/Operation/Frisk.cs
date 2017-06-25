@@ -15,7 +15,7 @@
 
         private static readonly Type[] interests = new Type[]
         {
-            typeof(Operation.Operation<Persistance.Serialization.Configuration>),
+            typeof(Operation.App<Persistance.Serialization.Configuration>),
             typeof(UI.TreeNode)
         };
 

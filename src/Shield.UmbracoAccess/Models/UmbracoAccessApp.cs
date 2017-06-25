@@ -5,10 +5,21 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Web;
+    using ClientDependency.Core;
+    using Core.UI;
 
-    public class Operation : Core.Operation.Operation<ViewModels.Configuration>
+    [AppEditor("/App_Plugins/Shield.UmbracoAccess/Views/UmbracoAccess.html?v=1.0.1")]
+    [AppAsset(ClientDependencyType.Javascript, "/App_Plugins/Shield.UmbracoAccess/Scripts/UmbracoAccess.js?v=1.0.1")]
+    [AppAsset(ClientDependencyType.Css, "/App_Plugins/Shield.UmbracoAccess/Css/UmbracoAccess.css?v=1.0.1")]
+    public class UmbracoAccessApp : Core.Operation.App<ViewModels.Configuration>
     {
         public override string Id => nameof(UmbracoAccess);
+
+        public override string Name => "Umbraco Access";
+
+        public override string Description => "Secure your backoffice access via IP restrictions";
+
+        public override string Icon => "icon-stop-hand red";
 
 
         public override Core.Persistance.Serialization.Configuration DefaultConfiguration

@@ -264,8 +264,17 @@
   <ItemGroup>
     <Compile Include="ApplicationSettings.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Persistance\Business\EnvironmentContext.cs" />
+    <Compile Include="Persistance\Business\DomainContext.cs" />
+    <Compile Include="Persistance\Data\Dto\Domain.cs" />
+    <Compile Include="Persistance\Data\Dto\UmbracoDomainDto.cs" />
+    <Compile Include="Persistance\Data\Migrations\DomainMigration.cs" />
+    <Compile Include="Persistance\Data\Migrations\EnvironmentMigration.cs" />
+    <Compile Include="Persistance\Data\Dto\Environment.cs" />
     <Compile Include="Persistance\Data\Migration.cs" />
-    <Compile Include="UI\ApiController.cs" />
+    <Compile Include="UI\AppEditorAttribute.cs" />
+    <Compile Include="UI\AppAssetAttribute.cs" />
+    <Compile Include="UI\ShieldApiController.cs" />
     <Compile Include="UI\Register.cs" />
     <Compile Include="UI\TreeController.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
@@ -273,17 +282,17 @@
     <Compile Include="Persistance\Serialization\Configuration.cs" />
     <Compile Include="UI\TreeNode.cs" />
     <Compile Include="Operation\Executor.cs" />
-    <Compile Include="Operation\IOperation.cs" />
+    <Compile Include="Operation\IApp.cs" />
     <Compile Include="Persistance\Serialization\Journal.cs" />
-    <Compile Include="Operation\Operation.cs" />
+    <Compile Include="Operation\App.cs" />
     <Compile Include="Operation\Frisk.cs" />
     <Compile Include="Operation\Fortress.cs" />
     <Compile Include="Persistance\Business\ConfigurationContext.cs" />
-    <Compile Include="Persistance\Data\ConfigurationMigration.cs" />
+    <Compile Include="Persistance\Data\Migrations\ConfigurationMigration.cs" />
     <Compile Include="Persistance\Business\JournalContext.cs" />
-    <Compile Include="Persistance\Data\JournalMigration.cs" />
-    <Compile Include="Persistance\Data\Configuration.cs" />
-    <Compile Include="Persistance\Data\Journal.cs" />
+    <Compile Include="Persistance\Data\Migrations\JournalMigration.cs" />
+    <Compile Include="Persistance\Data\Dto\Configuration.cs" />
+    <Compile Include="Persistance\Data\Dto\Journal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -297,7 +306,7 @@
   <ItemGroup>
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\GetStarted.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\HttpModuleConfig.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Js\Resources.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Resources.js" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
   </ItemGroup>
   <ItemGroup />

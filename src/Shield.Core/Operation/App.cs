@@ -3,12 +3,28 @@
     using System;
     using System.Collections.Generic;
 
-    public abstract class Operation<C> : IOperation where C : Persistance.Serialization.Configuration
+    public abstract class App<C> : IApp where C : Persistance.Serialization.Configuration
     {
         /// <summary>
         /// Unique identifier of the plugin
         /// </summary>
         public abstract string Id { get; }
+
+        /// <summary>
+        /// Name of the plugin
+        /// </summary>
+        public abstract string Name { get; }
+
+        /// <summary>
+        /// Description of the plugin
+        /// </summary>
+        public abstract string Description { get; }
+
+        /// <summary>
+        /// Css class of icon
+        /// </summary>
+        public abstract string Icon { get; }
+
 
         /// <summary>
         /// 
@@ -23,7 +39,7 @@
         {
             get
             {
-                return Frisk.Register<Operation<C>>();
+                return Frisk.Register<App<C>>();
             }
         }
 
@@ -36,32 +52,32 @@
         }
 
         /// <summary>
-        /// Create a derived Position with a particular Id
+        /// Create a derived App with a particular Id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static IOperation Create(string id)
+        public static IApp Create(string id)
         {
             Type derivedType = null;
             if (Register.TryGetValue(id, out derivedType))
             {
-                return Activator.CreateInstance(derivedType) as IOperation;
+                return Activator.CreateInstance(derivedType) as IApp;
             }
             return null;
         }
 
         /// <summary>
-        /// Create a derived Position from a particular type
+        /// Create a derived App from a particular type
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static IOperation Create(Type type)
+        public static IApp Create(Type type)
         {
-            return Activator.CreateInstance(type) as IOperation;
+            return Activator.CreateInstance(type) as IApp;
         }
 
         /// <summary>
-        /// 
+        /// Execute the config of a derived app
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>

@@ -32,7 +32,9 @@ namespace Shield.Core.Operation
         {
             public int id;
             public int priority;
-            public string plugin;
+            public Persistance.Data.Dto.Environment environment;
+            public IList<Tuple<string, Persistance.Data.Dto.Domain>> domains;
+            public IApp app;
             public Regex regex;
             public Func<int, HttpApplication, Cycle> request;
         }
@@ -52,7 +54,23 @@ namespace Shield.Core.Operation
             }
         }
 
-        public static int Watch(string plugin, Regex regex, 
+        private Tuple<int, string> Domains(IEnumerable<Persistance.Data.Dto.Domain> domains)
+        {
+            var results = new List<Tuple<string, Persistance.Data.Dto.Domain>>();
+
+            foreach (var domain in domains)
+            {
+                string url = null;
+                if (domain.UmbracoDomainId == null)
+                {
+                    url = domain.Name;
+                }
+                else
+                {
+
+
+
+        public static int Watch(Persistance.Data.Dto.Environment environment, IApp app, Regex regex, 
             int beginRequestPriority, Func<int, HttpApplication, Cycle> beginRequest, 
             int endRequestPriority, Func<int, HttpApplication, Cycle> endRequest)
         {
@@ -68,7 +86,9 @@ namespace Shield.Core.Operation
                         {
                             id = count,
                             priority = beginRequestPriority,
-                            plugin = plugin,
+                            environment = environment,
+                            domains = Domains(environment.Domains),
+                            app = app,
                             regex = regex,
                             request = beginRequest
                         });
@@ -93,7 +113,9 @@ namespace Shield.Core.Operation
                         {
                             id = count,
                             priority = endRequestPriority,
-                            plugin = plugin,
+                            environment = environment,
+                            domains = Domains(environment.Domains),
+                            app = app,
                             regex = regex,
                             request = endRequest
                         });
@@ -111,13 +133,13 @@ namespace Shield.Core.Operation
             return count;
         }
 
-        public static int Watch(string id, Regex regex, 
+        public static int Watch(Persistance.Data.Dto.Environment environment, IApp app, Regex regex, 
             int beginRequestPriority, Func<int, HttpApplication, Cycle> beginRequest)
         {
-            return Watch(id, regex, beginRequestPriority, beginRequest, 0, null);
+            return Watch(environment, app, regex, beginRequestPriority, beginRequest, 0, null);
         }
 
-        public static int Unwatch(string plugin, Regex regex)
+        public static int Unwatch(Persistance.Data.Dto.Environment environment, IApp app, Regex regex)
         {
             string regy = regex == null ? null : regex.ToString();
             var count = 0;
@@ -126,7 +148,8 @@ namespace Shield.Core.Operation
             {
                 try
                 {
-                    count += beginWatchers.RemoveAll(x => x.plugin.Equals(plugin, StringComparison.InvariantCultureIgnoreCase) && 
+                    count += beginWatchers.RemoveAll(x => x.environment.Id == environment.Id &&
+                        x.app.Id.Equals(app.Id, StringComparison.InvariantCultureIgnoreCase) && 
                         ((regy == null && x.regex == null) || (regy != null && x.regex != null && regy.Equals(x.regex.ToString(), StringComparison.InvariantCulture))));
                 }
                 finally
@@ -139,7 +162,8 @@ namespace Shield.Core.Operation
             {
                 try
                 {
-                    count += endWatchers.RemoveAll(x => x.plugin.Equals(plugin, StringComparison.InvariantCultureIgnoreCase) && 
+                    count += endWatchers.RemoveAll(x => x.environment.Id == environment.Id &&
+                        x.app.Id.Equals(app.Id, StringComparison.InvariantCultureIgnoreCase) && 
                         ((regy == null && x.regex == null) || (regy != null && x.regex != null && regy.Equals(x.regex.ToString(), StringComparison.InvariantCulture))));
                 }
                 finally
@@ -151,7 +175,7 @@ namespace Shield.Core.Operation
             return count;
         }
 
-        public static int Unwatch(int id)
+        public static int Unwatch(IApp app)
         {
             var count = 0;
 
@@ -159,7 +183,7 @@ namespace Shield.Core.Operation
             {
                 try
                 {
-                    count += beginWatchers.RemoveAll(x => x.id == id);
+                    count += beginWatchers.RemoveAll(x => x.app.Id.Equals(app.Id, StringComparison.InvariantCultureIgnoreCase));
                 }
                 finally
                 {
@@ -171,7 +195,7 @@ namespace Shield.Core.Operation
             {
                 try
                 {
-                    count += endWatchers.RemoveAll(x => x.id == id);
+                    count += endWatchers.RemoveAll(x => x.app.Id.Equals(app.Id, StringComparison.InvariantCultureIgnoreCase));
                 }
                 finally
                 {
@@ -182,7 +206,7 @@ namespace Shield.Core.Operation
             return count;
         }
 
-        public static int UnwatchAll(string plugin)
+        public static int UnwatchAll(string appId)
         {
             var count = 0;
 
@@ -190,7 +214,7 @@ namespace Shield.Core.Operation
             {
                 try
                 {
-                    count += beginWatchers.RemoveAll(x => x.plugin.Equals(plugin, StringComparison.InvariantCultureIgnoreCase));
+                    count += beginWatchers.RemoveAll(x => x.app.Id.Equals(appId, StringComparison.InvariantCultureIgnoreCase));
                 }
                 finally
                 {
@@ -202,7 +226,7 @@ namespace Shield.Core.Operation
             {
                 try
                 {
-                    count += endWatchers.RemoveAll(x => x.plugin.Equals(plugin, StringComparison.InvariantCultureIgnoreCase));
+                    count += endWatchers.RemoveAll(x => x.app.Id.Equals(appId, StringComparison.InvariantCultureIgnoreCase));
                 }
                 finally
                 {
@@ -234,6 +258,11 @@ restart:
                     count++;
                     foreach (var watch in beginWatchers)
                     {
+                        //  First see if the domain matches
+                        watch.environment.Domains
+
+
+
                         if (watch.regex == null || watch.regex.IsMatch(filePath))
                         {
                             switch (watch.request(count, (HttpApplication)source))
