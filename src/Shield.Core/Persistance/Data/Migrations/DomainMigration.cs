@@ -10,7 +10,7 @@
     /// Handles Creating/Editing the Domain table.
     /// </summary>
     [Migration("1.0.0", 1, nameof(Shield))]
-    public class DomainMigration : MigrationBase
+    internal class DomainMigration : MigrationBase
     {
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
         private readonly DatabaseSchemaHelper _schemaHelper;

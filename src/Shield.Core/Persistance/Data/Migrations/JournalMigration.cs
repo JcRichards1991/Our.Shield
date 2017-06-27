@@ -10,7 +10,7 @@
     /// Handles Creating/Editing the Journal table.
     /// </summary>
     [Migration("1.0.0", 2, nameof(Shield))]
-    public class JournalMigration : MigrationBase
+    internal class JournalMigration : MigrationBase
     {
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
         private readonly DatabaseSchemaHelper _schemaHelper;

@@ -4,19 +4,14 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
+    using Models;
 
-    public interface IFrisk
-    {
-        string Id { get; }
-    }
-    
     public static class Frisk
     {
 
         private static readonly Type[] interests = new Type[]
         {
-            typeof(Operation.App<Persistance.Serialization.Configuration>),
-            typeof(UI.TreeNode)
+            typeof(App<IConfiguration>)
         };
 
         private static void registerAssembly(Assembly currAssembly, ref Dictionary<string, Dictionary<string, Type>> installed)

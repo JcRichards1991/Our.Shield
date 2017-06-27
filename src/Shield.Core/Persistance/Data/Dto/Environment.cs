@@ -10,7 +10,7 @@
     /// </summary>
     [TableName(nameof(Shield) + nameof(Environment))]
     [PrimaryKey("Id", autoIncrement = true)]
-    public class Environment
+    internal class Environment
     {
         /// <summary>
         /// Gets or sets the Id.
@@ -34,6 +34,6 @@
         public string Icon { get; set; }
 
         [Ignore]
-        public IList<Domain> Domains { get; set; }
+        public IEnumerable<Domain> Domains { get; set; }
     }
 }

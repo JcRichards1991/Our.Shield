@@ -6,12 +6,13 @@
     using System.Text.RegularExpressions;
     using System.Web;
     using ClientDependency.Core;
-    using Core.UI;
+    using Shield.Core.UI;
+    using Shield.Core.Models;
 
     [AppEditor("/App_Plugins/Shield.UmbracoAccess/Views/UmbracoAccess.html?v=1.0.1")]
     [AppAsset(ClientDependencyType.Javascript, "/App_Plugins/Shield.UmbracoAccess/Scripts/UmbracoAccess.js?v=1.0.1")]
     [AppAsset(ClientDependencyType.Css, "/App_Plugins/Shield.UmbracoAccess/Css/UmbracoAccess.css?v=1.0.1")]
-    public class UmbracoAccessApp : Core.Operation.App<ViewModels.Configuration>
+    public class UmbracoAccessApp : App<ViewModels.Configuration>
     {
         public override string Id => nameof(UmbracoAccess);
 
@@ -22,7 +23,7 @@
         public override string Icon => "icon-stop-hand red";
 
 
-        public override Core.Persistance.Serialization.Configuration DefaultConfiguration
+        public override IConfiguration DefaultConfiguration
         {
             get
             {
@@ -36,7 +37,7 @@
 
         private static List<int> Ids = new List<int>();
 
-        public override bool Execute(Core.Persistance.Serialization.Configuration c)
+        public override bool Execute(Core.Persistance.Data.Dto.Environment environment, Core.Persistance.Serialization.Configuration c)
         {
             var config = c as ViewModels.Configuration;
 
@@ -63,7 +64,7 @@
                     break;
             }
 
-            var id = Core.Operation.Fortress.Watch(Id, new Regex(config.BackendAccessUrl), 2, (count, app) =>
+            var id = Core.Operation.Fortress.Watch(environment, this, new Regex(config.BackendAccessUrl), 2, (count, app) =>
             {
                 var userIp = GetUserIp(app);
                 if (!config.IpAddresses.Any(x => x.ipAddress == userIp))
@@ -84,7 +85,7 @@
 
             Ids.Add(id);
 
-            id = Core.Operation.Fortress.Watch(Id, null, 1, (count, app) => {
+            id = Core.Operation.Fortress.Watch(environment, this, null, 1, (count, app) => {
                 return Core.Operation.Fortress.Cycle.Continue;
 
             }, 0, null);

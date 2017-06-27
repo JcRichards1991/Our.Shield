@@ -33,7 +33,7 @@ namespace Shield.Core.Operation
             public int id;
             public int priority;
             public Persistance.Data.Dto.Environment environment;
-            public IList<Tuple<string, Persistance.Data.Dto.Domain>> domains;
+            public IDictionary<string, Persistance.Data.Dto.Domain> domains;
             public IApp app;
             public Regex regex;
             public Func<int, HttpApplication, Cycle> request;
@@ -54,21 +54,36 @@ namespace Shield.Core.Operation
             }
         }
 
-        private Tuple<int, string> Domains(IEnumerable<Persistance.Data.Dto.Domain> domains)
+        private static IDictionary<string, Persistance.Data.Dto.Domain> Domains(IEnumerable<Persistance.Data.Dto.Domain> domains)
         {
-            var results = new List<Tuple<string, Persistance.Data.Dto.Domain>>();
+            if (domains == null || !domains.Any())
+            {
+                return null;
+            }
+
+            var results = new Dictionary<string, Persistance.Data.Dto.Domain>();
 
             foreach (var domain in domains)
             {
-                string url = null;
-                if (domain.UmbracoDomainId == null)
+                var url = new UriBuilder(domain.Name);
+                if (url.Scheme == null)
                 {
-                    url = domain.Name;
+                    url.Scheme = Uri.UriSchemeHttp;
+
+                    var urlHttps = new UriBuilder(domain.Name);
+                    urlHttps.Scheme = Uri.UriSchemeHttps;
+                    if (!results.ContainsKey(urlHttps.ToString()))
+                    {
+                        results.Add(urlHttps.ToString(), domain);
+                    }
                 }
-                else
+                if (!results.ContainsKey(url.ToString()))
                 {
-
-
+                    results.Add(url.ToString(), domain);
+                }
+            }
+            return results;;
+        }
 
         public static int Watch(Persistance.Data.Dto.Environment environment, IApp app, Regex regex, 
             int beginRequestPriority, Func<int, HttpApplication, Cycle> beginRequest, 
@@ -245,7 +260,7 @@ namespace Shield.Core.Operation
 
         private void Application_BeginRequest(object source, EventArgs e)
         {
-            Executor.Instance.Poll();
+            JobService.Instance.Poll();
             
             string filePath = ((HttpApplication)source).Context.Request.FilePath;
             int count = 0;
@@ -258,14 +273,16 @@ restart:
                     count++;
                     foreach (var watch in beginWatchers)
                     {
-                        //  First see if the domain matches
-                        watch.environment.Domains
-
-
-
                         if (watch.regex == null || watch.regex.IsMatch(filePath))
                         {
-                            switch (watch.request(count, (HttpApplication)source))
+                            if (watch.domains == null ||  
+
+                            var domain = watch.domains.FirstOrDefault(x => filePath.StartsWith(x.Key, StringComparison.InvariantCultureIgnoreCase));
+                            if (domain == null)
+                            {
+                                domain = watch.environment.Domains.FirstOrDefault(x => x.Name == null);
+                            }
+                            switch (watch.request(watch.environment, domain, count, (HttpApplication)source))
                             {
                                 case Cycle.Stop:
                                     return;

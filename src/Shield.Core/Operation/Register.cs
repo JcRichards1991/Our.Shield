@@ -29,7 +29,7 @@
 
             new Shield.Core.Persistance.Data.Migration().RunMigrations(applicationContext.DatabaseContext.SqlSyntax, 
                 applicationContext.Services.MigrationEntryService, applicationContext.ProfilingLogger.Logger);
-            Operation.Executor.Instance.Init();
+            Operation.JobService.Instance.Init();
         }
         
       

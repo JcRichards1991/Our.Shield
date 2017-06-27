@@ -8,7 +8,7 @@
     /// Defines the Domain table.
     /// </summary>
     [TableName(nameof(Shield) + nameof(Domain))]
-    public class Domain
+    internal class Domain
     {
         /// <summary>
         /// Gets or sets the Id.
@@ -25,6 +25,9 @@
         [IndexAttribute (IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(EnvironmentId))]
         public int EnvironmentId { get; set; }
 
+        /// <summary>
+        /// Url of the domain
+        /// </summary>
         [NullSetting(NullSetting = NullSettings.Null)]
         [Length(255)]
         public string Name { get; set; }

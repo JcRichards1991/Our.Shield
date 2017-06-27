@@ -10,7 +10,7 @@
     /// Handles Creating/Editing the Environment table.
     /// </summary>
     [Migration("1.0.0", 1, nameof(Shield))]
-    public class EnvironmentMigration : MigrationBase
+    internal class EnvironmentMigration : MigrationBase
     {
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
         private readonly DatabaseSchemaHelper _schemaHelper;

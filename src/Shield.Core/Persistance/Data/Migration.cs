@@ -9,7 +9,7 @@ using Umbraco.Core.Services;
 
 namespace Shield.Core.Persistance.Data
 {
-    public class Migration
+    internal class Migration
     {
         public void RunMigrations(ISqlSyntaxProvider sqlSyntax, IMigrationEntryService migrationEntryService, ILogger logger)
         {

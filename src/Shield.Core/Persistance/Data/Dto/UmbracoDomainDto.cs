@@ -6,7 +6,7 @@ namespace Shield.Core.Persistance.Data.Dto
     [TableName("umbracoDomains")]
     [PrimaryKey("id")]
     [ExplicitColumns]
-    public class UmbracoDomainDto
+    internal class UmbracoDomainDto
     {
         [Column("id")]
         [PrimaryKeyColumn]

@@ -1,21 +1,21 @@
 ﻿namespace Shield.Core.Persistance.Serialization
 {
-    using Newtonsoft.Json;
     using System;
+    using Newtonsoft.Json;
 
     [JsonObject(MemberSerialization.OptIn)]
-    public abstract class Configuration
+    internal abstract class Configuration
     {
         /// <summary>
         /// Gets or sets whether the Configuration is Enabled.
         /// </summary>
-        [JsonProperty("enable")]
+        [JsonIgnore]
         public bool Enable { get; set; }
 
         /// <summary>
         /// Gets or sets the configuration last modified data time
         /// </summary>
-        [JsonProperty("lastModified")]
-        public DateTime LastModified { get; set; }
+        [JsonIgnore]
+        public DateTime? LastModified { get; set; }
     }
 }

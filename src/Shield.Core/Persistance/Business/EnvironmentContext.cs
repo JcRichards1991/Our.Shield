@@ -10,32 +10,18 @@
     /// <summary>
     /// The Environment Context.
     /// </summary>
-    public static class EnvironmentContext
+    internal class EnvironmentContext : DbContext
     {
-        public static IEnumerable<Data.Dto.Environment> List()
+        public IEnumerable<Data.Dto.Environment> List()
         {
             try
             {
-                var db = ApplicationContext.Current.DatabaseContext.Database;
-                var syntax = ApplicationContext.Current.DatabaseContext.SqlSyntax;
-                var environments = db.Fetch<Data.Dto.Environment>("select *");
-                var environmentsMap = environments.ToDictionary(x => x.Id, x => new List<Data.Dto.Domain>());
-                var sql = new Sql()
-                    .Select("d.*")
-                    .From<Data.Dto.Domain>(syntax)
-                    .Append("as d")
-                    .Where("d." + nameof(Data.Dto.Domain.UmbracoDomainId) + " IS NULL OR " +
-                        "(SELECT count(ud.id) FROM umbracoDomains as ud WHERE ud.id = d.UmbracoDomainId) > 0");
-                var domains = db.Fetch<Data.Dto.Domain>(sql);
-
-                foreach (var domain in domains)
-                {
-                    environmentsMap[domain.EnvironmentId].Add(domain);
-                }
+                var environments = Database.Fetch<Data.Dto.Environment>("SELECT *");
+                var domains = MapUmbracoDomains(Database.Fetch<Data.Dto.Domain>("SELECT *"));
 
                 foreach (var environment in environments)
                 {
-                    environment.Domains = environmentsMap[environment.Id];
+                    environment.Domains = domains.Where(x => x.EnvironmentId == environment.Id);
                 }
 
                 return environments;
@@ -59,15 +45,14 @@
         /// <returns>
         /// The Configuration as the desired type.
         /// </returns>
-        public static Data.Dto.Environment Read(int id)
+        public Data.Dto.Environment Read(int id)
         {
             try
             {
-                var db = ApplicationContext.Current.DatabaseContext.Database;
-                var environment = db.SingleOrDefault<Data.Dto.Environment>((object)id);
+                var environment = Database.SingleOrDefault<Data.Dto.Environment>((object)id);
                 if (environment != null)
                 {
-                    environment.Domains = db.Fetch<Data.Dto.Domain>("WHERE " + nameof(Data.Dto.Domain.EnvironmentId) + " = @0", environment.Id);
+                    environment.Domains = MapUmbracoDomains(Database.Fetch<Data.Dto.Domain>("SELECT *")).Where(x => x.EnvironmentId == environment.Id);
                 }
                 return environment;
             }
@@ -90,18 +75,17 @@
         /// <returns>
         /// If successfull, returns true, otherwise false.
         /// </returns>
-        public static bool Write(Data.Dto.Environment environment)
+        public bool Write(Data.Dto.Environment environment)
         {
             try
             {
-                var db = ApplicationContext.Current.DatabaseContext.Database;
-                if (environment.Id != null && db.Exists<Data.Dto.Environment>(environment.Id))
+                if (environment.Id != null && Database.Exists<Data.Dto.Environment>(environment.Id))
                 {
-                    db.Update(environment);
+                    Database.Update(environment);
                 }
                 else
                 {
-                    environment.Id = db.Insert(environment) as int?;
+                    environment.Id = Database.Insert(environment) as int?;
                 }
 
                 return true;

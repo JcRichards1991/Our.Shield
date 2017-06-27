@@ -1,9 +1,10 @@
 ﻿namespace Shield.UmbracoAccess.ViewModels
 {
+    using Core.Models;
     using Newtonsoft.Json;
 
     [JsonObject(MemberSerialization.OptIn)]
-    public class Configuration : Core.Persistance.Serialization.Configuration
+    public class Configuration : IConfiguration
     {
         /// <summary>
         /// Gets or sets the Backend Access URL.

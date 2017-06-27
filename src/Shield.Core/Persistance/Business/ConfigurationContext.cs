@@ -4,11 +4,12 @@
     using System;
     using Umbraco.Core;
     using Umbraco.Core.Logging;
+    using Models;
 
     /// <summary>
     /// The Configuration Context.
     /// </summary>
-    public static class ConfigurationContext
+    internal class ConfigurationContext : DbContext
     {
         /// <summary>
         /// Reads a Configuration from the database.
@@ -25,23 +26,24 @@
         /// <returns>
         /// The Configuration as the desired type.
         /// </returns>
-        public static Serialization.Configuration Read(int environmentId, string appId, Type type, 
-            Serialization.Configuration defaultConfiguration)
+        public IConfiguration Read(int environmentId, string appId, Type type, IConfiguration defaultConfiguration)
         {
+            var config = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(defaultConfiguration), type) as Configuration;
+            config.LastModified = null;
+            config.Enable = false;
             try
             {
-                var db = ApplicationContext.Current.DatabaseContext.Database;
-                var record = db.SingleOrDefault<Data.Dto.Configuration>(
+                var record = Database.SingleOrDefault<Data.Dto.Configuration>(
                     "WHERE " + 
                     nameof(Data.Dto.Configuration.EnvironmentId) + " = @0 AND " +
                     nameof(Data.Dto.Configuration.AppId) + " = @1",
                     environmentId, appId);
-                if (record == null || string.IsNullOrEmpty(record.Value))
+                if (record != null && !string.IsNullOrEmpty(record.Value))
                 {
-                    return defaultConfiguration;
+                    config = JsonConvert.DeserializeObject(record.Value, type) as Configuration;
+                    config.LastModified = record.LastModified;
+                    config.Enable = record.Enable;
                 }
-
-                return JsonConvert.DeserializeObject(record.Value, type) as Serialization.Configuration;
             }
             catch (JsonSerializationException jEx)
             {
@@ -53,6 +55,14 @@
                 LogHelper.Error(typeof(ConfigurationContext), $"Error reading configuration with environmentId: {environmentId} for appId: {appId}; to type:{type}", ex);
                 return defaultConfiguration;
             }
+
+            return config;
+
+        }
+
+        public T Read<T>(int environmentId, string appId, T defaultConfiguration) where T : IConfiguration
+        {
+            return Read(environmentId, appId, typeof(T), defaultConfiguration) as T;
         }
 
         /// <summary>
@@ -67,14 +77,11 @@
         /// <returns>
         /// If successfull, returns true, otherwise false.
         /// </returns>
-        public static bool Write(int environmentId, string appId, Serialization.Configuration config)
+        public bool Write(int environmentId, string appId, IConfiguration config)
         {
-            config.LastModified = DateTime.UtcNow;
-
             try
             {
-                var db = ApplicationContext.Current.DatabaseContext.Database;
-                var record = db.SingleOrDefault<Data.Dto.Configuration>(
+                var record = Database.SingleOrDefault<Data.Dto.Configuration>(
                     "WHERE " + 
                     nameof(Data.Dto.Configuration.EnvironmentId) + " = @0 AND " +
                     nameof(Data.Dto.Configuration.AppId) + " = @1",
@@ -83,22 +90,24 @@
                 {
                     record = new Data.Dto.Configuration
                     {
-                        EnvironmentId = environmentId,
-                        AppId = appId,
+                        Enable = config.Enable,
+                        LastModified = DateTime.UtcNow,
                         Value = JsonConvert.SerializeObject(config)
                     };                                 
-                    db.Insert(record);
+                    Database.Insert(record);
                 }
                 else
                 {
+                    record.Enable = config.Enable;
+                    record.LastModified = DateTime.UtcNow;
                     record.Value = JsonConvert.SerializeObject(config);
-                    db.Update(record);
+                    Database.Update(record);
                 }
                 return true;
             }
             catch(Exception ex)
             {
-                LogHelper.Error(typeof(ConfigurationContext), $"Error writing configuration with environmentId: {environmentId} for appId: {appId}", ex);
+                LogHelper.Error(typeof(ConfigurationContext), $"Error writing configuration with environmentId: {config.EnvironmentId} for appId: {config.AppId}", ex);
             }
             return false;
         }

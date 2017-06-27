@@ -1,9 +1,9 @@
-﻿namespace Shield.Core.Operation
+﻿namespace Shield.Core.Models
 {
     using System;
     using System.Collections.Generic;
 
-    public abstract class App<C> : IApp where C : Persistance.Serialization.Configuration
+    public abstract class App<C> : IApp where C : IConfiguration
     {
         /// <summary>
         /// Unique identifier of the plugin
@@ -39,11 +39,11 @@
         {
             get
             {
-                return Frisk.Register<App<C>>();
+                return Operation.Frisk.Register<App<C>>();
             }
         }
 
-        public virtual Persistance.Serialization.Configuration DefaultConfiguration
+        public virtual IConfiguration DefaultConfiguration
         {
             get
             {
@@ -81,7 +81,7 @@
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>
-        public virtual bool Execute(Persistance.Serialization.Configuration config)
+        public virtual bool Execute(IJob job, IConfiguration config)
         {
             return true;
         }
@@ -95,10 +95,12 @@
         /// <returns>
         /// Whether or not was successfully written to the database.
         /// </returns>
-        public bool WriteConfiguration(Persistance.Serialization.Configuration config)
+        public bool WriteConfiguration(IJob job, IConfiguration config)
         {
-            return Operation.Executor.Instance.WriteConfiguration(this.Id, config);
+            return Operation.JobService.Instance.WriteConfiguration(job, config);
         }
+
+        public bool WriteConfiguration(int jobId, IConfiguration config) => WriteConfiguration(Operation.JobService.Instance.Job(jobId), config);
 
         /// <summary>
         /// Reads a configuration from the database
@@ -106,10 +108,12 @@
         /// <returns>
         /// The configuration
         /// </returns>
-        public Persistance.Serialization.Configuration ReadConfiguration()
+        public IConfiguration ReadConfiguration(IJob job)
         {
-            return Operation.Executor.Instance.ReadConfiguration(this.Id, DefaultConfiguration);
+            return Operation.JobService.Instance.ReadConfiguration(job, DefaultConfiguration);
         }
+
+        public IConfiguration ReadConfiguration(int jobId) => ReadConfiguration(Operation.JobService.Instance.Job(jobId));
 
         /// <summary>
         /// Writes a journal entry to the database
@@ -120,10 +124,11 @@
         /// <returns>
         /// Whether or not was successfully written to the database
         /// </returns>
-        public bool WriteJournal(Persistance.Serialization.Journal journal)
+        public bool WriteJournal(IJob job, IJournal journal)
         {
-            return Operation.Executor.Instance.WriteJournal(this.Id, journal);
+            return Operation.JobService.Instance.WriteJournal(job, journal);
         }
+        public bool WriteJournal(int jobId, IJournal journal) => WriteJournal(Operation.JobService.Instance.Job(jobId), journal);
 
         /// <summary>
         /// Gets all Journals from the database for the configuration
@@ -137,9 +142,27 @@
         /// <returns>
         /// A collection of Journals for the Configuration
         /// </returns>
-        public IEnumerable<Persistance.Serialization.Journal> ReadJournals(int page, int itemsPerPage)
+        public IEnumerable<T> ListJournals<T>(IJob job, int page, int itemsPerPage) where T : IJournal
         {
-            return Operation.Executor.Instance.ReadJournals(this.Id, page, itemsPerPage);
+            return Operation.JobService.Instance.ListJournals<T>(job, page, itemsPerPage);
+        }
+
+        public IEnumerable<T> ListJournals<T>(int jobId, int page, int itemsPerPage) where T : IJournal => ListJournals<T>(Operation.JobService.Instance.Job(jobId),
+            page, itemsPerPage);
+
+        public override bool Equals(object other)
+        {
+            var otherApp = other as App<IConfiguration>;
+            if (otherApp == null)
+            {
+                return false;
+            }
+            return Id == otherApp.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
         }
     }
 }

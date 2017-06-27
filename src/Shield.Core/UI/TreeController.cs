@@ -53,7 +53,7 @@
         {
             var treeNodeCollection = new TreeNodeCollection();
             
-            if(id == Constants.Tree.RootNodeId)
+            if (id == Constants.Tree.RootNodeId)
             {
                 treeNodeCollection.Add(
                     this.CreateTreeNode(
@@ -67,26 +67,26 @@
                 return treeNodeCollection;
             }
 
-            if(id == Constants.Tree.EnvironmentsRootId)
+            if (id == Constants.Tree.EnvironmentsRootId)
             {
-                var environments = Persistance.Business.EnvironmentContext.List();
+                var environments = Operation.JobService.Instance.Environments;
 
                 if(environments != null && environments.Any())
                 {
                     foreach(var environment in environments)
                     {
                         treeNodeCollection.Add(this.CreateTreeNode(
-                            environment.Id.ToString(),
+                            environment.Key.Id.ToString(),
                             Constants.Tree.EnvironmentsRootId,
                             queryStrings,
-                            environment.Name));
+                            environment.Key.Name));
                     }
                 }
                 return treeNodeCollection;
             }
             
             var treeNodes = Operation.App<Persistance.Serialization.Configuration>.Register;
-            if(treeNodes != null && treeNodes.Any())
+            if (treeNodes != null && treeNodes.Any())
             {
                 var tNodes = treeNodes.Select(x => Operation.App<Persistance.Serialization.Configuration>.Create(x.Key)).OrderBy(x => x.Name);
 

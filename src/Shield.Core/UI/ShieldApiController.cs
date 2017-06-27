@@ -5,6 +5,8 @@
     using Umbraco.Web.Editors;
     using Umbraco.Web.Mvc;
     using Newtonsoft.Json.Linq;
+    using Shield.Core.Models;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Api Controller for the Umbraco Access area of the custom section
@@ -25,32 +27,20 @@
         /// The new configuration settings.
         /// </param>
         /// <example>
-        /// Endpoint: /umbraco/backoffice/Shield/ShieldApi/PostConfiguration
+        /// Endpoint: /umbraco/backoffice/Shield/ShieldApi/Configuration?id=[id]
         /// </example>
         /// <returns>
         /// Whether was successfully updated.
         /// </returns>
         [HttpPost]
-        public bool PostConfiguration(string id, [FromBody] JObject model)
+        public new bool Configuration(int id, [FromBody] JObject model)
         {
-            var op = Operation.App<Persistance.Serialization.Configuration>.Create(id);
+            //var curUmbracoUser = UmbracoContext.Security.CurrentUser;
+            var job = Operation.JobService.Instance.Job(id);
 
-            if(op == null)
-            {
-                return false;
-            }
+            var config = model.ToObject(((Job) job).ConfigType) as IConfiguration;
 
-            var curUmbracoUser = UmbracoContext.Security.CurrentUser;
-
-            //op.WriteJournal(new Models.Journal
-            //{
-            //    Datestamp = DateTime.UtcNow,
-            //    Message = $"{curUmbracoUser.Name} has updated configuration."
-            //});
-
-            var config = model.ToObject(op.GetType().BaseType.GenericTypeArguments[0]) as Persistance.Serialization.Configuration;
-
-            return op.WriteConfiguration(config);
+            return job.WriteConfiguration(config);
         }
 
 
@@ -61,30 +51,16 @@
         /// Id Of the configuration to return
         /// </param>
         /// <example>
-        /// Endpoint: /umbraco/backoffice/Shield/ShieldApi/GetConfiguration?id={Id}
+        /// Endpoint: /umbraco/backoffice/Shield/ShieldApi/Configuration?id={Id}
         /// </example>
         /// <returns>
         /// The configuration for the Umbraco Access area.
         /// </returns>
         [HttpGet]
-        public JsonNetResult GetConfiguration(string id)
+        public new IConfiguration Configuration(int id)
         {
-            var op = Operation.App<Persistance.Serialization.Configuration>.Create(id);
-
-            if(op == null)
-            {
-                return new JsonNetResult
-                {
-                    Data = null
-                };
-            }
-
-            var config = op.ReadConfiguration();
-
-            return new JsonNetResult
-            {
-                Data = config
-            };
+            var job = Operation.JobService.Instance.Job(id);
+            return job.ReadConfiguration();
         }
 
         /// <summary>
@@ -103,24 +79,10 @@
         /// Collection of journals for the desired configuration
         /// </returns>
         [HttpGet]
-        public JsonNetResult GetJournals(string id, int page, int itemsPerPage)
+        public IEnumerable<IJournal> Journals(int id, int page, int itemsPerPage)
         {
-            var op = Operation.App<Persistance.Serialization.Configuration>.Create(id);
-
-            if(op == null)
-            {
-                return new JsonNetResult
-                {
-                    Data = null
-                };
-            }
-
-            var journals = op.ReadJournals(page, itemsPerPage).ToArray();
-
-            return new JsonNetResult
-            {
-                Data = journals
-            };
+            var job = Operation.JobService.Instance.Job(id);
+            return job.ListJournals<Journal>(page, itemsPerPage);
         }
     }
 }

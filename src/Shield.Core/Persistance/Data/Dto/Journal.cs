@@ -1,6 +1,7 @@
 ﻿namespace Shield.Core.Persistance.Data.Dto
 {
     using System;
+    using Models;
     using Umbraco.Core.Persistence;
     using Umbraco.Core.Persistence.DatabaseAnnotations;
 
@@ -8,7 +9,7 @@
     /// Defines the Journal database table.
     /// </summary>
     [TableName(nameof(Shield) + nameof(Journal))]
-    public class Journal
+    internal class Journal
     {
         /// <summary>
         /// Gets or sets the Id.
@@ -21,7 +22,7 @@
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
         [Length(256)]
-        [ForeignKey (typeof (Operation.IApp), Name = "FK_" + nameof(Shield) + "_" + nameof(Journal) + "_" + nameof(Operation.IApp))]
+        [ForeignKey (typeof (App<IConfiguration>), Name = "FK_" + nameof(Shield) + "_" + nameof(Journal) + "_" + nameof(App<IConfiguration>))]
         [IndexAttribute (IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(AppId))]
         public string AppId { get; set; }
 
@@ -29,10 +30,17 @@
         /// Gets or sets the Domain Id.
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        [ForeignKey (typeof (Domain), Name = "FK_" + nameof(Shield) + "_" + nameof(Journal) + "_" + nameof(Domain))]
-        [IndexAttribute (IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(DomainId))]
-        public int DomainId { get; set; }
+        [ForeignKey (typeof (Domain), Name = "FK_" + nameof(Shield) + "_" + nameof(Journal) + "_" + nameof(Environment))]
+        [IndexAttribute (IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(EnvironmentId))]
+        public int EnvironmentId { get; set; }
         
+        /// <summary>
+        /// The Date stamp of the journal
+        /// </summary>
+        [NullSetting(NullSetting = NullSettings.NotNull)]
+        [IndexAttribute (IndexTypes.Clustered, Name = "IX_" + nameof(Shield) + "_" + nameof(Datestamp))]
+        public DateTime Datestamp { get; set; }
+
         /// <summary>
         /// Gets or sets the Value (Should be json).
         /// </summary>

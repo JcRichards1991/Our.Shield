@@ -1,28 +1,28 @@
 ﻿namespace Shield.Core.Persistance.Business
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Umbraco.Core;
     using Umbraco.Core.Logging;
-    using Umbraco.Core.Persistence;
 
     /// <summary>
     /// The Journal context
     /// </summary>
-    public static class DomainContext
+    internal class DomainContext : DbContext
     {
-        public static IEnumerable<Data.Dto.Domain> List(int? enviromentId = null)
+        public IEnumerable<Data.Dto.Domain> List(int? enviromentId = null)
         {
             try
             {
-                var db = ApplicationContext.Current.DatabaseContext.Database;
+                var umbracoDomains = UmbracoDomains();
+
+                IEnumerable<Data.Dto.Domain> domains = null;
                 if (enviromentId == null)
                 {
-                    return db.Fetch<Data.Dto.Domain>("select *");
+                    domains = Database.Fetch<Data.Dto.Domain>("SELECT *");
                 }
-                return db.Fetch<Data.Dto.Domain>("where environmentId = @0", enviromentId);
+                return MapUmbracoDomains(Database.Fetch<Data.Dto.Domain>("WHERE environmentId = @0", enviromentId));
             }
             catch(Exception ex)
             {
@@ -30,8 +30,6 @@
                 return Enumerable.Empty<Data.Dto.Domain>();
             }
         }
-
-
 
         /// <summary>
         /// Reads a Journal from the database.
@@ -48,12 +46,12 @@
         /// <returns>
         /// The Journal as the desired type.
         /// </returns>
-        public static Data.Dto.Domain Read(int id)
+        public Data.Dto.Domain Read(int id)
         {
             try
             {
-                var db = ApplicationContext.Current.DatabaseContext.Database;
-                return db.SingleOrDefault<Data.Dto.Domain>((object)id);
+                var umbracoDomains = UmbracoDomains();
+                return MapUmbracoDomain(Database.SingleOrDefault<Data.Dto.Domain>((object)id));
             }
             catch(Exception ex)
             {
@@ -74,18 +72,17 @@
         /// <returns>
         /// If successful, returns true; otherwise false.
         /// </returns>
-        public static bool Write(Data.Dto.Domain domain)
+        public bool Write(Data.Dto.Domain domain)
         {
             try
             {
-                var db = ApplicationContext.Current.DatabaseContext.Database;
-                if (domain.Id != null && db.Exists<Data.Dto.Domain>(domain.Id))
+                if (domain.Id != null && Database.Exists<Data.Dto.Domain>(domain.Id))
                 {
-                    db.Update(domain);
+                    Database.Update(domain);
                 }
                 else
                 {
-                    domain.Id = db.Insert(domain) as int?;
+                    domain.Id = Database.Insert(domain) as int?;
                 }
 
                 return true;
@@ -98,7 +95,7 @@
         }
 
         /// <summary>
-        /// Writes a Journal to the database.
+        /// Delete a domain to the database.
         /// </summary>
         /// <typeparam name="T">
         /// The type of Journal to write.
@@ -109,21 +106,15 @@
         /// <returns>
         /// If successful, returns true; otherwise false.
         /// </returns>
-        public static bool Delete(Data.Dto.Domain domain)
+        public bool Delete(Data.Dto.Domain domain)
         {
             try
             {
-                var db = ApplicationContext.Current.DatabaseContext.Database;
-                if (domain.Id != null && db.Exists<Data.Dto.Domain>(domain.Id))
+                if (domain.Id != null && Database.Exists<Data.Dto.Domain>(domain.Id))
                 {
-                    db.Update(domain);
+                    Database.Delete<Data.Dto.Domain>(domain.Id);
+                    return true;
                 }
-                else
-                {
-                    domain.Id = db.Insert(domain) as int?;
-                }
-
-                return true;
             }
             catch(Exception ex)
             {
