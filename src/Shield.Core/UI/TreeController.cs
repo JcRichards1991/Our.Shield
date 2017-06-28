@@ -74,13 +74,31 @@
                 {
                     foreach(var environment in environments)
                     {
-                        treeNodeCollection.Add(CreateTreeNode(
+                        var node = CreateTreeNode(
                             environment.Key.Id.ToString(),
                             Constants.Tree.EnvironmentsRootId,
                             queryStrings,
                             environment.Key.Name,
                             ((Environment) environment.Key).Icon,
-                            environment.Value.Any()));
+                            environment.Value.Any(),
+                            "Shield/Backoffice/Shield/Views/Environments.html?v=1.0.0");
+
+                        //var publish = false;
+                        //foreach (var job in environment.Value)
+                        //{
+                        //    if (job.ReadConfiguration().Enable)
+                        //    {
+                        //        publish = true;
+                        //        break;
+                        //    }
+                        //}
+
+                        //if (!publish)
+                        //{
+                        //    node.SetNotPublishedStyle();
+                        //}
+
+                        treeNodeCollection.Add(node);
                     }
                 }
                 return treeNodeCollection;
@@ -93,13 +111,20 @@
                     foreach (var job in environment.Value)
                     {
                         var app = App<IConfiguration>.Create(job.AppId);
-                        treeNodeCollection.Add(CreateTreeNode(
+                        var node = CreateTreeNode(
                             job.Id.ToString(),
                             environment.Key.Id.ToString(),
                             queryStrings,
                             app.Name,
                             app.Icon,
-                            false));
+                            false,
+                            "Shield/Backoffice/Shield/Views/App.html?v=1.0.0");
+
+                        if (!job.ReadConfiguration().Enable)
+                        {
+                            node.SetNotPublishedStyle();
+                        }
+                        treeNodeCollection.Add(node);
                     }
                     return treeNodeCollection;
                 }

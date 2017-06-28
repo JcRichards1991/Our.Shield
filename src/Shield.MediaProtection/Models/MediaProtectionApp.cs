@@ -59,7 +59,7 @@ namespace Shield.MediaProtection.Models
         {
             var config = c as MediaProtectionConfiguration;
 
-            job.UnwatchWebRequests(this);
+            job.UnwatchWebRequests();
 
             if (!config.Enable)
             {

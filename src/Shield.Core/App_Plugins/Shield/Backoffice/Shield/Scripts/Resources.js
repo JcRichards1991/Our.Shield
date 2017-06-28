@@ -1,4 +1,6 @@
 ﻿$(function (root) {
+    "use strict";
+
     /**
      * @ngdoc resource
      * @name UmbracoAccessResource

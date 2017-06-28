@@ -32,6 +32,9 @@ namespace Shield.Core.Models
             int beginRequestPriority, Func<int, HttpApplication, WatchCycle> beginRequest);
 
         int UnwatchWebRequests(Regex regex);
+
+        int UnwatchWebRequests();
+
         int UnwatchWebRequests(IApp app);
 
 

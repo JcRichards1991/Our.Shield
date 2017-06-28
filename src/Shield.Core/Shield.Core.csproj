@@ -314,9 +314,13 @@
     <None Include="Shield.Core.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\GetStarted.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\HttpModuleConfig.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Resources.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Scripts\Settings.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Views\Settings.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Scripts\Environments.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Scripts\Resources.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Views\App.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Views\Environments.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
   </ItemGroup>
   <ItemGroup />

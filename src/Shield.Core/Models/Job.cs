@@ -54,6 +54,7 @@ namespace Shield.Core.Models
             Operation.WebRequestHandler.Watch(this, regex, beginRequestPriority, beginRequest, 0, null);
 
         public int UnwatchWebRequests(Regex regex) => Operation.WebRequestHandler.Unwatch(this, regex);
+        public int UnwatchWebRequests() => Operation.WebRequestHandler.Unwatch(this);
         public int UnwatchWebRequests(IApp app) => Operation.WebRequestHandler.Unwatch(app.Id);
     }
 }

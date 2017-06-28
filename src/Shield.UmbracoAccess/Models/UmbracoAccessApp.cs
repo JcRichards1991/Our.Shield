@@ -41,7 +41,7 @@
         {
             var config = c as UmbracoAccessConfiguration;
 
-            job.UnwatchWebRequests(this);
+            job.UnwatchWebRequests();
 
             if (!config.Enable)
             {

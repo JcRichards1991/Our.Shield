@@ -5,15 +5,15 @@
       <area>shield</area>
     </areas>
     <tab caption="Get Started">
-      <control>/App_Plugins/Shield/Backoffice/Dashboards/GetStarted.html</control>
+      <control>/App_Plugins/Shield/Backoffice/Dashboards/Shield/Overview.html</control>
     </tab>
   </section>
-  <section alias="shieldHttpModuleConfig" xdt:Locator="Match(alias)" xdt:Transform="InsertIfMissing">
+  <section alias="shieldSettings" xdt:Locator="Match(alias)" xdt:Transform="InsertIfMissing">
     <areas>
       <area>shield</area>
     </areas>
-    <tab caption="Http Module Config">
-      <control>/App_Plugins/Shield/Backoffice/Dashboards/HttpModuleConfig.html</control>
+    <tab caption="Settings">
+      <control>/App_Plugins/Shield/Backoffice/Dashboards/Shield/Settings.html</control>
     </tab>
   </section>
 </dashBoard>

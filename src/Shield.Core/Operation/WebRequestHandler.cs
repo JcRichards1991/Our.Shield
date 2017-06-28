@@ -170,6 +170,39 @@ namespace Shield.Core.Operation
             return count;
         }
 
+        public static int Unwatch(IJob job)
+        {
+            var count = 0;
+
+            if (beginWatchLock.TryEnterWriteLock(watchLockTimeout))
+            {
+                try
+                {
+                    count += beginWatchers.RemoveAll(x => x.environment.Id == job.Environment.Id &&
+                        x.appId.Equals(job.AppId, StringComparison.InvariantCultureIgnoreCase));
+                }
+                finally
+                {
+                    beginWatchLock.ExitWriteLock();
+                }
+            }
+
+            if (endWatchLock.TryEnterWriteLock(watchLockTimeout))
+            {
+                try
+                {
+                    count += endWatchers.RemoveAll(x => x.environment.Id == job.Environment.Id &&
+                        x.appId.Equals(job.AppId, StringComparison.InvariantCultureIgnoreCase));
+                }
+                finally
+                {
+                    endWatchLock.ExitWriteLock();
+                }
+            }
+
+            return count;
+        }
+
         public static int Unwatch(string appId)
         {
             var count = 0;
