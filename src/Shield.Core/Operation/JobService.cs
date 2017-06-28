@@ -11,13 +11,14 @@
     internal class JobService
     {
         private const int taskLockTimeout = 1000;       //  in millisecs
+
 #if DEBUG
         private const int poll = 60;                    //  in secs
 #else
         private const int poll = 60 * 10;               //in secs
 #endif
 
-        private const int ExecuteStatusIdStart = 1000;   //  Starting id for Execute Statuses
+        public const int JobIdStart = 1000;             //  Starting id for Jobs
 
         private static readonly Lazy<JobService> _instance = new Lazy<JobService>(() => new JobService());
 
@@ -40,7 +41,7 @@
             new Lazy<IDictionary<int, Job>>(() => 
             new Dictionary<int, Job>());
 
-        private int registerCount = ExecuteStatusIdStart;
+        private int registerCount = JobIdStart;
 
         /// <summary>
         /// Get a list of environments that have been installed

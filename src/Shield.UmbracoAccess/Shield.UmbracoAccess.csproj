@@ -260,8 +260,7 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="Models\TreeNode.cs" />
-    <Compile Include="ViewModels\Configuration.cs" />
+    <Compile Include="Models\UmbracoAccessConfiguration.cs" />
     <Compile Include="Models\UmbracoAccessApp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\IpAddress.cs" />

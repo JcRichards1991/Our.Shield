@@ -4,19 +4,18 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Mvc;
 using ClientDependency.Core;
+using Shield.Core.Models;
 using Shield.Core.UI;
 using Umbraco.Core;
 using Umbraco.Core.Models;
-using Umbraco.Core.Models.Membership;
 using Umbraco.Core.Services;
 
 namespace Shield.MediaProtection.Models
 {
     [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?v=1.0.1")]
     [AppAsset(ClientDependencyType.Javascript, "/App_Plugins/Shield.MediaProtection/Scripts/MediaProtection.js?v=1.0.1")]
-    public class MediaProtectApp : Core.Operation.App<ViewModels.Configuration>
+    public class MediaProtectionApp : App<MediaProtectionConfiguration>
     {
         /// <summary>
         /// Alias that denotes whether a media item only allowed to be accessed by members or not
@@ -35,18 +34,18 @@ namespace Shield.MediaProtection.Models
 
         public override string Id => nameof(MediaProtection);
 
-        public override string Name => "Media Protection";
+        public override string Name => "Media Protect";
 
         public override string Description => "Secure your media by stopping unauthorised access";
 
         public override string Icon => "icon-picture red";
 
 
-        public override Core.Persistance.Serialization.Configuration DefaultConfiguration
+        public override IConfiguration DefaultConfiguration
         {
             get
             {
-                return new ViewModels.Configuration
+                return new MediaProtectionConfiguration
                 {
                     EnableHotLinkingProtection = true,
                     EnableMembersOnlyMedia = true
@@ -56,11 +55,11 @@ namespace Shield.MediaProtection.Models
 
         private static List<int> Ids = new List<int>();
 
-        public override bool Execute(Core.Persistance.Serialization.Configuration c)
+        public override bool Execute(IJob job, IConfiguration c)
         {
-            var config = c as ViewModels.Configuration;
+            var config = c as MediaProtectionConfiguration;
 
-            Core.Operation.Fortress.UnwatchAll(Id);
+            job.UnwatchWebRequests(this);
 
             if (!config.Enable)
             {
@@ -69,7 +68,7 @@ namespace Shield.MediaProtection.Models
 
             if (config.EnableHotLinkingProtection)
             {
-                Core.Operation.Fortress.Watch(Id, new Regex(Umbraco.Core.IO.SystemDirectories.Media + "*"), 50, (count, app) =>
+                job.WatchWebRequests(new Regex(Umbraco.Core.IO.SystemDirectories.Media + "*"), 50, (count, app) =>
                 {
                     var referrer = app.Request.UrlReferrer;
                     if (referrer == null || String.IsNullOrWhiteSpace(referrer.Host) ||
@@ -79,20 +78,20 @@ namespace Shield.MediaProtection.Models
                         //  or from a browser that doesn't pass referrer info,
                         //  or from our own domain
                         //  so allow access
-                        return Core.Operation.Fortress.Cycle.Continue;
+                        return WatchCycle.Continue;
                     }
 
                     //  Someone is trying to hotlink our media
                     app.Response.StatusCode = (int) HttpStatusCode.Forbidden;
                     app.Response.End();
-                    return Core.Operation.Fortress.Cycle.Stop;
+                    return WatchCycle.Stop;
                 }, 0, null);
 
             }
 
             if (config.EnableMembersOnlyMedia)
             {
-                Core.Operation.Fortress.Watch(Id, new Regex(Umbraco.Core.IO.SystemDirectories.Media + "*"), 100, (count, app) =>
+                job.WatchWebRequests(new Regex(Umbraco.Core.IO.SystemDirectories.Media + "*"), 100, (count, app) =>
                 {
                     var filename = app.Request.Url.PathAndQuery;
                    
@@ -158,7 +157,7 @@ namespace Shield.MediaProtection.Models
                         if ((bool) secureMedia == false || HttpContext.Current.User.Identity.IsAuthenticated)
                         {
                             //  They are allowed to view this media
-                            return Core.Operation.Fortress.Cycle.Continue;
+                            return WatchCycle.Continue;
                         }
                     }
 
@@ -167,20 +166,20 @@ namespace Shield.MediaProtection.Models
                         if (((int[]) secureMedia).Length == 0)
                         {
                             //  They are allowed to view this media
-                            return Core.Operation.Fortress.Cycle.Continue;
+                            return WatchCycle.Continue;
                         }
 
                         if (HttpContext.Current.User.Identity.IsAuthenticated)
                         {
                             //  TODO: Need to handle when security is member group based
-                            return Core.Operation.Fortress.Cycle.Continue;
+                            return WatchCycle.Continue;
                         }
                     }
 
                     //  You need to be logged in or be a member of the correct member group to see this media
                     app.Response.StatusCode = (int) HttpStatusCode.Forbidden;
                     app.Response.End();
-                    return Core.Operation.Fortress.Cycle.Stop;
+                    return WatchCycle.Stop;
 
                 }, 0, null);
             }

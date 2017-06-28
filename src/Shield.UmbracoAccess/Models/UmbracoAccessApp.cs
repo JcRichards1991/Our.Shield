@@ -6,13 +6,13 @@
     using System.Text.RegularExpressions;
     using System.Web;
     using ClientDependency.Core;
-    using Shield.Core.UI;
     using Shield.Core.Models;
+    using Shield.Core.UI;
 
     [AppEditor("/App_Plugins/Shield.UmbracoAccess/Views/UmbracoAccess.html?v=1.0.1")]
     [AppAsset(ClientDependencyType.Javascript, "/App_Plugins/Shield.UmbracoAccess/Scripts/UmbracoAccess.js?v=1.0.1")]
     [AppAsset(ClientDependencyType.Css, "/App_Plugins/Shield.UmbracoAccess/Css/UmbracoAccess.css?v=1.0.1")]
-    public class UmbracoAccessApp : App<ViewModels.Configuration>
+    public class UmbracoAccessApp : App<UmbracoAccessConfiguration>
     {
         public override string Id => nameof(UmbracoAccess);
 
@@ -27,7 +27,7 @@
         {
             get
             {
-                return new ViewModels.Configuration
+                return new UmbracoAccessConfiguration
                 {
                     BackendAccessUrl = Core.ApplicationSettings.UmbracoPath,
                     IpAddresses = new IpAddress[0]
@@ -37,11 +37,11 @@
 
         private static List<int> Ids = new List<int>();
 
-        public override bool Execute(Core.Persistance.Data.Dto.Environment environment, Core.Persistance.Serialization.Configuration c)
+        public override bool Execute(IJob job, IConfiguration c)
         {
-            var config = c as ViewModels.Configuration;
+            var config = c as UmbracoAccessConfiguration;
 
-            Core.Operation.Fortress.UnwatchAll(Id);
+            job.UnwatchWebRequests(this);
 
             if (!config.Enable)
             {
@@ -64,7 +64,7 @@
                     break;
             }
 
-            var id = Core.Operation.Fortress.Watch(environment, this, new Regex(config.BackendAccessUrl), 2, (count, app) =>
+            var id = job.WatchWebRequests(new Regex(config.BackendAccessUrl), 2, (count, app) =>
             {
                 var userIp = GetUserIp(app);
                 if (!config.IpAddresses.Any(x => x.ipAddress == userIp))
@@ -77,17 +77,16 @@
                     {
                         app.Context.RewritePath(url);
                     }
-                    return Core.Operation.Fortress.Cycle.Stop;
+                    return WatchCycle.Stop;
                 }
 
-                return Core.Operation.Fortress.Cycle.Continue;
+                return WatchCycle.Continue;
             }, 0, null);
 
             Ids.Add(id);
 
-            id = Core.Operation.Fortress.Watch(environment, this, null, 1, (count, app) => {
-                return Core.Operation.Fortress.Cycle.Continue;
-
+            id = job.WatchWebRequests(null, 1, (count, app) => {
+                return WatchCycle.Continue;
             }, 0, null);
 
             Ids.Add(id);

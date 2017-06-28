@@ -14,7 +14,7 @@
             PostConfiguration: function (id, model) {
                 return $http({
                     method: 'POST',
-                    url: apiRoot + 'PostConfiguration?id=' + id,
+                    url: apiRoot + 'Configuration?id=' + id,
                     data: angular.toJson(model),
                     headers: {
                         'Content-Type': 'application/json'
@@ -31,7 +31,7 @@
                 //return $http.post(apiRoot + 'PostConfiguration?id=' + id, { model: model });
             },
             GetConfiguration: function (id) {
-                return $http.get(apiRoot + 'GetConfiguration?id=' + id);
+                return $http.get(apiRoot + 'Configuration?id=' + id);
             }
         };
     }]);

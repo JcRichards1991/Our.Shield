@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Shield.Core.Models
 {
@@ -21,6 +23,17 @@ namespace Shield.Core.Models
         IConfiguration ReadConfiguration();
 
         IEnumerable<T> ListJournals<T>(int page, int itemsPerPage) where T : IJournal;
+
+        int WatchWebRequests(Regex regex, 
+            int beginRequestPriority, Func<int, HttpApplication, WatchCycle> beginRequest, 
+            int endRequestPriority, Func<int, HttpApplication, WatchCycle> endRequest);
+
+        int WatchWebRequests(Regex regex, 
+            int beginRequestPriority, Func<int, HttpApplication, WatchCycle> beginRequest);
+
+        int UnwatchWebRequests(Regex regex);
+        int UnwatchWebRequests(IApp app);
+
 
     }
 }

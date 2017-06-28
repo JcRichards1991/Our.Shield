@@ -18,12 +18,19 @@ namespace Shield.Core.Models
 
         public override bool Equals(object other)
         {
-            var otherEnvironment = other as Environment;
-            if (otherEnvironment == null)
+            if (other is Environment)
             {
-                return false;
+                return Id == ((Environment) other).Id;
             }
-            return Id == otherEnvironment.Id;
+            if (other is int)
+            {
+                return Id == ((int) other);
+            }
+            if (other is string)
+            {
+                return Id.ToString().Equals(((string) other));
+            }
+            return false;
         }
 
         public override int GetHashCode()

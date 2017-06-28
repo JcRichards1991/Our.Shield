@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
+using Shield.Core.Models;
 
-namespace Shield.MediaProtection.ViewModels
+namespace Shield.MediaProtection.Models
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class Configuration : Core.Persistance.Serialization.Configuration
+    public class MediaProtectionConfiguration : Configuration
     {
         /// <summary>
         /// HotLinking Protection

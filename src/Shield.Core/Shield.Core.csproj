@@ -275,6 +275,7 @@
     <Compile Include="Models\IFrisk.cs" />
     <Compile Include="Models\IJournal.cs" />
     <Compile Include="Models\Journal.cs" />
+    <Compile Include="Models\WatchCycle.cs" />
     <Compile Include="Persistance\Business\DbContext.cs" />
     <Compile Include="Persistance\Business\EnvironmentContext.cs" />
     <Compile Include="Persistance\Business\DomainContext.cs" />
@@ -292,13 +293,12 @@
     <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="Operation\Register.cs" />
     <Compile Include="Persistance\Serialization\Configuration.cs" />
-    <Compile Include="UI\TreeNode.cs" />
     <Compile Include="Operation\JobService.cs" />
     <Compile Include="Models\IApp.cs" />
     <Compile Include="Persistance\Serialization\Journal.cs" />
     <Compile Include="Models\App.cs" />
     <Compile Include="Operation\Frisk.cs" />
-    <Compile Include="Operation\Fortress.cs" />
+    <Compile Include="Operation\WebRequestHandler.cs" />
     <Compile Include="Persistance\Business\ConfigurationContext.cs" />
     <Compile Include="Persistance\Data\Migrations\ConfigurationMigration.cs" />
     <Compile Include="Persistance\Business\JournalContext.cs" />

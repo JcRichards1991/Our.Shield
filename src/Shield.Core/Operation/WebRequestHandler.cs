@@ -1,43 +1,35 @@
-﻿[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Shield.Core.Operation.Fortress), nameof(Shield.Core.Operation.Fortress.Register))]
+﻿[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Shield.Core.Operation.WebRequestHandler), nameof(Shield.Core.Operation.WebRequestHandler.Register))]
 namespace Shield.Core.Operation
 {
-    using System.Web;
     using System;
-    using System.Linq;
-    using System.Threading;
-    using Umbraco.Web;
-    using System.Text.RegularExpressions;
     using System.Collections.Generic;
-    using System.Collections;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Threading;
+    using System.Web;
+    using Models;
 
-    public class Fortress : IHttpModule
+    internal class WebRequestHandler : IHttpModule
     {
         private const int watchLockTimeout = 1000;
 
         public static void Register()
         {
             // Register our module
-            Microsoft.Web.Infrastructure.DynamicModuleHelper.DynamicModuleUtility.RegisterModule(typeof(Fortress));
-        }
-
-        public enum Cycle
-        {
-            Stop,
-            Continue,
-            Restart,
-            Error
+            Microsoft.Web.Infrastructure.DynamicModuleHelper.DynamicModuleUtility.RegisterModule(typeof(WebRequestHandler));
         }
 
         private class Watcher
         {
             public int id;
             public int priority;
-            public Persistance.Data.Dto.Environment environment;
-            public IDictionary<string, Persistance.Data.Dto.Domain> domains;
-            public IApp app;
+            public IEnvironment environment;
+            public IList<string> domains;
+            public string appId;
             public Regex regex;
-            public Func<int, HttpApplication, Cycle> request;
+            public Func<int, HttpApplication, WatchCycle> request;
         }
+
         private static ReaderWriterLockSlim beginWatchLock = new ReaderWriterLockSlim();
         private static ReaderWriterLockSlim endWatchLock = new ReaderWriterLockSlim();
 
@@ -54,14 +46,14 @@ namespace Shield.Core.Operation
             }
         }
 
-        private static IDictionary<string, Persistance.Data.Dto.Domain> Domains(IEnumerable<Persistance.Data.Dto.Domain> domains)
+        private static IList<string> Domains(IEnumerable<IDomain> domains)
         {
             if (domains == null || !domains.Any())
             {
                 return null;
             }
 
-            var results = new Dictionary<string, Persistance.Data.Dto.Domain>();
+            var results = new List<string>();
 
             foreach (var domain in domains)
             {
@@ -72,22 +64,16 @@ namespace Shield.Core.Operation
 
                     var urlHttps = new UriBuilder(domain.Name);
                     urlHttps.Scheme = Uri.UriSchemeHttps;
-                    if (!results.ContainsKey(urlHttps.ToString()))
-                    {
-                        results.Add(urlHttps.ToString(), domain);
-                    }
+                    results.Add(urlHttps.ToString());
                 }
-                if (!results.ContainsKey(url.ToString()))
-                {
-                    results.Add(url.ToString(), domain);
-                }
+                results.Add(url.ToString());
             }
-            return results;;
+            return results;
         }
 
-        public static int Watch(Persistance.Data.Dto.Environment environment, IApp app, Regex regex, 
-            int beginRequestPriority, Func<int, HttpApplication, Cycle> beginRequest, 
-            int endRequestPriority, Func<int, HttpApplication, Cycle> endRequest)
+        public static int Watch(IJob job, Regex regex, 
+            int beginRequestPriority, Func<int, HttpApplication, WatchCycle> beginRequest, 
+            int endRequestPriority, Func<int, HttpApplication, WatchCycle> endRequest)
         {
             var count = Interlocked.Increment(ref requestCount);
 
@@ -101,9 +87,9 @@ namespace Shield.Core.Operation
                         {
                             id = count,
                             priority = beginRequestPriority,
-                            environment = environment,
-                            domains = Domains(environment.Domains),
-                            app = app,
+                            environment = job.Environment,
+                            domains = Domains(job.Environment.Domains),
+                            appId = job.AppId,
                             regex = regex,
                             request = beginRequest
                         });
@@ -128,9 +114,9 @@ namespace Shield.Core.Operation
                         {
                             id = count,
                             priority = endRequestPriority,
-                            environment = environment,
-                            domains = Domains(environment.Domains),
-                            app = app,
+                            environment = job.Environment,
+                            domains = Domains(job.Environment.Domains),
+                            appId = job.AppId,
                             regex = regex,
                             request = endRequest
                         });
@@ -148,13 +134,7 @@ namespace Shield.Core.Operation
             return count;
         }
 
-        public static int Watch(Persistance.Data.Dto.Environment environment, IApp app, Regex regex, 
-            int beginRequestPriority, Func<int, HttpApplication, Cycle> beginRequest)
-        {
-            return Watch(environment, app, regex, beginRequestPriority, beginRequest, 0, null);
-        }
-
-        public static int Unwatch(Persistance.Data.Dto.Environment environment, IApp app, Regex regex)
+        public static int Unwatch(IJob job, Regex regex)
         {
             string regy = regex == null ? null : regex.ToString();
             var count = 0;
@@ -163,8 +143,8 @@ namespace Shield.Core.Operation
             {
                 try
                 {
-                    count += beginWatchers.RemoveAll(x => x.environment.Id == environment.Id &&
-                        x.app.Id.Equals(app.Id, StringComparison.InvariantCultureIgnoreCase) && 
+                    count += beginWatchers.RemoveAll(x => x.environment.Id == job.Environment.Id &&
+                        x.appId.Equals(job.AppId, StringComparison.InvariantCultureIgnoreCase) && 
                         ((regy == null && x.regex == null) || (regy != null && x.regex != null && regy.Equals(x.regex.ToString(), StringComparison.InvariantCulture))));
                 }
                 finally
@@ -177,8 +157,8 @@ namespace Shield.Core.Operation
             {
                 try
                 {
-                    count += endWatchers.RemoveAll(x => x.environment.Id == environment.Id &&
-                        x.app.Id.Equals(app.Id, StringComparison.InvariantCultureIgnoreCase) && 
+                    count += endWatchers.RemoveAll(x => x.environment.Id == job.Environment.Id &&
+                        x.appId.Equals(job.AppId, StringComparison.InvariantCultureIgnoreCase) && 
                         ((regy == null && x.regex == null) || (regy != null && x.regex != null && regy.Equals(x.regex.ToString(), StringComparison.InvariantCulture))));
                 }
                 finally
@@ -190,7 +170,7 @@ namespace Shield.Core.Operation
             return count;
         }
 
-        public static int Unwatch(IApp app)
+        public static int Unwatch(string appId)
         {
             var count = 0;
 
@@ -198,7 +178,7 @@ namespace Shield.Core.Operation
             {
                 try
                 {
-                    count += beginWatchers.RemoveAll(x => x.app.Id.Equals(app.Id, StringComparison.InvariantCultureIgnoreCase));
+                    count += beginWatchers.RemoveAll(x => x.appId.Equals(appId, StringComparison.InvariantCultureIgnoreCase));
                 }
                 finally
                 {
@@ -210,38 +190,7 @@ namespace Shield.Core.Operation
             {
                 try
                 {
-                    count += endWatchers.RemoveAll(x => x.app.Id.Equals(app.Id, StringComparison.InvariantCultureIgnoreCase));
-                }
-                finally
-                {
-                    endWatchLock.ExitWriteLock();
-                }
-            }
-
-            return count;
-        }
-
-        public static int UnwatchAll(string appId)
-        {
-            var count = 0;
-
-            if (beginWatchLock.TryEnterWriteLock(watchLockTimeout))
-            {
-                try
-                {
-                    count += beginWatchers.RemoveAll(x => x.app.Id.Equals(appId, StringComparison.InvariantCultureIgnoreCase));
-                }
-                finally
-                {
-                    beginWatchLock.ExitWriteLock();
-                }
-            }
-
-            if (endWatchLock.TryEnterWriteLock(watchLockTimeout))
-            {
-                try
-                {
-                    count += endWatchers.RemoveAll(x => x.app.Id.Equals(appId, StringComparison.InvariantCultureIgnoreCase));
+                    count += endWatchers.RemoveAll(x => x.appId.Equals(appId, StringComparison.InvariantCultureIgnoreCase));
                 }
                 finally
                 {
@@ -273,29 +222,23 @@ restart:
                     count++;
                     foreach (var watch in beginWatchers)
                     {
-                        if (watch.regex == null || watch.regex.IsMatch(filePath))
+                        if ((watch.regex == null || watch.regex.IsMatch(filePath)) &&
+                            (watch.domains == null || watch.domains.Any(x => filePath.StartsWith(x, StringComparison.InvariantCultureIgnoreCase))))
                         {
-                            if (watch.domains == null ||  
-
-                            var domain = watch.domains.FirstOrDefault(x => filePath.StartsWith(x.Key, StringComparison.InvariantCultureIgnoreCase));
-                            if (domain == null)
+                            switch (watch.request(count, (HttpApplication)source))
                             {
-                                domain = watch.environment.Domains.FirstOrDefault(x => x.Name == null);
-                            }
-                            switch (watch.request(watch.environment, domain, count, (HttpApplication)source))
-                            {
-                                case Cycle.Stop:
+                                case WatchCycle.Stop:
                                     return;
 
-                                case Cycle.Restart:
+                                case WatchCycle.Restart:
                                     goto restart;
 
-                                case Cycle.Error:
+                                case WatchCycle.Error:
                                     ((HttpApplication)source).Context.Response.StatusCode = 500;
                                     ((HttpApplication)source).CompleteRequest();
                                     break;
 
-                                //  If Cycle.Continue we do nothing
+                                //  If WatchCycle.Continue we do nothing
                             }
                         }
                     }
@@ -320,22 +263,23 @@ restart:
                     count++;
                     foreach (var watch in endWatchers)
                     {
-                        if (watch.regex == null || watch.regex.IsMatch(filePath))
+                        if ((watch.regex == null || watch.regex.IsMatch(filePath)) &&
+                            (watch.domains == null || watch.domains.Any(x => filePath.StartsWith(x, StringComparison.InvariantCultureIgnoreCase))))
                         {
                             switch (watch.request(count, (HttpApplication)source))
                             {
-                                case Cycle.Stop:
+                                case WatchCycle.Stop:
                                     return;
 
-                                case Cycle.Restart:
+                                case WatchCycle.Restart:
                                     goto restart;
 
-                                case Cycle.Error:
+                                case WatchCycle.Error:
                                     ((HttpApplication)source).Context.Response.StatusCode = 500;
                                     ((HttpApplication)source).CompleteRequest();
                                     break;
 
-                                //  If Cycle.Continue we do nothing
+                                //  If WatchCycle.Continue we do nothing
                             }
                         }
                     }

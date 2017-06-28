@@ -62,7 +62,7 @@
 
         public T Read<T>(int environmentId, string appId, T defaultConfiguration) where T : IConfiguration
         {
-            return Read(environmentId, appId, typeof(T), defaultConfiguration) as T;
+            return (T) Read(environmentId, appId, typeof(T), defaultConfiguration);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@
             }
             catch(Exception ex)
             {
-                LogHelper.Error(typeof(ConfigurationContext), $"Error writing configuration with environmentId: {config.EnvironmentId} for appId: {config.AppId}", ex);
+                LogHelper.Error(typeof(ConfigurationContext), $"Error writing configuration with environmentId: {environmentId} for appId: {appId}", ex);
             }
             return false;
         }

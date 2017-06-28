@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Shield.Core.Persistance.Business;
 
 namespace Shield.Core.Models
@@ -17,7 +19,6 @@ namespace Shield.Core.Models
 
         internal Type AppType;
         internal Type ConfigType;
-        internal IConfiguration DefaultConfig;
 
         internal IJob DeepCopy()
         {
@@ -37,5 +38,17 @@ namespace Shield.Core.Models
         public bool WriteJournal(IJournal journal) => Operation.JobService.Instance.WriteJournal(this, journal);
         public IConfiguration ReadConfiguration() => Operation.JobService.Instance.ReadConfiguration(this);
         public IEnumerable<T> ListJournals<T>(int page, int itemsPerPage) where T : IJournal => Operation.JobService.Instance.ListJournals<T>(this, page, itemsPerPage);
+
+        public int WatchWebRequests(Regex regex, 
+            int beginRequestPriority, Func<int, HttpApplication, WatchCycle> beginRequest, 
+            int endRequestPriority, Func<int, HttpApplication, WatchCycle> endRequest) =>
+            Operation.WebRequestHandler.Watch(this, regex, beginRequestPriority, beginRequest, endRequestPriority, endRequest);
+
+        public int WatchWebRequests(Regex regex, 
+            int beginRequestPriority, Func<int, HttpApplication, WatchCycle> beginRequest) => 
+            Operation.WebRequestHandler.Watch(this, regex, beginRequestPriority, beginRequest, 0, null);
+
+        public int UnwatchWebRequests(Regex regex) => Operation.WebRequestHandler.Unwatch(this, regex);
+        public int UnwatchWebRequests(IApp app) => Operation.WebRequestHandler.Unwatch(app.Id);
     }
 }

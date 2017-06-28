@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http.Formatting;
+    using Models;
     using Umbraco.Web.Models.Trees;
     using Umbraco.Web.Mvc;
 
@@ -56,7 +57,7 @@
             if (id == Constants.Tree.RootNodeId)
             {
                 treeNodeCollection.Add(
-                    this.CreateTreeNode(
+                    CreateTreeNode(
                         Constants.Tree.EnvironmentsRootId,
                         Constants.Tree.RootNodeId,
                         queryStrings,
@@ -67,41 +68,41 @@
                 return treeNodeCollection;
             }
 
+            var environments = Operation.JobService.Instance.Environments;
             if (id == Constants.Tree.EnvironmentsRootId)
             {
-                var environments = Operation.JobService.Instance.Environments;
-
                 if(environments != null && environments.Any())
                 {
                     foreach(var environment in environments)
                     {
-                        treeNodeCollection.Add(this.CreateTreeNode(
+                        treeNodeCollection.Add(CreateTreeNode(
                             environment.Key.Id.ToString(),
                             Constants.Tree.EnvironmentsRootId,
                             queryStrings,
-                            environment.Key.Name));
+                            environment.Key.Name,
+                            ((Environment) environment.Key).Icon,
+                            true));
                     }
                 }
                 return treeNodeCollection;
             }
-            
-            var treeNodes = Operation.App<Persistance.Serialization.Configuration>.Register;
-            if (treeNodes != null && treeNodes.Any())
+
+            foreach (var environment in environments)
             {
-                var tNodes = treeNodes.Select(x => Operation.App<Persistance.Serialization.Configuration>.Create(x.Key)).OrderBy(x => x.Name);
-
-                var index = 0;
-
-                foreach (var treeNode in tNodes)
+                if (environment.Equals(id))
                 {
-                    treeNodeCollection.Add(
-                        this.CreateTreeNode(index.ToString(),
-                            Constants.Tree.RootNodeId,
+                    foreach (var job in environment.Value)
+                    {
+                        var app = App<IConfiguration>.Create(job.AppId);
+                        treeNodeCollection.Add(CreateTreeNode(
+                            job.Id.ToString(),
+                            environment.Key.Id.ToString(),
                             queryStrings,
-                            treeNode.Name,
-                            treeNode.Icon));
-
-                    index++;
+                            app.Name,
+                            app.Icon,
+                            false));
+                    }
+                    return treeNodeCollection;
                 }
             }
             return treeNodeCollection;

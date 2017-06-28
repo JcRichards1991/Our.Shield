@@ -8,9 +8,9 @@ namespace Shield.Core.Models
 {
     public abstract class Journal : IJournal
     {
-        string AppId { get; internal set; }
-        int EnvironmentId { get; }
-        DateTime Datestamp { get; }
+        public string AppId { get; internal set; }
+        public int EnvironmentId { get; }
+        public DateTime Datestamp { get; }
         
 
     }
