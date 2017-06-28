@@ -8,6 +8,7 @@
     /// Defines the Domain table.
     /// </summary>
     [TableName(nameof(Shield) + nameof(Domain))]
+    [PrimaryKey("Id", autoIncrement = true)]
     internal class Domain
     {
         /// <summary>
@@ -15,7 +16,7 @@
         /// </summary>
         [PrimaryKeyColumn(AutoIncrement = true)]
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        public int? Id { get; set; }
+        public int Id { get; set; }
         
         /// <summary>
         /// Gets or sets the Environment Id.

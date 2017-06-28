@@ -29,7 +29,7 @@
             {
                 return new UmbracoAccessConfiguration
                 {
-                    BackendAccessUrl = Core.ApplicationSettings.UmbracoPath,
+                    BackendAccessUrl = ApplicationSettings.UmbracoPath,
                     IpAddresses = new IpAddress[0]
                 };
             }

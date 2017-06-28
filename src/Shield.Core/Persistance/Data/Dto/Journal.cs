@@ -9,12 +9,14 @@
     /// Defines the Journal database table.
     /// </summary>
     [TableName(nameof(Shield) + nameof(Journal))]
+    [PrimaryKey("Id", autoIncrement = true)]
     internal class Journal
     {
         /// <summary>
         /// Gets or sets the Id.
         /// </summary>
         [PrimaryKeyColumn(AutoIncrement = true)]
+        [NullSetting(NullSetting = NullSettings.NotNull)]
         public int Id { get; set; }
 
         /// <summary>
@@ -22,7 +24,6 @@
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
         [Length(256)]
-        [ForeignKey (typeof (App<IConfiguration>), Name = "FK_" + nameof(Shield) + "_" + nameof(Journal) + "_" + nameof(App<IConfiguration>))]
         [IndexAttribute (IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(AppId))]
         public string AppId { get; set; }
 

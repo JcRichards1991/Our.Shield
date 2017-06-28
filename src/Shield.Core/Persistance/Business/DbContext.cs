@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Core;
+using Umbraco.Core.Persistence;
 
 namespace Shield.Core.Persistance.Business
 {
@@ -69,10 +70,14 @@ namespace Shield.Core.Persistance.Business
             }
         }
 
-        protected IDictionary<int, string> UmbracoDomains() => Database.Fetch<Data.Dto.UmbracoDomainDto>("SELECT *").ToDictionary(x => x.Id, y => y.DomainName);
+        protected IDictionary<int, string> UmbracoDomains() => Database.FetchAll<Data.Dto.UmbracoDomainDto>().ToDictionary(x => x.Id, y => y.DomainName);
 
         protected IEnumerable<Data.Dto.Domain> MapUmbracoDomains(IEnumerable<Data.Dto.Domain> domains)
         {
+            if (domains == null || !domains.Any())
+            {
+                return Enumerable.Empty<Data.Dto.Domain>();
+            }
             var umbracoDomains = UmbracoDomains();
             foreach ( var domain in domains)
             {
@@ -101,6 +106,14 @@ namespace Shield.Core.Persistance.Business
             }
             return string.IsNullOrWhiteSpace(domain.Name) ? null : domain;
         }
-
     }
+
+    internal static class DbContextExtention
+    {
+        internal static IEnumerable<T> FetchAll<T>(this Umbraco.Core.Persistence.UmbracoDatabase database)
+        {
+            return database.Fetch<T>(new Sql().Select("*").From<T>(ApplicationContext.Current.DatabaseContext.SqlSyntax));
+        }
+    }
+
 }

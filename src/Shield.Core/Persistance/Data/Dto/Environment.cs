@@ -17,20 +17,19 @@
         /// </summary>
         [PrimaryKeyColumn(AutoIncrement = true)]
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        public int? Id { get; set; }
+        public int Id { get; set; }
         
         /// <summary>
         /// Gets or sets the Name.
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        [Length(4000)]
+        [Length(256)]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the Icon.
         /// </summary>
-        [NullSetting(NullSetting = NullSettings.NotNull)]
-        [Length(4000)]
+        [Length(256)]
         public string Icon { get; set; }
 
         [Ignore]

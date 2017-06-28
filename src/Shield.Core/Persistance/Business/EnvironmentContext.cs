@@ -16,8 +16,8 @@
         {
             try
             {
-                var environments = Database.Fetch<Data.Dto.Environment>("SELECT *");
-                var domains = MapUmbracoDomains(Database.Fetch<Data.Dto.Domain>("SELECT *"));
+                var environments = Database.FetchAll<Data.Dto.Environment>();
+                var domains = MapUmbracoDomains(Database.FetchAll<Data.Dto.Domain>());
 
                 foreach (var environment in environments)
                 {
@@ -52,7 +52,8 @@
                 var environment = Database.SingleOrDefault<Data.Dto.Environment>((object)id);
                 if (environment != null)
                 {
-                    environment.Domains = MapUmbracoDomains(Database.Fetch<Data.Dto.Domain>("SELECT *")).Where(x => x.EnvironmentId == environment.Id);
+                    environment.Domains = MapUmbracoDomains(Database.FetchAll<Data.Dto.Domain>())
+                        .Where(x => x.EnvironmentId == environment.Id);
                 }
                 return environment;
             }
@@ -79,13 +80,13 @@
         {
             try
             {
-                if (environment.Id != null && Database.Exists<Data.Dto.Environment>(environment.Id))
+                if (environment.Id == 0 && Database.Exists<Data.Dto.Environment>(environment.Id))
                 {
                     Database.Update(environment);
                 }
                 else
                 {
-                    environment.Id = Database.Insert(environment) as int?;
+                    environment.Id = (int) Database.Insert(environment);
                 }
 
                 return true;

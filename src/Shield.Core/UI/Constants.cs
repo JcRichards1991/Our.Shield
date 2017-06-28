@@ -1,4 +1,4 @@
-﻿namespace Shield.Core
+﻿namespace Shield.Core.UI
 {
     /// <summary>
     /// Container class for categories of constants
@@ -49,7 +49,7 @@
             /// <summary>
             /// The Environment Node Root Id
             /// </summary>
-            public const string EnvironmentsRootId = "-313131";
+            public const string EnvironmentsRootId = "0";
         }
     }
 }

@@ -34,8 +34,7 @@
             try
             {
                 var record = Database.SingleOrDefault<Data.Dto.Configuration>(
-                    "WHERE " + 
-                    nameof(Data.Dto.Configuration.EnvironmentId) + " = @0 AND " +
+                    "WHERE " + nameof(Data.Dto.Configuration.EnvironmentId) + " = @0 AND " +
                     nameof(Data.Dto.Configuration.AppId) + " = @1",
                     environmentId, appId);
                 if (record != null && !string.IsNullOrEmpty(record.Value))

@@ -1,4 +1,4 @@
-﻿namespace Shield.Core
+﻿namespace Shield.Core.Models
 {
     using System.Configuration;
 

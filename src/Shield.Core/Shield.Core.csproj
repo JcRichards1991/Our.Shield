@@ -262,8 +262,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationSettings.cs" />
-    <Compile Include="Constants.cs" />
+    <Compile Include="Models\ApplicationSettings.cs" />
+    <Compile Include="UI\Constants.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\Domain.cs" />
     <Compile Include="Models\Environment.cs" />
@@ -292,10 +292,8 @@
     <Compile Include="UI\TreeController.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="Operation\Register.cs" />
-    <Compile Include="Persistance\Serialization\Configuration.cs" />
     <Compile Include="Operation\JobService.cs" />
     <Compile Include="Models\IApp.cs" />
-    <Compile Include="Persistance\Serialization\Journal.cs" />
     <Compile Include="Models\App.cs" />
     <Compile Include="Operation\Frisk.cs" />
     <Compile Include="Operation\WebRequestHandler.cs" />

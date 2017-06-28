@@ -61,6 +61,7 @@
                             if (!results.TryGetValue(kvp.Value.Environment, out jobs))
                             {
                                 jobs = new List<IJob>();
+                                results.Add(kvp.Value.Environment, jobs);
                             }
                             jobs.Add(kvp.Value.DeepCopy());
                         }
@@ -100,19 +101,19 @@
         public void Init()
         {
             var evs = DbContext.Instance.Environment.List();
-            var apps = App<IConfiguration>.Register;
+            var appIds = App<IConfiguration>.Register;
 
             foreach (var ev in evs)
             {
                 var enviroment = new Models.Environment(ev);
-                foreach(var app in apps)
+                foreach(var appId in appIds)
                 {
-                    var a = App<IConfiguration>.Create(app.Key);
+                    var app = App<IConfiguration>.Create(appId.Key);
 
-                    if(a.Init())
+                    if(app.Init())
                     {
-                        Register(enviroment, a);
-                    }  
+                        Register(enviroment, app);
+                    }
                 }
             }
             Poll();
@@ -287,7 +288,7 @@
             return app.Execute(job, config);
         }
         
-        public IJob Register(IEnvironment e, string appId)
+        public bool Register(IEnvironment e, string appId)
         {
             if (jobLock.TryEnterWriteLock(taskLockTimeout))
             {
@@ -304,17 +305,17 @@
                     };
 
                     jobs.Value.Add(job.Id, job);
-                    return job;
+                    return true;
                 }
                 finally
                 {
                     jobLock.ExitWriteLock();
                 }
             }
-            return null;
+            return false;
         }
 
-        public IJob Register(IEnvironment e, IApp app) => Register(e, app.Id);
+        public bool Register(IEnvironment e, IApp app) => Register(e, app.Id);
 
         public bool Unregister(int key)
         {

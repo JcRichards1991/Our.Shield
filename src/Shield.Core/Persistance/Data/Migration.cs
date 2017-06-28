@@ -18,9 +18,9 @@ namespace Shield.Core.Persistance.Data
 
             var scriptsForMigration = new IMigration[]
             {
+                new Persistance.Data.Migrations.EnvironmentMigration (sqlSyntax, logger),
                 new Persistance.Data.Migrations.ConfigurationMigration (sqlSyntax, logger),
                 new Persistance.Data.Migrations.JournalMigration (sqlSyntax, logger),
-                new Persistance.Data.Migrations.EnvironmentMigration (sqlSyntax, logger),
                 new Persistance.Data.Migrations.DomainMigration (sqlSyntax,logger)
             };
 

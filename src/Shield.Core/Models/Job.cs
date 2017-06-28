@@ -11,7 +11,7 @@ namespace Shield.Core.Models
     /// <summary>
     /// Class that conatins each of our executions
     /// </summary>
-    public class Job : IJob
+    internal class Job : IJob
     {
         public int Id { get; set; }
         public IEnvironment Environment { get; set; }
@@ -20,19 +20,24 @@ namespace Shield.Core.Models
         internal Type AppType;
         internal Type ConfigType;
 
+        internal DateTime? LastRan;
+        internal Task<bool> Task;
+        internal CancellationTokenSource CancelToken;
+
         internal IJob DeepCopy()
         {
             return new Job
             {
                 Id = this.Id,
+                Environment = this.Environment,
                 AppId = this.AppId,
-                Environment = this.Environment
+                AppType = this.AppType,
+                ConfigType = this.ConfigType,
+                LastRan = this.LastRan,
+                Task = this.Task,
+                CancelToken = this.CancelToken
             };
         }
-
-        internal DateTime? LastRan;
-        internal Task<bool> Task;
-        internal CancellationTokenSource CancelToken;
 
         public bool WriteConfiguration(IConfiguration config) => Operation.JobService.Instance.WriteConfiguration(this, config);
         public bool WriteJournal(IJournal journal) => Operation.JobService.Instance.WriteJournal(this, journal);

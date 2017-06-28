@@ -10,7 +10,7 @@
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             base.ApplicationStarted(umbracoApplication, applicationContext);
-            applicationContext.Services.SectionService.MakeNew(Shield.Core.Constants.App.Name, Shield.Core.Constants.App.Alias, Shield.Core.Constants.App.Icon);
+            applicationContext.Services.SectionService.MakeNew(Constants.App.Name, Constants.App.Alias, Constants.App.Icon);
         }
     }
 }

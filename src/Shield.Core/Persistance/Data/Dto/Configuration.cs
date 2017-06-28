@@ -17,14 +17,13 @@
         /// </summary>
         [PrimaryKeyColumn(AutoIncrement = true)]
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the App Name.
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
         [Length(256)]
-        [ForeignKey (typeof (App<IConfiguration>), Name = "FK_" + nameof(Shield) + "_" + nameof(Configuration) + "_" + nameof(App<IConfiguration>))]
         [IndexAttribute (IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(AppId))]
         public string AppId { get; set; }
 
@@ -32,8 +31,8 @@
         /// Gets or sets the Environment Id.
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        [ForeignKey (typeof (Environment), Name = "FK_" + nameof(Shield) + "_" + nameof(Configuration) + "_" + nameof(Environment))]
-        [IndexAttribute (IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(EnvironmentId))]
+        [ForeignKey(typeof(Environment), Name = "FK_" + nameof(Shield) + "_" + nameof(Configuration) + "_" + nameof(Environment))]
+        [IndexAttribute(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(EnvironmentId))]
         public int EnvironmentId { get; set; }
 
         /// <summary>

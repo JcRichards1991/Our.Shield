@@ -1,6 +1,5 @@
 ﻿namespace Shield.Core.UI
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http.Formatting;
     using Models;
@@ -53,6 +52,7 @@
         protected override TreeNodeCollection GetTreeNodes(string id, FormDataCollection queryStrings)
         {
             var treeNodeCollection = new TreeNodeCollection();
+            var environments = Operation.JobService.Instance.Environments;
             
             if (id == Constants.Tree.RootNodeId)
             {
@@ -63,12 +63,11 @@
                         queryStrings,
                         "Environments",
                         "icon-folder",
-                        true));
+                        environments.Any()));
 
                 return treeNodeCollection;
             }
 
-            var environments = Operation.JobService.Instance.Environments;
             if (id == Constants.Tree.EnvironmentsRootId)
             {
                 if(environments != null && environments.Any())
@@ -81,7 +80,7 @@
                             queryStrings,
                             environment.Key.Name,
                             ((Environment) environment.Key).Icon,
-                            true));
+                            environment.Value.Any()));
                     }
                 }
                 return treeNodeCollection;
@@ -89,7 +88,7 @@
 
             foreach (var environment in environments)
             {
-                if (environment.Equals(id))
+                if (environment.Key.Id.ToString() == id)
                 {
                     foreach (var job in environment.Value)
                     {

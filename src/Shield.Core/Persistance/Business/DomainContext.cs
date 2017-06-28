@@ -20,7 +20,7 @@
                 IEnumerable<Data.Dto.Domain> domains = null;
                 if (enviromentId == null)
                 {
-                    domains = Database.Fetch<Data.Dto.Domain>("SELECT *");
+                    domains = Database.FetchAll<Data.Dto.Domain>();
                 }
                 return MapUmbracoDomains(Database.Fetch<Data.Dto.Domain>("WHERE environmentId = @0", enviromentId));
             }
@@ -76,13 +76,13 @@
         {
             try
             {
-                if (domain.Id != null && Database.Exists<Data.Dto.Domain>(domain.Id))
+                if (domain.Id != 0 && Database.Exists<Data.Dto.Domain>(domain.Id))
                 {
                     Database.Update(domain);
                 }
                 else
                 {
-                    domain.Id = Database.Insert(domain) as int?;
+                    domain.Id = (int) Database.Insert(domain);
                 }
 
                 return true;
@@ -110,7 +110,7 @@
         {
             try
             {
-                if (domain.Id != null && Database.Exists<Data.Dto.Domain>(domain.Id))
+                if (domain.Id != 0 && Database.Exists<Data.Dto.Domain>(domain.Id))
                 {
                     Database.Delete<Data.Dto.Domain>(domain.Id);
                     return true;
