@@ -263,6 +263,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\ApplicationSettings.cs" />
+    <Compile Include="UI\AppAssest.cs" />
     <Compile Include="UI\Constants.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\Domain.cs" />

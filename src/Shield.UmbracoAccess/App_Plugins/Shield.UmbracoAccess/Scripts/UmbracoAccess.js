@@ -7,7 +7,13 @@
      * @description
      * Edit Controller for the Umbraco Access Edit view
      */
-    angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController', ['$scope', '$routeParams', 'notificationsService', 'localizationService', 'ShieldResource', function ($scope, $routeParams, notificationsService, localizationService, resource) {
+    angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.EditController',
+        ['$scope', '$routeParams', 'notificationsService', 'localizationService', 'ShieldResource',
+        function ($scope, $routeParams, notificationsService, localizationService, resource) {
+
+            var vm = this;
+
+
         function IsValidIpAddress(ip, edit) {
             ip.valid = true;
             ip.errorMsg = '';

@@ -9,7 +9,7 @@
      * @description
      * Handles environment page
     */
-    angular.module('umbraco').controller('Shield.Editors.Settings as vm', 
+    angular.module('umbraco').controller('Shield.Editors.Settings', 
         ['$scope', '$routeParams', 'notificationsService', 'localizationService', 'ShieldResource', 
         function ($scope, $routeParams, notificationsService, localizationService, sheildResource) {
 

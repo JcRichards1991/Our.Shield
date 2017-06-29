@@ -18,7 +18,11 @@
                 <umb-tabs-content class="form-horizontal" view="true">
 
                     <umb-tab id="tab0" rel="0">
-
+                        <div class="umb-el-wrap control-group umb-control-group">
+                            <div>
+                                <h3 ng-bind-html="vm.description"></h3>
+                            </div>
+                        </div>
                         <div ng-include="'/App_Plugins/Shield/Backoffice/Shield/'+ vm.tabs[0].view + '.html'"></div>
 
                     </umb-tab>

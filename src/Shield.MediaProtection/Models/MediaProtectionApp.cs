@@ -14,7 +14,6 @@ using Umbraco.Core.Services;
 namespace Shield.MediaProtection.Models
 {
     [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?v=1.0.1")]
-    [AppAsset(ClientDependencyType.Javascript, "/App_Plugins/Shield.MediaProtection/Scripts/MediaProtection.js?v=1.0.1")]
     public class MediaProtectionApp : App<MediaProtectionConfiguration>
     {
         /// <summary>
@@ -34,7 +33,7 @@ namespace Shield.MediaProtection.Models
 
         public override string Id => nameof(MediaProtection);
 
-        public override string Name => "Media Protect";
+        public override string Name => "Media Protection";
 
         public override string Description => "Secure your media by stopping unauthorised access";
 

@@ -10,14 +10,15 @@
      * Handles environment page
     */
     angular.module('umbraco').controller('Shield.Editors.Edit', 
-        ['$scope', '$routeParams', '$location', '$timeout', 'notificationsService', 'localizationService', 'ShieldResource', 'listViewHelper', 'navigationService',
-        function ($scope, $routeParams, $location, $timeout, notificationsService, localizationService, shieldResource, listViewHelper, navigationService) {
+        ['$scope', '$routeParams', '$location', '$timeout', 'notificationsService', 'localizationService', 'ShieldResource', 'listViewHelper', 'navigationService', 'assetsService',
+        function ($scope, $routeParams, $location, $timeout, notificationsService, localizationService, shieldResource, listViewHelper, navigationService, assetsService) {
 
             var vm = this;
             angular.extend(vm, {
                 type: null,
                 id: $routeParams.id,
                 name: '',
+                description: '',
                 loading: true,
                 saveButtonState: 'init',
                 environments: [],
@@ -26,6 +27,7 @@
                 app: null,
                 configuration: null,
                 path: null,
+                appView: null,
                 tabs: [
                     {
                         id:'0',
@@ -42,6 +44,7 @@
                 init: function () {
                     shieldResource.getView(vm.id).then(function (response) {
                         vm.name = response.data.name;
+                        vm.description = response.data.description;
                         switch (vm.type = response.data.type) {
                             case 0:     //  Environments
                                 vm.nameLocked = true;
@@ -65,12 +68,22 @@
                                 vm.nameLocked = true;
                                 vm.environment = response.data.environment;
                                 vm.app = response.data.app;
+                                vm.appView = response.data.appAssests.view;
                                 vm.configuration = response.data.configuration;
                                 vm.tabs[0].label = 'Configuration'
                                 vm.tabs[0].view = 'App';
                                 vm.journal.columns[1].show = false;
                                 vm.journal.columns[2].show = false;
                                 vm.path = '-1,0,' + vm.environment.id + ',' + vm.id;
+
+                                angular.forEach(response.data.appAssests.stylesheets, function (item, index) {
+                                    assetsService.loadCss(item);
+                                });
+
+                                angular.forEach(response.data.appAssests.scripts, function (item, index) {
+                                    assetsService.loadJs(item);
+                                });
+
                                 break;
 
                         }
@@ -82,8 +95,6 @@
                 },
                 save: function () {
                     vm.saveButtonState = 'busy';
-
-
 
                     vm.saveButtonState = 'success';
                 },
@@ -149,4 +160,34 @@
             });
         }]
     );
+
+    angular.module('umbraco.directives').directive('shieldApp',
+        ['$compile', '$templateCache', '$http',
+        function ($compile, $templateCache, $http) {
+            return {
+                restrict: 'E',
+                scope: {
+                    view: '=',
+                    configuration: '='
+                },
+                link: function (scope, element, attr) {
+                    if (scope.view) {
+                        var template = $templateCache.get(scope.view);
+                        if (template) {
+                            element.html(template);
+                            $compile(element.contents())(scope);
+                        } else {
+                            $http.get(scope.view).then(function (response) {
+                                $templateCache.put(scope.view, response.data);
+                                element.html(response.data);
+                                $compile(element.contents())(scope);
+                            });
+                        }
+                    }
+                }
+            };
+        }]
+    );
+
+
 }(window));

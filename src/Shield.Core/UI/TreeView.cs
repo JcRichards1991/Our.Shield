@@ -28,6 +28,9 @@ namespace Shield.Core.UI
         [JsonProperty("name")]
         public string Name { get; set; }
 
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
         [JsonProperty("environments")]
         public IEnumerable<IEnvironment> Environments;
 
@@ -43,5 +46,7 @@ namespace Shield.Core.UI
         [JsonProperty("configuration")]
         public IConfiguration Configuration;
 
+        [JsonProperty("appAssests")]
+        public AppAssest AppAssests { get; set; }
     }
 }

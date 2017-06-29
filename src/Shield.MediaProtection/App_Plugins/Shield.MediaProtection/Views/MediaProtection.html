@@ -1,33 +1,27 @@
-﻿<umb-pane>
-    <umb-header name="Media Protection"
-                hide-icon="true"
-                hide-description="true"
-                hide-alias="true">
-        <h1>Media Protection</h1>
-    </umb-header>
-    <div class="umb-panel-body umb-scrollable row-fluid" ng-controller="Shield.Editors.MediaProtection.EditController" ng-init="init()">
-        <umb-editor-view>
-            <form novalidate>
-                <umb-editor-container>
-                    <div class="form-horizontal">
-                        <div class="umb-pane">
+﻿<div ng-controller="Shield.Editors.MediaProtection.Edit as vm" ng-init="vm.init()">
 
-                            Properties here
-
-                        </div>
-                    </div>
-                </umb-editor-container>
-                <umb-editor-footer>
-                    <umb-editor-footer-content-right>
-                        <umb-button type="submit"
-                                    label="Update"
-                                    button-style="success"
-                                    shortcut="ctrl+s"
-                                    state="page.saveButtonState">
-                        </umb-button>
-                    </umb-editor-footer-content-right>
-                </umb-editor-footer>
-            </form>
-        </umb-editor-view>
+    <div class="umb-el-wrap control-group umb-control-group">
+        <label for="hotlinking" class="control-label">
+            <localize key="Shield.UmbracoAccess.Properties_HotlinkingLabel">Hot Linking Protection</localize>
+            <small>
+                <localize key="Shield.UmbracoAccess.Properties_HotlinkingLabelDescription">Stop unauthorized users from accessing your media from other websites</localize>
+            </small>
+        </label>
+        <div class="controls">
+            <input type="checkbox" id="hotlinking" ng-model="vm.configuration.enableHotLinkingProtection" />
+        </div>
     </div>
-</umb-pane>
+
+    <div class="umb-el-wrap control-group umb-control-group">
+        <label for="hotlinking" class="control-label">
+            <localize key="Shield.UmbracoAccess.Properties_HotlinkingLabel">Hot Linking Protection</localize>
+            <small>
+                <localize key="Shield.UmbracoAccess.Properties_HotlinkingLabelDescription">Stop unauthorized users from accessing your media from other websites</localize>
+            </small>
+        </label>
+        <div class="controls">
+            <input type="checkbox" id="hotlinking" ng-model="vm.configuration.enableMemberOnlyMedia" />
+        </div>
+    </div>
+
+</div>

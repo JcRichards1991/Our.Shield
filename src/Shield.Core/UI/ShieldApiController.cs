@@ -7,6 +7,7 @@
     using Newtonsoft.Json.Linq;
     using Shield.Core.Models;
     using System.Collections.Generic;
+    using System.Reflection;
 
     /// <summary>
     /// Api Controller for the Umbraco Access area of the custom section
@@ -28,6 +29,7 @@
                 {
                     Type = UI.TreeView.TreeViewType.Environments,
                     Name = "Environments",
+                    Description = "List of the different environments your Umbraco instance operates under",
                     Environments = environments.Keys
                 };
             }
@@ -40,6 +42,7 @@
                     {
                         Type = UI.TreeView.TreeViewType.Environment,
                         Name = environment.Key.Name,
+                        Description = $"Configure and view events for the {environment.Key.Name} environment",
                         Environments = environments.Keys,
                         Environment = environment.Key,
                         Apps = environment.Value.Select(x => App<IConfiguration>.Create(x.AppId))
@@ -50,14 +53,29 @@
                     if (id == job.Id)
                     {
                         var app = App<IConfiguration>.Create(job.AppId);
+                        var appAssests = new AppAssest
+                        {
+                            View = app.GetType().GetCustomAttribute<AppEditorAttribute>()?.FilePath ?? null,
+
+                            Stylesheets = app.GetType().GetCustomAttributes<AppAssetAttribute>()
+                                .Where(x => x.AssetType == ClientDependency.Core.ClientDependencyType.Css)
+                                .Select(x => x.FilePath),
+
+                            Scripts = app.GetType().GetCustomAttributes<AppAssetAttribute>()
+                                .Where(x => x.AssetType == ClientDependency.Core.ClientDependencyType.Javascript)
+                                .Select(x => x.FilePath)
+                        };
+                        
                         return new TreeView
                         {
                             Type = UI.TreeView.TreeViewType.App,
                             Name = app.Name,
+                            Description = app.Description,
                             Environments = environments.Keys,
                             Environment = environment.Key,
                             App = app,
-                            Configuration = job.ReadConfiguration()
+                            Configuration = job.ReadConfiguration(),
+                            AppAssests = appAssests
                         };
                     }
                 }
