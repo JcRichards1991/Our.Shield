@@ -1,0 +1,109 @@
+﻿<div ng-controller="Shield.Editors.Edit as vm" ng-init="vm.init()">
+    <umb-load-indicator ng-if="loading"></umb-load-indicator>
+    <form name="contentForm"
+          ng-submit="vm.save()"
+          novalidate
+          val-form-manager>
+        <umb-editor-view ng-if="!loading" umb-tabs>
+
+            <umb-editor-header name="vm.name"
+                               tabs="vm.tabs"
+                               name-locked="vm.nameLocked"
+                               hide-icon="true"
+                               hide-description="true"
+                               hide-alias="true">
+            </umb-editor-header>
+
+            <umb-editor-container>
+                <umb-tabs-content class="form-horizontal" view="true">
+
+                    <umb-tab id="tab0" rel="0">
+                        <div class="umb-el-wrap control-group umb-control-group">
+                            <div>
+                                <h3 ng-bind-html="vm.description"></h3>
+                            </div>
+                        </div>
+                        <div ng-include="'/App_Plugins/Shield/Backoffice/Shield/'+ vm.tabs[0].view + '.html'"></div>
+
+                    </umb-tab>
+                    <umb-tab id="tab1" rel="1">
+
+                        <!--    Journal     -->
+                        <div class="umb-table">
+                            <div class="umb-table-head">
+                                <div class="umb-table-row">
+                                    <div class="umb-table-cell">
+                                        <input class="umb-table__input" type="checkbox"
+                                               ng-if="false"
+                                               ng-click="vm.journal.selectAllItems($event)"
+                                               ng-checked="vm.journal.isSelectedAllItems()">
+                                    </div>
+                                    <div ng-class="{'umb-table-cell': true, 'umb-table__name': $index == 0}" ng-repeat="column in vm.journal.columns track by $index">
+                                        <div ng-if="column.show">
+                                            <a class="umb-table-head__link" title="Sort by {{ column.header }}" href="#"
+                                               ng-click="vm.journal.sort(column.id)"
+                                               ng-class="{'sortable':column.allowSorting}" prevent-default>
+                                                <span ng-bind="column.name"></span>
+                                                <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="umb-table-body">
+                                <div class="umb-table-row"
+                                     ng-repeat="item in items"
+                                     ng-class="{
+                                        '-selected':item.selected,
+                                    }"
+                                     ng-click="vm.selectItem(item, $index, $event)">
+
+                                    <div class="umb-table-cell">
+                                        <i class="umb-table-body__icon umb-table-body__fileicon">
+                                            <span ng-if="!item.iconUrl" class="{{item.icon}}"></span>
+                                            <img ng-src="{{item.iconUrl}}" />
+                                        </i>
+                                        <i class="umb-table-body__icon umb-table-body__checkicon icon-check"></i>
+                                    </div>
+
+                                    <div ng-class="{'umb-table-cell': true, 'umb-table__name': $index == 0}" ng-repeat="column in vm.journal.columns track by $index">
+                                        <div ng-if="column.show">
+                                            <span ng-bind-html="item.content[column.alias]"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <umb-pagination ng-if="vm.journal.totalPages"
+                                            page-number="vm.journal.pageNumber"
+                                            total-pages="vm.journal.totalPages"
+                                            on-next="vm.journal.nextPage"
+                                            on-prev="vm.journal.previousPage"
+                                            on-go-to-page="vm.journal.gotoPage">
+                            </umb-pagination>
+                        </div>
+
+                    </umb-tab>
+                </umb-tabs-content>
+            </umb-editor-container>
+
+            <umb-editor-footer>
+                <umb-editor-footer-content-left>
+                    <umb-breadcrumbs ng-if="vm.ancestors && vm.ancestors.length > 0"
+                                     ancestors="vm.ancestors"
+                                     entity-type="content">
+                    </umb-breadcrumbs>
+                </umb-editor-footer-content-left>
+
+                <umb-editor-footer-content-right>
+                    <umb-button label="Update"
+                                type="submit"
+                                button-style="success"
+                                shortcut="ctrl+s"
+                                state="saveButtonState">
+                    </umb-button>
+                </umb-editor-footer-content-right>
+            </umb-editor-footer>
+        </umb-editor-view>
+    </form>
+</div>
+

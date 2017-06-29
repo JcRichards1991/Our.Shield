@@ -262,27 +262,50 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationSettings.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="Controllers\ApiController.cs" />
-    <Compile Include="Controllers\TreeController.cs" />
-    <Compile Include="Helpers\UrlHelper.cs" />
-    <Compile Include="Initialise\Application.cs" />
+    <Compile Include="Models\ApplicationSettings.cs" />
+    <Compile Include="UI\AppAssest.cs" />
+    <Compile Include="UI\Constants.cs" />
     <Compile Include="Models\Configuration.cs" />
-    <Compile Include="Models\TreeNode.cs" />
-    <Compile Include="Operation\Executor.cs" />
-    <Compile Include="Models\Interfaces\IOperation.cs" />
+    <Compile Include="Models\Domain.cs" />
+    <Compile Include="Models\Environment.cs" />
+    <Compile Include="Models\Job.cs" />
+    <Compile Include="Models\IConfiguration.cs" />
+    <Compile Include="Models\IDomain.cs" />
+    <Compile Include="Models\IEnvironment.cs" />
+    <Compile Include="Models\IJob.cs" />
+    <Compile Include="Models\IFrisk.cs" />
+    <Compile Include="Models\IJournal.cs" />
     <Compile Include="Models\Journal.cs" />
-    <Compile Include="Models\Operation.cs" />
-    <Compile Include="Frisk.cs" />
-    <Compile Include="Operation\Fortress.cs" />
-    <Compile Include="Persistance\Bal\ConfigurationContext.cs" />
-    <Compile Include="Persistance\Dal\ConfigurationMigration.cs" />
-    <Compile Include="Persistance\Bal\JournalContext.cs" />
-    <Compile Include="Persistance\Dal\JournalMigration.cs" />
-    <Compile Include="Persistance\Dal\Configuration.cs" />
-    <Compile Include="Persistance\Dal\Journal.cs" />
+    <Compile Include="Models\WatchCycle.cs" />
+    <Compile Include="Persistance\Business\DbContext.cs" />
+    <Compile Include="Persistance\Business\EnvironmentContext.cs" />
+    <Compile Include="Persistance\Business\DomainContext.cs" />
+    <Compile Include="Persistance\Data\Dto\Domain.cs" />
+    <Compile Include="Persistance\Data\Dto\UmbracoDomainDto.cs" />
+    <Compile Include="Persistance\Data\Migrations\DomainMigration.cs" />
+    <Compile Include="Persistance\Data\Migrations\EnvironmentMigration.cs" />
+    <Compile Include="Persistance\Data\Dto\Environment.cs" />
+    <Compile Include="Persistance\Data\Migration.cs" />
+    <Compile Include="UI\AppEditorAttribute.cs" />
+    <Compile Include="UI\AppAssetAttribute.cs" />
+    <Compile Include="UI\ShieldApiController.cs" />
+    <Compile Include="UI\Register.cs" />
+    <Compile Include="UI\TreeController.cs" />
+    <Compile Include="Helpers\UrlHelper.cs" />
+    <Compile Include="Operation\Register.cs" />
+    <Compile Include="Operation\JobService.cs" />
+    <Compile Include="Models\IApp.cs" />
+    <Compile Include="Models\App.cs" />
+    <Compile Include="Operation\Frisk.cs" />
+    <Compile Include="Operation\WebRequestHandler.cs" />
+    <Compile Include="Persistance\Business\ConfigurationContext.cs" />
+    <Compile Include="Persistance\Data\Migrations\ConfigurationMigration.cs" />
+    <Compile Include="Persistance\Business\JournalContext.cs" />
+    <Compile Include="Persistance\Data\Migrations\JournalMigration.cs" />
+    <Compile Include="Persistance\Data\Dto\Configuration.cs" />
+    <Compile Include="Persistance\Data\Dto\Journal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\TreeView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -293,11 +316,18 @@
     <None Include="Shield.Core.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\GetStarted.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\HttpModuleConfig.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Js\Resources.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Overview.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Settings.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Edit.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\ShieldResource.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Domains.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\App.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Environments.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <PropertyGroup>

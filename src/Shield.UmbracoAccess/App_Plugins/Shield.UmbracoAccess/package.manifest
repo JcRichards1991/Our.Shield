@@ -1,8 +1,0 @@
-﻿{
-  "javascript": [
-    "~/App_Plugins/Shield.UmbracoAccess/Js/UmbracoAccess.js"
-  ],
-  "css": [
-    "~/App_Plugins/Shield.UmbracoAccess/Css/UmbracoAccess.css"
-  ]
-}

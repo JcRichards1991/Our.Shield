@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0"?>
 <dashBoard xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
-  <section alias="shieldGetStarted" xdt:Locator="Match(alias)" xdt:Transform="InsertIfMissing">
+  <section alias="shieldOverview" xdt:Locator="Match(alias)" xdt:Transform="InsertIfMissing">
     <areas>
       <area>shield</area>
     </areas>
-    <tab caption="Get Started">
-      <control>/App_Plugins/Shield/Backoffice/Dashboards/GetStarted.html</control>
+    <tab caption="Overview">
+      <control>/App_Plugins/Shield/Backoffice/Dashboards/Overview.html</control>
     </tab>
   </section>
-  <section alias="shieldHttpModuleConfig" xdt:Locator="Match(alias)" xdt:Transform="InsertIfMissing">
+  <section alias="shieldSettings" xdt:Locator="Match(alias)" xdt:Transform="InsertIfMissing">
     <areas>
       <area>shield</area>
     </areas>
-    <tab caption="Http Module Config">
-      <control>/App_Plugins/Shield/Backoffice/Dashboards/HttpModuleConfig.html</control>
+    <tab caption="Settings">
+      <control>/App_Plugins/Shield/Backoffice/Dashboards/Settings.html</control>
     </tab>
   </section>
 </dashBoard>

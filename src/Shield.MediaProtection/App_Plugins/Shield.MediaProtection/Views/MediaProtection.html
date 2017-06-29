@@ -1,0 +1,27 @@
+﻿<div ng-controller="Shield.Editors.MediaProtection.Edit as vm" ng-init="vm.init()">
+
+    <div class="umb-el-wrap control-group umb-control-group">
+        <label for="hotlinking" class="control-label">
+            <localize key="Shield.UmbracoAccess.Properties_HotlinkingLabel">Hot Linking Protection</localize>
+            <small>
+                <localize key="Shield.UmbracoAccess.Properties_HotlinkingLabelDescription">Stop unauthorized users from accessing your media from other websites</localize>
+            </small>
+        </label>
+        <div class="controls">
+            <input type="checkbox" id="hotlinking" ng-model="vm.configuration.enableHotLinkingProtection" />
+        </div>
+    </div>
+
+    <div class="umb-el-wrap control-group umb-control-group">
+        <label for="hotlinking" class="control-label">
+            <localize key="Shield.UmbracoAccess.Properties_HotlinkingLabel">Hot Linking Protection</localize>
+            <small>
+                <localize key="Shield.UmbracoAccess.Properties_HotlinkingLabelDescription">Stop unauthorized users from accessing your media from other websites</localize>
+            </small>
+        </label>
+        <div class="controls">
+            <input type="checkbox" id="hotlinking" ng-model="vm.configuration.enableMemberOnlyMedia" />
+        </div>
+    </div>
+
+</div>
