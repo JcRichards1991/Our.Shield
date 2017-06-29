@@ -38,6 +38,10 @@ namespace Shield.Core.Models
             return Id;
         }
 
+        internal Environment()
+        {
+        }
+
         internal Environment(Persistance.Data.Dto.Environment data)
         {
             Id = (int) data.Id;

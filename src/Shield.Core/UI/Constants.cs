@@ -27,7 +27,7 @@
         }
 
         /// <summary>
-        /// Contants for the tree controller
+        /// Constants for the tree controller
         /// </summary>
         public static class Tree
         {
@@ -42,14 +42,9 @@
             public const string Title = App.Name;
 
             /// <summary>
-            /// Tree root node id
-            /// </summary>
-            public static string RootNodeId = Umbraco.Core.Constants.System.Root.ToString();
-
-            /// <summary>
             /// The Environment Node Root Id
             /// </summary>
-            public const string EnvironmentsRootId = "0";
+            public const int EnvironmentsRootId = 0;
         }
     }
 }

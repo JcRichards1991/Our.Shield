@@ -17,50 +17,52 @@
     [PluginController(Constants.App.Alias)]
     public class ShieldApiController : UmbracoAuthorizedJsonController
     {
-        /// <summary>
-        /// Api Endpoint for Posting the Umbraco Access Configuration.
-        /// </summary>
-        /// <param name="id">
-        /// The Id of the configuration
-        /// </param>
-        /// <param name="model">
-        /// The new configuration settings.
-        /// </param>
-        /// <example>
-        /// Endpoint: /umbraco/backoffice/Shield/ShieldApi/Configuration?id=[id]
-        /// </example>
-        /// <returns>
-        /// Whether was successfully updated.
-        /// </returns>
-        [HttpPost]
-        public new bool Configuration(int id, [FromBody] JObject model)
-        {
-            //var curUmbracoUser = UmbracoContext.Security.CurrentUser;
-            var job = Operation.JobService.Instance.Job(id);
-
-            var config = model.ToObject(((Job) job).ConfigType) as IConfiguration;
-
-            return job.WriteConfiguration(config);
-        }
-
-
-        /// <summary>
-        /// Api Endpoint for Getting the Umbraco Access Configuration.
-        /// </summary>
-        /// <param name="id">
-        /// Id Of the configuration to return
-        /// </param>
-        /// <example>
-        /// Endpoint: /umbraco/backoffice/Shield/ShieldApi/Configuration?id={Id}
-        /// </example>
-        /// <returns>
-        /// The configuration for the Umbraco Access area.
-        /// </returns>
         [HttpGet]
-        public new IConfiguration Configuration(int id)
+        public TreeView View(int id)
         {
-            var job = Operation.JobService.Instance.Job(id);
-            return job.ReadConfiguration();
+            var environments = Operation.JobService.Instance.Environments;
+            if (id == Constants.Tree.EnvironmentsRootId)
+            {
+                //  Is the environments node
+                return new TreeView
+                {
+                    Type = UI.TreeView.TreeViewType.Environments,
+                    Name = "Environments",
+                    Environments = environments.Keys
+                };
+            }
+
+            foreach(var environment in environments)
+            {
+                if (id == environment.Key.Id)
+                {
+                    return new TreeView
+                    {
+                        Type = UI.TreeView.TreeViewType.Environment,
+                        Name = environment.Key.Name,
+                        Environments = environments.Keys,
+                        Environment = environment.Key,
+                        Apps = environment.Value.Select(x => App<IConfiguration>.Create(x.AppId))
+                    };
+                }
+                foreach (var job in environment.Value)
+                {
+                    if (id == job.Id)
+                    {
+                        var app = App<IConfiguration>.Create(job.AppId);
+                        return new TreeView
+                        {
+                            Type = UI.TreeView.TreeViewType.App,
+                            Name = app.Name,
+                            Environments = environments.Keys,
+                            Environment = environment.Key,
+                            App = app,
+                            Configuration = job.ReadConfiguration()
+                        };
+                    }
+                }
+            }
+            return null;
         }
 
         /// <summary>

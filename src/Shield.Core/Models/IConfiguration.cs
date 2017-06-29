@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Shield.Core.Models
 {
@@ -11,21 +8,25 @@ namespace Shield.Core.Models
         /// <summary>
         /// Gets or sets what environment this is for
         /// </summary>
+        [JsonProperty("environment")]
         IEnvironment Environment { get; }
 
         /// <summary>
         /// Gets or sets what shield app is this for
         /// </summary>
+        [JsonProperty("app")]
         IApp App { get; }
 
         /// <summary>
         /// Gets or sets whether the Configuration is Enabled.
         /// </summary>
+        [JsonProperty("enable")]
         bool Enable { get; set; }
 
         /// <summary>
         /// Gets or sets the configuration last modified data time
         /// </summary>
+        [JsonProperty("lastModified")]
         DateTime? LastModified { get; }
     }
 }

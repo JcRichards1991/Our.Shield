@@ -1,22 +1,26 @@
 ﻿namespace Shield.Core.Models
 {
     using System.Collections.Generic;
+    using Newtonsoft.Json;
 
     public interface IApp : IFrisk
     {
         /// <summary>
         /// Name of the plugin
         /// </summary>
+        [JsonProperty("name")]
         string Name { get; }
 
         /// <summary>
         /// Description of the plugin
         /// </summary>
+        [JsonProperty("description")]
         string Description { get; }
 
         /// <summary>
         /// Css class of icon
         /// </summary>
+        [JsonProperty("icon")]
         string Icon { get; }
 
         bool Init();

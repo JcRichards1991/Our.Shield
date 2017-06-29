@@ -1,0 +1,43 @@
+﻿<div class="umb-table">
+    <div class="umb-table-head">
+        <div class="umb-table-row">
+
+            <div class="umb-table-cell">
+                &nbsp;
+            </div>
+
+            <div class="umb-table-cell umb-table__name">
+                <a class="umb-table-head__link" href="#" prevent-default>
+                    <span>Name</span>
+                    <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
+                </a>
+            </div>
+
+            <div class="umb-table-cell">
+                <a class="umb-table-head__link" href="#" prevent-default>
+                    <span>Domains</span>
+                    <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="umb-table-body">
+    <div class="umb-table-row" ng-repeat="environment in vm.environments">
+
+        <div class="umb-table-cell">
+            &nbsp;
+        </div>
+
+        <div class="umb-table-cell umb-table__name" ng-click="vm.editItem(environment, $index)">
+            <span ng-bind-html="environment.name"></span>
+        </div>
+
+        <div class="umb-table-cell">
+            <ul ng-repeat="domain in environment.domains">
+                <li>{{domain.name}}</li>
+            </ul>
+        </div>
+    </div>
+</div>

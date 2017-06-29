@@ -304,6 +304,7 @@
     <Compile Include="Persistance\Data\Dto\Configuration.cs" />
     <Compile Include="Persistance\Data\Dto\Journal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\TreeView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -314,13 +315,15 @@
     <None Include="Shield.Core.nuspec" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Overview.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Settings.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Edit.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\ShieldResource.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Domains.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\App.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Environments.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\Scripts\Settings.js" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\Views\Settings.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\Scripts\Environments.js" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\Scripts\Resources.js" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\Views\App.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\Views\Environments.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
   </ItemGroup>
   <ItemGroup />

@@ -13,27 +13,18 @@
         var apiRoot = 'backoffice/Shield/ShieldApi/';
 
         return {
-            PostConfiguration: function (id, model) {
+            getView: function (id) {
+                return $http.get(apiRoot + 'View?id=' + id);
+            },
+            postView: function (id, model) {
                 return $http({
                     method: 'POST',
-                    url: apiRoot + 'Configuration?id=' + id,
+                    url: apiRoot + 'View?id=' + id,
                     data: angular.toJson(model),
                     headers: {
                         'Content-Type': 'application/json'
                     },
                 });
-
-                //return $.ajax({
-                //    type: "POST",
-                //    data: JSON.stringify(model),
-                //    url: apiRoot + 'PostConfiguration?id=' + id,
-                //    contentType: "application/json"
-                //});
-
-                //return $http.post(apiRoot + 'PostConfiguration?id=' + id, { model: model });
-            },
-            GetConfiguration: function (id) {
-                return $http.get(apiRoot + 'Configuration?id=' + id);
             }
         };
     }]);
