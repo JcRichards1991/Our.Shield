@@ -324,6 +324,9 @@
     <Content Include="App_Plugins\Shield\Backoffice\Scripts\ShieldResource.js" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
+    <Content Include="Scripts\ShieldControllers.js" />
+    <Content Include="Scripts\ShieldDeirectives.js" />
+    <Content Include="Scripts\ShieldResources.js" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
