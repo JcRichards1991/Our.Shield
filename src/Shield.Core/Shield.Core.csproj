@@ -263,7 +263,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\ApplicationSettings.cs" />
-    <Compile Include="Operation\EventHandler.cs" />
+    <Compile Include="Operation\ServiceHandler.cs" />
     <Compile Include="UI\AppAssest.cs" />
     <Compile Include="UI\Constants.cs" />
     <Compile Include="Models\Configuration.cs" />
@@ -318,11 +318,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Overview.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Settings.js" />
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Shield.js" />
-    <Content Include="Scripts\ShieldControllers.js" />
-    <Content Include="Scripts\ShieldDeirectives.js" />
-    <Content Include="Scripts\ShieldResources.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Edit.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\ShieldResource.js" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
   </ItemGroup>
