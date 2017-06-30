@@ -10,6 +10,7 @@ using Shield.Core.UI;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
+using Umbraco.Core.Security;
 
 namespace Shield.MediaProtection.Models
 {
@@ -59,15 +60,22 @@ namespace Shield.MediaProtection.Models
             var config = c as MediaProtectionConfiguration;
 
             job.UnwatchWebRequests();
+            Umbraco.Core.Services.MediaService.Saved += MediaService_Saved;
+
 
             if (!config.Enable)
             {
                 return true;
             }
 
+            Umbraco.Core.Services.MediaService.Saved += MediaService_Saved;
+
+
+            var mediaFolder = VirtualPathUtility.ToAbsolute(new Uri(Umbraco.Core.IO.SystemDirectories.Media, UriKind.Relative).ToString()) + "/";
+
             if (config.EnableHotLinkingProtection)
             {
-                job.WatchWebRequests(new Regex(Umbraco.Core.IO.SystemDirectories.Media + "*"), 50, (count, app) =>
+                job.WatchWebRequests(new Regex(mediaFolder), 50, (count, app) =>
                 {
                     var referrer = app.Request.UrlReferrer;
                     if (referrer == null || String.IsNullOrWhiteSpace(referrer.Host) ||
@@ -90,9 +98,15 @@ namespace Shield.MediaProtection.Models
 
             if (config.EnableMembersOnlyMedia)
             {
-                job.WatchWebRequests(new Regex(Umbraco.Core.IO.SystemDirectories.Media + "*"), 100, (count, app) =>
+                job.WatchWebRequests(new Regex(mediaFolder), 100, (count, app) =>
                 {
-                    var filename = app.Request.Url.PathAndQuery;
+                    //  If we have logged in as a backend user, then allow all access
+                    if (new System.Web.HttpContextWrapper(System.Web.HttpContext.Current).GetUmbracoAuthTicket() != null)
+                    {
+                        return WatchCycle.Continue;
+                    }
+
+                    var filename = app.Request.Url.LocalPath;
                    
                     var secureMedia = ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(CacheKey + "F" + filename, () =>
                     {
@@ -115,21 +129,34 @@ namespace Shield.MediaProtection.Models
                                 }
 
                                 pathIdKeys.Add(cacheIdKey);
-                                var memberOnly = media.GetValue(MemberOnlyAlias);
-                                if (memberOnly != null)
+                                if (!media.HasProperty(MemberOnlyAlias))
                                 {
-                                    if (memberOnly is bool || memberOnly is int)
+                                    accessRights = false;
+                                }
+                                else
+                                {
+                                    var memberOnly = media.GetValue(MemberOnlyAlias);
+                                    if (memberOnly != null)
                                     {
-                                        //  Is a boolean value denoting whether you need to be logged in or not to access
-                                        accessRights = (bool) memberOnly;
-                                        break;
-                                    }
+                                        if (memberOnly is bool)
+                                        {
+                                            accessRights = (int) memberOnly;
+                                            break;
+                                        }
+                                        
+                                        if (memberOnly is int)
+                                        {
+                                            //  Is a boolean value denoting whether you need to be logged in or not to access
+                                            accessRights = (((int) memberOnly)  == 0) ? false : true;
+                                            break;
+                                        }
                             
-                                    if (memberOnly is string)
-                                    {
-                                        //  Is a MNTP that states which member groups can access this media item
-                                        accessRights = (int[]) ((string)memberOnly).Split(',').Select(x => int.Parse(x)).ToArray();
-                                        break;
+                                        if (memberOnly is string)
+                                        {
+                                            //  Is a MNTP that states which member groups can access this media item
+                                            accessRights = (int[]) ((string)memberOnly).Split(',').Select(x => int.Parse(x)).ToArray();
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -153,7 +180,8 @@ namespace Shield.MediaProtection.Models
 
                     if (secureMedia is bool)
                     {
-                        if ((bool) secureMedia == false || HttpContext.Current.User.Identity.IsAuthenticated)
+                        if ((bool) secureMedia == false || 
+                            (HttpContext.Current.User != null && HttpContext.Current.User.Identity.IsAuthenticated))
                         {
                             //  They are allowed to view this media
                             return WatchCycle.Continue;
@@ -184,6 +212,11 @@ namespace Shield.MediaProtection.Models
             }
 
             return true;
+        }
+
+        private void MediaService_Saved(IMediaService sender, Umbraco.Core.Events.SaveEventArgs<IMedia> e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

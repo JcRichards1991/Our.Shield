@@ -244,13 +244,17 @@ namespace Shield.Core.Operation
         {
             JobService.Instance.Poll();
             
-            string filePath = ((HttpApplication)source).Context.Request.FilePath;
             string uri = ((HttpApplication)source).Context.Request.Url.AbsoluteUri;
+            string uriWithoutDomain = null;
 
-            if (filePath == "/umbraco/backoffice/UmbracoApi/Authentication/GetRemainingTimeoutSeconds")
+#if DEBUG
+            //  Ignore when debugging
+            if (uri.EndsWith("/umbraco/backoffice/UmbracoApi/Authentication/GetRemainingTimeoutSeconds") ||
+                uri.EndsWith("/umbraco/ping.aspx"))
             {
                 return;
             }
+#endif
 
             int count = 0;
 
@@ -262,8 +266,28 @@ restart:
                     count++;
                     foreach (var watch in beginWatchers)
                     {
-                        if ((watch.regex == null || watch.regex.IsMatch(filePath)) &&
-                            (watch.domains == null || watch.domains.Any(x => uri.StartsWith(x, StringComparison.InvariantCultureIgnoreCase))))
+                        string filePath = null;
+                        if (watch.domains == null)
+                        {
+                            if (uriWithoutDomain == null)
+                            {
+                                uriWithoutDomain = ((HttpApplication)source).Context.Request.Url.LocalPath;
+                            }
+                            filePath = uriWithoutDomain;
+                        }
+                        else
+                        {
+                            var domain = watch.domains.FirstOrDefault(x => uri.StartsWith(x, StringComparison.InvariantCultureIgnoreCase));
+                            if (domain != null)
+                            {
+                                filePath = uri.Substring(domain.Length + 1);
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        if ((watch.regex == null || watch.regex.IsMatch(filePath)))
                         {
                             switch (watch.request(count, (HttpApplication)source))
                             {

@@ -263,6 +263,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\ApplicationSettings.cs" />
+    <Compile Include="Operation\EventHandler.cs" />
     <Compile Include="UI\AppAssest.cs" />
     <Compile Include="UI\Constants.cs" />
     <Compile Include="Models\Configuration.cs" />
