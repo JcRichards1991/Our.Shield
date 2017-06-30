@@ -132,6 +132,7 @@
 
                         var index = edit ? 1 : 0;
 
+                        if (vm.ipAddressProperty.value.filter((x) => x.ipAddress === ip.ipAddress)[index] !== undefined) {
                             ip.valid = false;
                             ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpDuplicate');
                             ip.errorState = "Duplicate";
