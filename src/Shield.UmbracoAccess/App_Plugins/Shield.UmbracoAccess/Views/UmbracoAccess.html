@@ -1,11 +1,6 @@
-﻿<h1>
-    Shield.Editors.UmbracoAccess.EditController
-</h1>
+﻿<div ng-controller="Shield.Editors.UmbracoAccess.EditController as vm"  ng-init="vm.init()">
 
-
-
-<div ng-controller="Shield.Editors.UmbracoAccess.EditController as vm">
-    <div ng-if="configuration.enable == true">
+    <div ng-if="vm.configuration.enable == true">
         <div class="umb-el-wrap control-group umb-control-group">
             <label for="backendAccessUrl" class="control-label">
                 <localize key="Shield.UmbracoAccess.Properties_BackendAccessUrlLabel">Backend Office Access URL</localize>
@@ -14,7 +9,7 @@
                 </small>
             </label>
             <div class="controls">
-                <input type="text" id="backendAccessUrl" ng-model="configuration.backendAccessUrl" />
+                <input type="text" id="backendAccessUrl" ng-model="vm.configuration.backendAccessUrl" />
             </div>
         </div>
         <div class="umb-el-wrap control-group umb-control-group">
@@ -25,7 +20,7 @@
                 </small>
             </label>
             <div class="controls">
-                <select id="redirectRewrite" ng-model="configuration.redirectRewrite">
+                <select id="redirectRewrite" ng-model="vm.configuration.redirectRewrite">
                     <option value="0">Redirect</option>
                     <option value="1">Rewrite</option>
                 </select>
@@ -39,14 +34,14 @@
                 </small>
             </label>
             <div class="controls">
-                <select id="unauthorisedUrlType" ng-model="configuration.unauthorisedUrlType" convert-to-number>
+                <select id="unauthorisedUrlType" ng-model="vm.configuration.unauthorisedUrlType" convert-to-number>
                     <option value="0">Url</option>
                     <option value="1">XPath</option>
                     <option value="2">Content Picker</option>
                 </select>
             </div>
         </div>
-        <div class="umb-el-wrap control-group umb-control-group" ng-if="configuration.unauthorisedUrlType === 0">
+        <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 0">
             <label for="unauthorisedUrl" class="control-label">
                 <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
                 <small>
@@ -54,10 +49,10 @@
                 </small>
             </label>
             <div class="controls">
-                <input type="text" id="unauthorisedUrl" ng-model="configuration.unauthorisedUrl" />
+                <input type="text" id="unauthorisedUrl" ng-model="vm.configuration.unauthorisedUrl" />
             </div>
         </div>
-        <div class="umb-el-wrap control-group umb-control-group" ng-if="configuration.unauthorisedUrlType === 1">
+        <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 1">
             <label for="unauthorisedUrlXPath" class="control-label">
                 <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
                 <small>
@@ -65,10 +60,10 @@
                 </small>
             </label>
             <div class="controls">
-                <input type="text" id="unauthorisedUrlXPath" ng-model="configuration.unauthorisedUrlXPath" />
+                <input type="text" id="unauthorisedUrlXPath" ng-model="vm.configuration.unauthorisedUrlXPath" />
             </div>
         </div>
-        <umb-property property="contentPickerProperty" ng-if="configuration.unauthorisedUrlType === 2">
+        <umb-property property="contentPickerProperty" ng-if="vm.configuration.unauthorisedUrlType === 2">
             <umb-editor model="contentPickerProperty"></umb-editor>
         </umb-property>
         <div class="umb-el-wrap control-group umb-control-group">
@@ -89,7 +84,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="ip in IpAddressProperty.value">
+                            <tr ng-repeat="ip in vm.ipAddressProperty.value track by $index">
                                 <td>
                                     <span ng-show="!ip.editMode">{{ip.ipAddress}}</span>
                                     <input type="text" ng-show="ip.editMode" ng-model="ip.ipAddress" />
@@ -100,13 +95,13 @@
                                     <input type="text" ng-show="ip.editMode" ng-model="ip.description" />
                                 </td>
                                 <td>
-                                    <span class="btn btn-info" ng-show="!ip.editMode" ng-click="IpAddressProperty.editIp(ip, false)">
+                                    <span class="btn btn-info" ng-show="!ip.editMode" ng-click="vm.ipAddressProperty.editIp(ip, false)">
                                         <localize key="Shield.General_Edit">Edit</localize>
                                     </span>
-                                    <span class="btn btn-success" ng-show="ip.editMode" ng-click="IpAddressProperty.editIp({{ip}}, true)">
+                                    <span class="btn btn-success" ng-show="ip.editMode" ng-click="vm.ipAddressProperty.editIp({{ip}}, true)">
                                         <localize key="Shield.General_Update">Update</localize>
                                     </span>
-                                    <span class="btn btn-danger" ng-click="IpAddressProperty.removeIp(ip)">
+                                    <span class="btn btn-danger" ng-click="vm.ipAddressProperty.removeIp(ip)">
                                         <localize key="Shield.General_Remove">Remove</localize>
                                     </span>
                                 </td>
@@ -115,14 +110,14 @@
                         <tfoot>
                             <tr>
                                 <td>
-                                    <input type="text" ng-model="IpAddressProperty.newIp.ipAddress" />
-                                    <span ng-show="!IpAddressProperty.newIp.valid" class="help-inline">{{IpAddressProperty.newIp.errorMsg}}</span>
+                                    <input type="text" ng-model="vm.ipAddressProperty.newIp.ipAddress" />
+                                    <span ng-show="!vm.ipAddressProperty.newIp.valid" class="help-inline">{{vm.ipAddressProperty.newIp.errorMsg}}</span>
                                 </td>
                                 <td>
-                                    <input type="text" ng-model="IpAddressProperty.newIp.description" />
+                                    <input type="text" ng-model="vm.ipAddressProperty.newIp.description" />
                                 </td>
                                 <td>
-                                    <span class="btn btn-success" ng-click="IpAddressProperty.addIp()">
+                                    <span class="btn btn-success" ng-click="vm.ipAddressProperty.addIp()">
                                         <localize key="Shield.General_Add">Add</localize>
                                     </span>
                                 </td>
