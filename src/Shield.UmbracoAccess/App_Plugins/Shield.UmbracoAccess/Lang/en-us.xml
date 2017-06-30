@@ -11,9 +11,6 @@
   </area>
 
   <area alias="Shield.UmbracoAccess.Properties">
-    <key alias="EnableLabel">Enable</key>
-    <key alias="EnableDescription">Whether or not this plugin is active</key>
-
     <key alias="BackendAccessUrlLabel">Backend Office Access URL</key>
     <key alias="BackendAccessUrlDescription">The URL used to access the CMS.</key>
     
@@ -32,17 +29,11 @@
     <key alias="AllowedIPsDescription">The allowed IP address(es) that can access the Backend Office Access Url.</key>
   </area>
 
-  <area alias="Shield.UmbracoAccess.SuccessMessages">
-    <key alias="Updated">Successfully Updated!</key>
-  </area>
-
   <area alias="Shield.UmbracoAccess.AlertMessages">
     <key alias="ConfirmRemoveIp">Are you sure you want to remove IP Address: </key>
   </area>
 
   <area alias="Shield.UmbracoAccess.ErrorMessages">
-    <key alias="GetConfiguration">Something went wrong getting the configuration, the error has been logged.</key>
-    <key alias="UpdateConfiguration">Something went wrong saving the changes. The error has been logged.</key>
     <key alias="IpRequired">IP Address is required.</key>
     <key alias="IpInvalid">Invalid IP Address. Please enter a valid IPv4 or IPv6 address (cidr optional).</key>
     <key alias="IpDuplicate">IP Address has already been added</key>

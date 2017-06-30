@@ -1,4 +1,4 @@
-﻿<div class="umb-el-wrap control-group umb-control-group" ng-controller="Shield.Properties.IpAddress as vm">
+﻿<div class="umb-el-wrap control-group umb-control-group" ng-controller="Shield.Properties.IpAddress as vm" ng-init="vm.init()">
     <label class="control-label">
         <localize key="Shield.UmbracoAccess.Properties_AllowedIPsLabel">White-listed IP address(es)</localize>
         <small>
@@ -18,26 +18,17 @@
                 </thead>
 
                 <tbody>
-                    <tr ng-repeat="ip in vm.value track by $index">
+                    <tr ng-repeat="ip in vm.configuration.ipAddresses track by $index">
                         <td>
-                            <span ng-show="!ip.editMode">{{ip.ipAddress}}</span>
-                            <input type="text" ng-show="ip.editMode" ng-model="ip.ipAddress" />
-                            <span ng-show="ip.editMode && !ip.valid" class="help-inline">{{ip.errorMsg}}</span>
+                            <input type="text" ng-model="ip.ipAddress" />
                         </td>
 
                         <td>
-                            <span ng-show="!ip.editMode">{{ip.description}}</span>
-                            <input type="text" ng-show="ip.editMode" ng-model="ip.description" />
+                            <input type="text" ng-model="ip.description" />
                         </td>
 
                         <td>
-                            <span class="btn btn-info" ng-show="!ip.editMode" ng-click="vm.editIp(ip, false)">
-                                <localize key="Shield.General_Edit">Edit</localize>
-                            </span>
-                            <span class="btn btn-success" ng-show="ip.editMode" ng-click="vm.editIp({{ip}}, true)">
-                                <localize key="Shield.General_Update">Update</localize>
-                            </span>
-                            <span class="btn btn-danger" ng-click="vm.removeIp(ip)">
+                            <span class="btn btn-danger" ng-click="vm.remove($index)">
                                 <localize key="Shield.General_Remove">Remove</localize>
                             </span>
                         </td>
@@ -46,20 +37,15 @@
 
                 <tfoot>
                     <tr>
-                        <td>
-                            <input type="text" ng-model="vm.newIp.ipAddress" />
-                            <span ng-show="!vm.newIp.valid" class="help-inline">{{vm.newIp.errorMsg}}</span>
-                        </td>
+                        <td></td>
 
                         <td>
-                            <input type="text" ng-model="vm.newIp.description" />
-                        </td>
-
-                        <td>
-                            <span class="btn btn-success" ng-click="vm.addIp()">
+                            <span class="btn btn-success" ng-click="vm.add()">
                                 <localize key="Shield.General_Add">Add</localize>
                             </span>
                         </td>
+
+                        <td></td>
                     </tr>
                 </tfoot>
             </table>

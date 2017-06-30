@@ -15,7 +15,7 @@ var src = 'src/Shield'
 var jsOutput = '/App_Plugins/Shield';
 var jsFiles = [
     {
-        subFiles: src + '.Core/Scripts/*.js',
+        subFiles: src + '.Core/UI/Scripts/*.js',
         output: src + '.Core' + jsOutput + '/Backoffice/Scripts',
         name: 'Shield.js',
         nameMin: 'Shield.min.js'

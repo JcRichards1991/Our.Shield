@@ -1,83 +1,80 @@
 ﻿<div ng-controller="Shield.Editors.UmbracoAccess.Edit as vm"  ng-init="vm.init()">
 
-    <div ng-if="vm.configuration.enable == true">
+    <div class="umb-el-wrap control-group umb-control-group">
+        <label for="backendAccessUrl" class="control-label">
+            <localize key="Shield.UmbracoAccess.Properties_BackendAccessUrlLabel">Backend Office Access URL</localize>
+            <small>
+                <localize key="Shield.UmbracoAccess.Properties_BackendAccessUrlDescription">The URL used to access the CMS.</localize>
+            </small>
+        </label>
 
-        <div class="umb-el-wrap control-group umb-control-group">
-            <label for="backendAccessUrl" class="control-label">
-                <localize key="Shield.UmbracoAccess.Properties_BackendAccessUrlLabel">Backend Office Access URL</localize>
-                <small>
-                    <localize key="Shield.UmbracoAccess.Properties_BackendAccessUrlDescription">The URL used to access the CMS.</localize>
-                </small>
-            </label>
-
-            <div class="controls">
-                <input type="text" id="backendAccessUrl" ng-model="vm.configuration.backendAccessUrl" />
-            </div>
+        <div class="controls">
+            <input type="text" id="backendAccessUrl" ng-model="vm.configuration.backendAccessUrl" required />
         </div>
-
-        <div class="umb-el-wrap control-group umb-control-group">
-            <label for="redirectRewrite" class="control-label">
-                <localize key="Shield.UmbracoAccess.Properties_RedirectRewriteLabel">Redirect or Rewrite</localize>
-                <small>
-                    <localize key="Shield.UmbracoAccess.Properties_RedirectRewriteDescription">Whether or not to redirect the user or to rewrite the url to another location.</localize>
-                </small>
-            </label>
-
-            <div class="controls">
-                <select id="redirectRewrite" ng-model="vm.configuration.redirectRewrite">
-                    <option value="0">Redirect</option>
-                    <option value="1">Rewrite</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="umb-el-wrap control-group umb-control-group">
-            <label for="unauthorisedUrlType" class="control-label">
-                <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeLabel">Unauthorised Url Type</localize>
-                <small>
-                    <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</localize>
-                </small>
-            </label>
-
-            <div class="controls">
-                <select id="unauthorisedUrlType" ng-model="vm.configuration.unauthorisedUrlType" convert-to-number>
-                    <option value="0">Url</option>
-                    <option value="1">XPath</option>
-                    <option value="2">Content Picker</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 0">
-            <label for="unauthorisedUrl" class="control-label">
-                <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
-                <small>
-                    <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlDescription">The Url to redirect/rewrite the user to when from a disallowed IP Address.</localize>
-                </small>
-            </label>
-
-            <div class="controls">
-                <input type="text" id="unauthorisedUrl" ng-model="vm.configuration.unauthorisedUrl" />
-            </div>
-        </div>
-
-        <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 1">
-            <label for="unauthorisedUrlXPath" class="control-label">
-                <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
-                <small>
-                    <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a disallowed IP Address.</localize>
-                </small>
-            </label>
-
-            <div class="controls">
-                <input type="text" id="unauthorisedUrlXPath" ng-model="vm.configuration.unauthorisedUrlXPath" />
-            </div>
-        </div>
-
-        <umb-property property="contentPickerProperty" ng-if="vm.configuration.unauthorisedUrlType === 2">
-            <umb-editor model="contentPickerProperty"></umb-editor>
-        </umb-property>
-
-        <div ng-include="'/App_Plugins/Shield.UmbracoAccess/Views/IpAddressPropertyEditor.html'"></div>
     </div>
+
+    <div class="umb-el-wrap control-group umb-control-group">
+        <label for="redirectRewrite" class="control-label">
+            <localize key="Shield.UmbracoAccess.Properties_RedirectRewriteLabel">Redirect or Rewrite</localize>
+            <small>
+                <localize key="Shield.UmbracoAccess.Properties_RedirectRewriteDescription">Whether or not to redirect the user or to rewrite the url to another location.</localize>
+            </small>
+        </label>
+
+        <div class="controls">
+            <select id="redirectRewrite" ng-model="vm.configuration.redirectRewrite" required shield-convert-to-number>
+                <option value="0">Redirect</option>
+                <option value="1">Rewrite</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="umb-el-wrap control-group umb-control-group">
+        <label for="unauthorisedUrlType" class="control-label">
+            <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeLabel">Unauthorised Url Type</localize>
+            <small>
+                <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</localize>
+            </small>
+        </label>
+
+        <div class="controls">
+            <select id="unauthorisedUrlType" ng-model="vm.configuration.unauthorisedUrlType" required shield-convert-to-number>
+                <option value="0">Url</option>
+                <option value="1">XPath</option>
+                <option value="2">Content Picker</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 0">
+        <label for="unauthorisedUrl" class="control-label">
+            <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
+            <small>
+                <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlDescription">The Url to redirect/rewrite the user to when from a disallowed IP Address.</localize>
+            </small>
+        </label>
+
+        <div class="controls">
+            <input type="text" id="unauthorisedUrl" ng-model="vm.configuration.unauthorisedUrl" required />
+        </div>
+    </div>
+
+    <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 1">
+        <label for="unauthorisedUrlXPath" class="control-label">
+            <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
+            <small>
+                <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a disallowed IP Address.</localize>
+            </small>
+        </label>
+
+        <div class="controls">
+            <input type="text" id="unauthorisedUrlXPath" ng-model="vm.configuration.unauthorisedUrlXPath" required />
+        </div>
+    </div>
+
+    <umb-property property="vm.contentPickerProperty" ng-if="vm.configuration.unauthorisedUrlType === 2">
+        <umb-editor model="vm.contentPickerProperty"></umb-editor>
+    </umb-property>
+
+    <div ng-include="'/App_Plugins/Shield.UmbracoAccess/Views/IpAddressPropertyEditor.html?version=1.0.1'"></div>
 </div>

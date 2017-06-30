@@ -33,3 +33,28 @@ angular.module('umbraco.directives').directive('shieldApp',
         };
     }]
 );
+
+/**
+   * @ngdoc directive
+   * @name shield-convert-to-number
+   * @function
+   *
+   * @description
+   * Custom angular directive for converting string to number
+*/
+angular.module('umbraco.directives').directive('shieldConvertToNumber',
+    function () {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                ngModel.$parsers.push(function (val) {
+                    return parseInt(val, 10);
+                });
+                ngModel.$formatters.push(function (val) {
+                    return '' + val;
+                });
+            }
+        };
+    }
+);

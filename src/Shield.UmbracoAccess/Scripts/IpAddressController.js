@@ -13,70 +13,31 @@ angular.module('umbraco').controller('Shield.Properties.IpAddress',
         var vm = this;
 
         angular.extend(vm, {
-            loading: true,
-            newIp: {
-                ipAddress: '',
-                description: '',
-                valid: true,
-                errorMsg: '',
-            },
-            value: [],
+            configuration: $scope.configuration,
             init: function () {
-                angular.forEach($scope.configuration.ipAddresses, function (ip, index) {
-                    vm.value.push({
-                        ipAddress: ip.ipAddress,
-                        description: ip.description,
-                        editMode: false,
-                        valid: true,
-                        errorMsg: '',
+                if (vm.configuration.ipAddresses.length === 0) {
+                    vm.configuration.ipAddresses.push({
+                        ipAddress: '',
+                        description: ''
                     });
+                }
+            },
+            add: function () {
+                vm.configuration.ipAddresses.push({
+                    ipAddress: '',
+                    description: ''
                 });
-
-                vm.loading = false;
             },
-            addIp: function () {
-                if (!vm.isValidIpAddress(vm.newIp, false)) {
-                    return false;
-                }
+            remove: function ($index) {
+                var ip = vm.configuration.ipAddresses[$index];
 
-                vm.value.push({
-                    ipAddress: vm.newIp.ipAddress,
-                    description: vm.newIp.description,
-                    editMode: false
-                });
-
-                vm.newIp.ipAddress = '';
-                vm.newIp.description = '';
-            },
-            editIp: function (ip, update) {
-                var curEditIp = vm.value.filter((ip) => ip.editMode === true)[0];
-
-                if (curEditIp && !update) {
-                    return false;
-                }
-
-                if (!update) {
-                    ip.editMode = true;
-                } else {
-                    if (!vm.isValidIpAddress(curEditIp, true)) {
-                        return false;
-                    }
-
-                    curEditIp.editMode = false;
-                }
-            },
-            removeIp: function (ip) {
                 localizationService.localize('Shield.UmbracoAccess.AlertMessages_ConfirmRemoveIp').then(function (warningMsg) {
                     if (confirm(warningMsg + ip.ipAddress + ' - ' + ip.description)) {
-                        var index = vm.value.indexOf(ip);
-
-                        if (index !== -1) {
-                            vm.value.splice(index, 1);
-                        }
+                        vm.configuration.ipAddresses.splice($index, 1);
                     }
                 });
             },
-            isValidIpAddress: function (ip, edit) {
+            isValid: function (ip, edit) {
                 ip.valid = true;
                 ip.errorMsg = '';
                 ip.errorState = null;
@@ -105,7 +66,7 @@ angular.module('umbraco').controller('Shield.Properties.IpAddress',
 
                 var index = edit ? 1 : 0;
 
-                if (vm.value.filter((x) => x.ipAddress === ip.ipAddress)[index] !== undefined) {
+                if (vm.configuration.ipAddresses.filter((x) => x.ipAddress === ip.ipAddress)[index] !== undefined) {
                     ip.valid = false;
                     ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpDuplicate');
                     return false;

@@ -292,7 +292,6 @@
     <Compile Include="UI\ShieldApiController.cs" />
     <Compile Include="UI\Register.cs" />
     <Compile Include="UI\TreeController.cs" />
-    <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="Operation\Register.cs" />
     <Compile Include="Operation\JobService.cs" />
     <Compile Include="Models\IApp.cs" />
@@ -318,15 +317,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Overview.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Settings.js" />
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Edit.js" />
-    <Content Include="App_Plugins\Shield\Backoffice\Scripts\ShieldResource.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Shield.js" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
-    <Content Include="Scripts\ShieldControllers.js" />
-    <Content Include="Scripts\ShieldDeirectives.js" />
-    <Content Include="Scripts\ShieldResources.js" />
+    <Content Include="UI\Scripts\ShieldControllers.js" />
+    <Content Include="UI\Scripts\ShieldDeirectives.js" />
+    <Content Include="UI\Scripts\ShieldResources.js" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

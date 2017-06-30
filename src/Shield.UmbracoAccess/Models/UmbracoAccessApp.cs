@@ -8,6 +8,7 @@
     using ClientDependency.Core;
     using Shield.Core.Models;
     using Shield.Core.UI;
+    using Umbraco.Web;
 
     [AppEditor("/App_Plugins/Shield.UmbracoAccess/Views/UmbracoAccess.html?v=1.0.1")]
     [AppAsset(ClientDependencyType.Javascript, "/App_Plugins/Shield.UmbracoAccess/Scripts/UmbracoAccess.js?v=1.0.1")]
@@ -30,7 +31,9 @@
                 return new UmbracoAccessConfiguration
                 {
                     BackendAccessUrl = ApplicationSettings.UmbracoPath,
-                    IpAddresses = new IpAddress[0]
+                    IpAddresses = new IpAddress[0],
+                    RedirectRewrite = Enums.RedirectRewrite.Redirect,
+                    UnauthorisedUrlType = Enums.UnautorisedUrlType.Url
                 };
             }
         }
@@ -56,26 +59,26 @@
                     break;
 
                 case Enums.UnautorisedUrlType.XPath:
-                    url = Core.Helpers.UrlHelper.GetUrl(config.UnauthorisedUrlXPath);
+                    url = UmbracoContext.Current.ContentCache.GetSingleByXPath(config.UnauthorisedUrlXPath).Url;
                     break;
 
                 case Enums.UnautorisedUrlType.ContentPicker:
-                    url = Core.Helpers.UrlHelper.GetUrl(Convert.ToInt32(config.UnauthorisedUrlContentPicker));
+                    url = UmbracoContext.Current.ContentCache.GetById(Convert.ToInt32(config.UnauthorisedUrlContentPicker)).Url;
                     break;
             }
 
-            var id = job.WatchWebRequests(new Regex(config.BackendAccessUrl), 2, (count, app) =>
+            job.WatchWebRequests(new Regex(config.BackendAccessUrl), 2, (count, httpApp) =>
             {
-                var userIp = GetUserIp(app);
+                var userIp = GetUserIp();
                 if (!config.IpAddresses.Any(x => x.ipAddress == userIp))
                 {
                     if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
                     {
-                        app.Context.Response.Redirect(url, true);
+                        httpApp.Context.Response.Redirect(url, true);
                     }
                     else
                     {
-                        app.Context.RewritePath(url);
+                        httpApp.Context.RewritePath(url);
                     }
                     return WatchCycle.Stop;
                 }
@@ -83,21 +86,30 @@
                 return WatchCycle.Continue;
             }, 0, null);
 
-            Ids.Add(id);
-
-            id = job.WatchWebRequests(null, 1, (count, app) =>
-            {
-                return WatchCycle.Continue;
-            }, 0, null);
-
-            Ids.Add(id);
-
             return true;
         }
 
-        private static string GetUserIp(HttpApplication app)
+        private static string GetUserIp()
         {
-            return string.Empty;
+            var ip = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+
+            if (string.IsNullOrEmpty(ip))
+            {
+                ip = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
+            }
+            else
+            {
+                ip = ip.Split(',')[0];
+            }
+
+            // Returns '::1' for when accessing from localhost
+            // So convert to 127.0.0.1 for valid IP address
+            if (ip.Equals("::1"))
+            {
+                ip = "127.0.0.1";
+            }
+
+            return ip;
         }
     }
 }
