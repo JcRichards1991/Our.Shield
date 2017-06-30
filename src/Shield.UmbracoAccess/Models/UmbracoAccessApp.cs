@@ -85,7 +85,8 @@
 
             Ids.Add(id);
 
-            id = job.WatchWebRequests(null, 1, (count, app) => {
+            id = job.WatchWebRequests(null, 1, (count, app) =>
+            {
                 return WatchCycle.Continue;
             }, 0, null);
 

@@ -1,7 +1,5 @@
 ﻿{
   "javascript": [
-    "~/App_Plugins/Shield/Backoffice/Scripts/ShieldResource.js",
-    "~/App_Plugins/Shield/Backoffice/Scripts/Settings.js",
-    "~/App_Plugins/Shield/Backoffice/Scripts/Edit.js"
+    "~/App_Plugins/Shield/Backoffice/Scripts/Shield.js"
   ]
 }
