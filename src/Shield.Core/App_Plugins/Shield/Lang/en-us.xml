@@ -14,10 +14,12 @@
     <key alias="Edit">Edit</key>
     <key alias="Update">Update</key>
     <key alias="Remove">Remove</key>
+    <key alias="SaveSuccess">Have successfully saved the configuration of your App</key>
+    <key alias="SaveError">Unable to save configuration</key>
   </area>
 
   <area alias="Shield.General.Properties">
     <key alias="EnableLabel">Enable</key>
-    <key alias="EnableDescription">Whether or not this plugin is active</key>
+    <key alias="EnableDescription">Is this App active</key>
   </area>
 </language>

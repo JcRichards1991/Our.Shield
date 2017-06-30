@@ -5,27 +5,35 @@
     using Umbraco.Core;
     using Umbraco.Core.Logging;
     using Models;
+    using Newtonsoft.Json.Serialization;
+    using System.Reflection;
 
     /// <summary>
     /// The Configuration Context.
     /// </summary>
     internal class ConfigurationContext : DbContext
     {
-        /// <summary>
-        /// Reads a Configuration from the database.
-        /// </summary>
-        /// <param name="environmentId">
-        /// The environmentId of the configuration.
-        /// </param>
-        /// <param name="appId">
-        /// The appId of the configuration.
-        /// </param>
-        /// <param name="type">
-        /// The type of configuration to return;
-        /// </param>
-        /// <returns>
-        /// The Configuration as the desired type.
-        /// </returns>
+
+        internal class ShouldSerializeContractResolver : DefaultContractResolver
+        {
+            public static readonly ShouldSerializeContractResolver Instance = new ShouldSerializeContractResolver();
+ 
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                JsonProperty property = base.CreateProperty(member, memberSerialization);
+ 
+                if (property.PropertyName.Equals(nameof(IConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase) || 
+                    property.PropertyName.Equals(nameof(IConfiguration.LastModified), StringComparison.InvariantCultureIgnoreCase))
+                {
+                    property.ShouldSerialize = instance =>
+                    {
+                        return false;
+                    };
+                }
+                return property;
+            }
+        }
+
         public IConfiguration Read(int environmentId, string appId, Type type, IConfiguration defaultConfiguration)
         {
             var config = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(defaultConfiguration), type) as Configuration;
@@ -64,18 +72,6 @@
             return (T) Read(environmentId, appId, typeof(T), defaultConfiguration);
         }
 
-        /// <summary>
-        /// Writes a Configuration to the database.
-        /// </summary>
-        /// <param name="id">
-        /// The id of Configuration to write.
-        /// </param>
-        /// <param name="config">
-        /// The configuration to write to the database
-        /// </param>
-        /// <returns>
-        /// If successfull, returns true, otherwise false.
-        /// </returns>
         public bool Write(int environmentId, string appId, IConfiguration config)
         {
             try
@@ -85,13 +81,19 @@
                     nameof(Data.Dto.Configuration.EnvironmentId) + " = @0 AND " +
                     nameof(Data.Dto.Configuration.AppId) + " = @1",
                     environmentId, appId);
+
+                var value = JsonConvert.SerializeObject(config, Formatting.None, 
+                            new JsonSerializerSettings { ContractResolver = new ShouldSerializeContractResolver() });
+
                 if (record == null)
                 {
                     record = new Data.Dto.Configuration
                     {
+                        EnvironmentId = environmentId,
+                        AppId = appId,
                         Enable = config.Enable,
                         LastModified = DateTime.UtcNow,
-                        Value = JsonConvert.SerializeObject(config)
+                        Value = value
                     };                                 
                     Database.Insert(record);
                 }
@@ -99,7 +101,7 @@
                 {
                     record.Enable = config.Enable;
                     record.LastModified = DateTime.UtcNow;
-                    record.Value = JsonConvert.SerializeObject(config);
+                    record.Value = value;
                     Database.Update(record);
                 }
                 return true;

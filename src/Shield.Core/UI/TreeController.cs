@@ -10,7 +10,7 @@
     /// The Umbraco Access Tree Controller for the custom section
     /// </summary>
     [PluginController(Constants.App.Name)]
-    [Umbraco.Web.Trees.Tree(Constants.App.Alias, Constants.Tree.Alias, Constants.Tree.Title)]
+    [Umbraco.Web.Trees.Tree(Constants.App.Alias, Constants.App.Alias, Constants.Tree.Title)]
     public class TreeController : Umbraco.Web.Trees.TreeController
     {
         /// <summary>

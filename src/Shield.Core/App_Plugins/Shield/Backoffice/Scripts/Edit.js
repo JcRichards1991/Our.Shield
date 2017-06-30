@@ -28,12 +28,12 @@
                 configuration: null,
                 path: null,
                 appView: null,
+                ancestors: null,
                 tabs: [
                     {
                         id:'0',
                         label: 'Environments',
                         active: true,
-                        view: 'Environments'
                     },
                     {
                         id:'1',
@@ -51,6 +51,7 @@
                                 vm.environments = response.data.environments;
                                 vm.environment = response.data.environment;
                                 vm.path = '-1,0';
+                                vm.ancestors = [{ id: vm.id, name: vm.name }]
                                 break;
 
                             case 1:     //  Environment
@@ -59,9 +60,9 @@
                                 vm.environment = response.data.environment;
                                 vm.apps = response.data.apps;
                                 vm.tabs[0].label = 'Domains';
-                                vm.tabs[0].view = 'Domains';
                                 vm.journal.columns[1].show = false;
                                 vm.path = '-1,0,' + vm.id;
+                                vm.ancestors = [{ id: 0, name: 'Environments' },{ id: vm.id, name: vm.name }]
                                 break;
 
                             case 2:     //  App
@@ -71,10 +72,10 @@
                                 vm.appView = response.data.appAssests.view;
                                 vm.configuration = response.data.configuration;
                                 vm.tabs[0].label = 'Configuration'
-                                vm.tabs[0].view = 'App';
                                 vm.journal.columns[1].show = false;
                                 vm.journal.columns[2].show = false;
                                 vm.path = '-1,0,' + vm.environment.id + ',' + vm.id;
+                                vm.ancestors = [{ id: 0, name: 'Environments' }, {id: vm.environment.id, name: vm.environment.name}, { id: vm.id, name: vm.name }]
 
                                 angular.forEach(response.data.appAssests.stylesheets, function (item, index) {
                                     assetsService.loadCss(item);
@@ -94,9 +95,36 @@
                     });
                 },
                 save: function () {
-                    vm.saveButtonState = 'busy';
 
-                    vm.saveButtonState = 'success';
+                    switch (vm.type) {
+                        case 1:     //  Environment
+                            vm.saveButtonState = 'busy';
+
+                            //  TODO: Write stuff
+
+                            vm.saveButtonState = 'success';
+                            break;
+
+                        case 2:     //  App
+                            vm.saveButtonState = 'busy';
+                            shieldResource.postConfiguration(vm.id, vm.configuration).then(function (response) {
+                                if (response.data) {
+                                    localizationService.localize("Shield.General_SaveSuccess").then(function (value) {
+                                        notificationsService.success(value);
+                                    });
+                                    navigationService.syncTree({ tree: 'Shield', path: vm.path, forceReload: true, activate: true });
+                                    vm.saveButtonState = 'init';
+                                    $scope.shieldForm.$setPristine();
+                                } else {
+                                    localizationService.localize("Shield.General_SaveError").then(function (value) {
+                                        notificationsService.error(value);
+                                    });
+                                    vm.saveButtonState = 'error';
+                                }
+                            });
+                            break;
+                    }
+
                 },
                 editItem: function (item, index) {
                     $location.path('shield/Shield/edit/' + item.id);

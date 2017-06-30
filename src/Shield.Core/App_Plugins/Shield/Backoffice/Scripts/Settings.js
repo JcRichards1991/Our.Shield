@@ -13,7 +13,7 @@
         ['$scope', '$routeParams', 'notificationsService', 'localizationService', 'ShieldResource', 
         function ($scope, $routeParams, notificationsService, localizationService, sheildResource) {
 
-            vm = this;
+            var vm = this;
 
 
 

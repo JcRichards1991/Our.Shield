@@ -16,11 +16,12 @@
             getView: function (id) {
                 return $http.get(apiRoot + 'View?id=' + id);
             },
-            postView: function (id, model) {
+            postConfiguration: function (id, config) {
                 return $http({
                     method: 'POST',
-                    url: apiRoot + 'View?id=' + id,
-                    data: angular.toJson(model),
+                    url: apiRoot + 'Configuration?id=' + id,
+                    data: JSON.stringify(config),
+                    dataType: 'json',
                     headers: {
                         'Content-Type': 'application/json'
                     },

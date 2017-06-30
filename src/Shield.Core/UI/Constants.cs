@@ -34,7 +34,7 @@
             /// <summary>
             /// Tree Alias
             /// </summary>
-            public const string Alias = nameof(Shield);
+            public const string Alias = "environments";
 
             /// <summary>
             /// Tree Title

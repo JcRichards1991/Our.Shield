@@ -321,9 +321,6 @@
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Scripts\Edit.js" />
     <Content Include="App_Plugins\Shield\Backoffice\Scripts\ShieldResource.js" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\Domains.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\App.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\Environments.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
   </ItemGroup>
