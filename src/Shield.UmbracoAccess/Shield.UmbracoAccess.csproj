@@ -273,6 +273,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="App_Plugins\Shield.UmbracoAccess\package.manifest" />
     <None Include="packages.config" />
     <None Include="Scss\AllowedIpPropertyEditor.scss" />
     <None Include="Shield.UmbracoAccess.nuspec" />

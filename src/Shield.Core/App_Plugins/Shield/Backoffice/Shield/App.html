@@ -10,9 +10,9 @@
             <input type="checkbox" id="enable" ng-model="vm.configuration.enable" />
         </div>
     </div>
+</div>
 
-    <div ng-show="vm.configuration.enable == true">
-        <shield-app view="vm.appView" configuration="vm.configuration">
-        </shield-app>
-    </div>
+<div ng-show="vm.configuration.enable == true">
+    <shield-app view="vm.appView" configuration="vm.configuration">
+    </shield-app>
 </div>
