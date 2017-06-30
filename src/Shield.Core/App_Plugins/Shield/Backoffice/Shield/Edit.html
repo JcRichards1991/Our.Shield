@@ -1,10 +1,10 @@
 ﻿<div ng-controller="Shield.Editors.Edit as vm" ng-init="vm.init()">
-    <umb-load-indicator ng-if="loading"></umb-load-indicator>
+    <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
     <form name="shieldForm"
           ng-submit="vm.save()"
           novalidate
           val-form-manager>
-        <umb-editor-view ng-if="!loading" umb-tabs>
+        <umb-editor-view ng-if="!vm.loading" umb-tabs>
 
             <umb-editor-header name="vm.name"
                                tabs="vm.tabs"
@@ -13,10 +13,8 @@
                                hide-description="true"
                                hide-alias="true">
             </umb-editor-header>
-
             <umb-editor-container>
                 <umb-tabs-content class="form-horizontal" view="true">
-
                     <umb-tab id="tab0" rel="0">
                         <div class="umb-el-wrap control-group umb-control-group">
                             <div>
@@ -109,7 +107,7 @@
                                         <input class="umb-table__input" type="checkbox"
                                                ng-if="false"
                                                ng-click="vm.journal.selectAllItems($event)"
-                                               ng-checked="vm.journal.isSelectedAllItems()">
+                                               ng-checked="vm.journal.isSelectedAllItems()" />
                                     </div>
                                     <div ng-class="{'umb-table-cell': true, 'umb-table__name': $index == 0}" ng-repeat="column in vm.journal.columns track by $index">
                                         <div ng-if="column.show">
@@ -123,12 +121,11 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="umb-table-body">
                                 <div class="umb-table-row"
                                      ng-repeat="item in items"
-                                     ng-class="{
-                                        '-selected':item.selected,
-                                    }"
+                                     ng-class="{ '-selected':item.selected }"
                                      ng-click="vm.selectItem(item, $index, $event)">
 
                                     <div class="umb-table-cell">
