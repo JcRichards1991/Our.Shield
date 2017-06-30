@@ -245,6 +245,13 @@ namespace Shield.Core.Operation
             JobService.Instance.Poll();
             
             string filePath = ((HttpApplication)source).Context.Request.FilePath;
+            string uri = ((HttpApplication)source).Context.Request.Url.AbsoluteUri;
+
+            if (filePath == "/umbraco/backoffice/UmbracoApi/Authentication/GetRemainingTimeoutSeconds")
+            {
+                return;
+            }
+
             int count = 0;
 
             if (beginWatchLock.TryEnterReadLock(watchLockTimeout))
@@ -256,7 +263,7 @@ restart:
                     foreach (var watch in beginWatchers)
                     {
                         if ((watch.regex == null || watch.regex.IsMatch(filePath)) &&
-                            (watch.domains == null || watch.domains.Any(x => filePath.StartsWith(x, StringComparison.InvariantCultureIgnoreCase))))
+                            (watch.domains == null || watch.domains.Any(x => uri.StartsWith(x, StringComparison.InvariantCultureIgnoreCase))))
                         {
                             switch (watch.request(count, (HttpApplication)source))
                             {
@@ -286,6 +293,12 @@ restart:
         private void Application_EndRequest(Object source, EventArgs e)
         {
             string filePath = ((HttpApplication)source).Context.Request.FilePath;
+
+            if (filePath == "/umbraco/backoffice/UmbracoApi/Authentication/GetRemainingTimeoutSeconds")
+            {
+                return;
+            }
+
             int count = 0;
 
             if (endWatchLock.TryEnterReadLock(watchLockTimeout))

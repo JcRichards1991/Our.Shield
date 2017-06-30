@@ -1,21 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <language alias="en" intName="English (US)" localName="English (US)" lcid="" culture="en-US">
   <creator>
-    <name>Joshua Richards</name>
+    <name>Jonathan Richards</name>
   </creator>
 
   <area alias="Shield.MediaProtection">
+    
+    <key alias="HotlinkingLabel">Hot Linking Protection</key>
+    <key alias="HotlinkingLabelDescription">Stop unauthorized users from accessing your media from other websites</key>
+
+    <key alias="MemberOnlyMediaLabel">Secure Media</key>
+    <key alias="MemberOnlyMediaDescription">Enable media to be only accessible by logged in members</key>
+
   </area>
 
-  <area alias="Shield.MediaProtection.Properties">
-  </area>
-
-  <area alias="Shield.MediaProtection.SuccessMessages">
-  </area>
-
-  <area alias="Shield.UmbracoAccess.AlertMessages">
-  </area>
-
-  <area alias="Shield.MediaProtection.ErrorMessages">
-  </area>
 </language>

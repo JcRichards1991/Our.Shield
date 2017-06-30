@@ -8,6 +8,7 @@
     using Shield.Core.Models;
     using System.Collections.Generic;
     using System.Reflection;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Api Controller for the Umbraco Access area of the custom section
@@ -18,6 +19,11 @@
     [PluginController(Constants.App.Alias)]
     public class ShieldApiController : UmbracoAuthorizedJsonController
     {
+        /// <summary>
+        /// Get configuration for each treenode
+        /// </summary>
+        /// <param name="id">jobId</param>
+        /// <returns>All the info that the angular needs to render the view</returns>
         [HttpGet]
         public TreeView View(int id)
         {
@@ -84,20 +90,37 @@
         }
 
         /// <summary>
-        /// Api Endpoint for getting the Umbraco Access Journals
+        /// Save domains to an environment
         /// </summary>
-        /// <param name="id">
-        /// Id of the configuration to return journals for
-        /// </param>
-        /// <param name="page">
-        /// The page of results to return
-        /// </param>
-        /// <param name="itemsPerPage">
-        /// Number of items per page
-        /// </param>
-        /// <returns>
-        /// Collection of journals for the desired configuration
-        /// </returns>
+        /// <param name="id">jobId</param>
+        /// <param name="domains">The list of new domains you wish to save</param>
+        /// <returns>True if save is successfully</returns>
+        [HttpPost]
+        public bool Domains(int id, [FromBody] IEnumerable<IDomain> domains)
+        {
+            return true;
+        }
+
+        [HttpPost]
+        public new bool Configuration(int id, [FromBody] JObject json)
+        {
+            if (json == null)
+            {
+                //  json is invalid
+                return false;
+            }
+
+            var job = Operation.JobService.Instance.Job(id);
+            if (job == null)
+            {
+                //  Invalid id
+                return false;
+            }
+            var configuration = json.ToObject(((Job)job).ConfigType) as IConfiguration;
+            configuration.Enable = json.GetValue(nameof(IConfiguration.Enable), System.StringComparison.InvariantCultureIgnoreCase).Value<bool>();
+            return job.WriteConfiguration(configuration);
+        }
+
         [HttpGet]
         public IEnumerable<IJournal> Journals(int id, int page, int itemsPerPage)
         {
