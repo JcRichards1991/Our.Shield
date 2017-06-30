@@ -358,6 +358,8 @@
     <Content Include="Config\ClientDependency.config" />
     <Content Include="Config\BaseRestExtensions.config" />
     <Content Include="Config\404handlers.config" />
+    <Content Include="Views\Home.cshtml" />
+    <Content Include="Views\Contact.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
