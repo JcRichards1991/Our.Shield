@@ -126,6 +126,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
 
             },
             editItem: function (item, index) {
+                $location.path('shield/shield/edit/' + item.id);
             },
             journal: {
                 columns: [
