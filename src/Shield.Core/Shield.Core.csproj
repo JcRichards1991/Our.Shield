@@ -263,6 +263,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\ApplicationSettings.cs" />
+    <Compile Include="Models\JournalMessage.cs" />
     <Compile Include="Operation\ServiceHandler.cs" />
     <Compile Include="UI\AppAssest.cs" />
     <Compile Include="UI\Constants.cs" />

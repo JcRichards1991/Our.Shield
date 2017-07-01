@@ -6,13 +6,13 @@
     using System.Text.RegularExpressions;
     using System.Web;
     using ClientDependency.Core;
-    using Shield.Core.Models;
-    using Shield.Core.UI;
+    using Core.Models;
+    using Core.UI;
     using Umbraco.Web;
+    using System.Threading;
+    using System.Net;
 
     [AppEditor("/App_Plugins/Shield.UmbracoAccess/Views/UmbracoAccess.html?v=1.0.1")]
-    [AppAsset(ClientDependencyType.Javascript, "/App_Plugins/Shield.UmbracoAccess/Scripts/UmbracoAccess.js?v=1.0.1")]
-    [AppAsset(ClientDependencyType.Css, "/App_Plugins/Shield.UmbracoAccess/Css/UmbracoAccess.css?v=1.0.1")]
     public class UmbracoAccessApp : App<UmbracoAccessConfiguration>
     {
         public override string Id => nameof(UmbracoAccess);
@@ -22,7 +22,6 @@
         public override string Description => "Secure your backoffice access via IP restrictions";
 
         public override string Icon => "icon-stop-hand red";
-
 
         public override IConfiguration DefaultConfiguration
         {
@@ -38,11 +37,49 @@
             }
         }
 
-        private static List<int> Ids = new List<int>();
+        private static ReaderWriterLockSlim environemntIdsLocker = new ReaderWriterLockSlim();
+        private static List<int> environmentIds = new List<int>();
 
         public override bool Execute(IJob job, IConfiguration c)
         {
             var config = c as UmbracoAccessConfiguration;
+
+            if (environemntIdsLocker.TryEnterUpgradeableReadLock(1))
+            {
+                try
+                {
+                    if (!environmentIds.Contains(job.Environment.Id))
+                    {
+                        if (environemntIdsLocker.TryEnterWriteLock(1))
+                        {
+                            try
+                            {
+                                environmentIds.Add(job.Environment.Id);
+                            }
+                            finally
+                            {
+                                environemntIdsLocker.ExitWriteLock();
+                            }
+                        }
+                        else
+                        {
+                            return false;
+                        }
+
+                        //ExecuteFirstTime(job, config);
+                        //return true;
+                    }
+                }
+                finally
+                {
+                    environemntIdsLocker.ExitUpgradeableReadLock();
+                }
+            }
+            else
+            {
+                return false;
+            }
+
 
             job.UnwatchWebRequests();
 
@@ -67,49 +104,125 @@
                     break;
             }
 
-            job.WatchWebRequests(new Regex(config.BackendAccessUrl), 2, (count, httpApp) =>
+            if (string.IsNullOrEmpty(url))
             {
-                var userIp = GetUserIp();
-                if (!config.IpAddresses.Any(x => x.ipAddress == userIp))
+                job.WriteJournal(new JournalMessage(""));
+                return true;
+            }
+            else
+            {
+                var ipv6s = new List<IPAddress>();
+
+                foreach (var ip in config.IpAddresses)
                 {
-                    if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
+                    IPAddress tempIp;
+                    if (!IPAddress.TryParse(ip.ipAddress, out tempIp))
                     {
-                        httpApp.Context.Response.Redirect(url, true);
+                        job.WriteJournal(new JournalMessage(""));
+                        continue;
                     }
-                    else
-                    {
-                        httpApp.Context.RewritePath(url);
-                    }
-                    return WatchCycle.Stop;
+
+                    if (tempIp.ToString().Equals("127.0.0.1"))
+                        tempIp = IPAddress.Parse("::1");
+
+                    ipv6s.Add(tempIp.MapToIPv6());
                 }
 
-                return WatchCycle.Continue;
-            }, 0, null);
+                var currentAppBackendUrl = config.BackendAccessUrl.EndsWith("/") ? config.BackendAccessUrl : config.BackendAccessUrl + "/";
+
+                if (config.BackendAccessUrl != ApplicationSettings.UmbracoPath)
+                {
+                    job.WatchWebRequests(new Regex(ApplicationSettings.UmbracoPath), 1, (count, httpApp) =>
+                    {
+                        var localPath = httpApp.Context.Request.UrlReferrer == null
+                            ? string.Empty
+                            : (httpApp.Context.Request.UrlReferrer.LocalPath + (httpApp.Context.Request.UrlReferrer.LocalPath.EndsWith("/") ? string.Empty : "/"));
+
+                        if (httpApp.Context.Request.UrlReferrer == null
+                            || httpApp.Context.Request.UrlReferrer.Host != httpApp.Context.Request.Url.Host
+                            || !(httpApp.Context.Request.UrlReferrer.Host == httpApp.Context.Request.Url.Host
+                                && localPath.Equals(currentAppBackendUrl)))
+                        {
+                            if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
+                            {
+                                httpApp.Context.Response.Redirect(url, true);
+                            }
+                            else
+                            {
+                                httpApp.Context.RewritePath(url);
+                            }
+                            return WatchCycle.Stop;
+                        }
+
+                        return WatchCycle.Continue;
+                    }, 0, null);
+                }
+
+                job.WatchWebRequests(new Regex("^" + config.BackendAccessUrl + "(/){0,1}$"), 10, (count, httpApp) =>
+                {
+                    var userIp = GetUserIp(httpApp);
+
+                    if (userIp == null || !ipv6s.Any(x => x.Equals(userIp)))
+                    {
+                        if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
+                        {
+                            httpApp.Context.Response.Redirect(url, true);
+                        }
+                        else
+                        {
+                            httpApp.Context.RewritePath(url);
+                        }
+                        return WatchCycle.Stop;
+                    }
+
+                    if (!httpApp.Context.Request.Url.AbsolutePath.EndsWith("/"))
+                    {
+                        httpApp.Context.Response.Redirect(currentAppBackendUrl, false);
+                        return WatchCycle.Stop;
+                    }
+
+                    if (config.BackendAccessUrl != ApplicationSettings.UmbracoPath)
+                    {
+                        httpApp.Context.RewritePath(ApplicationSettings.UmbracoPath);
+                    }
+
+                    return WatchCycle.Continue;
+                }, 0, null);
+            }
 
             return true;
         }
 
-        private static string GetUserIp()
+        private void ExecuteFirstTime(IJob job, UmbracoAccessConfiguration config)
         {
-            var ip = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            // TODO: if config is different, hard save
+            // Otherwise leave
 
-            if (string.IsNullOrEmpty(ip))
+            if (HttpContext.Current != null)
             {
-                ip = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
-            }
-            else
-            {
-                ip = ip.Split(',')[0];
-            }
-
-            // Returns '::1' for when accessing from localhost
-            // So convert to 127.0.0.1 for valid IP address
-            if (ip.Equals("::1"))
-            {
-                ip = "127.0.0.1";
+                var response = HttpContext.Current.Response;
+                response.Clear();
+                response.Redirect(HttpContext.Current.Request.Url.ToString(), true);
             }
 
-            return ip;
+            HttpRuntime.UnloadAppDomain();
+        }
+
+        private IPAddress GetUserIp(HttpApplication app)
+        {
+            var ip = app.Context.Request.ServerVariables["REMOTE_ADDR"];
+
+            if (ip.Equals("127.0.0.1"))
+                ip = "::1";
+
+            IPAddress tempIp;
+
+            if(IPAddress.TryParse(ip, out tempIp))
+            {
+                return tempIp.MapToIPv6();
+            }
+
+            return null;
         }
     }
 }

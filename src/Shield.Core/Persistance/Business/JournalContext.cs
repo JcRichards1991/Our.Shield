@@ -105,7 +105,7 @@
             }
             catch(Exception ex)
             {
-                LogHelper.Error(typeof(JournalContext), $"Error writing Journal for app name: {appId}", ex);
+                LogHelper.Error(typeof(JournalContext), $"Error writing Journal for environment Id: {environmentId} app Id: {appId}", ex);
             }
             return false;
         }
