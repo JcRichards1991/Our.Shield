@@ -260,7 +260,7 @@
 
         private IPAddress GetUserIp(HttpApplication app)
         {
-            var ip = app.Context.Request.ServerVariables["REMOTE_ADDR"];
+            var ip = app.Context.Request.UserHostAddress;
 
             if (ip.Equals("127.0.0.1"))
                 ip = "::1";
