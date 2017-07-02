@@ -137,7 +137,7 @@
 
             if (currentAppBackendUrl != ApplicationSettings.UmbracoPath)
             {
-                job.WatchWebRequests(new Regex($"^{ ApplicationSettings.UmbracoPath.TrimEnd('/') }(/){{0,1}}$"), 10, (count, httpApp) =>
+                job.WatchWebRequests(new Regex($"^{ ApplicationSettings.UmbracoPath.TrimEnd('/') }(/){{0,1}}$", RegexOptions.IgnoreCase), 10, (count, httpApp) =>
                 {
                     if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
                     {
@@ -152,7 +152,7 @@
                     }
                 });
 
-                job.WatchWebRequests(new Regex($"^{ currentAppBackendUrl.TrimEnd('/') }(/){{0,1}}$"), 30, (count, httpApp) =>
+                job.WatchWebRequests(new Regex($"^{ currentAppBackendUrl.TrimEnd('/') }(/){{0,1}}$", RegexOptions.IgnoreCase), 30, (count, httpApp) =>
                 {
                     httpApp.Context.Items.Add(allowKey, true);
                     httpApp.Context.RewritePath(ApplicationSettings.UmbracoPath, false);
@@ -161,7 +161,7 @@
                 });
             }
 
-            job.WatchWebRequests(new Regex(ApplicationSettings.UmbracoPath), 30, (count, httpApp) =>
+            job.WatchWebRequests(new Regex(ApplicationSettings.UmbracoPath, RegexOptions.IgnoreCase), 30, (count, httpApp) =>
             {
                 bool? doSecurity = (bool?)httpApp.Context.Items[allowKey];
 
