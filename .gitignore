@@ -250,3 +250,4 @@ src/Shield.TestSite/App_Plugins/
 src/Shield.TestSite/[Uu]mbraco/
 src/Shield.TestSite/[Uu]mbraco_[Cc]lient/
 src/Shield.TestSite/Media/created-packages/Shield_1.0.0.1.zip
+src/Shield.TestSite/App_Data/umbraco.config

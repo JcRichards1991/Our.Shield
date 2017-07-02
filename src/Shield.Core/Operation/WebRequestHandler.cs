@@ -42,7 +42,7 @@ namespace Shield.Core.Operation
         {
             public int Compare(Watcher a, Watcher b)
             {
-                return b.priority - a.priority;
+                return a.priority - b.priority;
             }
         }
 

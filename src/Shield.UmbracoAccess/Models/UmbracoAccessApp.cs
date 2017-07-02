@@ -5,12 +5,14 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Web;
-    using ClientDependency.Core;
     using Core.Models;
     using Core.UI;
     using Umbraco.Web;
     using System.Threading;
     using System.Net;
+    using System.Web;
+    using System.Web.Configuration;
+    using System.Configuration;
 
     [AppEditor("/App_Plugins/Shield.UmbracoAccess/Views/UmbracoAccess.html?v=1.0.1")]
     public class UmbracoAccessApp : App<UmbracoAccessConfiguration>
@@ -40,6 +42,8 @@
         private static ReaderWriterLockSlim environemntIdsLocker = new ReaderWriterLockSlim();
         private static List<int> environmentIds = new List<int>();
 
+        private static string allowKey = Guid.NewGuid().ToString();
+
         public override bool Execute(IJob job, IConfiguration c)
         {
             var config = c as UmbracoAccessConfiguration;
@@ -66,8 +70,10 @@
                             return false;
                         }
 
-                        //ExecuteFirstTime(job, config);
-                        //return true;
+                        if (ExecuteFirstTime(job, config))
+                        {
+                            return true;
+                        }
                     }
                 }
                 finally
@@ -109,94 +115,136 @@
                 job.WriteJournal(new JournalMessage(""));
                 return true;
             }
-            else
+
+            var ipv6s = new List<IPAddress>();
+
+            foreach (var ip in config.IpAddresses)
             {
-                var ipv6s = new List<IPAddress>();
+                if (ip.ipAddress.Equals("127.0.0.1"))
+                    ip.ipAddress = "::1";
 
-                foreach (var ip in config.IpAddresses)
+                IPAddress tempIp;
+                if (!IPAddress.TryParse(ip.ipAddress, out tempIp))
                 {
-                    IPAddress tempIp;
-                    if (!IPAddress.TryParse(ip.ipAddress, out tempIp))
-                    {
-                        job.WriteJournal(new JournalMessage(""));
-                        continue;
-                    }
-
-                    if (tempIp.ToString().Equals("127.0.0.1"))
-                        tempIp = IPAddress.Parse("::1");
-
-                    ipv6s.Add(tempIp.MapToIPv6());
+                    job.WriteJournal(new JournalMessage(""));
+                    continue;
                 }
 
-                var currentAppBackendUrl = config.BackendAccessUrl.EndsWith("/") ? config.BackendAccessUrl : config.BackendAccessUrl + "/";
-
-                if (config.BackendAccessUrl != ApplicationSettings.UmbracoPath)
-                {
-                    job.WatchWebRequests(new Regex(ApplicationSettings.UmbracoPath), 1, (count, httpApp) =>
-                    {
-                        var localPath = httpApp.Context.Request.UrlReferrer == null
-                            ? string.Empty
-                            : (httpApp.Context.Request.UrlReferrer.LocalPath + (httpApp.Context.Request.UrlReferrer.LocalPath.EndsWith("/") ? string.Empty : "/"));
-
-                        if (httpApp.Context.Request.UrlReferrer == null
-                            || httpApp.Context.Request.UrlReferrer.Host != httpApp.Context.Request.Url.Host
-                            || !(httpApp.Context.Request.UrlReferrer.Host == httpApp.Context.Request.Url.Host
-                                && localPath.Equals(currentAppBackendUrl)))
-                        {
-                            if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
-                            {
-                                httpApp.Context.Response.Redirect(url, true);
-                            }
-                            else
-                            {
-                                httpApp.Context.RewritePath(url);
-                            }
-                            return WatchCycle.Stop;
-                        }
-
-                        return WatchCycle.Continue;
-                    }, 0, null);
-                }
-
-                job.WatchWebRequests(new Regex("^" + config.BackendAccessUrl + "(/){0,1}$"), 10, (count, httpApp) =>
-                {
-                    var userIp = GetUserIp(httpApp);
-
-                    if (userIp == null || !ipv6s.Any(x => x.Equals(userIp)))
-                    {
-                        if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
-                        {
-                            httpApp.Context.Response.Redirect(url, true);
-                        }
-                        else
-                        {
-                            httpApp.Context.RewritePath(url);
-                        }
-                        return WatchCycle.Stop;
-                    }
-
-                    if (!httpApp.Context.Request.Url.AbsolutePath.EndsWith("/"))
-                    {
-                        httpApp.Context.Response.Redirect(currentAppBackendUrl, false);
-                        return WatchCycle.Stop;
-                    }
-
-                    if (config.BackendAccessUrl != ApplicationSettings.UmbracoPath)
-                    {
-                        httpApp.Context.RewritePath(ApplicationSettings.UmbracoPath);
-                    }
-
-                    return WatchCycle.Continue;
-                }, 0, null);
+                ipv6s.Add(tempIp.MapToIPv6());
             }
 
-            return true;
+            var currentAppBackendUrl = Umbraco.Core.IO.IOHelper.ResolveUrl(config.BackendAccessUrl.EndsWith("/") ? config.BackendAccessUrl : config.BackendAccessUrl + "/");
+
+            if (currentAppBackendUrl != ApplicationSettings.UmbracoPath)
+            {
+                job.WatchWebRequests(new Regex($"^{ ApplicationSettings.UmbracoPath.TrimEnd('/') }(/){{0,1}}$"), 10, (count, httpApp) =>
+                {
+                    if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
+                    {
+                        httpApp.Context.Response.Redirect(url, true);
+                        return WatchCycle.Stop;
+                    }
+                    else
+                    {
+                        httpApp.Context.Items.Add(allowKey, false);
+                        httpApp.Context.RewritePath(url);
+                        return WatchCycle.Continue;
+                    }
+                });
+
+                job.WatchWebRequests(new Regex($"^{ currentAppBackendUrl.TrimEnd('/') }(/){{0,1}}$"), 30, (count, httpApp) =>
+                {
+                    httpApp.Context.Items.Add(allowKey, true);
+                    httpApp.Context.RewritePath(ApplicationSettings.UmbracoPath, false);
+
+                    return WatchCycle.Continue;
+                });
+            }
+
+            job.WatchWebRequests(new Regex(ApplicationSettings.UmbracoPath), 30, (count, httpApp) =>
+            {
+                bool? doSecurity = (bool?)httpApp.Context.Items[allowKey];
+
+                if (doSecurity == false)
+                {
+                    return WatchCycle.Continue;
+                }
+
+                var userIp = GetUserIp(httpApp);
+
+                if (userIp == null || !ipv6s.Any(x => x.Equals(userIp)))
+                {
+                    if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
+                    {
+                        httpApp.Context.Response.Redirect(url, true);
+                        return WatchCycle.Stop;
+                    }
+                    else
+                    {
+                        httpApp.Context.RewritePath(url);
+                        return WatchCycle.Continue;
+                    }
+                }
+
+                return WatchCycle.Continue;
+            });
+
+
+                return true;
         }
 
-        private void ExecuteFirstTime(IJob job, UmbracoAccessConfiguration config)
+        private static ReaderWriterLockSlim webConfigLocker = new ReaderWriterLockSlim();
+
+        private bool ExecuteFirstTime(IJob job, UmbracoAccessConfiguration config)
         {
-            // TODO: if config is different, hard save
-            // Otherwise leave
+            if (new Regex($"^{ config.BackendAccessUrl.Trim('~').TrimEnd('/') }(/){{0,1}}$").IsMatch(ApplicationSettings.UmbracoPath))
+            {
+                return false;
+            }
+
+            if (!webConfigLocker.TryEnterUpgradeableReadLock(1))
+            {
+                return true;
+            }
+
+            try
+            {
+                var path = HttpRuntime.AppDomainAppPath;
+                if (!System.IO.Directory.Exists(path + ApplicationSettings.UmbracoPath.TrimEnd('/')))
+                {
+                    job.WriteJournal(new JournalMessage($"Unable to Rename and/or move directory from: { ApplicationSettings.UmbracoPath } to: { config.BackendAccessUrl }\nThe directory {ApplicationSettings.UmbracoPath} cannot be found"));
+                    return false;
+                }
+
+                var webConfig = WebConfigurationManager.OpenWebConfiguration("~");
+                var appSettings = (AppSettingsSection)webConfig.GetSection("appSettings");
+
+                var umbracoPath = appSettings.Settings["umbracoPath"];
+                var umbracoReservedPaths = appSettings.Settings["umbracoReservedPaths"];
+
+                var regex = new Regex($"^({ umbracoPath.Value.Trim('~').TrimEnd('/') }(/){{0,1}})$");
+
+                if (!regex.IsMatch(ApplicationSettings.UmbracoPath) && !regex.IsMatch(umbracoReservedPaths.Value))
+                {
+                    job.WriteJournal(new JournalMessage($"Unable to make neccessary changes to the web.config, appSetting keys: umbracoPath & umbracoReservedPaths dont contain the correct values"));
+                    return false;
+                }
+
+                System.IO.Directory.Move(path + ApplicationSettings.UmbracoPath.Trim('/'), path + config.BackendAccessUrl.Trim('/'));
+
+                umbracoReservedPaths.Value = umbracoReservedPaths.Value.Replace(umbracoPath.Value.TrimEnd('/'), config.BackendAccessUrl);
+                umbracoPath.Value = $"~{config.BackendAccessUrl.TrimEnd('/')}";
+                webConfig.Save();
+            }
+            catch(Exception ex)
+            {
+                job.WriteJournal(new JournalMessage($"Unexpected error occured, exception:\n{ex.Message}"));
+                return false;
+            }
+            finally
+            {
+                webConfigLocker.ExitUpgradeableReadLock();
+            }
 
             if (HttpContext.Current != null)
             {
@@ -206,6 +254,8 @@
             }
 
             HttpRuntime.UnloadAppDomain();
+
+            return true;
         }
 
         private IPAddress GetUserIp(HttpApplication app)

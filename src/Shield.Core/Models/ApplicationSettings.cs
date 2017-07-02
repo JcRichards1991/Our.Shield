@@ -31,7 +31,14 @@
 
                 var url = GetAppKeyValue("umbracoPath", "~/umbraco");
 
-                return umbracoPath = Umbraco.Core.IO.IOHelper.ResolveUrl(url);
+                umbracoPath = Umbraco.Core.IO.IOHelper.ResolveUrl(url);
+
+                if (!umbracoPath.EndsWith("/"))
+                {
+                    umbracoPath = umbracoPath + "/";
+                }
+
+                return umbracoPath;
             }
         }
     }
