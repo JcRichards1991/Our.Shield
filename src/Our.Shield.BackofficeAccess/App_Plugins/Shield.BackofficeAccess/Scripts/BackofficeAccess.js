@@ -1,13 +1,13 @@
 (function(root){
 /**
 * @ngdoc controller
-* @name Shield.UmbracoAccess.Edit
+* @name Shield.BackofficeAccess.Edit
 * @function
 *
 * @description
-* Edit Controller for the Umbraco Access Edit view
+* Edit Controller for the Backoffice Access Edit view
 */
-angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.Edit',
+angular.module('umbraco').controller('Shield.Editors.BackofficeAccess.Edit',
     ['$scope', '$routeParams', 'notificationsService', 'localizationService', 'ShieldResource',
     function ($scope, $routeParams, notificationsService, localizationService, resource) {
 
@@ -17,8 +17,8 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.Edit',
             loading: true,
             configuration: $scope.configuration,
             contentPickerProperty: {
-                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel'),
-                description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlContentPickerDescription'),
+                label: localizationService.localize('Shield.BackofficeAccess.Properties_UnauthorisedUrlLabel'),
+                description: localizationService.localize('Shield.BackofficeAccess.Properties_UnauthorisedUrlContentPickerDescription'),
                 view: 'contentpicker',
                 alias: 'unauthorisedUrlContentPicker',
                 config: {
@@ -79,7 +79,7 @@ angular.module('umbraco').controller('Shield.Properties.IpAddress',
             remove: function ($index) {
                 var ip = vm.configuration.ipAddresses[$index];
 
-                localizationService.localize('Shield.UmbracoAccess.AlertMessages_ConfirmRemoveIp').then(function (warningMsg) {
+                localizationService.localize('Shield.BackofficeAccess.AlertMessages_ConfirmRemoveIp').then(function (warningMsg) {
                     if (confirm(warningMsg + ip.ipAddress + ' - ' + ip.description)) {
                         vm.configuration.ipAddresses.splice($index, 1);
                     }
@@ -92,7 +92,7 @@ angular.module('umbraco').controller('Shield.Properties.IpAddress',
 
                 if (ip.ipAddress === '') {
                     ip.valid = false;
-                    ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpRequired');
+                    ip.errorMsg = localizationService.localize('Shield.BackofficeAccess.ErrorMessages_IpRequired');
                     return false;
                 }
 
@@ -107,7 +107,7 @@ angular.module('umbraco').controller('Shield.Properties.IpAddress',
 
                     if (!valid) {
                         ip.valid = false;
-                        ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpInvalid');
+                        ip.errorMsg = localizationService.localize('Shield.BackofficeAccess.ErrorMessages_IpInvalid');
                         return false;
                     }
                 }
@@ -116,7 +116,7 @@ angular.module('umbraco').controller('Shield.Properties.IpAddress',
 
                 if (vm.configuration.ipAddresses.filter((x) => x.ipAddress === ip.ipAddress)[index] !== undefined) {
                     ip.valid = false;
-                    ip.errorMsg = localizationService.localize('Shield.UmbracoAccess.ErrorMessages_IpDuplicate');
+                    ip.errorMsg = localizationService.localize('Shield.BackofficeAccess.ErrorMessages_IpDuplicate');
                     return false;
                 }
 

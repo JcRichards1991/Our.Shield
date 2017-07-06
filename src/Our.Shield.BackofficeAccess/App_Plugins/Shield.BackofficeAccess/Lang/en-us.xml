@@ -4,13 +4,13 @@
     <name>Joshua Richards</name>
   </creator>
 
-  <area alias="Shield.UmbracoAccess.General">
-    <key alias="AreaName">Umbraco Access</key>
+  <area alias="Shield.BackofficeAccess.General">
+    <key alias="AreaName">Backoffice Access</key>
     <key alias="IpAddress">IP Address</key>
     <key alias="Description">Description</key>
   </area>
 
-  <area alias="Shield.UmbracoAccess.Properties">
+  <area alias="Shield.BackofficeAccess.Properties">
     <key alias="BackendAccessUrlLabel">Backend Office Access URL</key>
     <key alias="BackendAccessUrlDescription">The URL used to access the CMS.</key>
     
@@ -29,11 +29,11 @@
     <key alias="AllowedIPsDescription">The allowed IP address(es) that can access the Backend Office Access Url.</key>
   </area>
 
-  <area alias="Shield.UmbracoAccess.AlertMessages">
+  <area alias="Shield.BackofficeAccess.AlertMessages">
     <key alias="ConfirmRemoveIp">Are you sure you want to remove IP Address: </key>
   </area>
 
-  <area alias="Shield.UmbracoAccess.ErrorMessages">
+  <area alias="Shield.BackofficeAccess.ErrorMessages">
     <key alias="IpRequired">IP Address is required.</key>
     <key alias="IpInvalid">Invalid IP Address. Please enter a valid IPv4 or IPv6 address (cidr optional).</key>
     <key alias="IpDuplicate">IP Address has already been added</key>

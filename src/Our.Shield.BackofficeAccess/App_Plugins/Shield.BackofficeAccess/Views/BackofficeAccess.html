@@ -1,10 +1,10 @@
-﻿<div ng-controller="Shield.Editors.UmbracoAccess.Edit as vm"  ng-init="vm.init()">
+﻿<div ng-controller="Shield.Editors.BackofficeAccess.Edit as vm"  ng-init="vm.init()">
 
     <div class="umb-el-wrap control-group umb-control-group">
         <label for="backendAccessUrl" class="control-label">
-            <localize key="Shield.UmbracoAccess.Properties_BackendAccessUrlLabel">Backend Office Access URL</localize>
+            <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlLabel">Backend Office Access URL</localize>
             <small>
-                <localize key="Shield.UmbracoAccess.Properties_BackendAccessUrlDescription">The URL used to access the CMS.</localize>
+                <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlDescription">The URL used to access the CMS.</localize>
             </small>
         </label>
 
@@ -15,9 +15,9 @@
 
     <div class="umb-el-wrap control-group umb-control-group">
         <label for="redirectRewrite" class="control-label">
-            <localize key="Shield.UmbracoAccess.Properties_RedirectRewriteLabel">Redirect or Rewrite</localize>
+            <localize key="Shield.BackofficeAccess.Properties_RedirectRewriteLabel">Redirect or Rewrite</localize>
             <small>
-                <localize key="Shield.UmbracoAccess.Properties_RedirectRewriteDescription">Whether or not to redirect the user or to rewrite the url to another location.</localize>
+                <localize key="Shield.BackofficeAccess.Properties_RedirectRewriteDescription">Whether or not to redirect the user or to rewrite the url to another location.</localize>
             </small>
         </label>
 
@@ -31,9 +31,9 @@
 
     <div class="umb-el-wrap control-group umb-control-group">
         <label for="unauthorisedUrlType" class="control-label">
-            <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeLabel">Unauthorised Url Type</localize>
+            <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlTypeLabel">Unauthorised Url Type</localize>
             <small>
-                <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</localize>
+                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</localize>
             </small>
         </label>
 
@@ -48,9 +48,9 @@
 
     <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 0">
         <label for="unauthorisedUrl" class="control-label">
-            <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
+            <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
             <small>
-                <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlDescription">The Url to redirect/rewrite the user to when from a disallowed IP Address.</localize>
+                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlDescription">The Url to redirect/rewrite the user to when from a disallowed IP Address.</localize>
             </small>
         </label>
 
@@ -61,9 +61,9 @@
 
     <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 1">
         <label for="unauthorisedUrlXPath" class="control-label">
-            <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
+            <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
             <small>
-                <localize key="Shield.UmbracoAccess.Properties_UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a disallowed IP Address.</localize>
+                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a disallowed IP Address.</localize>
             </small>
         </label>
 

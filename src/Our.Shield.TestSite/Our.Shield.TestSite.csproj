@@ -428,7 +428,7 @@
   </Target>
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(solutiondir)Our.Shield.Core\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
-xcopy "$(solutiondir)Our.Shield.UmbracoAccess\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
+xcopy "$(solutiondir)Our.Shield.BackofficeAccess\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
 xcopy "$(solutiondir)Our.Shield.MediaProtection\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />

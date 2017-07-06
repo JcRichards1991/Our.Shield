@@ -33,7 +33,7 @@ var scssFiles = [
     {
         files: src + '.BackofficeAccess/Scss/*.scss',
         scss: src + '.BackofficeAccess/Scss/BackofficeAccess.scss',
-        output: src + '.UmbracoAccess' + cssOutput + '.BackofficeAccess/Css',
+        output: src + '.BackofficeAccess' + cssOutput + '.BackofficeAccess/Css',
         name: 'BackofficeAccess.css',
         nameMin: 'BackofficeAccess.min.css'
     }

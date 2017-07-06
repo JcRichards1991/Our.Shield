@@ -1,12 +1,12 @@
 ﻿/**
 * @ngdoc controller
-* @name Shield.UmbracoAccess.Edit
+* @name Shield.BackofficeAccess.Edit
 * @function
 *
 * @description
-* Edit Controller for the Umbraco Access Edit view
+* Edit Controller for the Backoffice Access Edit view
 */
-angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.Edit',
+angular.module('umbraco').controller('Shield.Editors.BackofficeAccess.Edit',
     ['$scope', '$routeParams', 'notificationsService', 'localizationService', 'ShieldResource',
     function ($scope, $routeParams, notificationsService, localizationService, resource) {
 
@@ -16,8 +16,8 @@ angular.module('umbraco').controller('Shield.Editors.UmbracoAccess.Edit',
             loading: true,
             configuration: $scope.configuration,
             contentPickerProperty: {
-                label: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlLabel'),
-                description: localizationService.localize('Shield.UmbracoAccess.Properties_UnauthorisedUrlContentPickerDescription'),
+                label: localizationService.localize('Shield.BackofficeAccess.Properties_UnauthorisedUrlLabel'),
+                description: localizationService.localize('Shield.BackofficeAccess.Properties_UnauthorisedUrlContentPickerDescription'),
                 view: 'contentpicker',
                 alias: 'unauthorisedUrlContentPicker',
                 config: {
