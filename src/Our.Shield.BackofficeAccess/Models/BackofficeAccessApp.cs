@@ -61,7 +61,7 @@
             }
         }
 
-        private static ReaderWriterLockSlim environemntIdsLocker = new ReaderWriterLockSlim();
+        private static ReaderWriterLockSlim environmentIdsLocker = new ReaderWriterLockSlim();
         private static List<int> environmentIds = new List<int>();
 
         private static string allowKey = Guid.NewGuid().ToString();
@@ -76,13 +76,13 @@
         {
             var config = c as BackofficeAccessConfiguration;
 
-            if (environemntIdsLocker.TryEnterUpgradeableReadLock(1))
+            if (environmentIdsLocker.TryEnterUpgradeableReadLock(1))
             {
                 try
                 {
                     if (!environmentIds.Contains(job.Environment.Id))
                     {
-                        if (environemntIdsLocker.TryEnterWriteLock(1))
+                        if (environmentIdsLocker.TryEnterWriteLock(1))
                         {
                             try
                             {
@@ -90,13 +90,15 @@
                             }
                             finally
                             {
-                                environemntIdsLocker.ExitWriteLock();
+                                environmentIdsLocker.ExitWriteLock();
                             }
                         }
                         else
                         {
                             return false;
                         }
+
+                        //TODO: Un-comment out code for release when method is more 'stable'
 
                         //if (ExecuteFirstTime(job, config))
                         //{
@@ -106,7 +108,7 @@
                 }
                 finally
                 {
-                    environemntIdsLocker.ExitUpgradeableReadLock();
+                    environmentIdsLocker.ExitUpgradeableReadLock();
                 }
             }
             else
@@ -122,13 +124,13 @@
                 return true;
             }
 
-            var umbracoContext = UmbracoContext.Current;
+            var umbContext = UmbracoContext.Current;
 
-            if(umbracoContext == null)
+            if(umbContext == null)
             {
-                var fakeHttpContext = new HttpContextWrapper(HttpContext.Current ?? new HttpContext(new SimpleWorkerRequest("5d6502ba-ff09-47a4-8b5d-481b2c3358f2.aspx", "", new StringWriter())));
+                var fakeHttpContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("5d6502ba-ff09-47a4-8b5d-481b2c3358f2.aspx", "", new StringWriter())));
 
-                umbracoContext = UmbracoContext.EnsureContext(
+                umbContext = UmbracoContext.CreateContext(
                     fakeHttpContext,
                     ApplicationContext.Current,
                     new Umbraco.Web.Security.WebSecurity(fakeHttpContext, ApplicationContext.Current),
@@ -154,7 +156,8 @@
                     break;
 
                 case Enums.UnautorisedUrlType.XPath:
-                    var xpathNode = umbracoContext.ContentCache.GetSingleByXPath(config.UnauthorisedUrlXPath);
+                    var xpathNode = umbContext.ContentCache.GetSingleByXPath(config.UnauthorisedUrlXPath);
+
                     if(xpathNode != null)
                     {
                         url = xpathNode.Url;
@@ -167,9 +170,11 @@
 
                 case Enums.UnautorisedUrlType.ContentPicker:
                     int id;
+
                     if(int.TryParse(config.UnauthorisedUrlContentPicker, out id))
                     {
-                        var contentPickerNode = umbracoContext.ContentCache.GetById(id);
+                        var contentPickerNode = umbContext.ContentCache.GetById(id);
+
                         if (contentPickerNode != null)
                         {
                             url = contentPickerNode.Url;
