@@ -10,7 +10,7 @@ var concat = require("gulp-concat");
 var uglify = require('gulp-uglify');
 var insert = require('gulp-insert');
 
-var src = 'src/Shield'
+var src = 'src/Our.Shield'
 
 var jsOutput = '/App_Plugins/Shield';
 var jsFiles = [

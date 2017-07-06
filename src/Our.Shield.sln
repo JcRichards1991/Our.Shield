@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.TestSite", "Our.Shield.TestSite\Our.Shield.TestSite.csproj", "{BC5E53A2-8250-4179-9FCE-AD51D8A8650C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8BC9BCE4-5CF6-4713-A22E-5D3249022CE1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{2E101591-AF0A-4442-BE43-12DF0DC6ED17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.UmbracoAccess", "Our.Shield.UmbracoAccess\Our.Shield.UmbracoAccess.csproj", "{58FDCE32-1389-4768-882E-281CEEC508CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gulp", "Gulp", "{25F416C7-6C9E-4928-A54D-9D65565E6E4F}"
+	ProjectSection(SolutionItems) = preProject
+		..\gulpfile.js = ..\gulpfile.js
+		..\package.json = ..\package.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.Core", "Our.Shield.Core\Our.Shield.Core.csproj", "{69737067-AB31-4C68-9C69-5E6CE00D1AB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.MediaProtection", "Our.Shield.MediaProtection\Our.Shield.MediaProtection.csproj", "{3C5EDA13-8468-4386-8F74-3D5678695ABE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{813573E6-BF49-42E0-9E56-6C5EF4431D40}"
+	ProjectSection(SolutionItems) = preProject
+		..\database\DropShieldTables_RemoveMigration.sql = ..\database\DropShieldTables_RemoveMigration.sql
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC5E53A2-8250-4179-9FCE-AD51D8A8650C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC5E53A2-8250-4179-9FCE-AD51D8A8650C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC5E53A2-8250-4179-9FCE-AD51D8A8650C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC5E53A2-8250-4179-9FCE-AD51D8A8650C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58FDCE32-1389-4768-882E-281CEEC508CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58FDCE32-1389-4768-882E-281CEEC508CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58FDCE32-1389-4768-882E-281CEEC508CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58FDCE32-1389-4768-882E-281CEEC508CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69737067-AB31-4C68-9C69-5E6CE00D1AB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69737067-AB31-4C68-9C69-5E6CE00D1AB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69737067-AB31-4C68-9C69-5E6CE00D1AB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69737067-AB31-4C68-9C69-5E6CE00D1AB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C5EDA13-8468-4386-8F74-3D5678695ABE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C5EDA13-8468-4386-8F74-3D5678695ABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C5EDA13-8468-4386-8F74-3D5678695ABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C5EDA13-8468-4386-8F74-3D5678695ABE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BC5E53A2-8250-4179-9FCE-AD51D8A8650C} = {8BC9BCE4-5CF6-4713-A22E-5D3249022CE1}
+		{58FDCE32-1389-4768-882E-281CEEC508CD} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
+		{69737067-AB31-4C68-9C69-5E6CE00D1AB3} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
+		{3C5EDA13-8468-4386-8F74-3D5678695ABE} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
+	EndGlobalSection
+EndGlobal

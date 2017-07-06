@@ -242,12 +242,12 @@ ModelManifest.xml
 .fake/
 
 *.txt
-!src/Shield.TestSite/App_Data/*.sdf
-src/Shield.TestSite/App_Data/Logs/
-src/Shield.TestSite/App_Data/NuGetBackup
-src/Shield.TestSite/App_Data/TEMP/
-src/Shield.TestSite/App_Plugins/
-src/Shield.TestSite/[Uu]mbraco/
-src/Shield.TestSite/[Uu]mbraco_[Cc]lient/
-src/Shield.TestSite/Media/created-packages/Shield_1.0.0.1.zip
-src/Shield.TestSite/App_Data/umbraco.config
+!src/Our.Shield.TestSite/App_Data/*.sdf
+src/Our.Shield.TestSite/App_Data/Logs/
+src/Our.Shield.TestSite/App_Data/NuGetBackup
+src/Our.Shield.TestSite/App_Data/TEMP/
+src/Our.Shield.TestSite/App_Plugins/
+src/Our.Shield.TestSite/[Uu]mbraco/
+src/Our.Shield.TestSite/[Uu]mbraco_[Cc]lient/
+src/Our.Shield.TestSite/Media/created-packages/Shield_1.0.0.1.zip
+src/Our.Shield.TestSite/App_Data/umbraco.config
