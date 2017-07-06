@@ -6,8 +6,6 @@
 
   <area alias="Shield.BackofficeAccess.General">
     <key alias="AreaName">Backoffice Access</key>
-    <key alias="IpAddress">IP Address</key>
-    <key alias="Description">Description</key>
   </area>
 
   <area alias="Shield.BackofficeAccess.Properties">
@@ -19,14 +17,19 @@
     
     <key alias="UnauthorisedUrlTypeLabel">Unauthorised Url Type</key>
     <key alias="UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</key>
+    <key alias="UnauthorisedUrlTypeUrlOption">Url</key>
+    <key alias="UnauthorisedUrlTypeXPathOption">XPath</key>
+    <key alias="UnauthorisedUrlTypeContentPickerOption">Content Picker</key>
 
     <key alias="UnauthorisedUrlLabel">Unauthorised Url</key>
     <key alias="UnauthorisedUrlDescription">The Url to redirect/rewrite the user to when from a disallowed IP Address.</key>
     <key alias="UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a disallowed IP Address.</key>
     <key alias="UnauthorisedUrlContentPickerDescription">Select the content node to redirect/rewrite the user to when from a disallowed IP Address.</key>
 
-    <key alias="AllowedIPsLabel">White-listed IP address(es)</key>
-    <key alias="AllowedIPsDescription">The allowed IP address(es) that can access the Backend Office Access Url.</key>
+    <key alias="AllowedIpsLabel">White-listed IP address(es)</key>
+    <key alias="AllowedIpsDescription">The allowed IP address(es) that can access the Backend Office Access Url.</key>
+    <key alias="AllowedIpsIpAddressHeader">IP Address</key>
+    <key alias="AllowedIpsDescriptionHeader">Description</key>
   </area>
 
   <area alias="Shield.BackofficeAccess.AlertMessages">

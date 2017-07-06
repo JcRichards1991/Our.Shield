@@ -21,7 +21,7 @@
     /// <summary>
     /// 
     /// </summary>
-    [AppEditor("/App_Plugins/Shield.UmbracoAccess/Views/UmbracoAccess.html?v=1.0.1")]
+    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?v=1.0.1")]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
     {
         /// <summary>

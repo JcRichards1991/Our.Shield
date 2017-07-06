@@ -1,8 +1,8 @@
 ﻿{
   "javascript": [
-    "~/App_Plugins/Shield.UmbracoAccess/Scripts/UmbracoAccess.js"
+    "~/App_Plugins/Shield.BackofficeAccess/Scripts/BackofficeAccess.js"
   ],
   "css": [
-    "~/App_Plugins/Shield.UmbracoAccess/Css/UmbracoAccess.css"
+    "~/App_Plugins/Shield.BackofficeAccess/Css/BackofficeAccess.css"
   ]
 }
