@@ -7,6 +7,9 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// 
+    /// </summary>
     internal class JobService
     {
         private const int taskLockTimeout = 1000;       //  in millisecs
@@ -25,7 +28,9 @@
         {
         }
 
-        // accessor for instance
+        /// <summary>
+        /// Accessor for instance
+        /// </summary>
         public static JobService Instance
         {
             get
@@ -79,7 +84,9 @@
         /// <summary>
         /// Gets the job for a given id
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">
+        /// The desired Id
+        /// </param>
         /// <returns></returns>
         public IJob Job(int id)
         {
@@ -97,6 +104,9 @@
             return null;
         }                    
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Init()
         {
             var evs = DbContext.Instance.Environment.List();
@@ -124,6 +134,9 @@
 
         private static int runningPoll = 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Poll()
         {
             if (DateTime.UtcNow.Ticks < ranTick)
@@ -236,6 +249,12 @@
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="job"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
         public bool WriteConfiguration(IJob job, IConfiguration config)
         {
             if (!DbContext.Instance.Configuration.Write(job.Environment.Id, job.AppId, config))
@@ -249,22 +268,48 @@
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="job"></param>
+        /// <param name="journal"></param>
+        /// <returns></returns>
         public bool WriteJournal(IJob job, IJournal journal)
         {
             return DbContext.Instance.Journal.Write(job.Environment.Id, job.AppId, journal);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="job"></param>
+        /// <param name="defaultConfiguration"></param>
+        /// <returns></returns>
         public IConfiguration ReadConfiguration(IJob job, IConfiguration defaultConfiguration = null)
         {
             return DbContext.Instance.Configuration.Read(job.Environment.Id, job.AppId, ((Job) job).ConfigType, 
                 defaultConfiguration ?? App<IConfiguration>.Create(job.AppId).DefaultConfiguration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="job"></param>
+        /// <param name="page"></param>
+        /// <param name="itemsPerPage"></param>
+        /// <returns></returns>
         public IEnumerable<T> ListJournals<T>(IJob job, int page, int itemsPerPage) where T : IJournal
         {
             return DbContext.Instance.Journal.List<T>(job.Environment.Id, job.AppId, page, itemsPerPage);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="job"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
         public bool Execute(IJob job, IConfiguration config = null)
         {
             var app = App<IConfiguration>.Create(job.AppId);
@@ -287,6 +332,12 @@
             return app.Execute(job, config);
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="appId"></param>
+        /// <returns></returns>
         public bool Register(IEnvironment e, string appId)
         {
             if (jobLock.TryEnterWriteLock(taskLockTimeout))
@@ -314,8 +365,19 @@
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="app"></param>
+        /// <returns></returns>
         public bool Register(IEnvironment e, IApp app) => Register(e, app.Id);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool Unregister(int key)
         {
             if (jobLock.TryEnterWriteLock(taskLockTimeout))
@@ -340,8 +402,19 @@
             }
             return false;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="job"></param>
+        /// <returns></returns>
         public bool Unregister(IJob job) => Unregister(job.Id);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="appId"></param>
+        /// <returns></returns>
         public bool Unregister(string appId)
         {
             if (jobLock.TryEnterWriteLock(taskLockTimeout))
@@ -375,6 +448,11 @@
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="app"></param>
+        /// <returns></returns>
         public bool Unregister(IApp app) => Unregister(app.Id);
 
     }

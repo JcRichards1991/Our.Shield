@@ -3,6 +3,9 @@
     using System;
     using System.Collections.Generic;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class ServiceHandler
     {
         private static readonly Lazy<ServiceHandler> _instance = new Lazy<ServiceHandler>(() => new ServiceHandler());
@@ -11,7 +14,9 @@
         {
         }
 
-        // accessor for instance
+        /// <summary>
+        /// accessor for instance
+        /// </summary>
         public static ServiceHandler Instance
         {
             get

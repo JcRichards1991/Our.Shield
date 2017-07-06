@@ -3,6 +3,9 @@
     using Core.Models;
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// 
+    /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class MediaProtectionConfiguration : Configuration
     {

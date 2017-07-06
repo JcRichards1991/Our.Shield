@@ -11,6 +11,10 @@
     /// </summary>
     internal class EnvironmentContext : DbContext
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Data.Dto.Environment> List()
         {
             try

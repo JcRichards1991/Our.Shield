@@ -100,6 +100,12 @@
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="json"></param>
+        /// <returns></returns>
         [HttpPost]
         public new bool Configuration(int id, [FromBody] JObject json)
         {
@@ -120,6 +126,13 @@
             return job.WriteConfiguration(configuration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="page"></param>
+        /// <param name="itemsPerPage"></param>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<IJournal> Journals(int id, int page, int itemsPerPage)
         {

@@ -13,10 +13,19 @@
     internal class ConfigurationContext : DbContext
     {
 
+        /// <summary>
+        /// 
+        /// </summary>
         internal class ShouldSerializeContractResolver : DefaultContractResolver
         {
             public static readonly ShouldSerializeContractResolver Instance = new ShouldSerializeContractResolver();
  
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="member"></param>
+            /// <param name="memberSerialization"></param>
+            /// <returns></returns>
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
                 JsonProperty property = base.CreateProperty(member, memberSerialization);
@@ -33,6 +42,14 @@
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="environmentId"></param>
+        /// <param name="appId"></param>
+        /// <param name="type"></param>
+        /// <param name="defaultConfiguration"></param>
+        /// <returns></returns>
         public IConfiguration Read(int environmentId, string appId, Type type, IConfiguration defaultConfiguration)
         {
             var config = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(defaultConfiguration), type) as Configuration;
@@ -66,11 +83,26 @@
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="environmentId"></param>
+        /// <param name="appId"></param>
+        /// <param name="defaultConfiguration"></param>
+        /// <returns></returns>
         public T Read<T>(int environmentId, string appId, T defaultConfiguration) where T : IConfiguration
         {
             return (T) Read(environmentId, appId, typeof(T), defaultConfiguration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="environmentId"></param>
+        /// <param name="appId"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
         public bool Write(int environmentId, string appId, IConfiguration config)
         {
             try

@@ -13,6 +13,9 @@
     using Umbraco.Core.Security;
     using Umbraco.Core.Services;
 
+    /// <summary>
+    /// 
+    /// </summary>
     [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?v=1.0.1")]
     public class MediaProtectionApp : App<MediaProtectionConfiguration>
     {
@@ -31,15 +34,29 @@
         /// </summary>
         private const string CacheKey = ",e&yL2maXa?CVfWy";
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override string Id => nameof(MediaProtection);
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override string Name => "Media Protection";
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override string Description => "Secure your media by stopping unauthorised access";
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override string Icon => "icon-picture red";
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         public override IConfiguration DefaultConfiguration
         {
             get
@@ -54,6 +71,12 @@
 
         private static List<int> Ids = new List<int>();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="job"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
         public override bool Execute(IJob job, IConfiguration c)
         {
             var config = c as MediaProtectionConfiguration;

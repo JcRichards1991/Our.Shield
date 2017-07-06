@@ -70,8 +70,25 @@
             return Enumerable.Empty<IJournal>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="environmentId"></param>
+        /// <param name="page"></param>
+        /// <param name="itemsPerPage"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public IEnumerable<IJournal> List(int environmentId, int page, int itemsPerPage, Type type) => List(environmentId, null, page, itemsPerPage, type);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="environmentId"></param>
+        /// <param name="appId"></param>
+        /// <param name="page"></param>
+        /// <param name="itemsPerPage"></param>
+        /// <returns></returns>
         public IEnumerable<T> List<T>(int environmentId, string appId, int page, int itemsPerPage) where T : IJournal
         {
             return List(environmentId, appId, page, itemsPerPage, typeof(T)) as IEnumerable<T>;

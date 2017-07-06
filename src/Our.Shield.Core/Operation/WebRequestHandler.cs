@@ -9,10 +9,16 @@ namespace Our.Shield.Core.Operation
     using System.Threading;
     using System.Web;
 
+    /// <summary>
+    /// 
+    /// </summary>
     internal class WebRequestHandler : IHttpModule
     {
         private const int watchLockTimeout = 1000;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static void Register()
         {
             // Register our module
@@ -71,6 +77,16 @@ namespace Our.Shield.Core.Operation
             return results;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="job"></param>
+        /// <param name="regex"></param>
+        /// <param name="beginRequestPriority"></param>
+        /// <param name="beginRequest"></param>
+        /// <param name="endRequestPriority"></param>
+        /// <param name="endRequest"></param>
+        /// <returns></returns>
         public static int Watch(IJob job, Regex regex, 
             int beginRequestPriority, Func<int, HttpApplication, WatchCycle> beginRequest, 
             int endRequestPriority, Func<int, HttpApplication, WatchCycle> endRequest)
@@ -134,6 +150,12 @@ namespace Our.Shield.Core.Operation
             return count;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="job"></param>
+        /// <param name="regex"></param>
+        /// <returns></returns>
         public static int Unwatch(IJob job, Regex regex)
         {
             string regy = regex == null ? null : regex.ToString();
@@ -170,6 +192,11 @@ namespace Our.Shield.Core.Operation
             return count;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="job"></param>
+        /// <returns></returns>
         public static int Unwatch(IJob job)
         {
             var count = 0;
@@ -203,6 +230,11 @@ namespace Our.Shield.Core.Operation
             return count;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="appId"></param>
+        /// <returns></returns>
         public static int Unwatch(string appId)
         {
             var count = 0;
@@ -234,6 +266,10 @@ namespace Our.Shield.Core.Operation
             return count;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="application"></param>
         public void Init(HttpApplication application)
         {
             application.BeginRequest += (new EventHandler(this.Application_BeginRequest));
@@ -360,6 +396,9 @@ restart:
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose() { }
     }
 }

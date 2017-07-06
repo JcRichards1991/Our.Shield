@@ -9,8 +9,17 @@
     using Umbraco.Core.Persistence.SqlSyntax;
     using Umbraco.Core.Services;
 
+    /// <summary>
+    /// 
+    /// </summary>
     internal class Migration
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sqlSyntax"></param>
+        /// <param name="migrationEntryService"></param>
+        /// <param name="logger"></param>
         public void RunMigrations(ISqlSyntaxProvider sqlSyntax, IMigrationEntryService migrationEntryService, ILogger logger)
         {
             const string productName = nameof(Shield);

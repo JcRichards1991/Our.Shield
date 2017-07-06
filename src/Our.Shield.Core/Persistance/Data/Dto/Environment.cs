@@ -31,6 +31,9 @@
         [Length(256)]
         public string Icon { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [Ignore]
         public IEnumerable<Domain> Domains { get; set; }
     }

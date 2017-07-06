@@ -2,6 +2,9 @@
 {
     using System;
 
+    /// <summary>
+    /// The Base class for an App's Configuration
+    /// </summary>
     public abstract class Configuration : IConfiguration
     {
         /// <summary>

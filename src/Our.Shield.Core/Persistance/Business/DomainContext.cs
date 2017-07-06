@@ -10,6 +10,11 @@
     /// </summary>
     internal class DomainContext : DbContext
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enviromentId"></param>
+        /// <returns></returns>
         public IEnumerable<Data.Dto.Domain> List(int? enviromentId = null)
         {
             try

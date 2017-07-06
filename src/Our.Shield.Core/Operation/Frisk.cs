@@ -6,6 +6,9 @@
     using System.IO;
     using System.Reflection;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public static class Frisk
     {
 
@@ -120,6 +123,11 @@
                 return installed;
             });
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static IDictionary<string, Type> Register<T>()
         {
             Dictionary<string, Type> results;

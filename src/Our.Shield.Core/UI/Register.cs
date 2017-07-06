@@ -7,6 +7,11 @@
     /// </summary>
     public class Register : ApplicationEventHandler
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="umbracoApplication"></param>
+        /// <param name="applicationContext"></param>
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             base.ApplicationStarted(umbracoApplication, applicationContext);

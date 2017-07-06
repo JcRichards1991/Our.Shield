@@ -3,6 +3,9 @@
     using Newtonsoft.Json;
     using System;
 
+    /// <summary>
+    /// The Interface class for an App's Configuration
+    /// </summary>
     public interface IConfiguration
     {
         /// <summary>
