@@ -7,8 +7,8 @@
     <ProjectGuid>{58FDCE32-1389-4768-882E-281CEEC508CD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Our.Shield.UmbracoAccess</RootNamespace>
-    <AssemblyName>Our.Shield.UmbracoAccess</AssemblyName>
+    <RootNamespace>Our.Shield.BackofficeAccess</RootNamespace>
+    <AssemblyName>Our.Shield.BackofficeAccess</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -258,10 +258,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="Models\UmbracoAccessConfiguration.cs" />
-    <Compile Include="Models\UmbracoAccessApp.cs" />
+    <Compile Include="Models\BackofficeAccessConfiguration.cs" />
+    <Compile Include="Models\BackofficeAccessApp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\IpAddress.cs" />
   </ItemGroup>
@@ -273,17 +272,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="App_Plugins\Shield.UmbracoAccess\package.manifest" />
+    <None Include="App_Plugins\Shield.BackofficeAccess\package.manifest" />
     <None Include="packages.config" />
     <None Include="Scss\AllowedIpPropertyEditor.scss" />
     <None Include="Our.Shield.UmbracoAccess.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\Shield.UmbracoAccess\Css\UmbracoAccess.css" />
-    <Content Include="App_Plugins\Shield.UmbracoAccess\Scripts\UmbracoAccess.js" />
-    <Content Include="App_Plugins\Shield.UmbracoAccess\Views\IpAddressPropertyEditor.html" />
-    <Content Include="App_Plugins\Shield.UmbracoAccess\Views\UmbracoAccess.html" />
-    <Content Include="App_Plugins\Shield.UmbracoAccess\Lang\en-us.xml" />
+    <Content Include="App_Plugins\Shield.BackofficeAccess\Css\BackofficeAccess.css" />
+    <Content Include="App_Plugins\Shield.BackofficeAccess\Scripts\BackofficeAccess.js" />
+    <Content Include="App_Plugins\Shield.BackofficeAccess\Views\IpAddressPropertyEditor.html" />
+    <Content Include="App_Plugins\Shield.BackofficeAccess\Views\BackofficeAccess.html" />
+    <Content Include="App_Plugins\Shield.BackofficeAccess\Lang\en-us.xml" />
     <Content Include="Scripts\AppEditController.js" />
     <Content Include="Scripts\IpAddressController.js" />
   </ItemGroup>

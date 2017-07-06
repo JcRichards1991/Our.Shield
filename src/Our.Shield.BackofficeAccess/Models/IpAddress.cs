@@ -1,4 +1,4 @@
-﻿namespace Our.Shield.UmbracoAccess.Models
+﻿namespace Our.Shield.BackofficeAccess.Models
 {
     /// <summary>
     /// IP Address Model

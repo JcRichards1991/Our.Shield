@@ -1,4 +1,4 @@
-﻿namespace Our.Shield.UmbracoAccess.Models
+﻿namespace Our.Shield.BackofficeAccess.Models
 {
     using Core.Models;
     using Core.UI;
@@ -18,22 +18,40 @@
     using Umbraco.Web;
     using Umbraco.Web.Routing;
 
+    /// <summary>
+    /// 
+    /// </summary>
     [AppEditor("/App_Plugins/Shield.UmbracoAccess/Views/UmbracoAccess.html?v=1.0.1")]
-    public class UmbracoAccessApp : App<UmbracoAccessConfiguration>
+    public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
     {
-        public override string Id => nameof(UmbracoAccess);
+        /// <summary>
+        /// 
+        /// </summary>
+        public override string Id => nameof(BackofficeAccess);
 
-        public override string Name => "Umbraco Access";
+        /// <summary>
+        /// 
+        /// </summary>
+        public override string Name => "Backoffice Access";
 
-        public override string Description => "Secure your backoffice access via IP restrictions";
+        /// <summary>
+        /// 
+        /// </summary>
+        public override string Description => "Secure your backoffice via IP restrictions";
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override string Icon => "icon-stop-hand red";
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override IConfiguration DefaultConfiguration
         {
             get
             {
-                return new UmbracoAccessConfiguration
+                return new BackofficeAccessConfiguration
                 {
                     BackendAccessUrl = ApplicationSettings.UmbracoPath,
                     IpAddresses = new IpAddress[0],
@@ -48,9 +66,15 @@
 
         private static string allowKey = Guid.NewGuid().ToString();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="job"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
         public override bool Execute(IJob job, IConfiguration c)
         {
-            var config = c as UmbracoAccessConfiguration;
+            var config = c as BackofficeAccessConfiguration;
 
             if (environemntIdsLocker.TryEnterUpgradeableReadLock(1))
             {
@@ -253,7 +277,7 @@
 
         private static ReaderWriterLockSlim webConfigLocker = new ReaderWriterLockSlim();
 
-        private bool ExecuteFirstTime(IJob job, UmbracoAccessConfiguration config)
+        private bool ExecuteFirstTime(IJob job, BackofficeAccessConfiguration config)
         {
             if (new Regex($"^{ config.BackendAccessUrl.Trim('~').TrimEnd('/') }(/){{0,1}}$").IsMatch(ApplicationSettings.UmbracoPath))
             {
@@ -268,7 +292,7 @@
             try
             {
                 var path = HttpRuntime.AppDomainAppPath;
-                if (!System.IO.Directory.Exists(path + ApplicationSettings.UmbracoPath.TrimEnd('/')))
+                if (!Directory.Exists(path + ApplicationSettings.UmbracoPath.TrimEnd('/')))
                 {
                     job.WriteJournal(new JournalMessage($"Unable to Rename and/or move directory from: { ApplicationSettings.UmbracoPath } to: { config.BackendAccessUrl }\nThe directory {ApplicationSettings.UmbracoPath} cannot be found"));
                     return false;
@@ -288,7 +312,7 @@
                     return false;
                 }
 
-                System.IO.Directory.Move(path + ApplicationSettings.UmbracoPath.Trim('/'), path + config.BackendAccessUrl.Trim('/'));
+                Directory.Move(path + ApplicationSettings.UmbracoPath.Trim('/'), path + config.BackendAccessUrl.Trim('/'));
 
                 umbracoReservedPaths.Value = umbracoReservedPaths.Value.Replace(umbracoPath.Value.TrimEnd('/'), config.BackendAccessUrl);
                 umbracoPath.Value = $"~{config.BackendAccessUrl.TrimEnd('/')}";

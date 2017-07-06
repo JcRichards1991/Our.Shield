@@ -386,9 +386,9 @@
       <Project>{3c5eda13-8468-4386-8f74-3d5678695abe}</Project>
       <Name>Our.Shield.MediaProtection</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Our.Shield.UmbracoAccess\Our.Shield.UmbracoAccess.csproj">
+    <ProjectReference Include="..\Our.Shield.BackofficeAccess\Our.Shield.BackofficeAccess.csproj">
       <Project>{58fdce32-1389-4768-882e-281ceec508cd}</Project>
-      <Name>Our.Shield.UmbracoAccess</Name>
+      <Name>Our.Shield.BackofficeAccess</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

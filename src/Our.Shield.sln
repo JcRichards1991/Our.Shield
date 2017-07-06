@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8BC9BCE4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{2E101591-AF0A-4442-BE43-12DF0DC6ED17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.UmbracoAccess", "Our.Shield.UmbracoAccess\Our.Shield.UmbracoAccess.csproj", "{58FDCE32-1389-4768-882E-281CEEC508CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.BackofficeAccess", "Our.Shield.BackofficeAccess\Our.Shield.BackofficeAccess.csproj", "{58FDCE32-1389-4768-882E-281CEEC508CD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gulp", "Gulp", "{25F416C7-6C9E-4928-A54D-9D65565E6E4F}"
 	ProjectSection(SolutionItems) = preProject
