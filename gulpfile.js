@@ -21,21 +21,21 @@ var jsFiles = [
         nameMin: 'Shield.min.js'
     },
     {
-        subFiles: src + '.UmbracoAccess/Scripts/*.js',
-        output: src + '.UmbracoAccess' + jsOutput + '.UmbracoAccess/Scripts',
-        name: 'UmbracoAccess.js',
-        nameMin: 'UmbracoAccess.min.js'
+        subFiles: src + '.BackofficeAccess/Scripts/*.js',
+        output: src + '.BackofficeAccess' + jsOutput + '.BackofficeAccess/Scripts',
+        name: 'BackofficeAccess.js',
+        nameMin: 'BackofficeAccess.min.js'
     }
 ];
 
 var cssOutput = '/App_Plugins/Shield';
 var scssFiles = [
     {
-        files: src + '.UmbracoAccess/Scss/*.scss',
-        scss: src + '.UmbracoAccess/Scss/UmbracoAccess.scss',
-        output: src + '.UmbracoAccess' + cssOutput + '.UmbracoAccess/Css',
-        name: 'UmbracoAccess.css',
-        nameMin: 'UmbracoAccess.min.css'
+        files: src + '.BackofficeAccess/Scss/*.scss',
+        scss: src + '.BackofficeAccess/Scss/BackofficeAccess.scss',
+        output: src + '.UmbracoAccess' + cssOutput + '.BackofficeAccess/Css',
+        name: 'BackofficeAccess.css',
+        nameMin: 'BackofficeAccess.min.css'
     }
 ];
 
