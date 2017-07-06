@@ -275,7 +275,7 @@
     <None Include="App_Plugins\Shield.BackofficeAccess\package.manifest" />
     <None Include="packages.config" />
     <None Include="Scss\AllowedIpPropertyEditor.scss" />
-    <None Include="Our.Shield.UmbracoAccess.nuspec" />
+    <None Include="Our.Shield.BackofficeAccess.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield.BackofficeAccess\Css\BackofficeAccess.css" />
