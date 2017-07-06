@@ -126,7 +126,7 @@
 
             if(umbracoContext == null)
             {
-                var fakeHttpContext = new HttpContextWrapper(HttpContext.Current ?? new HttpContext(new SimpleWorkerRequest("replace-with-some-guid.aspx", "", new StringWriter())));
+                var fakeHttpContext = new HttpContextWrapper(HttpContext.Current ?? new HttpContext(new SimpleWorkerRequest("5d6502ba-ff09-47a4-8b5d-481b2c3358f2.aspx", "", new StringWriter())));
 
                 umbracoContext = UmbracoContext.EnsureContext(
                     fakeHttpContext,
