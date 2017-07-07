@@ -6,6 +6,8 @@
     <title>$title$</title>
     <authors>Joshua Richards</authors>
     <owners>Joshua Richards</owners>
+	<licenseUrl>https://raw.githubusercontent.com/JcRichards1991/Our.Shield/master/Docs/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
