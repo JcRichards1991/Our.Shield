@@ -8,8 +8,7 @@
      * Edit Controller for the Media Protection Edit view
      */
     angular.module('umbraco').controller('Shield.Editors.MediaProtection.Edit',
-        ['$scope', 'notificationsService', 'localizationService', 'ShieldResource',
-        function ($scope, notificationsService, localizationService, resource) {
+        ['$scope', function ($scope) {
             var vm = this;
             angular.extend(vm, {
                 loading: true,

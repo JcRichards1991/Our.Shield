@@ -39,18 +39,17 @@
                                             </a>
                                         </div>
 
-                                        <div class="umb-table-cell">
+                                        <!--<div class="umb-table-cell">
                                             <a class="umb-table-head__link" href="#" prevent-default>
                                                 <span>Domains</span>
                                                 <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
                                             </a>
-                                        </div>
-
+                                        </div>-->
                                     </div>
                                 </div>
                             </div>
                             <div class="umb-table-body">
-                                <div class="umb-table-row" ng-repeat="environment in vm.environments">
+                                <div class="umb-table-row" ng-repeat="environment in vm.environments track by $index">
 
                                     <div class="umb-table-cell">
                                         &nbsp;
@@ -60,20 +59,46 @@
                                         <span ng-bind-html="environment.name"></span>
                                     </div>
 
-                                    <div class="umb-table-cell">
-                                        <ul ng-repeat="domain in environment.domains">
+                                    <!--<div class="umb-table-cell">
+                                        <ul ng-repeat="domain in environment.domains track by $index">
                                             <li>{{domain.name}}</li>
                                         </ul>
-                                    </div>
+                                    </div>-->
                                 </div>
                             </div>
                         </div>
 
                         <!-- Environment -->
                         <div ng-if="vm.type == 1">
-                            <h1>
-                                Domains
-                            </h1>
+                            <div class="umb-table">
+                                <div class="umb-table-head">
+                                    <div class="umb-table-row">
+
+                                        <div class="umb-table-cell">
+                                            &nbsp;
+                                        </div>
+
+                                        <div class="umb-table-cell umb-table__name">
+                                            <a class="umb-table-head__link" href="#" prevent-default>
+                                                <span>App</span>
+                                                <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="umb-table-body">
+                                <div class="umb-table-row" ng-repeat="app in vm.apps track by $index">
+
+                                    <div class="umb-table-cell">
+                                        &nbsp;
+                                    </div>
+
+                                    <div class="umb-table-cell umb-table__name" ng-click="vm.editItemById(app.Key, $index)">
+                                        <span ng-bind-html="app.Value.name"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Apps -->
@@ -163,14 +188,16 @@
                     </umb-breadcrumbs>
                 </umb-editor-footer-content-left>
 
-                <umb-editor-footer-content-right>
-                    <umb-button label="Update"
-                                type="submit"
-                                button-style="success"
-                                shortcut="ctrl+s"
-                                state="saveButtonState">
-                    </umb-button>
-                </umb-editor-footer-content-right>
+                <div ng-if="vm.type != 1">
+                    <umb-editor-footer-content-right>
+                        <umb-button label="Update"
+                                    type="submit"
+                                    button-style="success"
+                                    shortcut="ctrl+s"
+                                    state="saveButtonState">
+                        </umb-button>
+                    </umb-editor-footer-content-right>
+                </div>
             </umb-editor-footer>
         </umb-editor-view>
     </form>

@@ -16,7 +16,7 @@
     /// <summary>
     /// 
     /// </summary>
-    [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?v=1.0.1")]
+    [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?version=1.0.0-pre-alpha")]
     public class MediaProtectionApp : App<MediaProtectionConfiguration>
     {
         /// <summary>
@@ -114,7 +114,7 @@
                     app.Response.StatusCode = (int) HttpStatusCode.Forbidden;
                     app.Response.End();
                     return WatchCycle.Stop;
-                }, 0, null);
+                });
 
             }
 
@@ -230,7 +230,7 @@
                     app.Response.End();
                     return WatchCycle.Stop;
 
-                }, 0, null);
+                });
             }
 
             return true;

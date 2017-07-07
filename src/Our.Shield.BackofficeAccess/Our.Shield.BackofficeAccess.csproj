@@ -283,6 +283,7 @@
     <Content Include="App_Plugins\Shield.BackofficeAccess\Views\IpAddressPropertyEditor.html" />
     <Content Include="App_Plugins\Shield.BackofficeAccess\Views\BackofficeAccess.html" />
     <Content Include="App_Plugins\Shield.BackofficeAccess\Lang\en-us.xml" />
+    <Content Include="App_Plugins\Shield.BackofficeAccess\Views\Overview.html" />
     <Content Include="Scripts\AppEditController.js" />
     <Content Include="Scripts\IpAddressController.js" />
   </ItemGroup>

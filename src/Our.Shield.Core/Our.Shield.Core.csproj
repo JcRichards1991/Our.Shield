@@ -314,7 +314,9 @@
     <None Include="App_Plugins\Shield\Backoffice\Dashboards\Dashboard.config.uninstall.xdt" />
     <None Include="packages.config" />
     <None Include="App_Plugins\Shield\package.manifest" />
-    <None Include="Our.Shield.Core.nuspec" />
+    <None Include="Our.Shield.Core.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Overview.html" />

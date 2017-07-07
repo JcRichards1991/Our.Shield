@@ -39,7 +39,7 @@
                 };
             }
 
-            foreach(var environment in environments)
+            foreach (var environment in environments)
             {
                 if (id == environment.Key.Id)
                 {
@@ -47,12 +47,13 @@
                     {
                         Type = UI.TreeView.TreeViewType.Environment,
                         Name = environment.Key.Name,
-                        Description = $"Configure and view events for the {environment.Key.Name} environment",
+                        Description = $"View apps for the {environment.Key.Name} environment",
                         Environments = environments.Keys,
                         Environment = environment.Key,
-                        Apps = environment.Value.Select(x => App<IConfiguration>.Create(x.AppId))
+                        Apps = environment.Value.Select(x => new KeyValuePair<int, IApp>(x.Id, App<IConfiguration>.Create(x.AppId)))
                     };
                 }
+
                 foreach (var job in environment.Value)
                 {
                     if (id == job.Id)
@@ -138,6 +139,26 @@
         {
             var job = Operation.JobService.Instance.Job(id);
             return job.ListJournals<Journal>(page, itemsPerPage);
+        }
+
+        /// <summary>
+        /// Gets a collection of the Shield App Ids that are installed
+        /// </summary>
+        /// <returns>
+        /// Collection of the Shield App ids
+        /// </returns>
+        [HttpGet]
+        public IEnumerable<string> AppIds()
+        {
+            var appIds = new List<string>();
+            var env = Operation.JobService.Instance.Environments.FirstOrDefault();
+
+            foreach (var job in env.Value)
+            {
+                appIds.Add(job.AppId);
+            }
+
+            return appIds;
         }
     }
 }

@@ -266,6 +266,7 @@
     <Content Include="App_Plugins\Shield.MediaProtection\Scripts\MediaProtection.js" />
     <Content Include="App_Plugins\Shield.MediaProtection\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.MediaProtection\Views\MediaProtection.html" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Views\Overview.html" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

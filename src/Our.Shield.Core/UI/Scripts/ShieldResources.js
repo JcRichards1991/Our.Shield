@@ -6,7 +6,7 @@
     * @description
     * Api resource for the Umbraco Access area
 */
-angular.module('umbraco.resources').factory('ShieldResource', ['$http', function ($http) {
+angular.module('umbraco.resources').factory('shieldResource', ['$http', function ($http) {
 
     var apiRoot = 'backoffice/Shield/ShieldApi/';
 
@@ -24,6 +24,12 @@ angular.module('umbraco.resources').factory('ShieldResource', ['$http', function
                     'Content-Type': 'application/json'
                 },
             });
+        },
+        getJournals: function (id, page, itemsPerPage) {
+            return $http.get(apiRoot + 'Journals?id=' + id + '&page=' + page + '&itemsPerPage=' + itemsPerPage);
+        },
+        getAppIds: function () {
+            return $http.get(apiRoot + 'AppIds');
         }
     };
 }]);

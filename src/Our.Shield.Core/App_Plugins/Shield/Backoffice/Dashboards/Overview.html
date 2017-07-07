@@ -1,3 +1,36 @@
-﻿<div>
-    Overview.Html
+﻿<div ng-controller="Shield.Dashboards.Overview as vm" ng-init="vm.init()">
+
+    <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
+
+    <h3>Welcome to Shield - The security package for Umbraco Cms</h3>
+
+    <div ng-if="vm.appOverviews.length != 0">
+        <p>
+            Below is a quick explanation of the different Shield Apps that are installed.
+        </p>
+
+        <div ng-repeat="appOverview in vm.appOverviews track by $index">
+            <hr style="border-bottom: 1px solid #000" />
+            <div ng-include="appOverview"></div>
+        </div>
+    </div>
+
+    <div ng-if="vm.appOverviews.length == 0">
+        <p>
+            It's lonely here in shield, it appears you haven't installed any Shield Apps.
+            <br />
+            <br />
+            If you've installed Shield via nuget, you might want to check out:
+            <ul>
+                <li>
+                    <a href="https://www.nuget.org/packages/Our.Shield.BackofficeAccess" title="Backoffice Access" target="_blank">Backoffice Access</a>
+                </li>
+                <li>
+                    <a href="https://www.nuget.org/packages/Our.Shield.MediaProtection" title="Media Protection" target="_blank">Media Protection</a>
+                </li>
+            </ul>
+            <br />
+            Otherwise, if installed via the Umbraco package manager, you may want to re-install and confirm everything ran smoothly.
+        </p>
+    </div>
 </div>

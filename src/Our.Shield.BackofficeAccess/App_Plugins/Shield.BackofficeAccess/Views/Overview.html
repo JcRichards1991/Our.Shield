@@ -1,0 +1,24 @@
+﻿<h4>Backoffice Access</h4>
+
+<p>
+    Backoffice Access gives you the ability to configure the backoffice access url - by default & out-of-the-box, it's /umbraco/ -
+    Allows you to restrict your desired backoffice access url via a white-list of IP Address(es) and rewrite or redirect unauthorised
+    access to a location of your choice via:
+    <ul>
+        <li>
+            Static string - i.e. "/404-not-found"
+        </li>
+        <li>
+            XPath expression - i.e. "/root/homepage/standardPage[@isDoc AND @nodeName = '404 Not Found']"
+            <br />
+            OR
+        </li>
+        <li>
+            Using a content picker
+        </li>
+    </ul>
+</p>
+
+<p>
+    <strong>Note</strong>: Disabling Backoffice Access will reset the access url back to being "/umbraco"
+</p>

@@ -21,7 +21,7 @@
     /// <summary>
     /// 
     /// </summary>
-    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?v=1.0.1")]
+    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.0-pre-alpha")]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
     {
         /// <summary>
@@ -37,7 +37,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public override string Description => "Secure your backoffice via IP restrictions";
+        public override string Description => "Change the backoffice access Url and/or secure your backoffice url via IP restrictions";
 
         /// <summary>
         /// 

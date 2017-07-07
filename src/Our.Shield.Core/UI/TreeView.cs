@@ -58,7 +58,7 @@
         /// 
         /// </summary>
         [JsonProperty("apps")]
-        public IEnumerable<IApp> Apps;
+        public IEnumerable<KeyValuePair<int, IApp>> Apps;
 
         /// <summary>
         /// 

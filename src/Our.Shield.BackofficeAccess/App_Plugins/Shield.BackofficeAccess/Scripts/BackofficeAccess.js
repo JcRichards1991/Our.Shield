@@ -8,8 +8,8 @@
 * Edit Controller for the Backoffice Access Edit view
 */
 angular.module('umbraco').controller('Shield.Editors.BackofficeAccess.Edit',
-    ['$scope', '$routeParams', 'notificationsService', 'localizationService', 'ShieldResource',
-    function ($scope, $routeParams, notificationsService, localizationService, resource) {
+    ['$scope', 'localizationService',
+    function ($scope, localizationService) {
 
         var vm = this;
 
@@ -55,8 +55,8 @@ angular.module('umbraco').controller('Shield.Editors.BackofficeAccess.Edit',
 * Controller to handle the custom IP Address Property Editor
 */
 angular.module('umbraco').controller('Shield.Properties.IpAddress',
-    ['$scope', '$routeParams', 'notificationsService', 'localizationService', 'ShieldResource',
-    function ($scope, $routeParams, notificationsService, localizationService, resource) {
+    ['$scope', 'localizationService',
+    function ($scope, localizationService) {
 
         var vm = this;
 

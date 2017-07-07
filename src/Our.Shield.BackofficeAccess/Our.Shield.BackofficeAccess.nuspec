@@ -2,22 +2,22 @@
 <package >
   <metadata>
     <id>$id$</id>
-    <version>$version$</version>
+    <version>$version$-pre-alpha</version>
     <title>$title$</title>
     <authors>Joshua Richards</authors>
     <owners>Joshua Richards</owners>
-	<licenseUrl>https://raw.githubusercontent.com/JcRichards1991/Our.Shield/master/Docs/LICENSE</licenseUrl>
+    <licenseUrl>https://raw.githubusercontent.com/JcRichards1991/Our.Shield/master/Docs/LICENSE</licenseUrl>
     <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <releaseNotes>$version$-pre-alpha release</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security BackofficeAccess Access Backoffice</tags>
     <dependencies>
-      <dependency id="Shield.Core" version="1.0.0.1" />
+      <dependency id="Our.Shield.Core" version="1.0.0-pre-alpha" />
     </dependencies>
   </metadata>
   <files>
-    <file src="App_Plugins\$id$\package.manifest" target="Content\App_Plugins\$id$" />
+    <file src="App_Plugins\Shield.BackofficeAccess\package.manifest" target="Content\App_Plugins\Shield.BackofficeAccess" />
   </files>
 </package>

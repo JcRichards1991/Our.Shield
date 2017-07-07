@@ -7,8 +7,8 @@
     * Handles environment page
 */
 angular.module('umbraco').controller('Shield.Editors.Edit', 
-    ['$scope', '$routeParams', '$location', '$timeout', 'notificationsService', 'localizationService', 'ShieldResource', 'listViewHelper', 'navigationService', 'assetsService',
-    function ($scope, $routeParams, $location, $timeout, notificationsService, localizationService, shieldResource, listViewHelper, navigationService, assetsService) {
+    ['$scope', '$routeParams', '$location', '$timeout', 'notificationsService', 'localizationService', 'listViewHelper', 'navigationService', 'assetsService', 'shieldResource',
+    function ($scope, $routeParams, $location, $timeout, notificationsService, localizationService, listViewHelper, navigationService, assetsService, shieldResource) {
 
         var vm = this;
 
@@ -32,12 +32,12 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     id:'0',
                     label: 'Environments',
                     active: true,
-                },
-                {
-                    id:'1',
-                    label:'Journal',
-                    active: true
-                }
+                }//,
+                //{
+                //    id:'1',
+                //    label:'Journal',
+                //    active: true
+                //}
             ],
             init: function () {
                 shieldResource.getView(vm.id).then(function (response) {
@@ -53,11 +53,14 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             break;
 
                         case 1:     //  Environment
-                            vm.nameLocked = false;
+                            //vm.nameLocked = false;
                             vm.environments = response.data.environments;
                             vm.environment = response.data.environment;
                             vm.apps = response.data.apps;
-                            vm.tabs[0].label = 'Domains';
+
+                            vm.tabs[0].label = 'Apps';
+                            vm.nameLocked = true;
+
                             vm.journal.columns[1].show = false;
                             vm.path = '-1,0,' + vm.id;
                             vm.ancestors = [{ id: 0, name: 'Environments' },{ id: vm.id, name: vm.name }]
@@ -127,6 +130,9 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
             editItem: function (item, index) {
                 $location.path('shield/shield/edit/' + item.id);
             },
+            editItemById: function (id, index) {
+                $location.path('shield/shield/edit/' + id);
+            },
             journal: {
                 columns: [
                     {
@@ -195,17 +201,26 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
     * @description
     * Handles environment page
 */
-angular.module('umbraco').controller('Shield.Dashboards.Editors.Settings',
-    ['$scope', '$routeParams', 'notificationsService', 'localizationService', 'ShieldResource',
-    function ($scope, $routeParams, notificationsService, localizationService, sheildResource) {
+angular.module('umbraco').controller('Shield.Dashboards.Overview',
+    ['$scope', 'localizationService', 'shieldResource',
+    function ($scope, localizationService, shieldResource) {
 
         var vm = this;
 
         angular.extend(vm, {
             loading: true,
+            appIds: [],
+            appOverviews: [],
             init: function () {
+                shieldResource.getAppIds().then(function (response) {
+                    vm.appIds = response.data;
 
-                vm.loading = false;
+                    angular.forEach(vm.appIds, function (appId, index) {
+                        vm.appOverviews.push('/App_Plugins/Shield.' + appId + '/Views/Overview.html?version=1.0.0-pre-alpha')
+                    });
+
+                    vm.loading = false;
+                });
             }
         });
     }]

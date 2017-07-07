@@ -28,12 +28,12 @@
         protected override MenuItemCollection GetMenuForNode(string idText, FormDataCollection queryStrings)
         {
             var menu = new MenuItemCollection();
-            int id = int.Parse(idText);
+            //int id = int.Parse(idText);
 
-            if(id == global::Umbraco.Core.Constants.System.Root || id == Constants.Tree.EnvironmentsRootId)
-            {
-                menu.Items.Add(new MenuItem("createEnvironment", "Create Environment"));
-            }
+            //if(id == global::Umbraco.Core.Constants.System.Root || id == Constants.Tree.EnvironmentsRootId)
+            //{
+            //    menu.Items.Add(new MenuItem("createEnvironment", "Create Environment"));
+            //}
 
             return menu;
         }
