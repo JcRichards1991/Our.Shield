@@ -6,14 +6,20 @@
     <title>$title$</title>
     <authors>Joshua Richards</authors>
     <owners>Joshua Richards</owners>
+    <licenseUrl>https://raw.githubusercontent.com/JcRichards1991/Our.Shield/master/Docs/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security</tags>
+    <dependencies>
+      <dependency id="UmbracoCms.Core" version="7.0.0" />
+      <dependency id="WebActivatorEx" version="2.2.0" />
+    </dependencies>
   </metadata>
   <files>
-    <file src="App_Plugins\**\*.*" target="Content\App_Plugins" exclude="App_Plugins\Shield\Backoffice\Dashboards\*.xdt" />
-    <file src="App_Plugins\Shield\Backoffice\Dashboards\*.xdt" target="Content\config" />
+    <file src="App_Plugins\Shield\package.manifest" target="Content\App_Plugins\Shield" exclude="App_Plugins\Shield\Backoffice\Dashboards\*.xdt" />
+    <file src="App_Plugins\Shield\Backoffice\Dashboards\*.xdt" target="Content\Config" />
   </files>
 </package>

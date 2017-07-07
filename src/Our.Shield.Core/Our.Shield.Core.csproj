@@ -323,7 +323,7 @@
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
     <Content Include="UI\Scripts\ShieldControllers.js" />
-    <Content Include="UI\Scripts\ShieldDeirectives.js" />
+    <Content Include="UI\Scripts\ShieldDirectives.js" />
     <Content Include="UI\Scripts\ShieldResources.js" />
   </ItemGroup>
   <ItemGroup />
