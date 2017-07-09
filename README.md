@@ -1,7 +1,7 @@
 # README #
 
 ### Purpose ###
-Provides active security for you Umbraco site usign customizable components
+Provides active security for you Umbraco site using customizable components
 
 ---
 
