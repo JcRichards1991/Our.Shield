@@ -23,7 +23,7 @@
         /// <summary>
         /// The Job App Id
         /// </summary>
-        string AppId { get; }
+        IApp App { get; }
 
         /// <summary>
         /// Writes a Apps configuration to the database

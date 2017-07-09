@@ -2,6 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using Newtonsoft.Json;
+    using Semver;
+    using Umbraco.Core.Logging;
+    using Umbraco.Core.Persistence.Migrations;
+    using Umbraco.Core.Persistence.SqlSyntax;
 
     /// <summary>
     /// Definition of an App to plugin to Our.Shield custom umbraco section
@@ -266,6 +271,22 @@
         public override int GetHashCode()
         {
             return Id.GetHashCode();
+        }
+
+        [JsonIgnore]
+        private IDictionary<string, IMigration> _migrations;
+
+        [JsonIgnore]
+        public IDictionary<string, IMigration> Migrations
+        {
+            get
+            {
+                return _migrations;
+            }
+            set
+            {
+                _migrations = value;
+            }
         }
     }
 }

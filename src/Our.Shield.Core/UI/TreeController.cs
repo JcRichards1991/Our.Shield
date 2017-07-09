@@ -112,14 +112,13 @@
                 {
                     foreach (var job in environment.Value)
                     {
-                        var app = App<IConfiguration>.Create(job.AppId);
                         var jobId = job.Id.ToString();
                         var node = CreateTreeNode(
                             jobId,
                             environment.Key.Id.ToString(),
                             queryStrings,
-                            app.Name,
-                            app.Icon,
+                            job.App.Name,
+                            job.App.Icon,
                             false);
 
                         if (!job.ReadConfiguration().Enable)

@@ -29,7 +29,8 @@
 
             new Core.Persistance.Data.Migration().RunMigrations(applicationContext.DatabaseContext.SqlSyntax, 
                 applicationContext.Services.MigrationEntryService, applicationContext.ProfilingLogger.Logger);
-            Operation.JobService.Instance.Init();
+
+            Operation.JobService.Instance.Init(umbracoApplication, applicationContext);
         }
         
       

@@ -105,7 +105,7 @@ namespace Our.Shield.Core.Operation
                             priority = beginRequestPriority,
                             environment = job.Environment,
                             domains = Domains(job.Environment.Domains),
-                            appId = job.AppId,
+                            appId = job.App.Id,
                             regex = regex,
                             request = beginRequest
                         });
@@ -132,7 +132,7 @@ namespace Our.Shield.Core.Operation
                             priority = endRequestPriority,
                             environment = job.Environment,
                             domains = Domains(job.Environment.Domains),
-                            appId = job.AppId,
+                            appId = job.App.Id,
                             regex = regex,
                             request = endRequest
                         });
@@ -166,7 +166,7 @@ namespace Our.Shield.Core.Operation
                 try
                 {
                     count += beginWatchers.RemoveAll(x => x.environment.Id == job.Environment.Id &&
-                        x.appId.Equals(job.AppId, StringComparison.InvariantCultureIgnoreCase) && 
+                        x.appId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase) && 
                         ((regy == null && x.regex == null) || (regy != null && x.regex != null && regy.Equals(x.regex.ToString(), StringComparison.InvariantCulture))));
                 }
                 finally
@@ -180,7 +180,7 @@ namespace Our.Shield.Core.Operation
                 try
                 {
                     count += endWatchers.RemoveAll(x => x.environment.Id == job.Environment.Id &&
-                        x.appId.Equals(job.AppId, StringComparison.InvariantCultureIgnoreCase) && 
+                        x.appId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase) && 
                         ((regy == null && x.regex == null) || (regy != null && x.regex != null && regy.Equals(x.regex.ToString(), StringComparison.InvariantCulture))));
                 }
                 finally
@@ -206,7 +206,7 @@ namespace Our.Shield.Core.Operation
                 try
                 {
                     count += beginWatchers.RemoveAll(x => x.environment.Id == job.Environment.Id &&
-                        x.appId.Equals(job.AppId, StringComparison.InvariantCultureIgnoreCase));
+                        x.appId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase));
                 }
                 finally
                 {
@@ -219,7 +219,7 @@ namespace Our.Shield.Core.Operation
                 try
                 {
                     count += endWatchers.RemoveAll(x => x.environment.Id == job.Environment.Id &&
-                        x.appId.Equals(job.AppId, StringComparison.InvariantCultureIgnoreCase));
+                        x.appId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase));
                 }
                 finally
                 {

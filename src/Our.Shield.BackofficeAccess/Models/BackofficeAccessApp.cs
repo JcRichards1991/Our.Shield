@@ -61,10 +61,9 @@
             }
         }
 
-        private static ReaderWriterLockSlim environmentIdsLocker = new ReaderWriterLockSlim();
-        private static List<int> environmentIds = new List<int>();
+        private int firstExecute = 0;
 
-        private static string allowKey = Guid.NewGuid().ToString();
+        private readonly string allowKey = Guid.NewGuid().ToString();
 
         /// <summary>
         /// 
@@ -76,46 +75,15 @@
         {
             var config = c as BackofficeAccessConfiguration;
 
-            if (environmentIdsLocker.TryEnterUpgradeableReadLock(1))
+            if (Interlocked.CompareExchange(ref firstExecute, 1, 0) == 0)
             {
-                try
-                {
-                    if (!environmentIds.Contains(job.Environment.Id))
-                    {
-                        if (environmentIdsLocker.TryEnterWriteLock(1))
-                        {
-                            try
-                            {
-                                environmentIds.Add(job.Environment.Id);
-                            }
-                            finally
-                            {
-                                environmentIdsLocker.ExitWriteLock();
-                            }
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                //TODO: Un-comment out code for release when method is more 'stable'
 
-                        //TODO: Un-comment out code for release when method is more 'stable'
-
-                        //if (ExecuteFirstTime(job, config))
-                        //{
-                        //    return true;
-                        //}
-                    }
-                }
-                finally
-                {
-                    environmentIdsLocker.ExitUpgradeableReadLock();
-                }
+                //if (ExecuteFirstTime(job, config))
+                //{
+                //    return true;
+                //}
             }
-            else
-            {
-                return false;
-            }
-
 
             job.UnwatchWebRequests();
 
@@ -280,7 +248,7 @@
             return true;
         }
 
-        private static ReaderWriterLockSlim webConfigLocker = new ReaderWriterLockSlim();
+        private ReaderWriterLockSlim webConfigLocker = new ReaderWriterLockSlim();
 
         private bool ExecuteFirstTime(IJob job, BackofficeAccessConfiguration config)
         {
