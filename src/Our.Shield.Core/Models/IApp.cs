@@ -1,7 +1,11 @@
 ﻿namespace Our.Shield.Core.Models
 {
-    using Newtonsoft.Json;
     using System.Collections.Generic;
+    using Newtonsoft.Json;
+    using Semver;
+    using Umbraco.Core.Logging;
+    using Umbraco.Core.Persistence.Migrations;
+    using Umbraco.Core.Persistence.SqlSyntax;
 
     /// <summary>
     /// 
@@ -170,5 +174,8 @@
         /// The default configuration for the App
         /// </summary>
         IConfiguration DefaultConfiguration { get; }
+
+        [JsonIgnore]
+        IDictionary<string, IMigration> Migrations { get; set; }
     }
 }

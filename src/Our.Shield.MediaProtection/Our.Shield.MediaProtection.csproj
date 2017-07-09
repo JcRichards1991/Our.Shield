@@ -258,6 +258,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\UmbracoDataTypes.cs" />
+    <Compile Include="Models\MediaProtectionMigration.cs" />
     <Compile Include="Models\MediaProtectionApp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\MediaProtectionConfiguration.cs" />

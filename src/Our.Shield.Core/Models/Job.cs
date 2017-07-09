@@ -25,9 +25,8 @@
         /// <summary>
         /// The Job App Id
         /// </summary>
-        public string AppId { get; set; }
+        public IApp App { get; set; }
 
-        internal Type AppType;
         internal Type ConfigType;
 
         internal DateTime? LastRan;
@@ -36,12 +35,14 @@
 
         internal IJob DeepCopy()
         {
+            var app = App<IConfiguration>.Create(this.App.Id);
+            app.Migrations = this.App.Migrations;
+
             return new Job
             {
                 Id = this.Id,
                 Environment = this.Environment,
-                AppId = this.AppId,
-                AppType = this.AppType,
+                App = app,
                 ConfigType = this.ConfigType,
                 LastRan = this.LastRan,
                 Task = this.Task,

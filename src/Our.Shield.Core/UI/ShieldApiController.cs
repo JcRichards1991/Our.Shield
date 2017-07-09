@@ -50,7 +50,7 @@
                         Description = $"View apps for the {environment.Key.Name} environment",
                         Environments = environments.Keys,
                         Environment = environment.Key,
-                        Apps = environment.Value.Select(x => new KeyValuePair<int, IApp>(x.Id, App<IConfiguration>.Create(x.AppId)))
+                        Apps = environment.Value.Select(x => new KeyValuePair<int, IApp>(x.Id, x.App))
                     };
                 }
 
@@ -58,16 +58,15 @@
                 {
                     if (id == job.Id)
                     {
-                        var app = App<IConfiguration>.Create(job.AppId);
                         var appAssests = new AppAssest
                         {
-                            View = app.GetType().GetCustomAttribute<AppEditorAttribute>()?.FilePath ?? null,
+                            View = job.App.GetType().GetCustomAttribute<AppEditorAttribute>()?.FilePath ?? null,
 
-                            Stylesheets = app.GetType().GetCustomAttributes<AppAssetAttribute>()
+                            Stylesheets = job.App.GetType().GetCustomAttributes<AppAssetAttribute>()
                                 .Where(x => x.AssetType == ClientDependency.Core.ClientDependencyType.Css)
                                 .Select(x => x.FilePath),
 
-                            Scripts = app.GetType().GetCustomAttributes<AppAssetAttribute>()
+                            Scripts = job.App.GetType().GetCustomAttributes<AppAssetAttribute>()
                                 .Where(x => x.AssetType == ClientDependency.Core.ClientDependencyType.Javascript)
                                 .Select(x => x.FilePath)
                         };
@@ -75,11 +74,11 @@
                         return new TreeView
                         {
                             Type = UI.TreeView.TreeViewType.App,
-                            Name = app.Name,
-                            Description = app.Description,
+                            Name = job.App.Name,
+                            Description = job.App.Description,
                             Environments = environments.Keys,
                             Environment = environment.Key,
-                            App = app,
+                            App = job.App,
                             Configuration = job.ReadConfiguration(),
                             AppAssests = appAssests
                         };
@@ -155,7 +154,7 @@
 
             foreach (var job in env.Value)
             {
-                appIds.Add(job.AppId);
+                appIds.Add(job.App.Id);
             }
 
             return appIds;

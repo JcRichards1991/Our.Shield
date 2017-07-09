@@ -6,6 +6,10 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using Umbraco.Core;
+    using Umbraco.Core.Persistence.Migrations;
+    using System.Linq;
+    using Semver;
 
     /// <summary>
     /// 
@@ -46,6 +50,11 @@
             new Dictionary<int, Job>());
 
         private int registerCount = JobIdStart;
+
+        /// <summary>
+        /// Is this the first time our package has ran
+        /// </summary>
+        public bool IsFirstExecution = false;
 
         /// <summary>
         /// Get a list of environments that have been installed
@@ -104,10 +113,80 @@
             return null;
         }                    
 
+        private void LoadMigrations(IApp app, ApplicationContext applicationContext)
+        {
+            app.Migrations = new Dictionary<string, IMigration>();
+
+            foreach (var attribute in app.GetType().GetCustomAttributes<AppMigrationAttribute>(true))
+            {
+                var migration = Activator.CreateInstance(attribute.Migration, 
+                    applicationContext.DatabaseContext.SqlSyntax,
+                    applicationContext.ProfilingLogger.Logger) as IMigration;
+
+                var version = migration.GetType().GetCustomAttribute<MigrationAttribute>(true);
+
+                app.Migrations.Add(version.TargetVersion.ToString(), migration);
+            }
+        }
+
+        private void RunMigrations(IApp app, ApplicationContext applicationContext)
+        {
+            if (!app.Migrations.Any())
+            {
+                return;
+            }
+            
+            var currentVersion = new SemVersion(0, 0, 0);
+            var productName = nameof(Shield) + app.Id;
+
+            var migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName);
+            var latestMigration = migrations.OrderByDescending(x => x.Version).FirstOrDefault();
+
+            if (latestMigration != null)
+            {
+                currentVersion = latestMigration.Version;
+            }
+
+            var latestVersion = currentVersion;
+
+            foreach (var migration in app.Migrations)
+            {
+                var version = new SemVersion(new Version(migration.Key));
+                if (latestVersion < version)
+                {
+                    latestVersion = version;
+                }
+            }
+
+            if (latestVersion == currentVersion)
+            {
+                return;
+            }
+
+            var logger = applicationContext.ProfilingLogger.Logger;
+
+            MigrationRunner migrationsRunner = new MigrationRunner(
+                applicationContext.Services.MigrationEntryService, 
+                logger, 
+                currentVersion, 
+                latestVersion, 
+                productName, 
+                app.Migrations.Values.ToArray());
+
+            try
+            {
+                migrationsRunner.Execute(ApplicationContext.Current.DatabaseContext.Database);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(this.GetType(), $"Error running {productName} migration", ex);
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
-        public void Init()
+        public void Init(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             var evs = DbContext.Instance.Environment.List();
             var appIds = App<IConfiguration>.Register;
@@ -119,7 +198,10 @@
                 {
                     var app = App<IConfiguration>.Create(appId.Key);
 
-                    if(app.Init())
+                    LoadMigrations(app, applicationContext);
+                    RunMigrations(app, applicationContext);
+
+                    if (app.Init())
                     {
                         Register(enviroment, app);
                     }
@@ -130,9 +212,9 @@
 
         private const long ranRepeat = 0L;
         private const long ranNow = 1L;
-        private static long ranTick = ranNow;
+        private long ranTick = ranNow;
 
-        private static int runningPoll = 0;
+        private int runningPoll = 0;
 
         /// <summary>
         /// 
@@ -144,7 +226,7 @@
                 return;
             }
 
-            if (Interlocked.CompareExchange(ref runningPoll, 0, 1) != 0)
+            if (Interlocked.CompareExchange(ref Instance.runningPoll, 0, 1) != 0)
             {
                 return;
             }
@@ -204,13 +286,7 @@
             {
                 job.CancelToken.Token.ThrowIfCancellationRequested();
 
-                var app = App<IConfiguration>.Create(job.AppId);
-                if (app == null)
-                {
-                    return false;
-                }
-
-                var config = ReadConfiguration(job, app.DefaultConfiguration);
+                var config = ReadConfiguration(job, job.App.DefaultConfiguration);
                 if (jobLock.TryEnterReadLock(taskLockTimeout))
                 {
                     try
@@ -226,7 +302,7 @@
                     }
                 }
 
-                if (app.Execute(job, config))
+                if (job.App.Execute(job, config))
                 {
                     if (jobLock.TryEnterWriteLock(taskLockTimeout))
                     {
@@ -257,7 +333,7 @@
         /// <returns></returns>
         public bool WriteConfiguration(IJob job, IConfiguration config)
         {
-            if (!DbContext.Instance.Configuration.Write(job.Environment.Id, job.AppId, config))
+            if (!DbContext.Instance.Configuration.Write(job.Environment.Id, job.App.Id, config))
             {
                 return false;
             }
@@ -276,7 +352,7 @@
         /// <returns></returns>
         public bool WriteJournal(IJob job, IJournal journal)
         {
-            return DbContext.Instance.Journal.Write(job.Environment.Id, job.AppId, journal);
+            return DbContext.Instance.Journal.Write(job.Environment.Id, job.App.Id, journal);
         }
 
         /// <summary>
@@ -287,8 +363,8 @@
         /// <returns></returns>
         public IConfiguration ReadConfiguration(IJob job, IConfiguration defaultConfiguration = null)
         {
-            return DbContext.Instance.Configuration.Read(job.Environment.Id, job.AppId, ((Job) job).ConfigType, 
-                defaultConfiguration ?? App<IConfiguration>.Create(job.AppId).DefaultConfiguration);
+            return DbContext.Instance.Configuration.Read(job.Environment.Id, job.App.Id, ((Job) job).ConfigType, 
+                defaultConfiguration ?? App<IConfiguration>.Create(job.App.Id).DefaultConfiguration);
         }
 
         /// <summary>
@@ -301,7 +377,7 @@
         /// <returns></returns>
         public IEnumerable<T> ListJournals<T>(IJob job, int page, int itemsPerPage) where T : IJournal
         {
-            return DbContext.Instance.Journal.List<T>(job.Environment.Id, job.AppId, page, itemsPerPage);
+            return DbContext.Instance.Journal.List<T>(job.Environment.Id, job.App.Id, page, itemsPerPage);
         }
 
         /// <summary>
@@ -312,16 +388,9 @@
         /// <returns></returns>
         public bool Execute(IJob job, IConfiguration config = null)
         {
-            var app = App<IConfiguration>.Create(job.AppId);
-
-            if (app == null)
-            {
-                return false;
-            }
-
             if (config == null)
             {
-                config = ReadConfiguration(job, app.DefaultConfiguration);
+                config = ReadConfiguration(job, job.App.DefaultConfiguration);
 
                 if (config == null)
                 {
@@ -329,7 +398,7 @@
                 }
             }
 
-            return app.Execute(job, config);
+            return job.App.Execute(job, config);
         }
         
         /// <summary>
@@ -338,20 +407,18 @@
         /// <param name="e"></param>
         /// <param name="appId"></param>
         /// <returns></returns>
-        public bool Register(IEnvironment e, string appId)
+        public bool Register(IEnvironment e, IApp app)
         {
             if (jobLock.TryEnterWriteLock(taskLockTimeout))
             {
                 try
                 {
-                    var appType = App<IConfiguration>.Register[appId];
                     var job = new Job
                     {
                         Id = registerCount++,
                         Environment = e,
-                        AppId = appId,
-                        AppType = appType,
-                        ConfigType = appType.BaseType.GenericTypeArguments[0]
+                        App = app,
+                        ConfigType = app.GetType().BaseType.GenericTypeArguments[0]
                     };
 
                     jobs.Value.Add(job.Id, job);
@@ -364,14 +431,6 @@
             }
             return false;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="e"></param>
-        /// <param name="app"></param>
-        /// <returns></returns>
-        public bool Register(IEnvironment e, IApp app) => Register(e, app.Id);
 
         /// <summary>
         /// 
@@ -425,7 +484,7 @@
                     Job job = null;
                     foreach (var reg in jobs.Value)
                     {
-                        if (reg.Value.AppId == appId)
+                        if (reg.Value.App.Id == appId)
                         {
                             if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
                             {

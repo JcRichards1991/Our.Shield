@@ -80,7 +80,14 @@
 
                                         <div class="umb-table-cell umb-table__name">
                                             <a class="umb-table-head__link" href="#" prevent-default>
-                                                <span>App</span>
+                                                <span>Name</span>
+                                                <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
+                                            </a>
+                                        </div>
+
+                                        <div class="umb-table-cell umb-table__name">
+                                            <a class="umb-table-head__link" href="#" prevent-default>
+                                                <span>Description</span>
                                                 <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
                                             </a>
                                         </div>
@@ -96,6 +103,10 @@
 
                                     <div class="umb-table-cell umb-table__name" ng-click="vm.editItemById(app.Key, $index)">
                                         <span ng-bind-html="app.Value.name"></span>
+                                    </div>
+
+                                    <div class="umb-table-cell">
+                                        <span ng-bind-html="app.Value.description"></span>
                                     </div>
                                 </div>
                             </div>
