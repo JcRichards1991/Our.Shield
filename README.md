@@ -58,4 +58,4 @@ Coming Soon!
 
 
 ### Source Code ###
-Download the source code, it should work for Visual Studio 2013 & 2015. If you set **Our.Shield.TestSite** as your Set as Startup project this should execute the test Umbraco website, where you can test Our.Shield in different scenarios. Once running, surf to http://localhost:8560/umbraco and at the login type **admin** for user and **password** for password.
+Download the source code, it should work for Visual Studio 2013 & 2015. If you set **Our.Shield.TestSite** as your Startup project this should execute the test Umbraco website, where you can test Our.Shield in different scenarios. Once running, surf to http://localhost:8560/umbraco and at the login type **admin** for user and **password** for password.
