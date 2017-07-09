@@ -37,7 +37,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public override string Description => "Change the backoffice access Url and/or secure your backoffice url via IP restrictions";
+        public override string Description => "Change the backoffice access URL and/or secure your backoffice URL via IP restrictions";
 
         /// <summary>
         /// 
@@ -64,6 +64,81 @@
         private int firstExecute = 0;
 
         private readonly string allowKey = Guid.NewGuid().ToString();
+        private readonly TimeSpan CacheLength = new TimeSpan(TimeSpan.TicksPerDay);        //   Once per day
+
+        private string UnauthorisedUrl(IJob job, BackofficeAccessConfiguration config)
+        {
+            return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(allowKey, () => {
+                string url = null;
+                var journalMessage = new JournalMessage();
+                var umbContext = UmbracoContext.Current;
+
+                switch (config.UnauthorisedUrlType)
+                {
+                    case Enums.UnautorisedUrlType.Url:
+                        if (!string.IsNullOrEmpty(config.UnauthorisedUrl))
+                        {
+                            url = config.UnauthorisedUrl;
+                        }
+                        else
+                        {
+                            journalMessage.Message = "Error: No Unauthorized URL set in configuration";
+                        }
+                        break;
+
+                    case Enums.UnautorisedUrlType.XPath:
+                        var xpathNode = umbContext.ContentCache.GetSingleByXPath(config.UnauthorisedUrlXPath);
+
+                        if(xpathNode != null)
+                        {
+                            url = xpathNode.Url;
+                        }
+                        else
+                        {
+                            journalMessage.Message = "Error: Unable to get the unauthorized URL from the specified XPath expression.";
+                        }
+                        break;
+
+                    case Enums.UnautorisedUrlType.ContentPicker:
+                        int id;
+
+                        if(int.TryParse(config.UnauthorisedUrlContentPicker, out id))
+                        {
+                            var contentPickerNode = umbContext.ContentCache.GetById(id);
+
+                            if (contentPickerNode != null)
+                            {
+                                url = contentPickerNode.Url;
+                            }
+                            else
+                            {
+                                journalMessage.Message = "Error: Unable to get the unauthorized URL from the selected unauthorized URL content picker. Please ensure the selected page is published and not deleted.";
+                            }
+                        }
+                        else
+                        {
+                            journalMessage.Message = "Error: Unable to parse the selected unauthorized URL content picker id to integer. Please ensure a valid content node is selected.";
+                        }
+                        break;
+
+                    default:
+                        journalMessage.Message = "Error: Unable to determine which method to use to get the unauthorized URL. Please ensure URL, XPath or Content Picker is selected.";
+                        break;
+                }
+
+                if (url == null)
+                {
+                    if(!string.IsNullOrEmpty(journalMessage.Message))
+                    {
+                        job.WriteJournal(journalMessage);
+                    }
+
+                    return null;
+                }
+
+                return url;
+            }, CacheLength) as string;
+        }
 
         /// <summary>
         /// 
@@ -85,94 +160,14 @@
                 //}
             }
 
+            ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(allowKey);
             job.UnwatchWebRequests();
 
             if (!config.Enable)
             {
                 return true;
             }
-
-            var umbContext = UmbracoContext.Current;
-
-            if(umbContext == null)
-            {
-                var fakeHttpContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("5d6502ba-ff09-47a4-8b5d-481b2c3358f2.aspx", "", new StringWriter())));
-
-                umbContext = UmbracoContext.CreateContext(
-                    fakeHttpContext,
-                    ApplicationContext.Current,
-                    new Umbraco.Web.Security.WebSecurity(fakeHttpContext, ApplicationContext.Current),
-                    UmbracoConfig.For.UmbracoSettings(),
-                    UrlProviderResolver.Current.Providers,
-                    false);
-            }
-
-            string url = string.Empty;
-            var journalMessage = new JournalMessage();
-
-            switch (config.UnauthorisedUrlType)
-            {
-                case Enums.UnautorisedUrlType.Url:
-                    if (!string.IsNullOrEmpty(config.UnauthorisedUrl))
-                    {
-                        url = config.UnauthorisedUrl;
-                    }
-                    else
-                    {
-                        journalMessage.Message = "Error: No Unauthorised Url set in configuration";
-                    }
-                    break;
-
-                case Enums.UnautorisedUrlType.XPath:
-                    var xpathNode = umbContext.ContentCache.GetSingleByXPath(config.UnauthorisedUrlXPath);
-
-                    if(xpathNode != null)
-                    {
-                        url = xpathNode.Url;
-                    }
-                    else
-                    {
-                        journalMessage.Message = "Error: Unable to get the unauthorised Url from the specified XPath expression.";
-                    }
-                    break;
-
-                case Enums.UnautorisedUrlType.ContentPicker:
-                    int id;
-
-                    if(int.TryParse(config.UnauthorisedUrlContentPicker, out id))
-                    {
-                        var contentPickerNode = umbContext.ContentCache.GetById(id);
-
-                        if (contentPickerNode != null)
-                        {
-                            url = contentPickerNode.Url;
-                        }
-                        else
-                        {
-                            journalMessage.Message = "Error: Unable to get the unauthorised Url from the selcted unauthorised url content picker. Please ensure the selected page is published and not deleted.";
-                        }
-                    }
-                    else
-                    {
-                        journalMessage.Message = "Error: Unable to parse the selected unauthorised Url content picker id to integer. Please ensure a valid content node is selected.";
-                    }
-                    break;
-
-                default:
-                    journalMessage.Message = "Error: Unable to determine which method to use to get the unauthorised url. Please ensure Url, XPath or Content Picker is selected.";
-                    break;
-            }
-
-            if (string.IsNullOrEmpty(url))
-            {
-                if(!string.IsNullOrEmpty(journalMessage.Message))
-                {
-                    job.WriteJournal(journalMessage);
-                }
-
-                return true;
-            }
-
+            
             var ipv6s = new List<IPAddress>();
 
             foreach (var ip in config.IpAddresses)
@@ -194,10 +189,12 @@
 
             if (currentAppBackendUrl != ApplicationSettings.UmbracoPath)
             {
-                job.WatchWebRequests(new Regex($"^{ currentAppBackendUrl.TrimEnd('/') }(/){{0,1}}(.*){{0,1}}$", RegexOptions.IgnoreCase), 10, (count, httpApp) =>
+                job.WatchWebRequests(new Regex("^((" + currentAppBackendUrl.TrimEnd('/') + "(/){0,1})|(" + currentAppBackendUrl + ".*\\.([A-Za-z0-9]){3,5}))$", RegexOptions.IgnoreCase), 10, (count, httpApp) =>
                 {
-                    var rewritePath = httpApp.Context.Request.Url.AbsolutePath.Replace(currentAppBackendUrl, ApplicationSettings.UmbracoPath, StringComparison.InvariantCultureIgnoreCase);
-                    httpApp.Context.Response.Clear();
+                    var rewritePath = (httpApp.Request.Url.AbsolutePath.Length > currentAppBackendUrl.Length) ?
+                        ApplicationSettings.UmbracoPath +
+                        httpApp.Request.Url.AbsolutePath.Substring(currentAppBackendUrl.Length) :
+                        ApplicationSettings.UmbracoPath;
 
                     httpApp.Context.Items.Add(allowKey, true);
                     httpApp.Context.RewritePath(rewritePath);
@@ -210,6 +207,12 @@
                     if ((bool?)httpApp.Context.Items[allowKey] == true)
                     {
                         httpApp.Context.Items[allowKey] = false;
+                        return WatchCycle.Continue;
+                    }
+
+                    var url = UnauthorisedUrl(job, config);
+                    if(url == null)
+                    {
                         return WatchCycle.Continue;
                     }
 
@@ -230,6 +233,13 @@
 
                 if (userIp == null || !ipv6s.Any(x => x.Equals(userIp)))
                 {
+                    var url = UnauthorisedUrl(job, config);
+
+                    if(url == null)
+                    {
+                        return WatchCycle.Continue;
+                    }
+
                     if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
                     {
                         httpApp.Context.Response.Redirect(url, true);
@@ -281,7 +291,7 @@
 
                 if (!regex.IsMatch(ApplicationSettings.UmbracoPath) && !regex.IsMatch(umbracoReservedPaths.Value))
                 {
-                    job.WriteJournal(new JournalMessage($"Unable to make neccessary changes to the web.config, appSetting keys: umbracoPath & umbracoReservedPaths doesn't contain the expected values"));
+                    job.WriteJournal(new JournalMessage($"Unable to make necessary changes to the web.config, appSetting keys: umbracoPath & umbracoReservedPaths doesn't contain the expected values"));
                     return false;
                 }
 
@@ -293,7 +303,7 @@
             }
             catch(Exception ex)
             {
-                job.WriteJournal(new JournalMessage($"Unexpected error occured, exception:\n{ex.Message}"));
+                job.WriteJournal(new JournalMessage($"Unexpected error occurred, exception:\n{ex.Message}"));
                 return false;
             }
             finally
