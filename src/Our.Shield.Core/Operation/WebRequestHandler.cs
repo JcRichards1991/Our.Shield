@@ -279,26 +279,18 @@ namespace Our.Shield.Core.Operation
         private void Application_BeginRequest(object source, EventArgs e)
         {
             JobService.Instance.Poll();
-restart:
-            string uri = ((HttpApplication)source).Context.Request.Url.AbsoluteUri;
-            string uriWithoutDomain = null;
-
-#if DEBUG
-            //  Ignore when debugging
-            if (uri.EndsWith("/umbraco/backoffice/UmbracoApi/Authentication/GetRemainingTimeoutSeconds") ||
-                uri.EndsWith("/umbraco/ping.aspx"))
-            {
-                return;
-            }
-#endif
-
             int count = 0;
 
             if (beginWatchLock.TryEnterReadLock(watchLockTimeout))
             {
                 try
                 {
+restart:
+                    string uri = ((HttpApplication)source).Context.Request.Url.AbsoluteUri;
+                    string uriWithoutDomain = null;
+
                     count++;
+
                     foreach (var watch in beginWatchers)
                     {
                         string filePath = null;
@@ -322,6 +314,7 @@ restart:
                                 continue;
                             }
                         }
+
                         if ((watch.regex == null || watch.regex.IsMatch(filePath)))
                         {
                             switch (watch.request(count, (HttpApplication)source))

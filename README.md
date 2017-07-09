@@ -1,16 +1,18 @@
 # README #
 
 ### Purpose ###
-Provides security for you Umbraco site.
+Provides active security for you Umbraco site usign customizable components
 
 ---
 
 ### Why? ###
+There is no end of ways that your Umbraco site can be compromised, scrapped or mistreated. A few of the more famous can be reduced with the addition of a security layer checking each and every request; whether its access to Umbraco admin pages, media files or anonymous api end points. Our.Shield integrates into the Umbraco backend to allow easy configuration, even across load balanced environments.
+
 Because security is important!
 
 ---
 
-### Usage ###
+### Install ###
 1. Install Our.Shield.Core Framework package via (Add nuget link here to nuget shield package):
 ```
 PM> Install-Package Our.Shield.Core
@@ -21,25 +23,23 @@ PM> Install-Package Our.Shield.Core
 	```
 	PM> Install-Package Our.Shield.BackofficeAccess
 	```
-	> Allows you to configure the backoffice access Url.
-	> Allows you to restrict access to the configured backoffice access Url via a white-list of IP Address(es).
 		
 	* (Add nuget link here to nuget Media Protection package):
 	```
 	PM> Install-Package Our.Shield.MediaProtection
 	```
-	> Allows you to setup member only media files.
-	> Allows you to disable HotLinking - Stops other websites from serving your media.
-
-3. Login to the Backoffice of your site; you should notice a new custom section called **_Shield_**. If you don't see this new section, make sure the user you're logged in as, has access to the **_Shield_** section via the user permissions within the User Section.
-
-4. Configure the Our.Shield app(s) as you desire.
 
 ---
 
 ### Documentation ###
 Coming Soon!
 
+	> Allows you to configure the backoffice access Url.
+	> Allows you to restrict access to the configured backoffice access Url via a white-list of IP Address(es).
+	
+	> Allows you to setup member only media files.
+	> Allows you to disable HotLinking - Stops other websites from serving your media.
+	
 ---
 
 ### Log ###
@@ -51,4 +51,11 @@ Coming Soon!
 ---
 
 ### Future Development / Roadmap ###
-Coming Soon!
+* Multiple Environments - Configure different security for your dev, staging and live environment.
+* Scrapper Defense - Stop bots from stealing your content and resources
+* Geo Banning - Ban areas/countries/cloud services
+* Google Safe Browsing - Disable dangerous Urls
+
+
+### Source Code ###
+Download the source code, it should work for Visual Studio 2013 & 2015. If you set **Our.Shield.TestSite** as your **Set as Startup project** this should execute the test Umbraco website, where you can test Our.Shield in different scenarios. Once running, surf to http://localhost:8560/umbraco and at the login type **admin** for user and **password** for password.
