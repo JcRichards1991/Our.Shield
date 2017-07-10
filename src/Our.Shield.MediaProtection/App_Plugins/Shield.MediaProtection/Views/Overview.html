@@ -1,41 +1,5 @@
 ﻿<h4>Media Protection</h4>
 
 <p>
-    Media Protection allows you to diable <a href="https://simple.wikipedia.org/wiki/Hotlinking" title="Hotlinking">HotLinking</a> and the ability to secure your media to only be accessed by authenticated users.
-</p>
-
-<p>
-    <strong>Note</strong>: If you installed Media Protection via nuget, you'll need to create 3 new media-types for Secure Media to work as expected:
-    <ol>
-        <li>
-            Create a copy of the 'File' media-type, rename (for example) 'Secure File' and give it a new Icon of your choice to easily distinguish between the different 'File' media-types
-            <br />
-            <br />
-            Add a new property to the new 'File' media-type with alias 'umbracoMemberOnly' as type 'True/False'
-            <br />
-            <br />
-        </li>
-        <li>
-            Create a copy of the 'Image' media-type, rename (for example) 'Secure Image' and give it a new Icon of your choice to easily distinguish between the different 'Image' media-types
-            <br />
-            <br />
-            Add a new property to the new 'Image' media-type with alias 'umbracoMemberOnly' as type 'True/False'
-            <br />
-            <br />
-        </li>
-        <li>
-            Create a copy of the 'Folder' media-type, rename to (for example) 'Secure Folder' and give it a new Icon of your choice to easily distinguish between the different 'Folder' media-types
-            <br />
-            <br />
-            Add a new property to the new 'Folder' media-type with alias 'umbracoMemberOnly' as type 'Label'
-            <br />
-            <br />
-            Make sure on the permissions, the new 'Folder' media-type can be allowed to be created at the root and allows all media-types to be created as a child
-            <br />
-        </li>
-    </ol>
-    You'll also need to update the default 'Folder' media-type to allow all media types to be created as a child.
-    <br />
-    <br />
-    Otherwise, if installed via Umbraco's Backoffice package manager, these media-types will have been created on your behalf with all the correct permissions
+    Media Protection allows you to disable <a href="https://simple.wikipedia.org/wiki/Hotlinking" title="Hotlinking">HotLinking</a> and the ability to secure your media to only be accessed by authenticated users.
 </p>
