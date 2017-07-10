@@ -1,6 +1,7 @@
 ﻿namespace Our.Shield.Core.Models
 {
     using System.Configuration;
+    using Umbraco.Core;
 
     /// <summary>
     /// Class for returning values from the app settings section of the web.config
@@ -31,14 +32,9 @@
 
                 var url = GetAppKeyValue("umbracoPath", "~/umbraco");
 
-                umbracoPath = Umbraco.Core.IO.IOHelper.ResolveUrl(url);
+                url = Umbraco.Core.IO.IOHelper.ResolveUrl(url);
 
-                if (!umbracoPath.EndsWith("/"))
-                {
-                    umbracoPath = umbracoPath + "/";
-                }
-
-                return umbracoPath;
+                return umbracoPath = url.EnsureEndsWith('/');
             }
         }
     }
