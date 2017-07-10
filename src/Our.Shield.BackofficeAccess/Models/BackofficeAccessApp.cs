@@ -156,7 +156,7 @@
             //A hard save has occurred so we need
             //to make sure backoffice is accessible
 
-            var softLocationRegex = new Regex("^((" + softLocation.TrimEnd('/') + "/?)|(" + softLocation + ".*\\.([A-Za-z0-9]){2,5}))$", RegexOptions.IgnoreCase);
+            var softLocationRegex = new Regex("^((" + softLocation.TrimEnd('/') + ")(/?)|(" + softLocation + ".*\\.([A-Za-z0-9]){2,5}))$", RegexOptions.IgnoreCase);
 
             //Add watch on the soft location
             job.WatchWebRequests(softLocationRegex, 10, (count, httpApp) =>
@@ -192,7 +192,7 @@
                 return WatchCycle.Restart;
             });
 
-            var hardLocationRegex = new Regex("^((" + hardLocation.TrimEnd('/') + "/?)|(" + hardLocation + ".*\\.([A-Za-z0-9]){2,5}))$", RegexOptions.IgnoreCase);
+            var hardLocationRegex = new Regex("^((" + hardLocation.TrimEnd('/') + ")(/?)|(" + hardLocation + ".*\\.([A-Za-z0-9]){2,5}))$", RegexOptions.IgnoreCase);
 
             //Add watch on the hard location
             job.WatchWebRequests(hardLocationRegex, 20, (count, httpApp) =>
@@ -286,7 +286,7 @@
                 ipv6s.Add(tempIp.MapToIPv6());
             }
 
-            var hardLocationRegex = new Regex("^((" + ApplicationSettings.UmbracoPath.TrimEnd('/') + "/?)|(" + ApplicationSettings.UmbracoPath + ".*\\.([A-Za-z0-9]){2,5}))$", RegexOptions.IgnoreCase);
+            var hardLocationRegex = new Regex("^((" + ApplicationSettings.UmbracoPath.TrimEnd('/') + ")(/?)|(" + ApplicationSettings.UmbracoPath + ".*\\.([A-Za-z0-9]){2,5}))$", RegexOptions.IgnoreCase);
 
             //Add watch on the on-disk UmbracoPath location to do the security checking of the user's ip
             job.WatchWebRequests(hardLocationRegex, 1000, (count, httpApp) =>
@@ -397,7 +397,7 @@
         {
             //Check if we're enabled & the configured
             //backoffice url is equal to the on-disk UmbracoPath
-            if (config.Enable && new Regex("^((" + config.BackendAccessUrl.Trim('~').TrimEnd('/') + ")/?)$").IsMatch(ApplicationSettings.UmbracoPath))
+            if (config.Enable && new Regex("^((" + config.BackendAccessUrl.Trim('~').TrimEnd('/') + ")(/?))$", RegexOptions.IgnoreCase).IsMatch(ApplicationSettings.UmbracoPath))
             {
                 //we're enabled and the same
                 //no need for a hard save
