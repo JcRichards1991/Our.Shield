@@ -99,7 +99,7 @@
 
             if (config.EnableHotLinkingProtection)
             {
-                job.WatchWebRequests(new Regex(mediaFolder), 50, (count, httpApp) =>
+                job.WatchWebRequests(new Regex(mediaFolder, RegexOptions.IgnoreCase), 50, (count, httpApp) =>
                 {
                     var referrer = httpApp.Request.UrlReferrer;
                     if (referrer == null || String.IsNullOrWhiteSpace(referrer.Host) ||
@@ -112,6 +112,8 @@
                         return WatchCycle.Continue;
                     }
 
+                    job.WriteJournal(new JournalMessage($"Access was denied, {referrer.Host} is trying to hotlink media"));
+
                     //  Someone is trying to hotlink our media
                     httpApp.Response.StatusCode = (int) HttpStatusCode.Forbidden;
                     httpApp.Response.End();
@@ -122,7 +124,7 @@
 
             if (config.EnableMembersOnlyMedia)
             {
-                job.WatchWebRequests(new Regex(mediaFolder), 100, (count, httpApp) =>
+                job.WatchWebRequests(new Regex(mediaFolder, RegexOptions.IgnoreCase), 100, (count, httpApp) =>
                 {
                     var httpContext = new HttpContextWrapper(httpApp.Context);
                     var umbAuthTicket = httpContext.GetUmbracoAuthTicket();
@@ -134,11 +136,17 @@
                     }
 
                     var filename = httpApp.Request.Url.LocalPath;
+                    int mediaId = 0;
+                    string mediaName = string.Empty;
                    
                     var secureMedia = ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(CacheKey + "F" + filename, () =>
                     {
                         IMediaService mediaService = ApplicationContext.Current.Services.MediaService;
                         IMedia media = mediaService.GetMediaByPath(filename);
+
+                        mediaId = media.Id;
+                        mediaName = media.Name;
+
                         var pathIdKeys = new List<string>();
                         object accessRights = null;
 
@@ -229,6 +237,8 @@
                             return WatchCycle.Continue;
                         }
                     }
+
+                    job.WriteJournal(new JournalMessage($"An unauthenticated user is trying to access media: {mediaName}; media id: {mediaId}; unauthenticated user IP Address: {httpApp.Context.Request.UserHostAddress}"));
 
                     //  You need to be logged in or be a member of the correct member group to see this media
                     httpApp.Response.StatusCode = (int) HttpStatusCode.Forbidden;
