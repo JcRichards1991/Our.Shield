@@ -23,7 +23,7 @@
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
         [Length(256)]
-        [IndexAttribute (IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(AppId))]
+        [Index(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(AppId))]
         public string AppId { get; set; }
 
         /// <summary>
@@ -31,7 +31,7 @@
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
         [ForeignKey(typeof(Environment), Name = "FK_" + nameof(Shield) + "_" + nameof(Configuration) + "_" + nameof(Environment))]
-        [IndexAttribute(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(EnvironmentId))]
+        [Index(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(EnvironmentId))]
         public int EnvironmentId { get; set; }
 
         /// <summary>

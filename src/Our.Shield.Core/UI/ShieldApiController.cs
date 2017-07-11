@@ -5,7 +5,9 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Web;
     using System.Web.Http;
+    using Umbraco.Core.Security;
     using Umbraco.Web.Editors;
     using Umbraco.Web.Mvc;
 
@@ -123,6 +125,13 @@
             }
             var configuration = json.ToObject(((Job)job).ConfigType) as IConfiguration;
             configuration.Enable = json.GetValue(nameof(IConfiguration.Enable), System.StringComparison.InvariantCultureIgnoreCase).Value<bool>();
+            
+            if (Security.CurrentUser != null)
+            {
+                var user = Security.CurrentUser;
+                job.WriteJournal(new JournalMessage($"{user.Name} has updated the configuration"));
+            }
+
             return job.WriteConfiguration(configuration);
         }
 
