@@ -215,19 +215,21 @@
                 {
                     return WatchCycle.Continue;
                 }
+                
+                var httpContext = new HttpContextWrapper(httpApp.Context);
+                var umbAuthTicket = httpContext.GetUmbracoAuthTicket();
 
                 //If the requests has an authenticated umbraco user,
                 //we need to redirect the request back to the
                 //softLocation - This is most likely due to
                 //clicking a link (i.e. content breadcrumb)
                 //which isn't handle by the angular single page app
-                var umbAuthTicket = new HttpContextWrapper(HttpContext.Current).GetUmbracoAuthTicket();
-                if(umbAuthTicket != null)
+                if (httpContext.AuthenticateCurrentRequest(umbAuthTicket, true))
                 {
                     //request has a authenticated user, we want to
                     //redirect the user back to the soft location
-                    var rewritePath = httpApp.Request.Url.AbsolutePath.Length > hardLocation.Length
-                        ? softLocation + httpApp.Request.Url.AbsolutePath.Substring(hardLocation.Length)
+                    var rewritePath = httpApp.Context.Request.Url.AbsolutePath.Length > hardLocation.Length
+                        ? softLocation + httpApp.Context.Request.Url.AbsolutePath.Substring(hardLocation.Length)
                         : softLocation;
 
                     httpApp.Context.Response.Redirect(rewritePath, true);
