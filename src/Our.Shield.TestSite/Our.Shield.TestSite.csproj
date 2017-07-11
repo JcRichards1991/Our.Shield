@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\uSync.3.3.4.740\build\uSync.props" Condition="Exists('..\packages\uSync.3.3.4.740\build\uSync.props')" />
   <Import Project="..\packages\UmbracoCms.7.5.14\build\UmbracoCms.props" Condition="Exists('..\packages\UmbracoCms.7.5.14\build\UmbracoCms.props')" />
+  <Import Project="..\packages\uSync.3.3.4.740\build\uSync.props" Condition="Exists('..\packages\uSync.3.3.4.740\build\uSync.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -584,37 +584,13 @@
     <Content Include="Global.asax" />
     <Content Include="packages.config" />
     <Content Include="Views\Web.config" />
-    <Content Include="Config\umbracoSettings.config" />
     <Content Include="Config\trees.config" />
-    <Content Include="Config\ExamineSettings.config" />
     <Content Include="Config\Dashboard.config" />
     <Content Include="Config\applications.config" />
     <Content Include="Config\imageprocessor\security.config" />
     <Content Include="Config\imageprocessor\processing.config" />
     <Content Include="Config\imageprocessor\cache.config" />
-    <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Macro.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Embed.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Base.cshtml" />
-    <Content Include="Views\Partials\Grid\Bootstrap3.cshtml" />
-    <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />
-    <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
-    <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
-    <Content Include="Media\Web.config" />
-    <Content Include="Config\UrlRewriting.config" />
-    <Content Include="Config\tinyMceConfig.config" />
-    <Content Include="Config\scripting.config" />
-    <Content Include="Config\metablogConfig.config" />
-    <Content Include="Config\log4net.config" />
-    <Content Include="Config\FileSystemProviders.config" />
-    <Content Include="Config\feedProxy.config" />
-    <Content Include="Config\ExamineIndex.config" />
-    <Content Include="Config\EmbeddedMedia.config" />
     <Content Include="Config\ClientDependency.config" />
-    <Content Include="Config\BaseRestExtensions.config" />
-    <Content Include="Config\404handlers.config" />
     <Content Include="Views\Home.cshtml" />
     <Content Include="Views\Contact.cshtml" />
     <Content Include="App_Plugins\MigrationsViewer\package.manifest" />
@@ -652,6 +628,30 @@
     <Content Include="Config\uSyncCore.Config" />
     <Content Include="Config\uSyncBackOffice.Config" />
     <Content Include="App_Plugins\uSync\package.manifest" />
+    <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Macro.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Embed.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Base.cshtml" />
+    <Content Include="Views\Partials\Grid\Bootstrap3.cshtml" />
+    <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />
+    <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
+    <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
+    <Content Include="Media\Web.config" />
+    <Content Include="Config\UrlRewriting.config" />
+    <Content Include="Config\umbracoSettings.config" />
+    <Content Include="Config\tinyMceConfig.config" />
+    <Content Include="Config\scripting.config" />
+    <Content Include="Config\metablogConfig.config" />
+    <Content Include="Config\log4net.config" />
+    <Content Include="Config\FileSystemProviders.config" />
+    <Content Include="Config\feedProxy.config" />
+    <Content Include="Config\ExamineSettings.config" />
+    <Content Include="Config\ExamineIndex.config" />
+    <Content Include="Config\EmbeddedMedia.config" />
+    <Content Include="Config\BaseRestExtensions.config" />
+    <Content Include="Config\404handlers.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -664,10 +664,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Our.Shield.Core\Our.Shield.Core.csproj">
@@ -684,6 +680,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -715,19 +715,19 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
-    <Error Condition="!Exists('..\packages\UmbracoCms.7.5.14\build\UmbracoCms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.5.14\build\UmbracoCms.props'))" />
-    <Error Condition="!Exists('..\packages\UmbracoCms.7.5.14\build\UmbracoCms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.5.14\build\UmbracoCms.targets'))" />
     <Error Condition="!Exists('..\packages\uSync.3.3.4.740\build\uSync.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\uSync.3.3.4.740\build\uSync.props'))" />
     <Error Condition="!Exists('..\packages\uSync.3.3.4.740\build\uSync.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\uSync.3.3.4.740\build\uSync.targets'))" />
+    <Error Condition="!Exists('..\packages\UmbracoCms.7.5.14\build\UmbracoCms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.5.14\build\UmbracoCms.props'))" />
+    <Error Condition="!Exists('..\packages\UmbracoCms.7.5.14\build\UmbracoCms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.5.14\build\UmbracoCms.targets'))" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(solutiondir)Our.Shield.Core\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
 xcopy "$(solutiondir)Our.Shield.BackofficeAccess\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
 xcopy "$(solutiondir)Our.Shield.MediaProtection\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\uSync.3.3.4.740\build\uSync.targets" Condition="Exists('..\packages\uSync.3.3.4.740\build\uSync.targets')" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <Import Project="..\packages\UmbracoCms.7.5.14\build\UmbracoCms.targets" Condition="Exists('..\packages\UmbracoCms.7.5.14\build\UmbracoCms.targets')" />
-  <Import Project="..\packages\uSync.3.3.4.740\build\uSync.targets" Condition="Exists('..\packages\uSync.3.3.4.740\build\uSync.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
