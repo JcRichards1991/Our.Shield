@@ -1,20 +1,17 @@
 ﻿namespace Our.Shield.MediaProtection.Models
 {
+    using Core.Models;
+    using Core.UI;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Text.RegularExpressions;
     using System.Web;
-    using Core.Models;
-    using Core.UI;
     using Umbraco.Core;
     using Umbraco.Core.Models;
-    using Umbraco.Core.Persistence.Migrations;
-    using Umbraco.Core.Persistence.SqlSyntax;
     using Umbraco.Core.Security;
     using Umbraco.Core.Services;
-    using Umbraco.Core.Logging;
 
     /// <summary>
     /// 
@@ -102,11 +99,11 @@
 
             if (config.EnableHotLinkingProtection)
             {
-                job.WatchWebRequests(new Regex(mediaFolder), 50, (count, app) =>
+                job.WatchWebRequests(new Regex(mediaFolder), 50, (count, httpApp) =>
                 {
-                    var referrer = app.Request.UrlReferrer;
+                    var referrer = httpApp.Request.UrlReferrer;
                     if (referrer == null || String.IsNullOrWhiteSpace(referrer.Host) ||
-                        referrer.Host.Equals(app.Request.Url.Host, StringComparison.InvariantCultureIgnoreCase))
+                        referrer.Host.Equals(httpApp.Request.Url.Host, StringComparison.InvariantCultureIgnoreCase))
                     {
                         //  This media is being accessed directly, 
                         //  or from a browser that doesn't pass referrer info,
@@ -116,8 +113,8 @@
                     }
 
                     //  Someone is trying to hotlink our media
-                    app.Response.StatusCode = (int) HttpStatusCode.Forbidden;
-                    app.Response.End();
+                    httpApp.Response.StatusCode = (int) HttpStatusCode.Forbidden;
+                    httpApp.Response.End();
                     return WatchCycle.Stop;
                 });
 
@@ -125,15 +122,18 @@
 
             if (config.EnableMembersOnlyMedia)
             {
-                job.WatchWebRequests(new Regex(mediaFolder), 100, (count, app) =>
+                job.WatchWebRequests(new Regex(mediaFolder), 100, (count, httpApp) =>
                 {
+                    var httpContext = new HttpContextWrapper(httpApp.Context);
+                    var umbAuthTicket = httpContext.GetUmbracoAuthTicket();
+
                     //  If we have logged in as a backend user, then allow all access
-                    if (new System.Web.HttpContextWrapper(System.Web.HttpContext.Current).GetUmbracoAuthTicket() != null)
+                    if (httpContext.AuthenticateCurrentRequest(umbAuthTicket, true))
                     {
                         return WatchCycle.Continue;
                     }
 
-                    var filename = app.Request.Url.LocalPath;
+                    var filename = httpApp.Request.Url.LocalPath;
                    
                     var secureMedia = ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(CacheKey + "F" + filename, () =>
                     {
@@ -208,7 +208,7 @@
                     if (secureMedia is bool)
                     {
                         if ((bool) secureMedia == false || 
-                            (HttpContext.Current.User != null && HttpContext.Current.User.Identity.IsAuthenticated))
+                            (httpApp.Context.User != null && httpApp.Context.User.Identity.IsAuthenticated))
                         {
                             //  They are allowed to view this media
                             return WatchCycle.Continue;
@@ -223,7 +223,7 @@
                             return WatchCycle.Continue;
                         }
 
-                        if (HttpContext.Current.User.Identity.IsAuthenticated)
+                        if (httpApp.Context.User.Identity.IsAuthenticated)
                         {
                             //  TODO: Need to handle when security is member group based
                             return WatchCycle.Continue;
@@ -231,8 +231,8 @@
                     }
 
                     //  You need to be logged in or be a member of the correct member group to see this media
-                    app.Response.StatusCode = (int) HttpStatusCode.Forbidden;
-                    app.Response.End();
+                    httpApp.Response.StatusCode = (int) HttpStatusCode.Forbidden;
+                    httpApp.Response.End();
                     return WatchCycle.Stop;
 
                 });
