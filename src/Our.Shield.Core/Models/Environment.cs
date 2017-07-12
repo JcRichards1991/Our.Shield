@@ -1,5 +1,7 @@
 ﻿namespace Our.Shield.Core.Models
 {
+    using Persistance.Business;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -84,6 +86,21 @@
             Name = data.Name;
             Icon = data.Icon;
             Domains = data.Domains.Select(x => new Domain(x));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="appIds"></param>
+        /// <returns></returns>
+        public IEnumerable<IJournal> JournalListing(IEnumerable<string> appIds, int page, int itemsPerPage, Type type)
+        {
+            return DbContext.Instance.Journal.ListMultiple(Id, appIds, page, itemsPerPage, type);
+        }
+
+        public IEnumerable<T> JournalListing<T>(IEnumerable<string> appIds, int page, int itemsPerPage) where T : IJournal
+        {
+            return DbContext.Instance.Journal.ListMultiple(Id, appIds, page, itemsPerPage, typeof(T)).Select(x => (T)x);
         }
     }
 }

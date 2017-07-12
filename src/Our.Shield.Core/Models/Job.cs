@@ -81,7 +81,7 @@
         public IConfiguration ReadConfiguration() => Operation.JobService.Instance.ReadConfiguration(this);
 
         /// <summary>
-        /// Reads a list of Journals fro the database
+        /// Reads a list of Journals from the database
         /// </summary>
         /// <typeparam name="T">
         /// The Type of Journal to return

@@ -31,8 +31,13 @@ var jsFiles = [
 var cssOutput = '/App_Plugins/Shield';
 var scssFiles = [
     {
+        files: src + '.Core/UI/Scss/*.scss',
+        output: src + '.Core' + cssOutput + '/Backoffice/Css',
+        name: 'Shield.css',
+        nameMin: 'Shield.min.css'
+    },
+    {
         files: src + '.BackofficeAccess/Scss/*.scss',
-        scss: src + '.BackofficeAccess/Scss/BackofficeAccess.scss',
         output: src + '.BackofficeAccess' + cssOutput + '.BackofficeAccess/Css',
         name: 'BackofficeAccess.css',
         nameMin: 'BackofficeAccess.min.css'

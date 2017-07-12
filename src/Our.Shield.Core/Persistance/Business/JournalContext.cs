@@ -13,6 +13,61 @@
     /// </summary>
     internal class JournalContext : DbContext
     {
+        private IEnumerable<IJournal> GetListingResults(int environmentId, int page, int itemsPerPage, Type type, params string[] appIds)
+        {
+            var sql = new Sql();
+            sql.Select("*")
+                .From<Data.Dto.Journal>(Syntax)
+                .Where<Data.Dto.Journal>(j => j.EnvironmentId == environmentId, Syntax);
+
+            
+            if (appIds != null && appIds.Any(x => !string.IsNullOrEmpty(x)))
+            {
+                var ids = appIds.Where(x => x != null);
+                sql.Where<Data.Dto.Journal>(j => ids.Contains(j.AppId), Syntax);
+            }
+
+            sql.OrderByDescending<Data.Dto.Journal>(j => j.Datestamp, Syntax);
+
+            try
+            {
+                var results = Database.Page<Data.Dto.Journal>(page, itemsPerPage, sql);
+
+                var typedRecords = results.Items
+                    .Select(x =>
+                        {
+                            try
+                            {
+                                var journal = JsonConvert.DeserializeObject(x.Value, type) as Journal;
+                                journal.AppId = x.AppId;
+                                journal.Datestamp = x.Datestamp;
+                                journal.EnvironmentId = x.EnvironmentId;
+
+                                return journal;
+                            }
+                            catch (JsonSerializationException jEx)
+                            {
+                                LogHelper.Error(typeof(JournalContext), $"Error Deserialising journal for environment with Id: {environmentId}; Record Id: {x.Id}; Type:{type}", jEx);
+                                return null;
+                            }
+                            catch (Exception selectEx)
+                            {
+                                LogHelper.Error(typeof(JournalContext), $"An error occured getting journals for environment with Id: {environmentId}; Record Id: {x.Id};", selectEx);
+                                return null;
+                            }
+
+                        })
+                    .Where(x => x != null); ;
+
+                return typedRecords;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error(typeof(JournalContext), $"Error getting journals for environment with Id: {environmentId}; App Ids: {string.Join(", ", appIds)}", ex);
+            }
+            return Enumerable.Empty<IJournal>();
+        }
+
         /// <summary>
         /// Reads a Journal from the database.
         /// </summary>
@@ -30,44 +85,7 @@
         /// </returns>
         public IEnumerable<IJournal> List(int environmentId, string appId, int page, int itemsPerPage, Type type)
         {
-            var sql = new Sql();
-            sql.Select()
-                .From<Data.Dto.Journal>(Syntax)
-                .Where<Data.Dto.Domain>(d => d.EnvironmentId == environmentId, Syntax);
-            
-            if (!string.IsNullOrWhiteSpace(appId))
-            {
-                sql.Where<Data.Dto.Journal>(j => j.AppId == appId, Syntax);
-            }
-
-            try
-            {
-                var records = Database.Page<Data.Dto.Journal>(page, itemsPerPage, sql);
-
-                if (records?.Items?.Count == 0)
-                {
-                    return Enumerable.Empty<IJournal>();
-                }
-
-                return records.Items.Select(x =>
-                {
-                    try
-                    {
-                        return JsonConvert.DeserializeObject(x.Value, type) as IJournal;
-                    }
-                    catch (JsonSerializationException jEx)
-                    {
-                        LogHelper.Error(typeof(ConfigurationContext), $"Error Deserialising journal for environment with Id: {environmentId}; Record Id: {x.Id}; Type:{type}", jEx);
-                        return null;
-                    }
-                    
-                }).Where(x => x != null);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error(typeof(JournalContext), $"Error getting journals for environment with Id: {environmentId}", ex);
-            }
-            return Enumerable.Empty<IJournal>();
+            return GetListingResults(environmentId, page, itemsPerPage, type, appId);
         }
 
         /// <summary>
@@ -91,7 +109,21 @@
         /// <returns></returns>
         public IEnumerable<T> List<T>(int environmentId, string appId, int page, int itemsPerPage) where T : IJournal
         {
-            return List(environmentId, appId, page, itemsPerPage, typeof(T)) as IEnumerable<T>;
+            return List(environmentId, appId, page, itemsPerPage, typeof(T)).Select(x => (T) x);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="environmentId"></param>
+        /// <param name="appIds"></param>
+        /// <param name="page"></param>
+        /// <param name="itemsPerPage"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public IEnumerable<IJournal> ListMultiple(int environmentId, IEnumerable<string> appIds, int page, int itemsPerPage, Type type)
+        {
+            return GetListingResults(environmentId, page, itemsPerPage, type, appIds.ToArray());
         }
 
         /// <summary>

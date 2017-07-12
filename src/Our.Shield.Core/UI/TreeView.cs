@@ -77,5 +77,35 @@
         /// </summary>
         [JsonProperty("appAssests")]
         public AppAssest AppAssests { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("journalListing")]
+        public JournalListing JournalListing { get; set; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class JournalListing
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("items")]
+        public IEnumerable<IJournal> Journals { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("totalPages")]
+        public int TotalPages { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("pageNumber")]
+        public int PageNumber { get; set; }
     }
 }

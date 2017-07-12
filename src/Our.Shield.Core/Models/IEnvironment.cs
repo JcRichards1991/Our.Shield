@@ -1,6 +1,7 @@
 ﻿namespace Our.Shield.Core.Models
 {
     using Newtonsoft.Json;
+    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -25,5 +26,9 @@
         /// </summary>
         [JsonProperty("domains")]
         IEnumerable<IDomain> Domains { get; }
+
+        IEnumerable<IJournal> JournalListing(IEnumerable<string> appIds, int page, int itemsPerPage, Type type);
+
+        IEnumerable<T> JournalListing<T>(IEnumerable<string> appIds, int page, int itemsPerPage) where T : IJournal;
     }
 }

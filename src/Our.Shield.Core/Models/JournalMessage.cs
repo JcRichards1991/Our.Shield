@@ -1,5 +1,7 @@
 ﻿namespace Our.Shield.Core.Models
 {
+    using Newtonsoft.Json;
+
     /// <summary>
     /// Out-Of-The-Box Journal class to use
     /// </summary>
@@ -8,6 +10,7 @@
         /// <summary>
         /// The message for the Journal
         /// </summary>
+        [JsonProperty("message")]
         public string Message { get; set; }
 
         /// <summary>

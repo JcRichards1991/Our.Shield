@@ -1,5 +1,7 @@
 ﻿namespace Our.Shield.Core.Models
 {
+    using Newtonsoft.Json;
+
     /// <summary>
     /// Fisk interface
     /// </summary>
@@ -8,6 +10,7 @@
         /// <summary>
         /// The Id of Frisk
         /// </summary>
+        [JsonProperty("id")]
         string Id { get; }
     }
 }

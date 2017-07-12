@@ -318,8 +318,10 @@
     <None Include="Our.Shield.Core.nuspec">
       <SubType>Designer</SubType>
     </None>
+    <None Include="UI\Scss\umb-table.scss" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\Shield\Backoffice\Css\Shield.css" />
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Overview.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Scripts\Shield.js" />

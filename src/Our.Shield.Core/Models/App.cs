@@ -3,10 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Semver;
-    using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence.Migrations;
-    using Umbraco.Core.Persistence.SqlSyntax;
 
     /// <summary>
     /// Definition of an App to plugin to Our.Shield custom umbraco section
@@ -17,21 +14,25 @@
         /// <summary>
         /// Unique identifier of the plugin
         /// </summary>
+        [JsonProperty("id")]
         public abstract string Id { get; }
 
         /// <summary>
         /// Name of the plugin
         /// </summary>
+        [JsonProperty("name")]
         public abstract string Name { get; }
 
         /// <summary>
         /// Description of the plugin
         /// </summary>
+        [JsonProperty("description")]
         public abstract string Description { get; }
 
         /// <summary>
         /// Css class of icon
         /// </summary>
+        [JsonProperty("icon")]
         public abstract string Icon { get; }
 
 
@@ -60,6 +61,7 @@
         /// <summary>
         /// The default configuration for the App
         /// </summary>
+        [JsonIgnore]
         public virtual IConfiguration DefaultConfiguration
         {
             get

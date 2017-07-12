@@ -5,9 +5,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using System.Web;
     using System.Web.Http;
-    using Umbraco.Core.Security;
     using Umbraco.Web.Editors;
     using Umbraco.Web.Mvc;
 
@@ -34,10 +32,16 @@
                 //  Is the environments node
                 return new TreeView
                 {
-                    Type = UI.TreeView.TreeViewType.Environments,
+                    Type = TreeView.TreeViewType.Environments,
                     Name = "Environments",
                     Description = "List of the different environments your Umbraco instance operates under",
-                    Environments = environments.Keys
+                    Environments = environments.Keys,
+                    JournalListing = new JournalListing
+                    {
+                        Journals = Enumerable.Empty<IJournal>(),
+                        PageNumber = 1,
+                        TotalPages = 1
+                    }
                 };
             }
 
@@ -45,14 +49,23 @@
             {
                 if (id == environment.Key.Id)
                 {
+                    var appIds = environment.Value.Select(x => x.App.Id);
+                    var journals = environment.Key.JournalListing<JournalMessage>(appIds, 1, 50);
+
                     return new TreeView
                     {
-                        Type = UI.TreeView.TreeViewType.Environment,
+                        Type = TreeView.TreeViewType.Environment,
                         Name = environment.Key.Name,
                         Description = $"View apps for the {environment.Key.Name} environment",
                         Environments = environments.Keys,
                         Environment = environment.Key,
-                        Apps = environment.Value.Select(x => new KeyValuePair<int, IApp>(x.Id, x.App))
+                        Apps = environment.Value.Select(x => new KeyValuePair<int, IApp>(x.Id, x.App)),
+                        JournalListing = new JournalListing
+                        {
+                            Journals = journals,
+                            PageNumber = 1,
+                            TotalPages = 1
+                        }
                     };
                 }
 
@@ -72,17 +85,25 @@
                                 .Where(x => x.AssetType == ClientDependency.Core.ClientDependencyType.Javascript)
                                 .Select(x => x.FilePath)
                         };
-                        
+
+                        var journals = job.ListJournals<JournalMessage>(1, 50);
+
                         return new TreeView
                         {
-                            Type = UI.TreeView.TreeViewType.App,
+                            Type = TreeView.TreeViewType.App,
                             Name = job.App.Name,
                             Description = job.App.Description,
                             Environments = environments.Keys,
                             Environment = environment.Key,
                             App = job.App,
                             Configuration = job.ReadConfiguration(),
-                            AppAssests = appAssests
+                            AppAssests = appAssests,
+                            JournalListing = new JournalListing
+                            {
+                                Journals = journals,
+                                PageNumber = 1,
+                                TotalPages = 1
+                            }
                         };
                     }
                 }
@@ -143,7 +164,7 @@
         /// <param name="itemsPerPage"></param>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<IJournal> Journals(int id, int page, int itemsPerPage)
+        public IEnumerable<IJournal> Journals(int environmentId, int id, int page, int itemsPerPage)
         {
             var job = Operation.JobService.Instance.Job(id);
             return job.ListJournals<Journal>(page, itemsPerPage);

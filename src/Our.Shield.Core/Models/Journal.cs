@@ -11,19 +11,19 @@
         /// <summary>
         /// App Id of the journal
         /// </summary>
-        [JsonIgnore]
+        [JsonProperty("appId")]
         public string AppId { get; internal set; }
 
         /// <summary>
         /// Environment Id of the journal
         /// </summary>
-        [JsonIgnore]
-        public int EnvironmentId { get; }
+        [JsonProperty("environmentId")]
+        public int EnvironmentId { get; internal set; }
 
         /// <summary>
         /// Datestamp of when the journal was created
         /// </summary>
-        [JsonIgnore]
-        public DateTime Datestamp { get; }
+        [JsonProperty("datestamp")]
+        public DateTime Datestamp { get; internal set; }
     }
 }

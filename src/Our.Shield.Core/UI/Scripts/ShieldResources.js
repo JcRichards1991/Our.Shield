@@ -25,8 +25,8 @@ angular.module('umbraco.resources').factory('shieldResource', ['$http', function
                 },
             });
         },
-        getJournals: function (id, page, itemsPerPage) {
-            return $http.get(apiRoot + 'Journals?id=' + id + '&page=' + page + '&itemsPerPage=' + itemsPerPage);
+        getJournals: function (environemntId, id, page, itemsPerPage) {
+            return $http.get(apiRoot + 'Journals?environmentId=' + environemntId + '&id=' + id + '&page=' + page + '&itemsPerPage=' + itemsPerPage);
         },
         getAppIds: function () {
             return $http.get(apiRoot + 'AppIds');

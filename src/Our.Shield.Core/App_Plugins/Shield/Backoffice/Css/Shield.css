@@ -1,0 +1,24 @@
+.umb-table .umb-table-body .umb-table-cell.shield-table__name, .umb-table .umb-table-body .umb-table-cell.shield-table__name-large {
+  font-size: 14px;
+  font-weight: bold;
+  color: #000; }
+
+.umb-table .umb-table-row.-selected .umb-table-cell.app-icon-cell .umb-table-body__fileicon {
+  display: block; }
+
+.umb-table .umb-table-row .umb-table-cell.app-icon-cell {
+  padding: 15px 0;
+  margin: 0 0 0 15px;
+  -ms-flex: 0 0 25px;
+  flex: 0 0 25px; }
+
+.umb-table .umb-table-row .umb-table-cell.shield-table__name {
+  max-width: 20%; }
+
+.umb-table .umb-table-row .umb-table-cell.shield-table__name-large {
+  width: 100%; }
+
+.umb-table .umb-table-row .umb-table-cell.shield-table__name-small {
+  max-width: 14%;
+  -ms-flex: 1 1 14%;
+  flex: 1 1 14%; }
