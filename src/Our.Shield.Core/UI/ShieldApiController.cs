@@ -29,16 +29,8 @@
 
             if (id == Constants.Tree.EnvironmentsRootId)
             {
-                var journals = Persistance.Business.DbContext.Instance.Journal.FetchAll<JournalMessage>(1, 50, out totalPages);
-                var apps = environments.SelectMany(x => x.Value).Select(x => new AppListingItem
-                {
-                    Id = x.Id,
-                    AppId = x.App.Id,
-                    Name = x.App.Name,
-                    Description = x.App.Description,
-                    Icon = x.App.Icon,
-                    Enable = x.ReadConfiguration().Enable
-                });
+                var journals = Persistance.Business.DbContext.Instance.Journal.FetchAll<JournalMessage>(1, 200, out totalPages);
+                var apps = environments.First().Value.Select(x => x.App);
 
                 //  Is the environments node
                 return new TreeView
@@ -47,13 +39,12 @@
                     Name = "Environments",
                     Description = "List of the different environments your Umbraco instance operates under",
                     Environments = environments.Keys,
-                    Apps = apps,
                     JournalListing = new JournalListing
                     {
                         Journals = journals.Select(x => new JournalListingItem
                         {
                             Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                            App = apps.FirstOrDefault(a => a.AppId == x.AppId).Name,
+                            App = apps.FirstOrDefault(a => a.Id == x.AppId).Name,
                             Environment = environments.FirstOrDefault(e => e.Key.Id == x.EnvironmentId).Key.Name,
                             Message = x.Message
                         }),
@@ -66,7 +57,7 @@
             {
                 if (id == environment.Key.Id)
                 {
-                    var journals = environment.Key.JournalListing<JournalMessage>(1, 50, out totalPages);
+                    var journals = environment.Key.JournalListing<JournalMessage>(1, 100, out totalPages);
                     var apps = environment.Value.Select(x => new AppListingItem
                     {
                         Id = x.Id,
@@ -91,7 +82,7 @@
                             {
                                 Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
                                 App = apps.FirstOrDefault(a => a.AppId == x.AppId).Name,
-                                Environment = environments.FirstOrDefault(e => e.Key.Id == x.EnvironmentId).Key.Name,
+                                Environment = environment.Key.Name,
                                 Message = x.Message
                             }),
                             TotalPages = totalPages
@@ -134,7 +125,7 @@
                                 {
                                     Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
                                     App = job.App.Name,
-                                    Environment = environments.FirstOrDefault(e => e.Key.Id == x.EnvironmentId).Key.Name,
+                                    Environment = environment.Key.Name,
                                     Message = x.Message
                                 }),
                                 TotalPages = totalPages,
@@ -200,20 +191,66 @@
         /// <param name="itemsPerPage"></param>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<JournalListingItem> Journals(int environmentId, int appId, int page, int itemsPerPage)
+        public JournalListing Journals(int id, int page)
         {
-            var job = Operation.JobService.Instance.Job(appId);
-
+            var environments = Operation.JobService.Instance.Environments;
+            var apps = environments.First().Value.Select(x => x.App);
             int totalPages = 1;
-            var journals = job.ListJournals<JournalMessage>(page, itemsPerPage, out totalPages);
 
-            return journals.Select(x => new JournalListingItem
+            if (id == Constants.Tree.EnvironmentsRootId)
             {
-                Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                App = job.App.Name,
-                //Environment = environments.FirstOrDefault(e => e.Key.Id == x.EnvironmentId).Key.Name,
-                Message = x.Message,
-            });
+                return new JournalListing
+                {
+                    Journals = Persistance.Business.DbContext.Instance.Journal.FetchAll<JournalMessage>(page, 200, out totalPages).Select(x => new JournalListingItem
+                    {
+                        Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+                        App = apps.FirstOrDefault(a => a.Id == x.AppId).Name,
+                        Environment = environments.FirstOrDefault(e => e.Key.Id == x.EnvironmentId).Key.Name,
+                        Message = x.Message
+                    }),
+                    TotalPages = totalPages
+                };
+            }
+            else
+            {
+                foreach (var environment in environments)
+                {
+                    if (id == environment.Key.Id)
+                    {
+                        return new JournalListing
+                        {
+                            Journals = environment.Key.JournalListing<JournalMessage>(page, 100, out totalPages).Select(x => new JournalListingItem
+                            {
+                                Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+                                App = apps.FirstOrDefault(a => a.Id == x.AppId).Name,
+                                Environment = environment.Key.Name,
+                                Message = x.Message
+                            }),
+                            TotalPages = totalPages
+                        };
+                    }
+
+                    foreach (var job in environment.Value)
+                    {
+                        if (id == job.Id)
+                        {
+                            return new JournalListing
+                            {
+                                Journals = job.ListJournals<JournalMessage>(page, 50, out totalPages).Select(x => new JournalListingItem
+                                {
+                                    Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+                                    App = job.App.Name,
+                                    Environment = environment.Key.Name,
+                                    Message = x.Message
+                                }),
+                                TotalPages = totalPages
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
 
         /// <summary>

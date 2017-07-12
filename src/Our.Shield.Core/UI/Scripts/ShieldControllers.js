@@ -42,7 +42,6 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                 shieldResource.getView(vm.id).then(function (response) {
                     vm.name = response.data.name;
                     vm.description = response.data.description;
-                    vm.appListing.apps = response.data.apps;
                     angular.extend(vm.journalListing, response.data.journalListing);
 
                     switch (vm.type = response.data.type) {
@@ -63,7 +62,8 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
 
                             vm.journalListing.columns.splice(1, 1);
                             vm.path = '-1,0,' + vm.id;
-                            vm.ancestors = [{ id: 0, name: 'Environments' },{ id: vm.id, name: vm.name }]
+                            vm.ancestors = [{ id: 0, name: 'Environments' }, { id: vm.id, name: vm.name }]
+                            vm.appListing.apps = response.data.apps;
                             break;
 
                         case 2:     //  App
@@ -136,36 +136,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     orderDirection: 'desc'
                 },
                 apps: null,
-                totalPages: 1,
-                pageNumber: 1,
-                nextPage: function (page) {
-                    //TODO: get listing with desired sort on field for next page
-                },
-                previousPage: function (page) {
-                    //TODO: get listing with desired sort on field for previous page
-                },
-                gotoPage: function (page) {
-                    //TODO: get listing with desired sort on field for desired page
-                },
-                isSortDirection: function (col, direction) {
-                    return false;
-
-                    //TODO: uncomment when get listing functionality is completed
-                    //return listViewHelper.setSortingDirection(col, direction, vm.journalListing.options);
-                },
-                sort: function (field, allow) {
-                    if(allow) {
-                        vm.journalListing.options.orderBySystemField = false;
-                        listViewHelper.setSorting(field, allow, vm.journalListing.options);
-                        
-                        //TODO: get listing of journals with desired sort on field
-                    }
-                },
-                getJournalListing: function (page) {
-                    //TODO: call the API endpoint passing the corresponsing values
-                    //and update the vm.journalListing.items array with that returned
-                },
-                enableItem: function (item) {
+                enable: function (item) {
                     if (item.enable)
                         item.enable = false;
                     else
@@ -216,31 +187,33 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                 totalPages: 1,
                 pageNumber: 1,
                 nextPage: function (page) {
-                    //TODO: get listing with desired sort on field for next page
+                    vm.journalListing.pageNumber = page;
+                    vm.journalListing.getJournalListing();
                 },
                 previousPage: function (page) {
-                    //TODO: get listing with desired sort on field for previous page
+                    vm.journalListing.pageNumber = page;
+                    vm.journalListing.getJournalListing();
                 },
                 gotoPage: function (page) {
-                    //TODO: get listing with desired sort on field for desired page
+                    vm.journalListing.pageNumber = page;
+                    vm.journalListing.getJournalListing();
                 },
                 isSortDirection: function (col, direction) {
                     return false;
-
-                    //TODO: uncomment when get listing functionality is completed
                     //return listViewHelper.setSortingDirection(col, direction, vm.journalListing.options);
                 },
                 sort: function (field, allow) {
                     if(allow) {
                         vm.journalListing.options.orderBySystemField = false;
                         listViewHelper.setSorting(field, allow, vm.journalListing.options);
-                        
-                        //TODO: get listing of journals with desired sort on field
+                        //vm.journalListing.getJournalListing();
                     }
                 },
-                getJournalListing: function (page) {
-                    //TODO: call the API endpoint passing the corresponsing values
-                    //and update the vm.journalListing.items array with that returned
+                getJournalListing: function () {
+                    shieldResource.getJournals(vm.id, vm.journalListing.pageNumber).then(function (response) {
+                        vm.journalListing.items = response.data.items;
+                        vm.journalListing.totalPages = response.data.totalPages;
+                    });
                 }
             }
         });

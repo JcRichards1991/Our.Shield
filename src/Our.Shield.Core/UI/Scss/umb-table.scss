@@ -32,12 +32,16 @@
                 max-width: 17%;
             }
 
+            &.shield-table__name-enable  {
+                max-width: 5%;
+            }
+
             &.shield-table__name-large {
                 width: 100%;
             }
 
             &.shield-table__name-small {
-                max-width: 13%;
+                max-width: 14%;
                 -ms-flex: 1 1 14%;
                 flex: 1 1 14%;
             }

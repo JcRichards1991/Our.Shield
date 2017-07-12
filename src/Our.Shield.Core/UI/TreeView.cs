@@ -163,7 +163,7 @@
         public string Description { get; set; }
 
         /// <summary>
-        /// 
+        /// Icon of the app
         /// </summary>
         [JsonProperty("icon")]
         public string Icon { get; set; }
