@@ -58,7 +58,7 @@
         /// 
         /// </summary>
         [JsonProperty("apps")]
-        public IEnumerable<KeyValuePair<int, IApp>> Apps;
+        public IEnumerable<AppListingItem> Apps;
 
         /// <summary>
         /// 
@@ -88,24 +88,90 @@
     /// <summary>
     /// 
     /// </summary>
+    public class JournalListingItem
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("datestamp")]
+        public string Datestamp { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("environment")]
+        public string Environment { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("app")]
+        public string App { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("message")]
+        public string Message { get; set; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class JournalListing
     {
         /// <summary>
         /// 
         /// </summary>
         [JsonProperty("items")]
-        public IEnumerable<IJournal> Journals { get; set; }
+        public IEnumerable<JournalListingItem> Journals { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [JsonProperty("totalPages")]
         public int TotalPages { get; set; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class AppListingItem
+    {
+        /// <summary>
+        /// The Id of the tree node
+        /// </summary>
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
+        /// <summary>
+        /// The Id of the app
+        /// </summary>
+        [JsonProperty("appId")]
+        public string AppId { get; set; }
+
+        /// <summary>
+        /// The name of the app
+        /// </summary>
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        /// <summary>
+        /// The description of the app
+        /// </summary>
+        [JsonProperty("description")]
+        public string Description { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        [JsonProperty("pageNumber")]
-        public int PageNumber { get; set; }
+        [JsonProperty("icon")]
+        public string Icon { get; set; }
+
+        /// <summary>
+        /// Whether or not the app is enabled
+        /// </summary>
+        [JsonProperty("enable")]
+        public bool Enable { get; set; }
     }
 }

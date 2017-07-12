@@ -3,19 +3,15 @@
     using Umbraco.Core;
 
     /// <summary>
-    /// Initialization class.
+    /// Initialization class
     /// </summary>
     public class Register : ApplicationEventHandler
     {
         /// <summary>
-        /// Overrides the ApplicationEventHandler ApplicationStarting method.
+        /// Overrides the ApplicationEventHandler ApplicationStarting method
         /// </summary>
-        /// <param name="umbracoApplication">
-        /// The Umbraco Application.
-        /// </param>
-        /// <param name="applicationContext">
-        /// The Application Context.
-        /// </param>
+        /// <param name="umbracoApplication">The Umbraco Application</param>
+        /// <param name="applicationContext">The Application Context</param>
         protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             base.ApplicationStarting(umbracoApplication, applicationContext);

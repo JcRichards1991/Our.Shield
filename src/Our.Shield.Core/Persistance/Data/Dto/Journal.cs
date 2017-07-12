@@ -5,21 +5,21 @@
     using Umbraco.Core.Persistence.DatabaseAnnotations;
 
     /// <summary>
-    /// Defines the Journal database table.
+    /// Defines the Journal database table
     /// </summary>
     [TableName(nameof(Shield) + nameof(Journal))]
     [PrimaryKey("Id", autoIncrement = true)]
     internal class Journal
     {
         /// <summary>
-        /// Gets or sets the Id.
+        /// Gets or sets the Id
         /// </summary>
         [PrimaryKeyColumn(AutoIncrement = true)]
         [NullSetting(NullSetting = NullSettings.NotNull)]
         public int Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the App Name.
+        /// Gets or sets the App Name
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
         [Length(256)]
@@ -27,7 +27,7 @@
         public string AppId { get; set; }
 
         /// <summary>
-        /// Gets or sets the Domain Id.
+        /// Gets or sets the Domain Id
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
         [ForeignKey(typeof(Environment), Name = "FK_" + nameof(Shield) + "_" + nameof(Journal) + "_" + nameof(Environment))]
@@ -42,7 +42,7 @@
         public DateTime Datestamp { get; set; }
 
         /// <summary>
-        /// Gets or sets the Value (Should be json).
+        /// Gets or sets the Value (Should be json)
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
         public string Value { get; set; }

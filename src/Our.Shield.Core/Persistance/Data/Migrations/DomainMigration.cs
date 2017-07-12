@@ -7,7 +7,7 @@
     using Umbraco.Core.Persistence.SqlSyntax;
 
     /// <summary>
-    /// Handles Creating/Editing the Domain table.
+    /// Handles Creating/Editing the Domain table
     /// </summary>
     [Migration("1.0.0", 1, nameof(Shield))]
     internal class DomainMigration : MigrationBase
@@ -18,19 +18,15 @@
         /// <summary>
         /// Default constructor for the Configuration Migration.
         /// </summary>
-        /// <param name="sqlSyntax">
-        /// The SQL Syntax.
-        /// </param>
-        /// <param name="logger">
-        /// The Logger.
-        /// </param>
+        /// <param name="sqlSyntax">The SQL Syntax</param>
+        /// <param name="logger">The Logger</param>
         public DomainMigration(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
         {
             _schemaHelper = new DatabaseSchemaHelper(_database, logger, sqlSyntax);
         }
 
         /// <summary>
-        /// Creates the Configuration table.
+        /// Creates the Configuration table
         /// </summary>
         public override void Up()
         {
@@ -38,7 +34,7 @@
         }
 
         /// <summary>
-        /// Drops the Configurations table.
+        /// Drops the Configurations table
         /// </summary>
         public override void Down()
         {

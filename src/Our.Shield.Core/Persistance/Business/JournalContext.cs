@@ -13,18 +13,21 @@
     /// </summary>
     internal class JournalContext : DbContext
     {
-        private IEnumerable<IJournal> GetListingResults(int environmentId, int page, int itemsPerPage, Type type, params string[] appIds)
+        private IEnumerable<IJournal> GetListingResults(int? environmentId, string appId, int page, int itemsPerPage, Type type, out int totalPages)
         {
-            var sql = new Sql();
-            sql.Select("*")
-                .From<Data.Dto.Journal>(Syntax)
-                .Where<Data.Dto.Journal>(j => j.EnvironmentId == environmentId, Syntax);
+            totalPages = 0;
 
+            var sql = new Sql();
+            sql.Select("*").From<Data.Dto.Journal>(Syntax);
+
+            if (environmentId.HasValue)
+            { 
+                sql.Where<Data.Dto.Journal>(j => j.EnvironmentId == environmentId, Syntax);
+            }
             
-            if (appIds != null && appIds.Any(x => !string.IsNullOrEmpty(x)))
+            if (appId != null)
             {
-                var ids = appIds.Where(x => x != null);
-                sql.Where<Data.Dto.Journal>(j => ids.Contains(j.AppId), Syntax);
+                sql.Where<Data.Dto.Journal>(j => j.AppId == appId, Syntax);
             }
 
             sql.OrderByDescending<Data.Dto.Journal>(j => j.Datestamp, Syntax);
@@ -32,6 +35,7 @@
             try
             {
                 var results = Database.Page<Data.Dto.Journal>(page, itemsPerPage, sql);
+                totalPages = (int) results.TotalPages;
 
                 var typedRecords = results.Items
                     .Select(x =>
@@ -57,36 +61,30 @@
                             }
 
                         })
-                    .Where(x => x != null); ;
+                    .Where(x => x != null);
 
                 return typedRecords;
             }
             catch (Exception ex)
             {
-                LogHelper.Error(typeof(JournalContext), $"Error getting journals for environment with Id: {environmentId}; App Ids: {string.Join(", ", appIds)}", ex);
+                LogHelper.Error(typeof(JournalContext), $"Error getting journals for environment with Id: {environmentId}; App Id: {appId}", ex);
             }
+            
             return Enumerable.Empty<IJournal>();
         }
 
         /// <summary>
-        /// Reads a Journal from the database.
+        /// 
         /// </summary>
-        /// <typeparam name="T">
-        /// The type of Journal to read.
-        /// </typeparam>
-        /// <param name="page">
-        /// The page of results to return
-        /// </param>
-        /// <param name="itemsPerPage">
-        /// The number of items per page
-        /// </param>
-        /// <returns>
-        /// The Journal as the desired type.
-        /// </returns>
-        public IEnumerable<IJournal> List(int environmentId, string appId, int page, int itemsPerPage, Type type)
-        {
-            return GetListingResults(environmentId, page, itemsPerPage, type, appId);
-        }
+        /// <param name="environmentId"></param>
+        /// <param name="appId"></param>
+        /// <param name="page"></param>
+        /// <param name="itemsPerPage"></param>
+        /// <param name="type"></param>
+        /// <param name="totalPages"></param>
+        /// <returns></returns>
+        public IEnumerable<IJournal> List(int environmentId, string appId, int page, int itemsPerPage, Type type, out int totalPages) => 
+            GetListingResults(environmentId, appId, page, itemsPerPage, type, out totalPages);
 
         /// <summary>
         /// 
@@ -95,8 +93,10 @@
         /// <param name="page"></param>
         /// <param name="itemsPerPage"></param>
         /// <param name="type"></param>
+        /// <param name="totalPages"></param>
         /// <returns></returns>
-        public IEnumerable<IJournal> List(int environmentId, int page, int itemsPerPage, Type type) => List(environmentId, null, page, itemsPerPage, type);
+        public IEnumerable<IJournal> List(int environmentId, int page, int itemsPerPage, Type type, out int totalPages) => 
+            GetListingResults(environmentId, null, page, itemsPerPage, type, out totalPages);
 
         /// <summary>
         /// 
@@ -106,38 +106,40 @@
         /// <param name="appId"></param>
         /// <param name="page"></param>
         /// <param name="itemsPerPage"></param>
+        /// <param name="totalPages"></param>
         /// <returns></returns>
-        public IEnumerable<T> List<T>(int environmentId, string appId, int page, int itemsPerPage) where T : IJournal
-        {
-            return List(environmentId, appId, page, itemsPerPage, typeof(T)).Select(x => (T) x);
-        }
+        public IEnumerable<T> List<T>(int environmentId, string appId, int page, int itemsPerPage, out int totalPages) where T : IJournal => 
+            GetListingResults(environmentId, appId, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="itemsPerPage"></param>
+        /// <param name="type"></param>
+        /// <param name="totalPages"></param>
+        /// <returns></returns>
+        public IEnumerable<IJournal> FetchAll(int page, int itemsPerPage, Type type, out int totalPages) => 
+            GetListingResults(null, null, page, itemsPerPage, type, out totalPages);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="page"></param>
+        /// <param name="itemsPerPage"></param>
+        /// <param name="totalPages"></param>
+        /// <returns></returns>
+        public IEnumerable<T> FetchAll<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal =>
+            GetListingResults(null, null, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="environmentId"></param>
-        /// <param name="appIds"></param>
-        /// <param name="page"></param>
-        /// <param name="itemsPerPage"></param>
-        /// <param name="type"></param>
+        /// <param name="appId"></param>
+        /// <param name="journal"></param>
         /// <returns></returns>
-        public IEnumerable<IJournal> ListMultiple(int environmentId, IEnumerable<string> appIds, int page, int itemsPerPage, Type type)
-        {
-            return GetListingResults(environmentId, page, itemsPerPage, type, appIds.ToArray());
-        }
-
-        /// <summary>
-        /// Writes a Journal to the database.
-        /// </summary>
-        /// <typeparam name="T">
-        /// The type of Journal to write.
-        /// </typeparam>
-        /// <param name="values">
-        /// Journal object to write.
-        /// </param>
-        /// <returns>
-        /// If successful, returns true; otherwise false.
-        /// </returns>
         public bool Write(int environmentId, string appId, IJournal journal)
         {
             try

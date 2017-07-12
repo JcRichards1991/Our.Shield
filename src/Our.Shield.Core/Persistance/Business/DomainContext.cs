@@ -36,20 +36,10 @@
         }
 
         /// <summary>
-        /// Reads a Journal from the database.
+        /// 
         /// </summary>
-        /// <typeparam name="T">
-        /// The type of Journal to read.
-        /// </typeparam>
-        /// <param name="page">
-        /// The page of results to return
-        /// </param>
-        /// <param name="itemsPerPage">
-        /// The number of items per page
-        /// </param>
-        /// <returns>
-        /// The Journal as the desired type.
-        /// </returns>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Data.Dto.Domain Read(int id)
         {
             try
@@ -65,17 +55,10 @@
         }
 
         /// <summary>
-        /// Writes a Journal to the database.
+        /// 
         /// </summary>
-        /// <typeparam name="T">
-        /// The type of Journal to write.
-        /// </typeparam>
-        /// <param name="values">
-        /// Journal object to write.
-        /// </param>
-        /// <returns>
-        /// If successful, returns true; otherwise false.
-        /// </returns>
+        /// <param name="domain"></param>
+        /// <returns></returns>
         public bool Write(Data.Dto.Domain domain)
         {
             try
@@ -99,17 +82,10 @@
         }
 
         /// <summary>
-        /// Delete a domain to the database.
+        /// 
         /// </summary>
-        /// <typeparam name="T">
-        /// The type of Journal to write.
-        /// </typeparam>
-        /// <param name="values">
-        /// Journal object to write.
-        /// </param>
-        /// <returns>
-        /// If successful, returns true; otherwise false.
-        /// </returns>
+        /// <param name="domain"></param>
+        /// <returns></returns>
         public bool Delete(Data.Dto.Domain domain)
         {
             try

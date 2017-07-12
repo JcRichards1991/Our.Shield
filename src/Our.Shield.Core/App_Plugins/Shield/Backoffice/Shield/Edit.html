@@ -83,10 +83,12 @@
                                             &nbsp;
                                         </div>
 
-                                        <div class="umb-table-cell umb-table__name">
-                                            <a class="umb-table-head__link" href="#" prevent-default>
+                                        <div class="umb-table-cell shield-table__name">
+                                            <a class="umb-table-head__link sortable" href="#"
+                                               ng-click="vm.appListing.sort('name', 'true')" prevent-default>
                                                 <span>Name</span>
-                                                <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
+                                                <i class="umb-table-head__icon icon"
+                                                   ng-class="{'icon-navigation-up': vm.appListing.isSortDirection(column.alias, 'asc'), 'icon-navigation-down': vm.appListing.isSortDirection(column.alias, 'desc')}"></i>
                                             </a>
                                         </div>
 
@@ -102,8 +104,8 @@
                                 <div class="umb-table-body">
                                     <div class="umb-table-row"
                                          ng-repeat="app in vm.appListing.apps track by $index"
-                                         ng-class="{'-selected':app.Value.selected}"
-                                         ng-click="vm.appListing.selectItem(app.Value)">
+                                         ng-class="{'-selected':app.enable}"
+                                         ng-click="vm.appListing.enableItem(app)">
 
                                         <div class="umb-table-cell">
                                             <i class="umb-table-body__icon umb-table-body__checkicon icon-check"></i>
@@ -111,20 +113,31 @@
 
                                         <div class="umb-table-cell app-icon-cell">
                                             <i class="umb-table-body__icon umb-table-body__fileicon">
-                                                <span class="{{app.Value.icon}}"></span>
+                                                <span class="{{app.icon}}"></span>
                                             </i>
                                         </div>
 
-                                        <div class="umb-table-cell shield-table__name" ng-click="vm.editItemById(app.Key)">
-                                            <span ng-bind-html="app.Value.name"></span>
+                                        <div class="umb-table-cell shield-table__name" ng-click="vm.editItem(app)">
+                                            <span ng-bind-html="app.name"></span>
                                         </div>
 
                                         <div class="umb-table-cell">
-                                            <span ng-bind-html="app.Value.description"></span>
+                                            <span ng-bind-html="app.description"></span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="flex justify-center">
+                                <umb-pagination ng-if="vm.appListing.totalPages"
+                                                page-number="vm.appListing.pageNumber"
+                                                total-pages="vm.appListing.totalPages"
+                                                on-next="vm.appListing.nextPage"
+                                                on-prev="vm.appListing.previousPage"
+                                                on-go-to-page="vm.appListing.gotoPage">
+                                </umb-pagination>
+                            </div>
+
                         </div>
 
                         <!-- Apps -->
@@ -161,10 +174,11 @@
                                     <div class="umb-table-cell {{column.cssClass}}" ng-repeat="column in vm.journalListing.columns track by $index">
 
                                         <a class="umb-table-head__link" title="Sort by {{column.header}}" href="#"
-                                            ng-click="vm.journalListing.sort(column.id)"
-                                            ng-class="{'sortable':column.allowSorting}" prevent-default>
+                                           ng-click="vm.journalListing.sort(column.alias, column.allowSorting)"
+                                           ng-class="{'sortable':column.allowSorting}" prevent-default>
                                             <span ng-bind="column.name"></span>
-                                            <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
+                                            <i class="umb-table-head__icon icon"
+                                               ng-class="{'icon-navigation-up': vm.journalListing.isSortDirection(column.alias, 'asc'), 'icon-navigation-down': vm.journalListing.isSortDirection(column.alias, 'desc')}"></i>
                                         </a>
 
                                     </div>
@@ -183,6 +197,9 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="flex justify-center">
                             <umb-pagination ng-if="vm.journalListing.totalPages"
                                             page-number="vm.journalListing.pageNumber"
                                             total-pages="vm.journalListing.totalPages"

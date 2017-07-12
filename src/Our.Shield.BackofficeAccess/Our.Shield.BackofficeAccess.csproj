@@ -258,7 +258,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enums.cs" />
+    <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\BackofficeAccessConfiguration.cs" />
     <Compile Include="Models\BackofficeAccessApp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

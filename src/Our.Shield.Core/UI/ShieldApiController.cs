@@ -12,9 +12,7 @@
     /// <summary>
     /// Api Controller for the Umbraco Access area of the custom section
     /// </summary>
-    /// <example>
-    /// Endpoint: /umbraco/backoffice/Shield/ShieldApi/{Action}
-    /// </example>
+    /// <example>Endpoint: /umbraco/backoffice/Shield/ShieldApi/{Action}</example>
     [PluginController(Constants.App.Alias)]
     public class ShieldApiController : UmbracoAuthorizedJsonController
     {
@@ -27,8 +25,21 @@
         public TreeView View(int id)
         {
             var environments = Operation.JobService.Instance.Environments;
+            int totalPages = 1;
+
             if (id == Constants.Tree.EnvironmentsRootId)
             {
+                var journals = Persistance.Business.DbContext.Instance.Journal.FetchAll<JournalMessage>(1, 50, out totalPages);
+                var apps = environments.SelectMany(x => x.Value).Select(x => new AppListingItem
+                {
+                    Id = x.Id,
+                    AppId = x.App.Id,
+                    Name = x.App.Name,
+                    Description = x.App.Description,
+                    Icon = x.App.Icon,
+                    Enable = x.ReadConfiguration().Enable
+                });
+
                 //  Is the environments node
                 return new TreeView
                 {
@@ -36,11 +47,17 @@
                     Name = "Environments",
                     Description = "List of the different environments your Umbraco instance operates under",
                     Environments = environments.Keys,
+                    Apps = apps,
                     JournalListing = new JournalListing
                     {
-                        Journals = Enumerable.Empty<IJournal>(),
-                        PageNumber = 1,
-                        TotalPages = 1
+                        Journals = journals.Select(x => new JournalListingItem
+                        {
+                            Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+                            App = apps.FirstOrDefault(a => a.AppId == x.AppId).Name,
+                            Environment = environments.FirstOrDefault(e => e.Key.Id == x.EnvironmentId).Key.Name,
+                            Message = x.Message
+                        }),
+                        TotalPages = totalPages
                     }
                 };
             }
@@ -49,8 +66,16 @@
             {
                 if (id == environment.Key.Id)
                 {
-                    var appIds = environment.Value.Select(x => x.App.Id);
-                    var journals = environment.Key.JournalListing<JournalMessage>(appIds, 1, 50);
+                    var journals = environment.Key.JournalListing<JournalMessage>(1, 50, out totalPages);
+                    var apps = environment.Value.Select(x => new AppListingItem
+                    {
+                        Id = x.Id,
+                        AppId = x.App.Id,
+                        Name = x.App.Name,
+                        Description = x.App.Description,
+                        Icon = x.App.Icon,
+                        Enable = x.ReadConfiguration().Enable
+                    });
 
                     return new TreeView
                     {
@@ -59,12 +84,17 @@
                         Description = $"View apps for the {environment.Key.Name} environment",
                         Environments = environments.Keys,
                         Environment = environment.Key,
-                        Apps = environment.Value.Select(x => new KeyValuePair<int, IApp>(x.Id, x.App)),
+                        Apps = apps,
                         JournalListing = new JournalListing
                         {
-                            Journals = journals,
-                            PageNumber = 1,
-                            TotalPages = 1
+                            Journals = journals.Select(x => new JournalListingItem
+                            {
+                                Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+                                App = apps.FirstOrDefault(a => a.AppId == x.AppId).Name,
+                                Environment = environments.FirstOrDefault(e => e.Key.Id == x.EnvironmentId).Key.Name,
+                                Message = x.Message
+                            }),
+                            TotalPages = totalPages
                         }
                     };
                 }
@@ -85,8 +115,8 @@
                                 .Where(x => x.AssetType == ClientDependency.Core.ClientDependencyType.Javascript)
                                 .Select(x => x.FilePath)
                         };
-
-                        var journals = job.ListJournals<JournalMessage>(1, 50);
+                        
+                        var journals = job.ListJournals<JournalMessage>(1, 50, out totalPages);
 
                         return new TreeView
                         {
@@ -100,9 +130,14 @@
                             AppAssests = appAssests,
                             JournalListing = new JournalListing
                             {
-                                Journals = journals,
-                                PageNumber = 1,
-                                TotalPages = 1
+                                Journals = journals.Select(x => new JournalListingItem
+                                {
+                                    Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+                                    App = job.App.Name,
+                                    Environment = environments.FirstOrDefault(e => e.Key.Id == x.EnvironmentId).Key.Name,
+                                    Message = x.Message
+                                }),
+                                TotalPages = totalPages,
                             }
                         };
                     }
@@ -159,23 +194,32 @@
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="environmentId"></param>
+        /// <param name="appId"></param>
         /// <param name="page"></param>
         /// <param name="itemsPerPage"></param>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<IJournal> Journals(int environmentId, int id, int page, int itemsPerPage)
+        public IEnumerable<JournalListingItem> Journals(int environmentId, int appId, int page, int itemsPerPage)
         {
-            var job = Operation.JobService.Instance.Job(id);
-            return job.ListJournals<Journal>(page, itemsPerPage);
+            var job = Operation.JobService.Instance.Job(appId);
+
+            int totalPages = 1;
+            var journals = job.ListJournals<JournalMessage>(page, itemsPerPage, out totalPages);
+
+            return journals.Select(x => new JournalListingItem
+            {
+                Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+                App = job.App.Name,
+                //Environment = environments.FirstOrDefault(e => e.Key.Id == x.EnvironmentId).Key.Name,
+                Message = x.Message,
+            });
         }
 
         /// <summary>
         /// Gets a collection of the Shield App Ids that are installed
         /// </summary>
-        /// <returns>
-        /// Collection of the Shield App ids
-        /// </returns>
+        /// <returns>Collection of the Shield App ids</returns>
         [HttpGet]
         public IEnumerable<string> AppIds()
         {

@@ -7,7 +7,7 @@
     using Umbraco.Core.Persistence.SqlSyntax;
 
     /// <summary>
-    /// Handles Creating/Editing the Journal table.
+    /// Handles Creating/Editing the Journal table
     /// </summary>
     [Migration("1.0.0", 2, nameof(Shield))]
     internal class JournalMigration : MigrationBase
@@ -16,21 +16,17 @@
         private readonly DatabaseSchemaHelper _schemaHelper;
 
         /// <summary>
-        /// Default constructor for the Journal Migration.
+        /// Default constructor for the Journal Migration
         /// </summary>
-        /// <param name="sqlSyntax">
-        /// The SQL Syntax.
-        /// </param>
-        /// <param name="logger">
-        /// The Logger.
-        /// </param>
+        /// <param name="sqlSyntax">The SQL Syntax</param>
+        /// <param name="logger">The Logger</param>
         public JournalMigration(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
         {
             _schemaHelper = new DatabaseSchemaHelper(_database, logger, sqlSyntax);
         }
 
         /// <summary>
-        /// Creates the Journal Table.
+        /// Creates the Journal Table
         /// </summary>
         public override void Up()
         {
@@ -38,7 +34,7 @@
         }
 
         /// <summary>
-        /// Drops the Journal Table.
+        /// Drops the Journal Table
         /// </summary>
         public override void Down()
         {

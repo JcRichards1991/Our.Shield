@@ -32,16 +32,6 @@
         public static class Tree
         {
             /// <summary>
-            /// Tree Alias
-            /// </summary>
-            public const string Alias = "environments";
-
-            /// <summary>
-            /// Tree Title
-            /// </summary>
-            public const string Title = App.Name;
-
-            /// <summary>
             /// The Environment Node Root Id
             /// </summary>
             public const int EnvironmentsRootId = 0;

@@ -7,8 +7,8 @@
     * Handles environment page
 */
 angular.module('umbraco').controller('Shield.Editors.Edit', 
-    ['$scope', '$routeParams', '$location', '$timeout', 'notificationsService', 'localizationService', 'listViewHelper', 'navigationService', 'assetsService', 'shieldResource',
-    function ($scope, $routeParams, $location, $timeout, notificationsService, localizationService, listViewHelper, navigationService, assetsService, shieldResource) {
+    ['$scope', '$routeParams', '$location', '$timeout', '$filter', 'notificationsService', 'localizationService', 'listViewHelper', 'navigationService', 'assetsService', 'shieldResource',
+    function ($scope, $routeParams, $location, $timeout, $filter, notificationsService, localizationService, listViewHelper, navigationService, assetsService, shieldResource) {
 
         var vm = this;
 
@@ -42,7 +42,8 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                 shieldResource.getView(vm.id).then(function (response) {
                     vm.name = response.data.name;
                     vm.description = response.data.description;
-                    angular.extend(vm.journalListing, response.data.journalListing)
+                    vm.appListing.apps = response.data.apps;
+                    angular.extend(vm.journalListing, response.data.journalListing);
 
                     switch (vm.type = response.data.type) {
                         case 0:     //  Environments
@@ -56,7 +57,6 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             //vm.nameLocked = false;
                             vm.environments = response.data.environments;
                             vm.environment = response.data.environment;
-                            vm.appListing.apps = response.data.apps;
 
                             vm.tabs[0].label = 'Apps';
                             vm.nameLocked = true;
@@ -127,22 +127,56 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                 }
 
             },
-            editItemById: function (id, index) {
-                $location.path('shield/shield/edit/' + id);
-            },
             editItem: function (item, index) {
-                vm.editItemById(item.id);
+                $location.path('shield/shield/edit/' + item.id);
             },
             appListing: {
-                apps: [],
-                selectItem: function (item) {
-                    if (item.selected)
-                        item.selected = false;
+                options: {
+                    orderBy: 'name',
+                    orderDirection: 'desc'
+                },
+                apps: null,
+                totalPages: 1,
+                pageNumber: 1,
+                nextPage: function (page) {
+                    //TODO: get listing with desired sort on field for next page
+                },
+                previousPage: function (page) {
+                    //TODO: get listing with desired sort on field for previous page
+                },
+                gotoPage: function (page) {
+                    //TODO: get listing with desired sort on field for desired page
+                },
+                isSortDirection: function (col, direction) {
+                    return false;
+
+                    //TODO: uncomment when get listing functionality is completed
+                    //return listViewHelper.setSortingDirection(col, direction, vm.journalListing.options);
+                },
+                sort: function (field, allow) {
+                    if(allow) {
+                        vm.journalListing.options.orderBySystemField = false;
+                        listViewHelper.setSorting(field, allow, vm.journalListing.options);
+                        
+                        //TODO: get listing of journals with desired sort on field
+                    }
+                },
+                getJournalListing: function (page) {
+                    //TODO: call the API endpoint passing the corresponsing values
+                    //and update the vm.journalListing.items array with that returned
+                },
+                enableItem: function (item) {
+                    if (item.enable)
+                        item.enable = false;
                     else
-                        item.selected = true;
+                        item.enable = true;
                 }
             },
             journalListing: {
+                options: {
+                    orderBy: 'datestamp',
+                    orderDirection: 'desc'
+                },
                 columns: [
                     {
                         id: 0,
@@ -155,15 +189,15 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     {
                         id: 1,
                         name: 'Environment',
-                        alias: 'environmentId',
+                        alias: 'environment',
                         allowSorting: false,
                         show: true,
-                        cssClass: ''
+                        cssClass: 'shield-table__name'
                     },
                     {
                         id: 2,
                         name: 'App',
-                        alias: 'appId',
+                        alias: 'app',
                         allowSorting: false,
                         show: true,
                         cssClass: 'shield-table__name'
@@ -179,18 +213,34 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                 ],
                 items: null,
                 selection: [],
-                totalPages: 0,
-                pageNumber: 0,
+                totalPages: 1,
+                pageNumber: 1,
                 nextPage: function (page) {
+                    //TODO: get listing with desired sort on field for next page
                 },
                 previousPage: function (page) {
+                    //TODO: get listing with desired sort on field for previous page
                 },
                 gotoPage: function (page) {
+                    //TODO: get listing with desired sort on field for desired page
                 },
-                sort: function (id) {
-                    //$scope.options.orderBySystemField = isSystem;
-                    //listViewHelper.setSorting(field, allow, $scope.options);
-                    //$scope.getContent($scope.contentId);
+                isSortDirection: function (col, direction) {
+                    return false;
+
+                    //TODO: uncomment when get listing functionality is completed
+                    //return listViewHelper.setSortingDirection(col, direction, vm.journalListing.options);
+                },
+                sort: function (field, allow) {
+                    if(allow) {
+                        vm.journalListing.options.orderBySystemField = false;
+                        listViewHelper.setSorting(field, allow, vm.journalListing.options);
+                        
+                        //TODO: get listing of journals with desired sort on field
+                    }
+                },
+                getJournalListing: function (page) {
+                    //TODO: call the API endpoint passing the corresponsing values
+                    //and update the vm.journalListing.items array with that returned
                 }
             }
         });

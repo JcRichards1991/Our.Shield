@@ -429,9 +429,7 @@
 
             return mediaType;
         }
-
-
-
+        
         private void AddMediaTypes()
         {
             if (!((MediaProtectionMigration) Migrations["1.0.0"]).AddMediaTypes)

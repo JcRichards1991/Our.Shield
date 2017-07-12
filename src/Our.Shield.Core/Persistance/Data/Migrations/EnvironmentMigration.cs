@@ -7,7 +7,7 @@
     using Umbraco.Core.Persistence.SqlSyntax;
 
     /// <summary>
-    /// Handles Creating/Editing the Environment table.
+    /// Handles Creating/Editing the Environment table
     /// </summary>
     [Migration("1.0.0", 1, nameof(Shield))]
     internal class EnvironmentMigration : MigrationBase
@@ -16,21 +16,17 @@
         private readonly DatabaseSchemaHelper _schemaHelper;
 
         /// <summary>
-        /// Default constructor for the Configuration Migration.
+        /// Default constructor for the Environment Migration
         /// </summary>
-        /// <param name="sqlSyntax">
-        /// The SQL Syntax.
-        /// </param>
-        /// <param name="logger">
-        /// The Logger.
-        /// </param>
+        /// <param name="sqlSyntax">The SQL Syntax</param>
+        /// <param name="logger">The Logger</param>
         public EnvironmentMigration(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
         {
             _schemaHelper = new DatabaseSchemaHelper(_database, logger, sqlSyntax);
         }
 
         /// <summary>
-        /// Creates the Configuration table.
+        /// Creates the Environment table & adds a default Environment
         /// </summary>
         public override void Up()
         {
@@ -44,7 +40,7 @@
         }
 
         /// <summary>
-        /// Drops the Configurations table.
+        /// Drops the Environment table
         /// </summary>
         public override void Down()
         {

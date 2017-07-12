@@ -59,7 +59,72 @@
             }
         }
 
-        private int firstExecute = 0;
+        private bool ExecuteFirstTime(IJob job, BackofficeAccessConfiguration config)
+        {
+            //Check if we're enabled & the configured
+            //backoffice url is equal to the on-disk UmbracoPath
+            if (config.Enable && new Regex("^((" + config.BackendAccessUrl.Trim('~').TrimEnd('/') + ")(/?))$", RegexOptions.IgnoreCase).IsMatch(ApplicationSettings.UmbracoPath))
+            {
+                //we're enabled and the same
+                //no need for a hard save
+                return false;
+            }
+
+            //Check if disabled and on-disk UmbracoPath location is /umbraco/
+            if (!config.Enable && ApplicationSettings.UmbracoPath.Equals(((BackofficeAccessConfiguration)DefaultConfiguration).BackendAccessUrl))
+            {
+                //we're disabled, and
+                //on-disk UmbracoPath is /umbraco/
+                //so no need for a hard save
+                return false;
+            }
+
+            try
+            {
+                var path = HttpRuntime.AppDomainAppPath;
+                if (!Directory.Exists(path + ApplicationSettings.UmbracoPath.TrimEnd('/')))
+                {
+                    job.WriteJournal(new JournalMessage($"Unable to Rename and/or move directory from: { ApplicationSettings.UmbracoPath } to: { config.BackendAccessUrl }\nThe directory {ApplicationSettings.UmbracoPath} cannot be found"));
+                    return false;
+                }
+
+                var webConfig = WebConfigurationManager.OpenWebConfiguration("~");
+                var appSettings = (AppSettingsSection)webConfig.GetSection("appSettings");
+
+                var umbracoPath = appSettings.Settings["umbracoPath"];
+                var umbracoReservedPaths = appSettings.Settings["umbracoReservedPaths"];
+
+                var regex = new Regex($"^({ umbracoPath.Value.Trim('~').TrimEnd('/') }(/){{0,1}})$");
+
+                if (!regex.IsMatch(ApplicationSettings.UmbracoPath) && !regex.IsMatch(umbracoReservedPaths.Value))
+                {
+                    job.WriteJournal(new JournalMessage($"Unable to make necessary changes to the web.config, appSetting keys: umbracoPath & umbracoReservedPaths doesn't contain the expected values"));
+                    return false;
+                }
+
+                Directory.Move(path + ApplicationSettings.UmbracoPath.Trim('/'), path + config.BackendAccessUrl.Trim('/'));
+
+                umbracoReservedPaths.Value = umbracoReservedPaths.Value.Replace(umbracoPath.Value.TrimEnd('/'), config.BackendAccessUrl);
+                umbracoPath.Value = $"~{config.BackendAccessUrl.TrimEnd('/')}";
+                webConfig.Save();
+            }
+            catch (Exception ex)
+            {
+                job.WriteJournal(new JournalMessage($"Unexpected error occurred, exception:\n{ex.Message}"));
+                return false;
+            }
+
+            if (HttpContext.Current != null)
+            {
+                var response = HttpContext.Current.Response;
+                response.Clear();
+                response.Redirect(HttpContext.Current.Request.Url.ToString(), true);
+            }
+
+            HttpRuntime.UnloadAppDomain();
+
+            return true;
+        }
 
         private readonly string allowKey = Guid.NewGuid().ToString();
         private readonly TimeSpan CacheLength = new TimeSpan(TimeSpan.TicksPerDay);        //   Once per day
@@ -267,6 +332,23 @@
             });
         }
 
+        private IPAddress GetUserIp(HttpApplication app)
+        {
+            var ip = app.Context.Request.UserHostAddress;
+
+            if (ip.Equals("127.0.0.1"))
+                ip = "::1";
+
+            IPAddress tempIp;
+
+            if (IPAddress.TryParse(ip, out tempIp))
+            {
+                return tempIp.MapToIPv6();
+            }
+
+            return null;
+        }
+
         private void AddHardWatch(IJob job, BackofficeAccessConfiguration config)
         {
             var ipv6s = new List<IPAddress>();
@@ -351,6 +433,8 @@
             });
         }
 
+        private int firstExecute = 0;
+
         /// <summary>
         /// 
         /// </summary>
@@ -391,92 +475,6 @@
             }
 
             return true;
-        }
-
-        private ReaderWriterLockSlim webConfigLocker = new ReaderWriterLockSlim();
-
-        private bool ExecuteFirstTime(IJob job, BackofficeAccessConfiguration config)
-        {
-            //Check if we're enabled & the configured
-            //backoffice url is equal to the on-disk UmbracoPath
-            if (config.Enable && new Regex("^((" + config.BackendAccessUrl.Trim('~').TrimEnd('/') + ")(/?))$", RegexOptions.IgnoreCase).IsMatch(ApplicationSettings.UmbracoPath))
-            {
-                //we're enabled and the same
-                //no need for a hard save
-                return false;
-            }
-
-            //Check if disabled and on-disk UmbracoPath location is /umbraco/
-            if (!config.Enable && ApplicationSettings.UmbracoPath.Equals(((BackofficeAccessConfiguration)DefaultConfiguration).BackendAccessUrl))
-            {
-                //we're disabled, and
-                //on-disk UmbracoPath is /umbraco/
-                //so no need for a hard save
-                return false;
-            }
-            
-            try
-            {
-                var path = HttpRuntime.AppDomainAppPath;
-                if (!Directory.Exists(path + ApplicationSettings.UmbracoPath.TrimEnd('/')))
-                {
-                    job.WriteJournal(new JournalMessage($"Unable to Rename and/or move directory from: { ApplicationSettings.UmbracoPath } to: { config.BackendAccessUrl }\nThe directory {ApplicationSettings.UmbracoPath} cannot be found"));
-                    return false;
-                }
-
-                var webConfig = WebConfigurationManager.OpenWebConfiguration("~");
-                var appSettings = (AppSettingsSection)webConfig.GetSection("appSettings");
-
-                var umbracoPath = appSettings.Settings["umbracoPath"];
-                var umbracoReservedPaths = appSettings.Settings["umbracoReservedPaths"];
-
-                var regex = new Regex($"^({ umbracoPath.Value.Trim('~').TrimEnd('/') }(/){{0,1}})$");
-
-                if (!regex.IsMatch(ApplicationSettings.UmbracoPath) && !regex.IsMatch(umbracoReservedPaths.Value))
-                {
-                    job.WriteJournal(new JournalMessage($"Unable to make necessary changes to the web.config, appSetting keys: umbracoPath & umbracoReservedPaths doesn't contain the expected values"));
-                    return false;
-                }
-
-                Directory.Move(path + ApplicationSettings.UmbracoPath.Trim('/'), path + config.BackendAccessUrl.Trim('/'));
-
-                umbracoReservedPaths.Value = umbracoReservedPaths.Value.Replace(umbracoPath.Value.TrimEnd('/'), config.BackendAccessUrl);
-                umbracoPath.Value = $"~{config.BackendAccessUrl.TrimEnd('/')}";
-                webConfig.Save();
-            }
-            catch(Exception ex)
-            {
-                job.WriteJournal(new JournalMessage($"Unexpected error occurred, exception:\n{ex.Message}"));
-                return false;
-            }
-
-            if (HttpContext.Current != null)
-            {
-                var response = HttpContext.Current.Response;
-                response.Clear();
-                response.Redirect(HttpContext.Current.Request.Url.ToString(), true);
-            }
-
-            HttpRuntime.UnloadAppDomain();
-
-            return true;
-        }
-
-        private IPAddress GetUserIp(HttpApplication app)
-        {
-            var ip = app.Context.Request.UserHostAddress;
-
-            if (ip.Equals("127.0.0.1"))
-                ip = "::1";
-
-            IPAddress tempIp;
-
-            if(IPAddress.TryParse(ip, out tempIp))
-            {
-                return tempIp.MapToIPv6();
-            }
-
-            return null;
         }
     }
 }

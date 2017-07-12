@@ -3,7 +3,7 @@
     using Umbraco.Core;
 
     /// <summary>
-    /// Initialization class.
+    /// Initialization class
     /// </summary>
     public class Register : ApplicationEventHandler
     {

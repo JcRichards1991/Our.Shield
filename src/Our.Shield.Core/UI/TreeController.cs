@@ -10,21 +10,15 @@
     /// The Umbraco Access Tree Controller for the custom section
     /// </summary>
     [PluginController(Constants.App.Name)]
-    [Umbraco.Web.Trees.Tree(Constants.App.Alias, Constants.App.Alias, Constants.Tree.Title)]
+    [Umbraco.Web.Trees.Tree(Constants.App.Alias, Constants.App.Alias, Constants.App.Name)]
     public class TreeController : Umbraco.Web.Trees.TreeController
     {
         /// <summary>
-        /// Gets the menu for a node by it's Id.
+        /// Gets the menu for a node by it's Id
         /// </summary>
-        /// <param name="id">
-        /// The Id of the node.
-        /// </param>
-        /// <param name="queryStrings">
-        /// The query string parameters
-        /// </param>
-        /// <returns>
-        /// Menu Item Collection containing the Menu Item(s).
-        /// </returns>
+        /// <param name="id">The Id of the node</param>
+        /// <param name="queryStrings">The query string parameters</param>
+        /// <returns>Menu Item Collection containing the Menu Item(s)</returns>
         protected override MenuItemCollection GetMenuForNode(string idText, FormDataCollection queryStrings)
         {
             var menu = new MenuItemCollection();
@@ -41,15 +35,9 @@
         /// <summary>
         /// Gets the Tree Node Collection.
         /// </summary>
-        /// <param name="id">
-        /// The Id.
-        /// </param>
-        /// <param name="queryStrings">
-        /// the query string parameters.
-        /// </param>
-        /// <returns>
-        /// Tree Node Collection containing the Tree Node(s).
-        /// </returns>
+        /// <param name="id">The Id</param>
+        /// <param name="queryStrings">The query string parameters</param>
+        /// <returns>Tree Node Collection containing the Tree Node(s)</returns>
         protected override TreeNodeCollection GetTreeNodes(string idText, FormDataCollection queryStrings)
         {
             int id = int.Parse(idText);

@@ -13,12 +13,12 @@
   flex: 0 0 25px; }
 
 .umb-table .umb-table-row .umb-table-cell.shield-table__name {
-  max-width: 20%; }
+  max-width: 17%; }
 
 .umb-table .umb-table-row .umb-table-cell.shield-table__name-large {
   width: 100%; }
 
 .umb-table .umb-table-row .umb-table-cell.shield-table__name-small {
-  max-width: 14%;
+  max-width: 13%;
   -ms-flex: 1 1 14%;
   flex: 1 1 14%; }

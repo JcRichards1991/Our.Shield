@@ -33,12 +33,8 @@
         /// <summary>
         /// Checks whether or not two Environments are the same
         /// </summary>
-        /// <param name="other">
-        /// The object to test against
-        /// </param>
-        /// <returns>
-        /// True if equals; Otherwise, False
-        /// </returns>
+        /// <param name="other">The object to test against</param>
+        /// <returns>True if equals; Otherwise, False</returns>
         public override bool Equals(object other)
         {
             if (other is Environment)
@@ -59,9 +55,7 @@
         /// <summary>
         /// Gets the Hascode for the Environment
         /// </summary>
-        /// <returns>
-        /// The Environment Id
-        /// </returns>
+        /// <returns>The Environment Id</returns>
         public override int GetHashCode()
         {
             return Id;
@@ -77,9 +71,7 @@
         /// <summary>
         /// Creates an Environment object
         /// </summary>
-        /// <param name="data">
-        /// The DTO object to create the Environment
-        /// </param>
+        /// <param name="data">The DTO object to create the Environment</param>
         internal Environment(Persistance.Data.Dto.Environment data)
         {
             Id = (int) data.Id;
@@ -91,16 +83,23 @@
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="appIds"></param>
+        /// <param name="page"></param>
+        /// <param name="itemsPerPage"></param>
+        /// <param name="type"></param>
+        /// <param name="totalPages"></param>
         /// <returns></returns>
-        public IEnumerable<IJournal> JournalListing(IEnumerable<string> appIds, int page, int itemsPerPage, Type type)
-        {
-            return DbContext.Instance.Journal.ListMultiple(Id, appIds, page, itemsPerPage, type);
-        }
+        public IEnumerable<IJournal> JournalListing(int page, int itemsPerPage, Type type, out int totalPages) =>
+            DbContext.Instance.Journal.List(Id, page, itemsPerPage, type, out totalPages);
 
-        public IEnumerable<T> JournalListing<T>(IEnumerable<string> appIds, int page, int itemsPerPage) where T : IJournal
-        {
-            return DbContext.Instance.Journal.ListMultiple(Id, appIds, page, itemsPerPage, typeof(T)).Select(x => (T)x);
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="page"></param>
+        /// <param name="itemsPerPage"></param>
+        /// <param name="totalPages"></param>
+        /// <returns></returns>
+        public IEnumerable<T> JournalListing<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal =>
+            DbContext.Instance.Journal.List(Id, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
     }
 }

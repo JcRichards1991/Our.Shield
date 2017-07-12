@@ -18,21 +18,17 @@
         public bool AddMediaTypes = false;
 
         /// <summary>
-        /// Default constructor for the Configuration Migration.
+        /// Default constructor for the Configuration Migration
         /// </summary>
-        /// <param name="sqlSyntax">
-        /// The SQL Syntax.
-        /// </param>
-        /// <param name="logger">
-        /// The Logger.
-        /// </param>
+        /// <param name="sqlSyntax">The SQL Syntax</param>
+        /// <param name="logger">The Logger</param>
         public MediaProtectionMigration(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
         {
             _schemaHelper = new DatabaseSchemaHelper(_database, logger, sqlSyntax);
         }
 
         /// <summary>
-        /// Creates the Configuration table.
+        /// Sets the AddMediaTypes Flag
         /// </summary>
         public override void Up()
         {
@@ -40,7 +36,7 @@
         }
 
         /// <summary>
-        /// Drops the Configurations table.
+        /// Placeholder Method
         /// </summary>
         public override void Down()
         {

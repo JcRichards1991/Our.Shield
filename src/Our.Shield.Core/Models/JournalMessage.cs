@@ -21,9 +21,7 @@
         /// <summary>
         /// Initialises a JournalMessage Object with the desired message
         /// </summary>
-        /// <param name="message">
-        /// The message for the journal
-        /// </param>
+        /// <param name="message">The message for the journal</param>
         public JournalMessage(string message)
         {
             Message = message;

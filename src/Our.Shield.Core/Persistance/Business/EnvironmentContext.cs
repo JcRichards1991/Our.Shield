@@ -37,17 +37,10 @@
         }
 
         /// <summary>
-        /// Reads a environment from the database.
+        /// 
         /// </summary>
-        /// <param name="id">
-        /// The id of the configuration.
-        /// </param>
-        /// <param name="type">
-        /// The type of configuration to return;
-        /// </param>
-        /// <returns>
-        /// The Configuration as the desired type.
-        /// </returns>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Data.Dto.Environment Read(int id)
         {
             try
@@ -68,17 +61,10 @@
         }
 
         /// <summary>
-        /// Writes a Configuration to the database.
+        /// 
         /// </summary>
-        /// <param name="id">
-        /// The id of Configuration to write.
-        /// </param>
-        /// <param name="config">
-        /// The configuration to write to the database
-        /// </param>
-        /// <returns>
-        /// If successfull, returns true, otherwise false.
-        /// </returns>
+        /// <param name="environment"></param>
+        /// <returns></returns>
         public bool Write(Data.Dto.Environment environment)
         {
             try

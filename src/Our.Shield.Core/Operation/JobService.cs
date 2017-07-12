@@ -93,9 +93,7 @@
         /// <summary>
         /// Gets the job for a given id
         /// </summary>
-        /// <param name="id">
-        /// The desired Id
-        /// </param>
+        /// <param name="id">The desired Id</param>
         /// <returns></returns>
         public IJob Job(int id)
         {
@@ -374,11 +372,10 @@
         /// <param name="job"></param>
         /// <param name="page"></param>
         /// <param name="itemsPerPage"></param>
+        /// <param name="totalPages"></param>
         /// <returns></returns>
-        public IEnumerable<T> ListJournals<T>(IJob job, int page, int itemsPerPage) where T : IJournal
-        {
-            return DbContext.Instance.Journal.List<T>(job.Environment.Id, job.App.Id, page, itemsPerPage);
-        }
+        public IEnumerable<T> ListJournals<T>(IJob job, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
+            DbContext.Instance.Journal.List<T>(job.Environment.Id, job.App.Id, page, itemsPerPage, out totalPages);
 
         /// <summary>
         /// 

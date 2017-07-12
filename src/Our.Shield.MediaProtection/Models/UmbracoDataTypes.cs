@@ -1,71 +1,64 @@
-﻿using Umbraco.Core.Models;
-using Umbraco.Core.Services;
-
-namespace Our.Shield.MediaProtection.Models
+﻿namespace Our.Shield.MediaProtection.Models
 {
+    using Umbraco.Core.Models;
+    using Umbraco.Core.Services;
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class UmbracoDataTypes
     {
         private readonly IDataTypeService _dataTypeService;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dataTypeService"></param>
         public UmbracoDataTypes(IDataTypeService dataTypeService)
         {
             _dataTypeService = dataTypeService;
         }
 
-        public IDataTypeDefinition Text
-        {
-            get
-            {
-                return _dataTypeService.GetDataTypeDefinitionById(-88);
-            }
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public IDataTypeDefinition Text =>
+            _dataTypeService.GetDataTypeDefinitionById(-88);
 
-        public IDataTypeDefinition Label
-        {
-            get
-            {
-                return _dataTypeService.GetDataTypeDefinitionById(-92);
-            }
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public IDataTypeDefinition Label =>
+            _dataTypeService.GetDataTypeDefinitionById(-92);
 
-        public IDataTypeDefinition Upload
-        {
-            get
-            {
-                return _dataTypeService.GetDataTypeDefinitionById(-90);
-            }
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public IDataTypeDefinition Upload =>
+            _dataTypeService.GetDataTypeDefinitionById(-90);
 
-        public IDataTypeDefinition MediaListView
-        {
-            get
-            {
-                return _dataTypeService.GetDataTypeDefinitionById(Umbraco.Core.Constants.System.DefaultMediaListViewDataTypeId);
-            }
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public IDataTypeDefinition MediaListView =>
+            _dataTypeService.GetDataTypeDefinitionById(Umbraco.Core.Constants.System.DefaultMediaListViewDataTypeId);
 
-        public IDataTypeDefinition Date
-        {
-            get
-            {
-                return _dataTypeService.GetDataTypeDefinitionById(-41);
-            }
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public IDataTypeDefinition Date =>
+            _dataTypeService.GetDataTypeDefinitionById(-41);
 
-        public IDataTypeDefinition TrueFalse
-        {
-            get
-            {
-                return _dataTypeService.GetDataTypeDefinitionById(-49);
-            }
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public IDataTypeDefinition TrueFalse =>
+            _dataTypeService.GetDataTypeDefinitionById(-49);
 
-        public IDataTypeDefinition ImageCropper
-        {
-            get
-            {
-                return _dataTypeService.GetDataTypeDefinitionById(1043);
-            }
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public IDataTypeDefinition ImageCropper =>
+            _dataTypeService.GetDataTypeDefinitionById(1043);
     }
 }
