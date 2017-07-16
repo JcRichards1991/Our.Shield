@@ -59,73 +59,6 @@
             }
         }
 
-        private bool ExecuteFirstTime(IJob job, BackofficeAccessConfiguration config)
-        {
-            //Check if we're enabled & the configured
-            //backoffice url is equal to the on-disk UmbracoPath
-            if (config.Enable && new Regex("^((" + config.BackendAccessUrl.Trim('~').TrimEnd('/') + ")(/?))$", RegexOptions.IgnoreCase).IsMatch(ApplicationSettings.UmbracoPath))
-            {
-                //we're enabled and the same
-                //no need for a hard save
-                return false;
-            }
-
-            //Check if disabled and on-disk UmbracoPath location is /umbraco/
-            if (!config.Enable && ApplicationSettings.UmbracoPath.Equals(((BackofficeAccessConfiguration)DefaultConfiguration).BackendAccessUrl))
-            {
-                //we're disabled, and
-                //on-disk UmbracoPath is /umbraco/
-                //so no need for a hard save
-                return false;
-            }
-
-            try
-            {
-                var path = HttpRuntime.AppDomainAppPath;
-                if (!Directory.Exists(path + ApplicationSettings.UmbracoPath.TrimEnd('/')))
-                {
-                    job.WriteJournal(new JournalMessage($"Unable to Rename and/or move directory from: { ApplicationSettings.UmbracoPath } to: { config.BackendAccessUrl }\nThe directory {ApplicationSettings.UmbracoPath} cannot be found"));
-                    return false;
-                }
-
-                var webConfig = WebConfigurationManager.OpenWebConfiguration("~");
-                var appSettings = (AppSettingsSection)webConfig.GetSection("appSettings");
-
-                var umbracoPath = appSettings.Settings["umbracoPath"];
-                var umbracoReservedPaths = appSettings.Settings["umbracoReservedPaths"];
-
-                var regex = new Regex($"^({ umbracoPath.Value.Trim('~').TrimEnd('/') }(/){{0,1}})$");
-
-                if (!regex.IsMatch(ApplicationSettings.UmbracoPath) && !regex.IsMatch(umbracoReservedPaths.Value))
-                {
-                    job.WriteJournal(new JournalMessage($"Unable to make necessary changes to the web.config, appSetting keys: umbracoPath & umbracoReservedPaths doesn't contain the expected values"));
-                    return false;
-                }
-
-                Directory.Move(path + ApplicationSettings.UmbracoPath.Trim('/'), path + config.BackendAccessUrl.Trim('/'));
-
-                umbracoReservedPaths.Value = umbracoReservedPaths.Value.Replace(umbracoPath.Value.TrimEnd('/'), config.BackendAccessUrl);
-                umbracoPath.Value = $"~{config.BackendAccessUrl.TrimEnd('/')}";
-                webConfig.Save();
-            }
-            catch (Exception ex)
-            {
-                job.WriteJournal(new JournalMessage($"Unexpected error occurred, exception:\n{ex.Message}"));
-                return false;
-            }
-
-            if (HttpContext.Current != null)
-            {
-                var response = HttpContext.Current.Response;
-                response.Clear();
-                response.Redirect(HttpContext.Current.Request.Url.ToString(), true);
-            }
-
-            HttpRuntime.UnloadAppDomain();
-
-            return true;
-        }
-
         private readonly string allowKey = Guid.NewGuid().ToString();
         private readonly TimeSpan CacheLength = new TimeSpan(TimeSpan.TicksPerDay);        //   Once per day
 
@@ -199,38 +132,16 @@
             }, CacheLength) as string;
         }
 
-        private void AddSoftWatches(IJob job, BackofficeAccessConfiguration config)
+        private int SoftWatcher(IJob job, Regex regex, int priority, string hardLocation, string softLocation, bool rewrite = true)
         {
-            var hardLocation = ApplicationSettings.UmbracoPath;
-            var softLocation = config.BackendAccessUrl.EnsureEndsWith('/');
-
-            //If disabled, set the softLocation Url to the default (/umbraco/)
-            if (!config.Enable)
-            {
-                softLocation = ((BackofficeAccessConfiguration)this.DefaultConfiguration).BackendAccessUrl;
-            }
-
-            //if the softLocation and the hardLocation
-            //are the same we don't need to add any watches
-            //we can exit the function
-            if (softLocation == hardLocation)
-            {
-                return;
-            }
-
-            //A hard save has occurred so we need
-            //to make sure backoffice is accessible
-
-            var softLocationRegex = new Regex("^((" + softLocation.TrimEnd('/') + ")(/?)|(" + softLocation + ".*\\.([A-Za-z0-9]){2,5}))$", RegexOptions.IgnoreCase);
-
             //Add watch on the soft location
-            job.WatchWebRequests(softLocationRegex, 10, (count, httpApp) =>
+            return job.WatchWebRequests(regex, priority, (count, httpApp) =>
             {
                 //change the Url to point to the hardLocation
                 //for the request to work as expected
-                var rewritePath = httpApp.Request.Url.AbsolutePath.Length > softLocation.Length
+                var rewritePath = (httpApp.Request.Url.AbsolutePath.Length > softLocation.Length
                     ? hardLocation + httpApp.Request.Url.AbsolutePath.Substring(softLocation.Length)
-                    : hardLocation;
+                    : hardLocation) + httpApp.Request.Url.Query;
 
                 //Request is for a physical file, if it's
                 //a usercontrol etc, we need to TransmitFile
@@ -253,9 +164,61 @@
                 //access token to context so we can allow the request to pass
                 //through on the watch for the hard location
                 httpApp.Context.Items.Add(allowKey, true);
-                httpApp.Context.RewritePath(rewritePath);
-                return WatchCycle.Restart;
+                if (rewrite)
+                {
+                    httpApp.Context.RewritePath(rewritePath);
+                    return WatchCycle.Restart;
+                }
+                httpApp.Context.Response.Redirect(rewritePath);
+                return WatchCycle.Stop;
             });
+        }
+
+        private void AddSoftWatches(IJob job, BackofficeAccessConfiguration config)
+        {
+            var umbracoLocation = ((BackofficeAccessConfiguration)this.DefaultConfiguration).BackendAccessUrl;
+            var hardLocation = ApplicationSettings.UmbracoPath;
+            var softLocation = (config.Enable) 
+                ? config.BackendAccessUrl.EnsureEndsWith('/') 
+                : umbracoLocation;
+
+            //Match Umbraco path for badly written Umbraco Packages, that only work with hardcoded /umbraco/backoffice
+            if (!softLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase))
+            {
+                SoftWatcher(job, 
+                    new Regex("^" + umbracoLocation + "backoffice/", RegexOptions.IgnoreCase),
+                    15,
+                    hardLocation, 
+                    umbracoLocation, 
+                    true);
+            }
+
+            var resetter = new HardResetFileHandler();
+
+            //if the softLocation and the hardLocation
+            //are the same we don't need to add any watches
+            //we can exit the function
+            if (softLocation.Equals(hardLocation, StringComparison.InvariantCultureIgnoreCase))
+            {
+                resetter.Delete();
+                return;
+            }
+
+            var path = HttpRuntime.AppDomainAppPath;
+            
+            resetter.HardLocation = path + hardLocation.Trim('/');
+            resetter.SoftLocation = path + softLocation.Trim('/');
+            resetter.EnvironmentId = job.Environment.Id;
+            resetter.Save();
+
+            //A hard save has occurred so we need
+            //to make sure backoffice is accessible
+            SoftWatcher(job,
+                new Regex("^((" + softLocation.TrimEnd('/') + ")(/?)|(" + softLocation + ".*\\.([A-Za-z0-9]){2,5}))$", RegexOptions.IgnoreCase),
+                10,
+                hardLocation,
+                softLocation,
+                true);
 
             var hardLocationRegex = new Regex("^((" + hardLocation.TrimEnd('/') + ")(/?)|(" + hardLocation + ".*\\.([A-Za-z0-9]){2,5}))$", RegexOptions.IgnoreCase);
 
@@ -433,8 +396,6 @@
             });
         }
 
-        private int firstExecute = 0;
-
         /// <summary>
         /// 
         /// </summary>
@@ -443,19 +404,6 @@
         /// <returns></returns>
         public override bool Execute(IJob job, IConfiguration c)
         {
-            //Check if we're the first time being ran after an app pool restart.
-            if (Interlocked.CompareExchange(ref firstExecute, 1, 0) == 0)
-            {
-                //TODO: Uncomment out code when method is more 'stable'
-
-                //if (ExecuteFirstTime(job, config))
-                //{
-                //    //Hard save occurred, the app pool has been
-                //    //restart. so no need to continue executing.
-                //    return true;
-                //}
-            }
-
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(allowKey);
             job.UnwatchWebRequests();
 
@@ -470,7 +418,7 @@
             {
                 //Add our Hard Watch to
                 //do the security checking
-                //on the user's ip
+                //on the user's IP Address
                 AddHardWatch(job, config);
             }
 

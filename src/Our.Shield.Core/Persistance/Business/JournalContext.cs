@@ -11,7 +11,7 @@
     /// <summary>
     /// The Journal context
     /// </summary>
-    internal class JournalContext : DbContext
+    public class JournalContext : DbContext
     {
         private IEnumerable<IJournal> GetListingResults(int? environmentId, string appId, int page, int itemsPerPage, Type type, out int totalPages)
         {

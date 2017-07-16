@@ -10,7 +10,7 @@
     /// <summary>
     /// The Configuration Context.
     /// </summary>
-    internal class ConfigurationContext : DbContext
+    public class ConfigurationContext : DbContext
     {
 
         /// <summary>

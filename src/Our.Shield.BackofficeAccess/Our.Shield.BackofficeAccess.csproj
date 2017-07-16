@@ -256,11 +256,17 @@
       <HintPath>..\packages\UrlRewritingNet.2.0.7\lib\UrlRewritingNet.UrlRewriter.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\BackofficeAccessConfiguration.cs" />
     <Compile Include="Models\BackofficeAccessApp.cs" />
+    <Compile Include="Models\HardReset.cs" />
+    <Compile Include="Models\HardResetFileHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\IpAddress.cs" />
   </ItemGroup>

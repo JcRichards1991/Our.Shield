@@ -9,7 +9,7 @@
     /// </summary>
     [TableName(nameof(Shield) + nameof(Environment))]
     [PrimaryKey("Id", autoIncrement = true)]
-    internal class Environment
+    public class Environment
     {
         /// <summary>
         /// Gets or sets the Id

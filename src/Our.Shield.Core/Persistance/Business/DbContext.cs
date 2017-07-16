@@ -9,7 +9,7 @@
     /// <summary>
     /// 
     /// </summary>
-    internal class DbContext
+    public class DbContext
     {
         private static readonly Lazy<DbContext> instance = new Lazy<DbContext>(() => new DbContext());
 

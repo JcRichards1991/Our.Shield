@@ -8,7 +8,7 @@
     /// </summary>
     [TableName(nameof(Shield) + nameof(Domain))]
     [PrimaryKey("Id", autoIncrement = true)]
-    internal class Domain
+    public class Domain
     {
         /// <summary>
         /// Gets or sets the Id
