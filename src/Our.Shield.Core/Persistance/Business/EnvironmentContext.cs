@@ -9,7 +9,7 @@
     /// <summary>
     /// The Environment Context.
     /// </summary>
-    internal class EnvironmentContext : DbContext
+    public class EnvironmentContext : DbContext
     {
         /// <summary>
         /// 

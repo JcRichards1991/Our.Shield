@@ -8,7 +8,7 @@
     /// <summary>
     /// The Journal context
     /// </summary>
-    internal class DomainContext : DbContext
+    public class DomainContext : DbContext
     {
         /// <summary>
         /// 
