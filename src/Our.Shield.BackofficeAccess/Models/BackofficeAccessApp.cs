@@ -4,17 +4,13 @@
     using Core.UI;
     using System;
     using System.Collections.Generic;
-    using System.Configuration;
-    using System.IO;
     using System.Linq;
     using System.Net;
     using System.Text.RegularExpressions;
-    using System.Threading;
     using System.Web;
-    using System.Web.Configuration;
     using Umbraco.Core;
-    using Umbraco.Web;
     using Umbraco.Core.Security;
+    using Umbraco.Web;
 
     /// <summary>
     /// 
@@ -139,31 +135,53 @@
             {
                 //change the Url to point to the hardLocation
                 //for the request to work as expected
-                var rewritePath = (httpApp.Request.Url.AbsolutePath.Length > softLocation.Length
+                var rewritePath = httpApp.Request.Url.AbsolutePath.Length > softLocation.Length
                     ? hardLocation + httpApp.Request.Url.AbsolutePath.Substring(softLocation.Length)
-                    : hardLocation) + httpApp.Request.Url.Query;
+                    : hardLocation;
 
                 //Request is for a physical file, if it's
-                //a usercontrol etc, we need to TransmitFile
+                //a usercontrol etc, we need to TransferRequest
+                //otherwise, it's a css etc. and we need to
+                //transmitFile and set the correct mime type
                 //otherwise, UmbracoModule will try and return
-                //a content node for the request, instead of the
-                //desired action (i.e. /umbraco/dialogs/republish.aspx)
-                if (!string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension)
-                    && (httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".aspx")
-                    || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".ascx")
-                    || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".asmx")
-                    || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".ashx")))
+                //a content item for the request, resulting in
+                //a 404 status code
+                if (!string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension))
                 {
+                    //Request is for a usercontrol etc. transfer
+                    //the request and leave the watcher
+                    if (httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".aspx")
+                        || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".ascx")
+                        || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".asmx")
+                        || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".ashx"))
+                    {
+                        //add the querystring to pass onto the usercontrol etc.
+                        //we can't do it on the creating the variable as it
+                        //causes issues with transmit file
+                        httpApp.Context.Server.TransferRequest(rewritePath + httpApp.Request.Url.Query, true);
+                        return WatchCycle.Stop;
+                    }
+
+                    //Request is for a css etc. file, transmit
+                    //the file and set correct mime type
+                    var mimeType = MimeMapping.GetMimeMapping(httpApp.Context.Server.MapPath(rewritePath));
+
+                    httpApp.Context.Response.ContentType = mimeType;
                     httpApp.Context.Response.TransmitFile(httpApp.Context.Server.MapPath(rewritePath));
                     httpApp.Context.Response.End();
                     return WatchCycle.Stop;
                 }
+
+                //we can add querystring here as the request is not for
+                //a physical file and may be needed for any 'sub' requests
+                rewritePath += httpApp.Request.Url.Query;
 
                 //We're not a physical usercontrol etc. file, so we can just
                 //rewrite the path to the hard location. we need to add the
                 //access token to context so we can allow the request to pass
                 //through on the watch for the hard location
                 httpApp.Context.Items.Add(allowKey, true);
+
                 if (rewrite)
                 {
                     httpApp.Context.RewritePath(rewritePath);
@@ -172,6 +190,14 @@
                 httpApp.Context.Response.Redirect(rewritePath);
                 return WatchCycle.Stop;
             });
+        }
+
+        private bool IsRequestAuthenticated(HttpApplication httpApp)
+        {
+            var httpContext = new HttpContextWrapper(httpApp.Context);
+            var umbAuthTicket = httpContext.GetUmbracoAuthTicket();
+
+            return httpContext.AuthenticateCurrentRequest(umbAuthTicket, true);
         }
 
         private void AddSoftWatches(IJob job, BackofficeAccessConfiguration config)
@@ -183,13 +209,13 @@
                 : umbracoLocation;
 
             //Match Umbraco path for badly written Umbraco Packages, that only work with hardcoded /umbraco/backoffice
-            if (!softLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase))
+            if (!softLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase) && !hardLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase))
             {
-                SoftWatcher(job, 
+                SoftWatcher(job,
                     new Regex("^" + umbracoLocation + "backoffice/", RegexOptions.IgnoreCase),
                     15,
-                    hardLocation, 
-                    umbracoLocation, 
+                    hardLocation,
+                    umbracoLocation,
                     true);
             }
 
@@ -244,15 +270,12 @@
                     return WatchCycle.Continue;
                 }
                 
-                var httpContext = new HttpContextWrapper(httpApp.Context);
-                var umbAuthTicket = httpContext.GetUmbracoAuthTicket();
-
                 //If the requests has an authenticated umbraco user,
                 //we need to redirect the request back to the
                 //softLocation - This is most likely due to
                 //clicking a link (i.e. content breadcrumb)
                 //which isn't handle by the angular single page app
-                if (httpContext.AuthenticateCurrentRequest(umbAuthTicket, true))
+                if (IsRequestAuthenticated(httpApp))
                 {
                     //request has a authenticated user, we want to
                     //redirect the user back to the soft location
@@ -338,6 +361,15 @@
             //Add watch on the on-disk UmbracoPath location to do the security checking of the user's ip
             job.WatchWebRequests(hardLocationRegex, 1000, (count, httpApp) =>
             {
+                //If request has an authenticated user,
+                //we've already checked the user's IP
+                //address, and therefore we should just
+                //allow access without checking IP again
+                if (IsRequestAuthenticated(httpApp))
+                {
+                    return WatchCycle.Continue;
+                }
+
                 var userIp = GetUserIp(httpApp);
 
                 //check if IP address is not within the white-list;
