@@ -108,6 +108,11 @@
 
         public void Delete()
         {
+            if(!System.IO.File.Exists(DirectoryPath + File))
+            {
+                return;
+            }
+
             System.IO.File.Delete(DirectoryPath + File);
             HardLocation = SoftLocation = null;
             EnvironmentId = null;
