@@ -234,7 +234,6 @@
             
             resetter.HardLocation = path + hardLocation.Trim('/');
             resetter.SoftLocation = path + softLocation.Trim('/');
-            resetter.EnvironmentId = job.Environment.Id;
             resetter.Save();
 
             //A hard save has occurred so we need
