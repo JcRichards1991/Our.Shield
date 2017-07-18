@@ -156,7 +156,7 @@
                         || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".ashx"))
                     {
                         //add the querystring to pass onto the usercontrol etc.
-                        //we can't do it on the creating the variable as it
+                        //we can't do it on creating the variable as it
                         //causes issues with transmit file
                         httpApp.Context.Server.TransferRequest(rewritePath + httpApp.Request.Url.Query, true);
                         return WatchCycle.Stop;
@@ -164,7 +164,7 @@
 
                     //Request is for a css etc. file, transmit
                     //the file and set correct mime type
-                    var mimeType = MimeMapping.GetMimeMapping(httpApp.Context.Server.MapPath(rewritePath));
+                    var mimeType = MimeMapping.GetMimeMapping(rewritePath);
 
                     httpApp.Context.Response.ContentType = mimeType;
                     httpApp.Context.Response.TransmitFile(httpApp.Context.Server.MapPath(rewritePath));

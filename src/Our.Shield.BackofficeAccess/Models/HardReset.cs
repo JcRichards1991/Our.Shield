@@ -1,13 +1,13 @@
 ﻿[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.BackofficeAccess.Models.HardReset), nameof(Our.Shield.BackofficeAccess.Models.HardReset.Start))]
 namespace Our.Shield.BackofficeAccess.Models
 {
+    using Core.Models;
+    using Core.Persistance.Business;
     using System;
     using System.IO;
     using System.Text.RegularExpressions;
     using System.Xml.Linq;
     using System.Xml.XPath;
-    using Core.Models;
-    using Core.Persistance.Business;
 
     internal class HardReset
     {
@@ -22,10 +22,9 @@ namespace Our.Shield.BackofficeAccess.Models
                     return;
                 }
 
-                var webConfig = new WebConfigFileHandler();
                 var curUmbVersion = Umbraco.Core.Configuration.UmbracoVersion.GetSemanticVersion().ToString();
 
-                if(!curUmbVersion.Equals(webConfig.UmbracoVersion, StringComparison.InvariantCultureIgnoreCase))
+                if(!curUmbVersion.Equals(ApplicationSettings.UmbracoVersion, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return;
                 }
@@ -34,7 +33,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 {
                     if(resetter.EnvironmentId.HasValue)
                     {
-                        var journal = new JournalMessage($"Unable to Rename and/or move directory from: {resetter.HardLocation} to: {resetter.SoftLocation}\nThe directory {resetter.HardLocation} cannot be found");
+                        var journal = new JournalMessage($"Unable to Rename directory from: {resetter.HardLocation} to: {resetter.SoftLocation}\nThe directory {resetter.HardLocation} cannot be found");
                         DbContext.Instance.Journal.Write(resetter.EnvironmentId.Value, nameof(BackofficeAccess), journal);
                     }
 
@@ -48,10 +47,14 @@ namespace Our.Shield.BackofficeAccess.Models
 
                 Directory.Move(resetter.HardLocation, resetter.SoftLocation);
 
+                var webConfig = new WebConfigFileHandler();
+
                 webConfig.UmbracoPath = "~/" + Path.GetFileName(resetter.SoftLocation);
+                ApplicationSettings.SetUmbracoPath(webConfig.UmbracoPath);
+
                 var paths = webConfig.UmbracoReservedPaths;
 
-                var regex = new Regex("(~?)(/?)" + Path.GetFileName(resetter.HardLocation) + "(/?)", RegexOptions.IgnoreCase);
+                var regex = new Regex("^(~?)(/?)" + Path.GetFileName(resetter.HardLocation) + "(/?)$", RegexOptions.IgnoreCase);
                 
                 for (var i = 0; i < paths.Length; i++)
                 {
@@ -62,11 +65,10 @@ namespace Our.Shield.BackofficeAccess.Models
                 }
 
                 webConfig.UmbracoReservedPaths = paths;
+                ApplicationSettings.SetUmbracoReservedPaths(string.Join(",", paths));
 
                 resetter.Delete();
                 webConfig.Save();
-
-                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
             }
             catch (Exception ex)
             {
@@ -80,13 +82,13 @@ namespace Our.Shield.BackofficeAccess.Models
 
         internal class WebConfigFileHandler
         {
-            private const string File = "web.config";
+            private const string file = "web.config";
 
-            private string FilePath
+            private string filePath
             {
                 get
                 {
-                    return AppDomain.CurrentDomain.BaseDirectory + File;
+                    return AppDomain.CurrentDomain.BaseDirectory + file;
                 }
             }
 
@@ -97,7 +99,7 @@ namespace Our.Shield.BackofficeAccess.Models
             {
                 get
                 {
-                    if(webConfig == null)
+                    if (webConfig == null)
                     {
                         Load();
                     }
@@ -113,7 +115,7 @@ namespace Our.Shield.BackofficeAccess.Models
             {
                 get
                 {
-                    if(webConfig == null)
+                    if (webConfig == null)
                     {
                         Load();
                     }
@@ -126,27 +128,14 @@ namespace Our.Shield.BackofficeAccess.Models
                 }
             }
 
-            public string UmbracoVersion
-            {
-                get
-                {
-                    if(webConfig == null)
-                    {
-                        Load();
-                    }
-
-                    return webConfig.XPathSelectElement("/configuration/appSettings/add[@key='umbracoConfigurationStatus']").Attribute("value").Value;
-                }
-            }
-
             private void Load()
             {
-                webConfig = XDocument.Load(FilePath);
+                webConfig = XDocument.Load(filePath);
             }
 
             public void Save()
             {
-                webConfig.Save(FilePath);
+                webConfig.Save(file);
             }
         }
     }
