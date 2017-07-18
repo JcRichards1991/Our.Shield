@@ -262,7 +262,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\ApplicationSettings.cs" />
     <Compile Include="Models\AppMigrationAttribute.cs" />
     <Compile Include="Models\JournalMessage.cs" />
     <Compile Include="Operation\ServiceHandler.cs" />
