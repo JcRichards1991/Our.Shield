@@ -135,7 +135,7 @@ namespace Our.Shield.BackofficeAccess.Models
 
             public void Save()
             {
-                webConfig.Save(file);
+                webConfig.Save(filePath);
             }
         }
     }
