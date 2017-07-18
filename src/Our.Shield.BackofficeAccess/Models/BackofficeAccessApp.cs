@@ -216,7 +216,7 @@
                     15,
                     hardLocation,
                     umbracoLocation,
-                    true);
+                    false);
             }
 
             var resetter = new HardResetFileHandler();

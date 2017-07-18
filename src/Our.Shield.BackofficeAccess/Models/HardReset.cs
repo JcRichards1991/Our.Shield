@@ -1,13 +1,13 @@
 ﻿[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.BackofficeAccess.Models.HardReset), nameof(Our.Shield.BackofficeAccess.Models.HardReset.Start))]
 namespace Our.Shield.BackofficeAccess.Models
 {
-    using Core.Models;
-    using Core.Persistance.Business;
     using System;
     using System.IO;
+    using System.Text;
     using System.Text.RegularExpressions;
     using System.Xml.Linq;
     using System.Xml.XPath;
+    using Umbraco.Core.Logging;
 
     internal class HardReset
     {
@@ -31,21 +31,13 @@ namespace Our.Shield.BackofficeAccess.Models
 
                 if (!Directory.Exists(resetter.HardLocation))
                 {
-                    if(resetter.EnvironmentId.HasValue)
-                    {
-                        var journal = new JournalMessage($"Unable to Rename directory from: {resetter.HardLocation} to: {resetter.SoftLocation}\nThe directory {resetter.HardLocation} cannot be found");
-                        DbContext.Instance.Journal.Write(resetter.EnvironmentId.Value, nameof(BackofficeAccess), journal);
-                    }
-
-                    return;
+                    throw new FileNotFoundException($"Unable to find directory at location {resetter.HardLocation} for renaming to {Path.GetFileName(resetter.SoftLocation)}");
                 }
 
-                if(Directory.Exists(resetter.SoftLocation))
+                if (Directory.Exists(resetter.SoftLocation))
                 {
                     Directory.Delete(resetter.SoftLocation, true);
                 }
-
-                Directory.Move(resetter.HardLocation, resetter.SoftLocation);
 
                 var webConfig = new WebConfigFileHandler();
 
@@ -55,10 +47,10 @@ namespace Our.Shield.BackofficeAccess.Models
                 var paths = webConfig.UmbracoReservedPaths;
 
                 var regex = new Regex("^(~?)(/?)" + Path.GetFileName(resetter.HardLocation) + "(/?)$", RegexOptions.IgnoreCase);
-                
+
                 for (var i = 0; i < paths.Length; i++)
                 {
-                    if(regex.IsMatch(paths[i]))
+                    if (regex.IsMatch(paths[i]))
                     {
                         paths[i] = regex.Replace(paths[i], webConfig.UmbracoPath);
                     }
@@ -67,16 +59,21 @@ namespace Our.Shield.BackofficeAccess.Models
                 webConfig.UmbracoReservedPaths = paths;
                 ApplicationSettings.SetUmbracoReservedPaths(string.Join(",", paths));
 
+                try
+                {
+                    webConfig.Save();
+                }
+                catch(Exception saveEx)
+                {
+                    throw saveEx;
+                }
+                
+                Directory.Move(resetter.HardLocation, resetter.SoftLocation);
                 resetter.Delete();
-                webConfig.Save();
             }
             catch (Exception ex)
             {
-                if(resetter.EnvironmentId.HasValue)
-                {
-                    var journal = new JournalMessage($"Unexpected error occurred, exception:\n{ex.Message}");
-                    DbContext.Instance.Journal.Write(resetter.EnvironmentId.Value, nameof(BackofficeAccess), journal);
-                }
+                LogHelper.Error<HardReset>($"Unexpected error occurred renaming folder {Path.GetFileName(resetter.HardLocation)} to {Path.GetFileName(resetter.SoftLocation)} OR error setting correct app key values in web.config for umbracoPath / umbracoReservedPaths", ex);
             }
         }
 
@@ -94,16 +91,16 @@ namespace Our.Shield.BackofficeAccess.Models
 
             private XDocument webConfig;
 
+            public WebConfigFileHandler()
+            {
+                webConfig = XDocument.Load(filePath);
+            }
+
 
             public string UmbracoPath
             {
                 get
                 {
-                    if (webConfig == null)
-                    {
-                        Load();
-                    }
-
                     return webConfig.XPathSelectElement("/configuration/appSettings/add[@key='umbracoPath']").Attribute("value").Value;
                 }
                 set
@@ -115,11 +112,6 @@ namespace Our.Shield.BackofficeAccess.Models
             {
                 get
                 {
-                    if (webConfig == null)
-                    {
-                        Load();
-                    }
-
                     return webConfig.XPathSelectElement("/configuration/appSettings/add[@key='umbracoReservedPaths']").Attribute("value").Value.Split(',');
                 }
                 set
@@ -128,14 +120,16 @@ namespace Our.Shield.BackofficeAccess.Models
                 }
             }
 
-            private void Load()
-            {
-                webConfig = XDocument.Load(filePath);
-            }
-
             public void Save()
             {
-                webConfig.Save(filePath);
+                using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                {
+                    fileStream.SetLength(0);
+                    using (var streamWriter = new StreamWriter(fileStream, Encoding.UTF8))
+                    {
+                        streamWriter.Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + webConfig.ToString());
+                    }
+                }
             }
         }
     }
