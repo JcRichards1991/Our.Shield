@@ -20,7 +20,18 @@
                 <tbody>
                     <tr ng-repeat="ip in vm.configuration.ipAddresses track by $index">
                         <td>
-                            <input type="text" ng-model="ip.ipAddress" />
+                            <ng-form name="ipAddressForm">
+                                <input type="text" name="ipAddress" ng-model="ip.ipAddress" required ipaddressvalid ipaddressduplicate="{{vm.configuration.ipAddresses}}" />
+                                <span class="help-inline" ng-show="ipAddressForm.ipAddress.$error.required">
+                                    <localize key="Shield.BackofficeAccess.ErrorMessages_IpRequired">IP Address is required</localize>
+                                </span>
+                                <span class="help-inline" ng-show="ipAddressForm.ipAddress.$error.ipaddressduplicate">
+                                    <localize key="Shield.BackofficeAccess.ErrorMessages_IpDuplicate">IP Address has already been added</localize>
+                                </span>
+                                <span class="help-inline" ng-show="ipAddressForm.ipAddress.$error.ipaddressvalid">
+                                    <localize key="Shield.BackofficeAccess.ErrorMessages_IpInvalid">Invalid IP Address. Please enter a valid IPv4 or IPv6 address (cidr optional)</localize>
+                                </span>
+                            </ng-form>
                         </td>
 
                         <td>

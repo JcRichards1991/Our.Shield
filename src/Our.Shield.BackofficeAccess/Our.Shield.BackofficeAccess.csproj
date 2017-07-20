@@ -293,6 +293,7 @@
     <Content Include="App_Plugins\Shield.BackofficeAccess\Views\Overview.html" />
     <Content Include="Scripts\AppEditController.js" />
     <Content Include="Scripts\IpAddressController.js" />
+    <Content Include="Scripts\ValidatorDirectives.js" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -27,6 +27,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
             configuration: null,
             path: null,
             ancestors: null,
+            $form: null,
             tabs: [
                 {
                     id:'0',
@@ -92,11 +93,25 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     
                     $timeout(function () {
                         navigationService.syncTree({ tree: 'Shield', path: vm.path, forceReload: false, activate: true });
+                        vm.$form = $scope.shieldForm;
                         vm.loading = false;
                     });
                 });
             },
             save: function () {
+                if (vm.$form.$invalid) {
+                    //validation error, don't save
+
+                    angular.element(event.target).addClass('show-validation');
+
+                    localizationService.localize('Shield.General_InvalidError').then(function (value) {
+                        notificationsService.error(value);
+                    });
+                    vm.saveButtonState = 'error';
+                    return;
+                }
+
+                angular.element(event.target).removeClass('show-validation');
 
                 switch (vm.type) {
                     case 1:     //  Environment
@@ -111,14 +126,14 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                         vm.saveButtonState = 'busy';
                         shieldResource.postConfiguration(vm.id, vm.configuration).then(function (response) {
                             if (response.data) {
-                                localizationService.localize("Shield.General_SaveSuccess").then(function (value) {
+                                localizationService.localize('Shield.General_SaveSuccess').then(function (value) {
                                     notificationsService.success(value);
                                 });
                                 navigationService.syncTree({ tree: 'Shield', path: vm.path, forceReload: true, activate: true });
                                 vm.saveButtonState = 'init';
                                 $scope.shieldForm.$setPristine();
                             } else {
-                                localizationService.localize("Shield.General_SaveError").then(function (value) {
+                                localizationService.localize('Shield.General_SaveError').then(function (value) {
                                     notificationsService.error(value);
                                 });
                                 vm.saveButtonState = 'error';

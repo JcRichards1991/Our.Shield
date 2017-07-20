@@ -16,6 +16,7 @@
     <key alias="Remove">Remove</key>
     <key alias="SaveSuccess">Have successfully saved the configuration of your App</key>
     <key alias="SaveError">Unable to save configuration</key>
+    <key alias="InvalidError">Unable to update, there are validation errors</key>
   </area>
 
   <area alias="Shield.General.Properties">

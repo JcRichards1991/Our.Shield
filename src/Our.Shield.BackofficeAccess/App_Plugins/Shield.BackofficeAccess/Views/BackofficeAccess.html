@@ -9,7 +9,10 @@
         </label>
 
         <div class="controls">
-            <input type="text" id="backendAccessUrl" ng-model="vm.configuration.backendAccessUrl" required />
+            <input type="text" id="backendAccessUrl" name="backendAccessUrl" ng-model="vm.configuration.backendAccessUrl" required />
+            <span class="help-inline" ng-show="shieldForm.backendAccessUrl.$error.required">
+                <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
+            </span>
         </div>
     </div>
 
@@ -55,7 +58,10 @@
         </label>
 
         <div class="controls">
-            <input type="text" id="unauthorisedUrl" ng-model="vm.configuration.unauthorisedUrl" required />
+            <input type="text" id="unauthorisedUrl" name="unauthorisedUrl" ng-model="vm.configuration.unauthorisedUrl" required />
+            <span class="help-inline" ng-show="shieldForm.unauthorisedUrl.$error.required">
+                <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
+            </span>
         </div>
     </div>
 
@@ -68,7 +74,10 @@
         </label>
 
         <div class="controls">
-            <input type="text" id="unauthorisedUrlXPath" ng-model="vm.configuration.unauthorisedUrlXPath" required />
+            <input type="text" id="unauthorisedUrlXPath" name="unauthorisedUrlXPath" ng-model="vm.configuration.unauthorisedUrlXPath" required />
+            <span class="help-inline" ng-show="shieldForm.unauthorisedUrlXPath.$error.required">
+                <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
+            </span>
         </div>
     </div>
 
@@ -76,5 +85,5 @@
         <umb-editor model="vm.contentPickerProperty"></umb-editor>
     </umb-property>
 
-    <div ng-include="'/App_Plugins/Shield.BackofficeAccess/Views/IpAddressPropertyEditor.html?version=1.0.0-pre-alpha'"></div>
+    <div ng-include="'/App_Plugins/Shield.BackofficeAccess/Views/IpAddressPropertyEditor.html?version=1.0.0'"></div>
 </div>
