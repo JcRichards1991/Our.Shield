@@ -26,7 +26,6 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
             configuration: null,
             path: null,
             ancestors: null,
-            $form: null,
             tabs: [
                 {
                     id:'0',
@@ -92,13 +91,12 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     
                     $timeout(function () {
                         navigationService.syncTree({ tree: 'Shield', path: vm.path, forceReload: false, activate: true });
-                        vm.$form = $scope.shieldForm;
                         vm.loading = false;
                     });
                 });
             },
             save: function () {
-                if (vm.$form.$invalid) {
+                if ($scope.shieldForm.$invalid) {
                     //validation error, don't save
 
                     angular.element(event.target).addClass('show-validation');
