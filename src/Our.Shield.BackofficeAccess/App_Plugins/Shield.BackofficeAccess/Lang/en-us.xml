@@ -40,6 +40,6 @@
     <key alias="IpRequired">IP Address is required</key>
     <key alias="IpInvalid">Invalid IP Address. Please enter a valid IPv4 or IPv6 address (cidr optional)</key>
     <key alias="IpDuplicate">IP Address has already been added</key>
-    <key alias="RequiredOption">Required</key>
+    <key alias="Required">Required</key>
   </area>
 </language>

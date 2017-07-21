@@ -1,89 +1,92 @@
-﻿<div ng-controller="Shield.Editors.BackofficeAccess.Edit as vm"  ng-init="vm.init()">
+﻿<div ng-controller="Shield.Editors.BackofficeAccess.Edit as vm" ng-init="vm.init()">
+    <ng-form name="backofficeAccessForm">
 
-    <div class="umb-el-wrap control-group umb-control-group">
-        <label for="backendAccessUrl" class="control-label">
-            <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlLabel">Backend Office Access URL</localize>
-            <small>
-                <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlDescription">The URL used to access the CMS.</localize>
-            </small>
-        </label>
+        <div class="umb-el-wrap control-group umb-control-group">
+            <label for="backendAccessUrl" class="control-label">
+                <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlLabel">Backend Office Access URL</localize>
+                <small>
+                    <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlDescription">The URL used to access the CMS.</localize>
+                </small>
+            </label>
 
-        <div class="controls">
-            <input type="text" id="backendAccessUrl" name="backendAccessUrl" ng-model="vm.configuration.backendAccessUrl" required />
-            <span class="help-inline" ng-show="shieldForm.backendAccessUrl.$error.required">
-                <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
-            </span>
+            <div class="controls">
+                <input type="text" id="backendAccessUrl" name="backendAccessUrl" ng-model="vm.configuration.backendAccessUrl" required />
+                <span class="help-inline" ng-show="backofficeAccessForm.backendAccessUrl.$error.required">
+                    <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
+                </span>
+            </div>
         </div>
-    </div>
 
-    <div class="umb-el-wrap control-group umb-control-group">
-        <label for="redirectRewrite" class="control-label">
-            <localize key="Shield.BackofficeAccess.Properties_RedirectRewriteLabel">Redirect or Rewrite</localize>
-            <small>
-                <localize key="Shield.BackofficeAccess.Properties_RedirectRewriteDescription">Whether or not to redirect the user or to rewrite the url to another location.</localize>
-            </small>
-        </label>
+        <div class="umb-el-wrap control-group umb-control-group">
+            <label for="redirectRewrite" class="control-label">
+                <localize key="Shield.BackofficeAccess.Properties_RedirectRewriteLabel">Redirect or Rewrite</localize>
+                <small>
+                    <localize key="Shield.BackofficeAccess.Properties_RedirectRewriteDescription">Whether or not to redirect the user or to rewrite the url to another location.</localize>
+                </small>
+            </label>
 
-        <div class="controls">
-            <select id="redirectRewrite" ng-model="vm.configuration.redirectRewrite" required shield-convert-to-number>
-                <option value="0">Redirect</option>
-                <option value="1">Rewrite</option>
-            </select>
+            <div class="controls">
+                <select id="redirectRewrite" ng-model="vm.configuration.redirectRewrite" required shield-convert-to-number>
+                    <option value="0">Redirect</option>
+                    <option value="1">Rewrite</option>
+                </select>
+            </div>
         </div>
-    </div>
 
-    <div class="umb-el-wrap control-group umb-control-group">
-        <label for="unauthorisedUrlType" class="control-label">
-            <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlTypeLabel">Unauthorised Url Type</localize>
-            <small>
-                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</localize>
-            </small>
-        </label>
+        <div class="umb-el-wrap control-group umb-control-group">
+            <label for="unauthorisedUrlType" class="control-label">
+                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlTypeLabel">Unauthorised Url Type</localize>
+                <small>
+                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</localize>
+                </small>
+            </label>
 
-        <div class="controls">
-            <select id="unauthorisedUrlType" ng-model="vm.configuration.unauthorisedUrlType" required shield-convert-to-number>
-                <option value="0">Url</option>
-                <option value="1">XPath</option>
-                <option value="2">Content Picker</option>
-            </select>
+            <div class="controls">
+                <select id="unauthorisedUrlType" ng-model="vm.configuration.unauthorisedUrlType" required shield-convert-to-number>
+                    <option value="0">Url</option>
+                    <option value="1">XPath</option>
+                    <option value="2">Content Picker</option>
+                </select>
+            </div>
         </div>
-    </div>
 
-    <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 0">
-        <label for="unauthorisedUrl" class="control-label">
-            <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
-            <small>
-                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlDescription">The Url to redirect/rewrite the user to when from a disallowed IP Address.</localize>
-            </small>
-        </label>
+        <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 0">
+            <label for="unauthorisedUrl" class="control-label">
+                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
+                <small>
+                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlDescription">The Url to redirect/rewrite the user to when from a disallowed IP Address.</localize>
+                </small>
+            </label>
 
-        <div class="controls">
-            <input type="text" id="unauthorisedUrl" name="unauthorisedUrl" ng-model="vm.configuration.unauthorisedUrl" required />
-            <span class="help-inline" ng-show="shieldForm.unauthorisedUrl.$error.required">
-                <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
-            </span>
+            <div class="controls">
+                <input type="text" id="unauthorisedUrl" name="unauthorisedUrl" ng-model="vm.configuration.unauthorisedUrl" required />
+                <span class="help-inline" ng-show="backofficeAccessForm.unauthorisedUrl.$error.required">
+                    <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
+                </span>
+            </div>
         </div>
-    </div>
 
-    <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 1">
-        <label for="unauthorisedUrlXPath" class="control-label">
-            <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
-            <small>
-                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a disallowed IP Address.</localize>
-            </small>
-        </label>
+        <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 1">
+            <label for="unauthorisedUrlXPath" class="control-label">
+                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
+                <small>
+                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a disallowed IP Address.</localize>
+                </small>
+            </label>
 
-        <div class="controls">
-            <input type="text" id="unauthorisedUrlXPath" name="unauthorisedUrlXPath" ng-model="vm.configuration.unauthorisedUrlXPath" required />
-            <span class="help-inline" ng-show="shieldForm.unauthorisedUrlXPath.$error.required">
-                <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
-            </span>
+            <div class="controls">
+                <input type="text" id="unauthorisedUrlXPath" name="unauthorisedUrlXPath" ng-model="vm.configuration.unauthorisedUrlXPath" required />
+                <span class="help-inline" ng-show="backofficeAccessForm.unauthorisedUrlXPath.$error.required">
+                    <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
+                </span>
+            </div>
         </div>
-    </div>
 
-    <umb-property property="vm.contentPickerProperty" ng-if="vm.configuration.unauthorisedUrlType === 2">
-        <umb-editor model="vm.contentPickerProperty"></umb-editor>
-    </umb-property>
+        <umb-property property="vm.contentPickerProperty" ng-if="vm.configuration.unauthorisedUrlType === 2">
+            <umb-editor model="vm.contentPickerProperty"></umb-editor>
+        </umb-property>
 
-    <div ng-include="'/App_Plugins/Shield.BackofficeAccess/Views/IpAddressPropertyEditor.html?version=1.0.0'"></div>
+        <div ng-include="'/App_Plugins/Shield.BackofficeAccess/Views/IpAddressPropertyEditor.html?version=1.0.0'"></div>
+
+    </ng-form>
 </div>
