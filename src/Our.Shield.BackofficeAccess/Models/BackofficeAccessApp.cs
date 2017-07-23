@@ -48,7 +48,7 @@
                 return new BackofficeAccessConfiguration
                 {
                     BackendAccessUrl = "/umbraco/",
-                    IpAddresses = new IpAddress[0],
+                    IpEntries = new IpEntry[0],
                     RedirectRewrite = Enums.RedirectRewrite.Redirect,
                     UnauthorisedUrlType = Enums.UnautorisedUrlType.Url
                 };
@@ -317,18 +317,15 @@
             });
         }
 
-        private IPAddress GetUserIp(HttpApplication app)
+        private IPAddress ConvertToIpv6(string ip)
         {
-            var ip = app.Context.Request.UserHostAddress;
-
             if (ip.Equals("127.0.0.1"))
                 ip = "::1";
 
-            IPAddress tempIp;
-
-            if (IPAddress.TryParse(ip, out tempIp))
+            IPAddress typedIp;
+            if(IPAddress.TryParse(ip, out typedIp))
             {
-                return tempIp.MapToIPv6();
+                return typedIp.MapToIPv6();
             }
 
             return null;
@@ -336,23 +333,20 @@
 
         private void AddHardWatch(IJob job, BackofficeAccessConfiguration config)
         {
-            var ipv6s = new List<IPAddress>();
+            var whiteList = new List<IPAddress>();
 
-            //Convert our IP address(es) to the System.Net.IPAddress
+            //Convert our IP address(es) to the IpAddress
             //Class, so we're working with something more standard
-            foreach (var ip in config.IpAddresses)
+            foreach (var ipEntry in config.IpEntries)
             {
-                if (ip.ipAddress.Equals("127.0.0.1"))
-                    ip.ipAddress = "::1";
-
-                IPAddress tempIp;
-                if (!IPAddress.TryParse(ip.ipAddress, out tempIp))
+                var ip = ConvertToIpv6(ipEntry.ipAddress);
+                if (ip == null)
                 {
-                    job.WriteJournal(new JournalMessage($"Error: Unable to cast {ip.ipAddress} to the standard System.Net.IPAddress class; Therefore this is not a valid IP address. This IP address will not be added to the white-listed IP Address list"));
+                    job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {ipEntry.ipAddress}, unable to add to white-list"));
                     continue;
                 }
 
-                ipv6s.Add(tempIp.MapToIPv6());
+                whiteList.Add(ip);
             }
 
             var hardLocationRegex = new Regex("^((" + ApplicationSettings.UmbracoPath.TrimEnd('/') + ")(/?)|(" + ApplicationSettings.UmbracoPath + ".*\\.([A-Za-z0-9]){2,5}))$", RegexOptions.IgnoreCase);
@@ -369,13 +363,13 @@
                     return WatchCycle.Continue;
                 }
 
-                var userIp = GetUserIp(httpApp);
+                var userIp = ConvertToIpv6(httpApp.Context.Request.UserHostAddress);
 
                 //check if IP address is not within the white-list;
-                if (userIp == null || !ipv6s.Any(x => x.Equals(userIp)))
+                if (userIp == null || !whiteList.Any(x => x.Equals(userIp)))
                 {
                     //User is coming from a non white-listed IP Address,
-                    //so we need to get the unauthroised access url
+                    //so we need to get the unauthorized access url
                     var url = UnauthorisedUrl(job, config);
 
                     //Confirm if url is not null, if it is null, we're going to stop
@@ -408,7 +402,7 @@
 
                     //lets log the fact that an unauthorised user tried
                     //to access our configured backoffice access url
-                    job.WriteJournal(new JournalMessage($"User with IP Address: {userIp.MapToIPv4()}; tried to acces the backoffice access url. Access was denied"));
+                    job.WriteJournal(new JournalMessage($"User with IP Address: {userIp}; tried to access the backoffice access url. Access was denied"));
 
                     //request isn't for a physical asset file, so redirect/rewrite
                     //the request dependant on what is configured

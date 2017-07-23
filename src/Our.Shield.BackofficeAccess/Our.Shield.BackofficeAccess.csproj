@@ -269,7 +269,7 @@
     <Compile Include="Models\HardReset.cs" />
     <Compile Include="Models\HardResetFileHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Models\IpAddress.cs" />
+    <Compile Include="Models\IpEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Our.Shield.Core\Our.Shield.Core.csproj">

@@ -3,7 +3,7 @@
     /// <summary>
     /// IP Address Model
     /// </summary>
-    public class IpAddress
+    public class IpEntry
     {
         /// <summary>
         /// Gets or set the IP Address

@@ -25,7 +25,7 @@
         /// Gets or set the Ip Addresses.
         /// </summary>
         [JsonProperty("ipAddresses")]
-        public Models.IpAddress[] IpAddresses { get; set; }
+        public Models.IpEntry[] IpEntries { get; set; }
 
         /// <summary>
         /// Gets or sets the Unauthorised URL by XPath.
