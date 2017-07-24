@@ -12,8 +12,8 @@
     <key alias="BackendAccessUrlLabel">Backend Office Access URL</key>
     <key alias="BackendAccessUrlDescription">The URL used to access the CMS.</key>
     
-    <key alias="RedirectRewriteLabel">Redirect or Rewrite</key>
-    <key alias="RedirectRewriteDescription">Whether or not to redirect the user or to rewrite the url to another location.</key>
+    <key alias="UnauthorisedActionLabel">Unauthorised Action</key>
+    <key alias="UnauthorisedActionDescription">Whether or not to redirect the user or to rewrite the url to another location when from a non white listed IP address.</key>
     
     <key alias="UnauthorisedUrlTypeLabel">Unauthorised Url Type</key>
     <key alias="UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</key>

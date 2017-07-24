@@ -1,4 +1,6 @@
-﻿namespace Our.Shield.BackofficeAccess.Models
+﻿using Newtonsoft.Json;
+
+namespace Our.Shield.BackofficeAccess.Models
 {
     /// <summary>
     /// IP Address Model
@@ -8,11 +10,13 @@
         /// <summary>
         /// Gets or set the IP Address
         /// </summary>
-        public string ipAddress { get; set; }
+        [JsonProperty("ipAddress")]
+        public string IpAddress { get; set; }
 
         /// <summary>
         /// Gets or sets a description for this IP Address 
         /// </summary>
-        public string description { get; set; }
+        [JsonProperty("description")]
+        public string Description { get; set; }
     }
 }

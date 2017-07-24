@@ -18,15 +18,15 @@
         </div>
 
         <div class="umb-el-wrap control-group umb-control-group">
-            <label for="redirectRewrite" class="control-label">
-                <localize key="Shield.BackofficeAccess.Properties_RedirectRewriteLabel">Redirect or Rewrite</localize>
+            <label for="unauthorisedAction" class="control-label">
+                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedActionLabel">Unauthorised Action</localize>
                 <small>
-                    <localize key="Shield.BackofficeAccess.Properties_RedirectRewriteDescription">Whether or not to redirect the user or to rewrite the url to another location.</localize>
+                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedActionDescription">Whether or not to redirect the user or to rewrite the url to another location when from a non white listed IP address.</localize>
                 </small>
             </label>
 
             <div class="controls">
-                <select id="redirectRewrite" ng-model="vm.configuration.redirectRewrite" required shield-convert-to-number>
+                <select id="unauthorisedAction" ng-model="vm.configuration.unauthorisedAction" required shield-convert-to-number>
                     <option value="0">Redirect</option>
                     <option value="1">Rewrite</option>
                 </select>

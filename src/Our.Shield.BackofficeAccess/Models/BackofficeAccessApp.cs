@@ -49,7 +49,7 @@
                 {
                     BackendAccessUrl = "/umbraco/",
                     IpEntries = new IpEntry[0],
-                    RedirectRewrite = Enums.RedirectRewrite.Redirect,
+                    UnauthorisedAction = Enums.UnauthorisedAction.Redirect,
                     UnauthorisedUrlType = Enums.UnautorisedUrlType.Url
                 };
             }
@@ -306,7 +306,7 @@
 
                 //We have a url, so we need to redirect/rewrite the request
                 //dependant on what is configured
-                if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
+                if (config.UnauthorisedAction == Enums.UnauthorisedAction.Redirect)
                 {
                     httpApp.Context.Response.Redirect(url, true);
                     return WatchCycle.Stop;
@@ -339,10 +339,10 @@
             //Class, so we're working with something more standard
             foreach (var ipEntry in config.IpEntries)
             {
-                var ip = ConvertToIpv6(ipEntry.ipAddress);
+                var ip = ConvertToIpv6(ipEntry.IpAddress);
                 if (ip == null)
                 {
-                    job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {ipEntry.ipAddress}, unable to add to white-list"));
+                    job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {ipEntry.IpAddress}, unable to add to white-list"));
                     continue;
                 }
 
@@ -406,7 +406,7 @@
 
                     //request isn't for a physical asset file, so redirect/rewrite
                     //the request dependant on what is configured
-                    if (config.RedirectRewrite == Enums.RedirectRewrite.Redirect)
+                    if (config.UnauthorisedAction == Enums.UnauthorisedAction.Redirect)
                     {
                         httpApp.Context.Response.Redirect(url, true);
                         return WatchCycle.Stop;

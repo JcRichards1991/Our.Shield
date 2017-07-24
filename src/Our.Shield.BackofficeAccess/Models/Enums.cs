@@ -8,7 +8,7 @@
         /// <summary>
         /// Whether or not the user should be Redirected or Rewrite to the unauthorised Url
         /// </summary>
-        public enum RedirectRewrite
+        public enum UnauthorisedAction
         {
             Redirect,
             Rewrite

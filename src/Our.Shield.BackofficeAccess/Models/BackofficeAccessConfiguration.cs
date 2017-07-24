@@ -18,14 +18,14 @@
         /// <summary>
         /// Gets or sets the Status Code.
         /// </summary>
-        [JsonProperty("redirectRewrite")]
-        public Enums.RedirectRewrite RedirectRewrite { get; set; }
+        [JsonProperty("unauthorisedAction")]
+        public Enums.UnauthorisedAction UnauthorisedAction { get; set; }
 
         /// <summary>
         /// Gets or set the Ip Addresses.
         /// </summary>
         [JsonProperty("ipAddresses")]
-        public Models.IpEntry[] IpEntries { get; set; }
+        public IpEntry[] IpEntries { get; set; }
 
         /// <summary>
         /// Gets or sets the Unauthorised URL by XPath.
