@@ -10,9 +10,12 @@
             </label>
 
             <div class="controls">
-                <input type="text" id="backendAccessUrl" name="backendAccessUrl" ng-model="vm.configuration.backendAccessUrl" required />
-                <span class="help-inline" ng-show="backofficeAccessForm.backendAccessUrl.$error.required">
+                <input type="text" id="backendAccessUrl" name="backendAccessUrl" ng-model="vm.configuration.backendAccessUrl" required ng-trim="false" ng-pattern="/^(?:[a-zA-Z0-9]+)?$/" />
+                <span class="help-inline" val-msg-for="backendAccessUrl" val-toggle-msg="required">
                     <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
+                </span>
+                <span class="help-inline" val-msg-for="backendAccessUrl" val-toggle-msg="pattern">
+                    <localize key="Shield.BackofficeAccess.ErrorMessages_InvalidBackendAccessUrl">This can be any valid combination of letters and/or numbers, non-case sensitive. You cannot use white space, symbols or special characters</localize>
                 </span>
             </div>
         </div>
@@ -21,12 +24,12 @@
             <label for="unauthorisedAction" class="control-label">
                 <localize key="Shield.BackofficeAccess.Properties_UnauthorisedActionLabel">Unauthorised Action</localize>
                 <small>
-                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedActionDescription">Whether or not to redirect the user or to rewrite the url to another location when from a non white listed IP address.</localize>
+                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedActionDescription">Whether or not to redirect the user or to rewrite the request to another location when from a non white listed IP address.</localize>
                 </small>
             </label>
 
             <div class="controls">
-                <select id="unauthorisedAction" ng-model="vm.configuration.unauthorisedAction" required shield-convert-to-number>
+                <select id="unauthorisedAction" name="unauthorisedAction" ng-model="vm.configuration.unauthorisedAction" required shield-convert-to-number>
                     <option value="0">Redirect</option>
                     <option value="1">Rewrite</option>
                 </select>
@@ -42,7 +45,7 @@
             </label>
 
             <div class="controls">
-                <select id="unauthorisedUrlType" ng-model="vm.configuration.unauthorisedUrlType" required shield-convert-to-number>
+                <select id="unauthorisedUrlType" name="unauthorisedUrlType" ng-model="vm.configuration.unauthorisedUrlType" required shield-convert-to-number>
                     <option value="0">Url</option>
                     <option value="1">XPath</option>
                     <option value="2">Content Picker</option>
@@ -60,7 +63,7 @@
 
             <div class="controls">
                 <input type="text" id="unauthorisedUrl" name="unauthorisedUrl" ng-model="vm.configuration.unauthorisedUrl" required />
-                <span class="help-inline" ng-show="backofficeAccessForm.unauthorisedUrl.$error.required">
+                <span class="help-inline" val-msg-for="unauthorisedUrl" val-toggle-msg="required">
                     <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
                 </span>
             </div>
@@ -76,7 +79,7 @@
 
             <div class="controls">
                 <input type="text" id="unauthorisedUrlXPath" name="unauthorisedUrlXPath" ng-model="vm.configuration.unauthorisedUrlXPath" required />
-                <span class="help-inline" ng-show="backofficeAccessForm.unauthorisedUrlXPath.$error.required">
+                <span class="help-inline" val-msg-for="unauthorisedUrlXPath" val-toggle-msg="required">
                     <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
                 </span>
             </div>

@@ -281,8 +281,10 @@
     <None Include="app.config" />
     <None Include="App_Plugins\Shield.BackofficeAccess\package.manifest" />
     <None Include="packages.config" />
-    <None Include="Scss\AllowedIpPropertyEditor.scss" />
+    <None Include="Scss\Partials\_whiteListedTable.scss" />
     <None Include="Our.Shield.BackofficeAccess.nuspec" />
+    <None Include="Scss\Styles.scss" />
+    <None Include="Scss\Partials\_validation.scss" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield.BackofficeAccess\Css\BackofficeAccess.css" />
@@ -291,9 +293,8 @@
     <Content Include="App_Plugins\Shield.BackofficeAccess\Views\BackofficeAccess.html" />
     <Content Include="App_Plugins\Shield.BackofficeAccess\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.BackofficeAccess\Views\Overview.html" />
-    <Content Include="Scripts\AppEditController.js" />
-    <Content Include="Scripts\IpAddressController.js" />
-    <Content Include="Scripts\ValidatorDirectives.js" />
+    <Content Include="Scripts\Controllers.js" />
+    <Content Include="Scripts\Directives.js" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

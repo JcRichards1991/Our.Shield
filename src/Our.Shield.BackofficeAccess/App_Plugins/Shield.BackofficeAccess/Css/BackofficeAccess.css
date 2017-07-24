@@ -1,3 +1,6 @@
+shield-app .umb-property .alert.alert-error.property-error {
+  display: none !important; }
+
 table.ips-container {
   width: 75%; }
   table.ips-container thead tr, table.ips-container tbody tr, table.ips-container tfoot tr {

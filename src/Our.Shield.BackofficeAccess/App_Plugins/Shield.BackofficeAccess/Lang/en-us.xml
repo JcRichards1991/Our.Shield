@@ -13,7 +13,7 @@
     <key alias="BackendAccessUrlDescription">The URL used to access the CMS.</key>
     
     <key alias="UnauthorisedActionLabel">Unauthorised Action</key>
-    <key alias="UnauthorisedActionDescription">Whether or not to redirect the user or to rewrite the url to another location when from a non white listed IP address.</key>
+    <key alias="UnauthorisedActionDescription">Whether or not to redirect the user or to rewrite the request to another location when from a non white listed IP address.</key>
     
     <key alias="UnauthorisedUrlTypeLabel">Unauthorised Url Type</key>
     <key alias="UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</key>
@@ -22,9 +22,9 @@
     <key alias="UnauthorisedUrlTypeContentPickerOption">Content Picker</key>
 
     <key alias="UnauthorisedUrlLabel">Unauthorised Url</key>
-    <key alias="UnauthorisedUrlDescription">The Url to redirect/rewrite the user to when from a disallowed IP Address.</key>
-    <key alias="UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a disallowed IP Address.</key>
-    <key alias="UnauthorisedUrlContentPickerDescription">Select the content node to redirect/rewrite the user to when from a disallowed IP Address.</key>
+    <key alias="UnauthorisedUrlDescription">The Url to redirect/rewrite the request to when from a non white listed IP Address. This can either be relat</key>
+    <key alias="UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a non white listed IP Address.</key>
+    <key alias="UnauthorisedUrlContentPickerDescription">Select the content node to redirect/rewrite the user to when from a white listed IP Address.</key>
 
     <key alias="AllowedIpsLabel">White-listed IP address(es)</key>
     <key alias="AllowedIpsDescription">The allowed IP address(es) that can access the Backend Office Access Url.</key>
@@ -41,5 +41,6 @@
     <key alias="IpInvalid">Invalid IP Address. Please enter a valid IPv4 or IPv6 address</key>
     <key alias="IpDuplicate">IP Address has already been added</key>
     <key alias="Required">Required</key>
+    <key alias="InvalidBackendAccessUrl">This can be any valid combination of letters and/or numbers, non-case sensitive. You cannot use white space, symbols or special characters</key>
   </area>
 </language>

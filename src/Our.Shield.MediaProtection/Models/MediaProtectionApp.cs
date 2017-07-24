@@ -112,7 +112,7 @@
                         return WatchCycle.Continue;
                     }
 
-                    job.WriteJournal(new JournalMessage($"Access was denied, {referrer.Host} is trying to hotlink media"));
+                    job.WriteJournal(new JournalMessage($"Access was denied, {referrer.Host} is trying to hotlink your media assets"));
 
                     //  Someone is trying to hotlink our media
                     httpApp.Response.StatusCode = (int) HttpStatusCode.Forbidden;
@@ -238,7 +238,7 @@
                         }
                     }
 
-                    job.WriteJournal(new JournalMessage($"An unauthenticated user is trying to access media: {mediaName}; media id: {mediaId}; unauthenticated user IP Address: {httpApp.Context.Request.UserHostAddress}"));
+                    job.WriteJournal(new JournalMessage($"An unauthenticated member tried to access media: {mediaName}; media id: {mediaId}; unauthenticated member IP Address: {httpApp.Context.Request.UserHostAddress}"));
 
                     //  You need to be logged in or be a member of the correct member group to see this media
                     httpApp.Response.StatusCode = (int) HttpStatusCode.Forbidden;

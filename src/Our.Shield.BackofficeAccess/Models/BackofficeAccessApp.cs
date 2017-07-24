@@ -47,7 +47,7 @@
             {
                 return new BackofficeAccessConfiguration
                 {
-                    BackendAccessUrl = "/umbraco/",
+                    BackendAccessUrl = "umbraco",
                     IpEntries = new IpEntry[0],
                     UnauthorisedAction = Enums.UnauthorisedAction.Redirect,
                     UnauthorisedUrlType = Enums.UnautorisedUrlType.Url
@@ -102,11 +102,11 @@
                                 break;
                             }
 
-                            journalMessage.Message = "Error: Unable to get the unauthorized URL from the selected unauthorized URL content picker. Please ensure the selected page is published and not deleted.";
+                            journalMessage.Message = "Error: Unable to get the unauthorized URL from the unauthorized URL content picker. Please ensure the selected page is published and not deleted.";
                             break;
                         }
 
-                        journalMessage.Message = "Error: Unable to parse the selected unauthorized URL content picker id to integer. Please ensure a valid content node is selected.";
+                        journalMessage.Message = "Error: Unable to parse the selected unauthorized URL content picker content. Please ensure a valid content node is selected.";
                         break;
 
                     default:
@@ -202,10 +202,10 @@
 
         private void AddSoftWatches(IJob job, BackofficeAccessConfiguration config)
         {
-            var umbracoLocation = ((BackofficeAccessConfiguration)this.DefaultConfiguration).BackendAccessUrl;
+            var umbracoLocation = ((BackofficeAccessConfiguration)this.DefaultConfiguration).BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/');
             var hardLocation = ApplicationSettings.UmbracoPath;
-            var softLocation = (config.Enable) 
-                ? config.BackendAccessUrl.EnsureEndsWith('/') 
+            var softLocation = (config.Enable)
+                ? config.BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/')
                 : umbracoLocation;
 
             //Match Umbraco path for badly written Umbraco Packages, that only work with hardcoded /umbraco/backoffice
@@ -402,7 +402,7 @@
 
                     //lets log the fact that an unauthorised user tried
                     //to access our configured backoffice access url
-                    job.WriteJournal(new JournalMessage($"User with IP Address: {userIp}; tried to access the backoffice access url. Access was denied"));
+                    job.WriteJournal(new JournalMessage($"User with IP Address: {(userIp.ToString().Equals("::1") ? "127.0.0.1" : userIp.ToString())}; tried to access the backoffice access url. Access was denied"));
 
                     //request isn't for a physical asset file, so redirect/rewrite
                     //the request dependant on what is configured

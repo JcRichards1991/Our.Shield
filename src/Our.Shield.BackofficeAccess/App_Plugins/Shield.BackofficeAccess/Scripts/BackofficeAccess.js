@@ -30,7 +30,7 @@ angular.module('umbraco').controller('Shield.Editors.BackofficeAccess.Edit',
                         id: -1
                     },
                     filter: "",
-                    minNumber: 0,
+                    minNumber: 1,
                     maxNumber: 1
                 }
             },
@@ -46,6 +46,7 @@ angular.module('umbraco').controller('Shield.Editors.BackofficeAccess.Edit',
         });
     }]
 );
+
 /**
 * @ngdoc controller
 * @name Shield.Properties.IpAddress
@@ -75,6 +76,8 @@ angular.module('umbraco').controller('Shield.Properties.IpAddress',
                     ipAddress: '',
                     description: ''
                 });
+
+                $scope.backofficeAccessForm.addControl();
             },
             remove: function ($index) {
                 var ip = vm.configuration.ipAddresses[$index];
@@ -90,28 +93,28 @@ angular.module('umbraco').controller('Shield.Properties.IpAddress',
 );
 /**
    * @ngdoc directive
-   * @name ipaddress-valid
+   * @name shield-ipaddressvalid
    * @function
    *
    * @description
    * Custom angular directive for validating an IP Address
    * as IPv4 or IPv6 with optional cidr
 */
-angular.module('umbraco.directives').directive('ipaddressvalid', function () {
+angular.module('umbraco.directives').directive('shieldIpaddressvalid', function () {
     return {
         restrict: 'A',
         require: 'ngModel',
         link: function (scope, elm, attr, ctrl) {
             ctrl.$parsers.push(function (modelValue) {
                 if (modelValue === '' || modelValue === undefined) {
-                    ctrl.$setValidity('ipaddressvalid', true);
+                    ctrl.$setValidity('shieldIpaddressvalid', true);
                     return modelValue;
                 }
 
                 //Check if IPv4 & IPv6
                 var pattern = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$|^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
 
-                ctrl.$setValidity('ipaddressvalid', pattern.test(modelValue));
+                ctrl.$setValidity('shieldIpaddressvalid', pattern.test(modelValue));
 
                 return modelValue
             });
@@ -121,35 +124,55 @@ angular.module('umbraco.directives').directive('ipaddressvalid', function () {
 
 /**
    * @ngdoc directive
-   * @name ipaddress-duplicate
+   * @name shield-ipaddressduplicate
    * @function
    *
    * @description
    * Checks to make sure an IP address isn't being added more than
    * once to the IP address White-List
 */
-angular.module('umbraco.directives').directive('ipaddressduplicate', function () {
+angular.module('umbraco.directives').directive('shieldIpaddressduplicate', function () {
     return {
         restrict: 'A',
         require: 'ngModel',
         link: function (scope, elm, attr, ctrl) {
             ctrl.$parsers.push(function (modelValue) {
                 if (modelValue === '' || modelValue === undefined) {
-                    ctrl.$setValidity('ipaddressduplicate', true);
+                    ctrl.$setValidity('shieldIpaddressduplicate', true);
                     return modelValue;
                 }
 
-                var ipAddresses = angular.fromJson(attr.ipaddressduplicate);
+                var ipAddresses = angular.fromJson(attr.shieldIpaddressduplicate);
 
                 if (ipAddresses.filter((x) => x.ipAddress === modelValue)[0] !== undefined) {
-                    ctrl.$setValidity('ipaddressduplicate', false);
+                    ctrl.$setValidity('shieldIpaddressduplicate', false);
                     return modelValue;
                 }
 
-                ctrl.$setValidity('ipaddressduplicate', true);
+                ctrl.$setValidity('shieldIpaddressduplicate', true);
                 return modelValue
             })
         }
     };
+});
+
+/**
+   * @ngdoc directive
+   * @name shield-add-to-form
+   * @function
+   *
+   * @description
+   * Adds form input elements to the backoffice access form for validation
+*/
+angular.module('umbraco.directives').directive('shieldAddToForm', function () {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function ($scope, $element, $attr, ctrl) {
+            $scope.backofficeAccessForm.$removeControl(ctrl);
+            ctrl.$name = $attr.name;
+            $scope.backofficeAccessForm.$addControl(ctrl);
+        }
+    }
 });
 }(window));

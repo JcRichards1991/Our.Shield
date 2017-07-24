@@ -97,6 +97,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                 });
             },
             save: function () {
+                $scope.$broadcast("formSubmitting", { scope: $scope, action: 'publish' });
                 if ($scope.shieldForm.$invalid) {
                     //validation error, don't save
 
@@ -108,8 +109,6 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     vm.saveButtonState = 'error';
                     return;
                 }
-
-                angular.element(event.target).removeClass('show-validation');
 
                 switch (vm.type) {
                     case 1:     //  Environment
