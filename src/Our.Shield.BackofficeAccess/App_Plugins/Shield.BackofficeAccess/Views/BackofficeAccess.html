@@ -62,11 +62,12 @@
             </label>
 
             <div class="controls">
+                <input type="text" id="unauthorisedUrl" name="unauthorisedUrl" ng-model="vm.configuration.unauthorisedUrl" required ng-trim="false" ng-pattern="/^\/(([\w-]+(\/)?)+([\w-]+\.[\w-]+)?(\/)?(\?[\w-]+(=[\w-]+)?((&[\w-]+(=[\w-]+)?)+)?)?(#[\w-]+)?)?$/i" />
                 <span class="help-inline" val-msg-for="unauthorisedUrl" val-toggle-msg="required">
                     <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
                 </span>
                 <span class="help-inline" val-msg-for="unauthorisedUrl" val-toggle-msg="pattern">
-                    <localize key="Shield.BackofficeAccess.ErrorMessages_InvalidUnauthorisedUrl">This is an invalid Url. Please provide a valid relative or absolute Url</localize>
+                    <localize key="Shield.BackofficeAccess.ErrorMessages_InvalidUnauthorisedUrl">Invalid Url. Please provide a valid relative Url. i.e. /404</localize>
                 </span>
             </div>
         </div>

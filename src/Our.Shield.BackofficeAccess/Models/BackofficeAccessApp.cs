@@ -60,7 +60,8 @@
 
         private string UnauthorisedUrl(IJob job, BackofficeAccessConfiguration config)
         {
-            return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(allowKey, () => {
+            return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(allowKey, () =>
+            {
                 string url = null;
                 var journalMessage = new JournalMessage();
                 var umbContext = UmbracoContext.Current;
@@ -86,7 +87,7 @@
                             break;
                         }
 
-                        journalMessage.Message = "Error: Unable to get the unauthorized URL from the specified XPath expression.";
+                        journalMessage.Message = "Error: Unable to get the unauthorized URL from the specified XPath expression";
                         break;
 
                     case Enums.UnautorisedUrlType.ContentPicker:
@@ -102,15 +103,15 @@
                                 break;
                             }
 
-                            journalMessage.Message = "Error: Unable to get the unauthorized URL from the unauthorized URL content picker. Please ensure the selected page is published and not deleted.";
+                            journalMessage.Message = "Error: Unable to get the unauthorized URL from the unauthorized URL content picker. Please ensure the selected page is published and not deleted";
                             break;
                         }
 
-                        journalMessage.Message = "Error: Unable to parse the selected unauthorized URL content picker content. Please ensure a valid content node is selected.";
+                        journalMessage.Message = "Error: Unable to parse the selected unauthorized URL content picker content. Please ensure a valid content node is selected";
                         break;
 
                     default:
-                        journalMessage.Message = "Error: Unable to determine which method to use to get the unauthorized URL. Please ensure URL, XPath or Content Picker is selected.";
+                        journalMessage.Message = "Error: Unable to determine which method to use to get the unauthorized URL. Please ensure URL, XPath or Content Picker is selected";
                         break;
                 }
 
@@ -312,7 +313,7 @@
                     return WatchCycle.Stop;
                 }
 
-                httpApp.Context.RewritePath(url);
+                httpApp.Context.RewritePath(url, string.Empty, string.Empty);
                 return WatchCycle.Restart;
             });
         }
