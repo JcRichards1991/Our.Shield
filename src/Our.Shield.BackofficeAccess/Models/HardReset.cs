@@ -59,6 +59,8 @@ namespace Our.Shield.BackofficeAccess.Models
                 webConfig.UmbracoReservedPaths = paths;
                 ApplicationSettings.SetUmbracoReservedPaths(string.Join(",", paths));
 
+                webConfig.SetLocationPath(Path.GetFileName(resetter.HardLocation).Trim('/'), webConfig.UmbracoPath.TrimStart('~', '/').TrimEnd('/'));
+
                 try
                 {
                     webConfig.Save();
@@ -67,7 +69,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 {
                     throw saveEx;
                 }
-                
+
                 Directory.Move(resetter.HardLocation, resetter.SoftLocation);
                 resetter.Delete();
             }
@@ -117,6 +119,15 @@ namespace Our.Shield.BackofficeAccess.Models
                 set
                 {
                     webConfig.XPathSelectElement("/configuration/appSettings/add[@key='umbracoReservedPaths']").Attribute("value").Value = string.Join(",", value);
+                }
+            }
+
+            public void SetLocationPath(string currentLocation, string newLocation)
+            {
+                var element = webConfig.XPathSelectElement("/configuration/location[@path='" + currentLocation + "']");
+                if (element != null)
+                {
+                    element.Attribute("path").Value = newLocation;
                 }
             }
 
