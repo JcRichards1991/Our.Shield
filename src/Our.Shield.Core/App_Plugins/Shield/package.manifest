@@ -1,8 +1,8 @@
 ﻿{
   "javascript": [
-    "~/App_Plugins/Shield/Backoffice/Scripts/Shield.js"
+    "~/App_Plugins/Shield/Backoffice/Scripts/Shield.js?version=1.0.0"
   ],
   "css": [
-    "~/App_Plugins/Shield/Backoffice/Css/Shield.css"
+    "~/App_Plugins/Shield/Backoffice/Css/Shield.css?version=1.0.0"
   ]
 }

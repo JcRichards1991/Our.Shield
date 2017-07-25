@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>$id$</id>
-    <version>$version$-pre-alpha</version>
+    <version>$version$</version>
     <title>$title$</title>
     <authors>Joshua Richards</authors>
     <owners>Joshua Richards</owners>
@@ -14,7 +14,7 @@
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security MediaProtection Media Protection</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="1.0.0-pre-alpha" />
+      <dependency id="Our.Shield.Core" version="1.0.0" />
     </dependencies>
   </metadata>
   <files>

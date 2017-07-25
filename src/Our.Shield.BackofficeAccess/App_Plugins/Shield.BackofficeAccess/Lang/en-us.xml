@@ -22,7 +22,7 @@
     <key alias="UnauthorisedUrlTypeContentPickerOption">Content Picker</key>
 
     <key alias="UnauthorisedUrlLabel">Unauthorised Url</key>
-    <key alias="UnauthorisedUrlDescription">The Url to redirect/rewrite the request to when from a non white listed IP Address. This can either be relat</key>
+    <key alias="UnauthorisedUrlDescription">The Url to redirect/rewrite the request to when from a non white listed IP Address.</key>
     <key alias="UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a non white listed IP Address.</key>
     <key alias="UnauthorisedUrlContentPickerDescription">Select the content node to redirect/rewrite the user to when from a white listed IP Address.</key>
 

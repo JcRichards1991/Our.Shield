@@ -15,7 +15,7 @@
     /// <summary>
     /// 
     /// </summary>
-    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.0-pre-alpha")]
+    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.0")]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
     {
         /// <summary>
@@ -213,7 +213,7 @@
             if (!softLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase) && !hardLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase))
             {
                 SoftWatcher(job,
-                    new Regex("^" + umbracoLocation + "backoffice/", RegexOptions.IgnoreCase),
+                    new Regex("^(" + umbracoLocation.TrimEnd('/') + "(?!_client)[\\w-/.]+)$", RegexOptions.IgnoreCase),
                     15,
                     hardLocation,
                     umbracoLocation,
@@ -240,13 +240,13 @@
             //A hard save has occurred so we need
             //to make sure backoffice is accessible
             SoftWatcher(job,
-                new Regex("^((" + softLocation.TrimEnd('/') + ")(/?)|(" + softLocation + ".*\\.([A-Za-z0-9]){2,5}))$", RegexOptions.IgnoreCase),
+                new Regex("^(" + softLocation.TrimEnd('/') + "(/)?)$|^(" + softLocation + "[\\w-/]+\\.[\\w.]{2,5})$", RegexOptions.IgnoreCase),
                 10,
                 hardLocation,
                 softLocation,
                 true);
 
-            var hardLocationRegex = new Regex("^((" + hardLocation.TrimEnd('/') + ")(/?)|(" + hardLocation + ".*\\.([A-Za-z0-9]){2,5}))$", RegexOptions.IgnoreCase);
+            var hardLocationRegex = new Regex("^(" + hardLocation.TrimEnd('/') + "(/)?)$|^(" + hardLocation + "[\\w-/]+\\.[\\w.]{2,5})$", RegexOptions.IgnoreCase);
 
             //Add watch on the hard location
             job.WatchWebRequests(hardLocationRegex, 20, (count, httpApp) =>
@@ -350,7 +350,7 @@
                 whiteList.Add(ip);
             }
 
-            var hardLocationRegex = new Regex("^((" + ApplicationSettings.UmbracoPath.TrimEnd('/') + ")(/?)|(" + ApplicationSettings.UmbracoPath + ".*\\.([A-Za-z0-9]){2,5}))$", RegexOptions.IgnoreCase);
+            var hardLocationRegex = new Regex("^(" + ApplicationSettings.UmbracoPath.TrimEnd('/') + "(/)?)$|^(" + ApplicationSettings.UmbracoPath + "[\\w-/]+\\.[\\w.]{2,5})$", RegexOptions.IgnoreCase);
 
             //Add watch on the on-disk UmbracoPath location to do the security checking of the user's ip
             job.WatchWebRequests(hardLocationRegex, 1000, (count, httpApp) =>

@@ -255,7 +255,7 @@ angular.module('umbraco').controller('Shield.Dashboards.Overview',
                     vm.appIds = response.data;
 
                     angular.forEach(vm.appIds, function (appId, index) {
-                        vm.appOverviews.push('/App_Plugins/Shield.' + appId + '/Views/Overview.html?version=1.0.0-pre-alpha')
+                        vm.appOverviews.push('/App_Plugins/Shield.' + appId + '/Views/Overview.html?version=1.0.0')
                     });
 
                     vm.loading = false;
