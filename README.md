@@ -11,18 +11,18 @@ There is no end of ways that your Umbraco site can be compromised, scrapped or m
 ---
 
 ### Install ###
-1. Install Our.Shield.Core Framework package via (Add nuget link here to nuget shield package):
+1. Install Our.Shield.Core Framework package via [NuGet](https://www.nuget.org/packages/Our.Shield.Core/):
 ```
 PM> Install-Package Our.Shield.Core
 ```
 
 2. Install the Our.Shield app(s) you desire via NuGet:
-	* (Add nuget link here to nuget backoffice access package)
+	* https://www.nuget.org/packages/Our.Shield.BackofficeAccess/
 	```
 	PM> Install-Package Our.Shield.BackofficeAccess
 	```
 		
-	* (Add nuget link here to nuget Media Protection package):
+	* https://www.nuget.org/packages/Our.Shield.MediaProtection/
 	```
 	PM> Install-Package Our.Shield.MediaProtection
 	```
@@ -30,13 +30,7 @@ PM> Install-Package Our.Shield.Core
 ---
 
 ### Documentation ###
-Coming Soon!
 
-	> Allows you to configure the backoffice access Url.
-	> Allows you to restrict access to the configured backoffice access Url via a white-list of IP Address(es).
-	
-	> Allows you to setup member only media files.
-	> Allows you to disable HotLinking - Stops other websites from serving your media.
 	
 ---
 
