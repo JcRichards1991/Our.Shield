@@ -42,5 +42,6 @@
     <key alias="IpDuplicate">IP Address has already been added</key>
     <key alias="Required">Required</key>
     <key alias="InvalidBackendAccessUrl">This can be any valid combination of letters and/or numbers, non-case sensitive. You cannot use white space, symbols or special characters</key>
+    <key alias="InvalidUnauthorisedUrl">This is an invalid Url. Please provide a valid relative or absolute Url</key>
   </area>
 </language>
