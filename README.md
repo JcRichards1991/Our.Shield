@@ -31,14 +31,14 @@ PM> Install-Package Our.Shield.Core
 
 ### Documentation ###
 
-	[Manual](https://github.com/JcRichards1991/Our.Shield/blob/master/Docs/manual.pdf)
+[Manual](https://github.com/JcRichards1991/Our.Shield/blob/master/Docs/manual.pdf)
+
 ---
 
 ### Log ###
 
 **1.0.0 - 26/07/2017**
-
-	Our.Shield.Core, Our.Shield.BackofficeAccess & Our.Shield.MediaProtection released
+Our.Shield.Core, Our.Shield.BackofficeAccess & Our.Shield.MediaProtection released
 
 ---
 
