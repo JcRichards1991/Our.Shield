@@ -241,15 +241,42 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
+# Test Development Site ignore items
 *.txt
-!src/Our.Shield.TestSite/App_Data/*.sdf
-src/Our.Shield.TestSite/App_Data/Logs/
-src/Our.Shield.TestSite/App_Data/NuGetBackup
-src/Our.Shield.TestSite/App_Data/TEMP/
-src/Our.Shield.TestSite/App_Plugins/
-src/Our.Shield.TestSite/[Uu]mbraco/
-src/Our.Shield.TestSite/[Uu]mbraco_[Cc]lient/
-src/Our.Shield.TestSite/Media/created-packages/Shield_1.0.0.1.zip
-src/Our.Shield.TestSite/App_Data/umbraco.config
-src/Our.Shield.TestSite/uSync/
-src/Our.Shield.TestSite/[Aa]dmin/
+!src/Our.Shield.Site/App_Data/*.sdf
+src/Our.Shield.Site/App_Data/Logs/
+src/Our.Shield.Site/App_Data/NuGetBackup
+src/Our.Shield.Site/App_Data/TEMP/
+src/Our.Shield.Site/App_Plugins/
+src/Our.Shield.Site/[Uu]mbraco/
+src/Our.Shield.Site/[Uu]mbraco_[Cc]lient/
+src/Our.Shield.Site/Media/created-packages/Shield_1.0.0.1.zip
+src/Our.Shield.Site/App_Data/umbraco.config
+src/Our.Shield.Site/uSync/
+src/Our.Shield.Site/[Aa]dmin/
+
+#Test Nuget Package Site ignore items
+!src/Our.Shield.NugetSite/App_Data/*.sdf
+src/Our.Shield.NugetSite/App_Data/Logs/
+src/Our.Shield.NugetSite/App_Data/NuGetBackup
+src/Our.Shield.NugetSite/App_Data/TEMP/
+src/Our.Shield.NugetSite/App_Plugins/
+src/Our.Shield.NugetSite/[Uu]mbraco/
+src/Our.Shield.NugetSite/[Uu]mbraco_[Cc]lient/
+src/Our.Shield.NugetSite/Media/created-packages/Shield_1.0.0.1.zip
+src/Our.Shield.NugetSite/App_Data/umbraco.config
+src/Our.Shield.NugetSite/uSync/
+src/Our.Shield.NugetSite/[Aa]dmin/
+
+#Test Umbraco Package Site ignore items
+!src/Our.Shield.UmbracoPackageSite/App_Data/*.sdf
+src/Our.Shield.UmbracoPackageSite/App_Data/Logs/
+src/Our.Shield.UmbracoPackageSite/App_Data/NuGetBackup
+src/Our.Shield.UmbracoPackageSite/App_Data/TEMP/
+src/Our.Shield.UmbracoPackageSite/App_Plugins/
+src/Our.Shield.UmbracoPackageSite/[Uu]mbraco/
+src/Our.Shield.UmbracoPackageSite/[Uu]mbraco_[Cc]lient/
+src/Our.Shield.UmbracoPackageSite/Media/created-packages/Shield_1.0.0.1.zip
+src/Our.Shield.UmbracoPackageSite/App_Data/umbraco.config
+src/Our.Shield.UmbracoPackageSite/uSync/
+src/Our.Shield.UmbracoPackageSite/[Aa]dmin/
