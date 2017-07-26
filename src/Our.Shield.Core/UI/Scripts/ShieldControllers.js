@@ -35,7 +35,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                 {
                     id:'1',
                     label:'Journal',
-                    active: true
+                    active: false
                 }
             ],
             init: function () {
@@ -46,20 +46,15 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
 
                     switch (vm.type = response.data.type) {
                         case 0:     //  Environments
-                            vm.nameLocked = true;
                             vm.environments = response.data.environments;
                             vm.path = '-1,0';
                             vm.ancestors = [{ id: vm.id, name: vm.name }]
                             break;
 
                         case 1:     //  Environment
-                            //vm.nameLocked = false;
                             vm.environments = response.data.environments;
                             vm.environment = response.data.environment;
-
                             vm.tabs[0].label = 'Apps';
-                            vm.nameLocked = true;
-
                             vm.journalListing.columns.splice(1, 1);
                             vm.path = '-1,0,' + vm.id;
                             vm.ancestors = [{ id: 0, name: 'Environments' }, { id: vm.id, name: vm.name }]
@@ -67,7 +62,6 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             break;
 
                         case 2:     //  App
-                            vm.nameLocked = true;
                             vm.environment = response.data.environment;
                             vm.app = response.data.app;
                             vm.appView = response.data.appAssests.view;
@@ -76,7 +70,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             vm.journalListing.columns.splice(1, 2);
                             vm.journalListing.columns[1].cssClass = 'shield-table__name-large'
                             vm.path = '-1,0,' + vm.environment.id + ',' + vm.id;
-                            vm.ancestors = [{ id: 0, name: 'Environments' }, {id: vm.environment.id, name: vm.environment.name}, { id: vm.id, name: vm.name }]
+                            vm.ancestors = [{ id: 0, name: 'Environments' }, { id: vm.environment.id, name: vm.environment.name }, { id: vm.id, name: vm.name }]
 
                             angular.forEach(response.data.appAssests.stylesheets, function (item, index) {
                                 assetsService.loadCss(item);
@@ -88,7 +82,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
 
                             break;
                     }
-                    
+
                     $timeout(function () {
                         navigationService.syncTree({ tree: 'Shield', path: vm.path, forceReload: false, activate: true });
                         vm.loading = false;
@@ -96,6 +90,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                 });
             },
             save: function () {
+                vm.saveButtonState = 'busy';
                 $scope.$broadcast("formSubmitting", { scope: $scope, action: 'publish' });
                 if ($scope.shieldForm.$invalid) {
                     //validation error, don't save
@@ -109,35 +104,22 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     return;
                 }
 
-                switch (vm.type) {
-                    case 1:     //  Environment
-                        vm.saveButtonState = 'busy';
-
-                        //  TODO: Write stuff
-
-                        vm.saveButtonState = 'success';
-                        break;
-
-                    case 2:     //  App
-                        vm.saveButtonState = 'busy';
-                        shieldResource.postConfiguration(vm.id, vm.configuration).then(function (response) {
-                            if (response.data) {
-                                localizationService.localize('Shield.General_SaveSuccess').then(function (value) {
-                                    notificationsService.success(value);
-                                });
-                                navigationService.syncTree({ tree: 'Shield', path: vm.path, forceReload: true, activate: true });
-                                vm.saveButtonState = 'init';
-                                $scope.shieldForm.$setPristine();
-                            } else {
-                                localizationService.localize('Shield.General_SaveError').then(function (value) {
-                                    notificationsService.error(value);
-                                });
-                                vm.saveButtonState = 'error';
-                            }
+                shieldResource.postConfiguration(vm.id, vm.configuration).then(function (response) {
+                    if (response.data === true || response.data === 'true') {
+                        localizationService.localize('Shield.General_SaveSuccess').then(function (value) {
+                            notificationsService.success(value);
                         });
-                        break;
-                }
-
+                        navigationService.syncTree({ tree: 'Shield', path: vm.path, forceReload: true, activate: true });
+                        vm.saveButtonState = 'init';
+                        $scope.shieldForm.$setPristine();
+                        $location.path('shield/shield/edit/' + vm.id);
+                    } else {
+                        localizationService.localize('Shield.General_SaveError').then(function (value) {
+                            notificationsService.error(value);
+                        });
+                        vm.saveButtonState = 'error';
+                    }
+                });
             },
             editItem: function (item, index) {
                 $location.path('shield/shield/edit/' + item.id);
@@ -234,11 +216,86 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
 
 /**
     * @ngdoc resource
-    * @name Environments
+    * @name Shield.Editors.Environment
     * @function
     *
     * @description
-    * Handles environment page
+    * Handles environment create/edit view
+*/
+angular.module('umbraco').controller('Shield.Editors.Environment',
+    ['$scope', '$routeParams', '$location', '$timeout', '$filter', 'notificationsService', 'localizationService', 'listViewHelper', 'navigationService', 'assetsService', 'shieldResource',
+    function ($scope, $routeParams, $location, $timeout, $filter, notificationsService, localizationService, listViewHelper, navigationService, assetsService, shieldResource) {
+
+        var vm = this;
+
+        angular.extend(vm, {
+            id: $routeParams.id,
+            loading: true,
+            create: $routeParams.create === 'true' ? true : false,
+            ancestors: null,
+            saveButtonState: 'init',
+            path: '',
+            init: function () {
+                if (vm.create) {
+                    vm.environment = {
+                        name: '',
+                        icon: 'icon-firewall red',
+                        domains: []
+                    };
+                    vm.ancestors = [{ id: 0, name: 'Environments' }];
+                    vm.path = '-1,0';
+                    vm.loading = false;
+                } else {
+                    shieldResource.getView(vm.id).then(function (response) {
+                        vm.environment = response.data.environment;
+                        vm.ancestors = [{ id: 0, name: 'Environments' }, { id: vm.id, name: vm.environment.name }];
+                        vm.path = '-1,0' + vm.id;
+                    });
+                }
+            },
+            save: function () {
+                vm.saveButtonState = 'busy';
+                $scope.$broadcast("formSubmitting", { scope: $scope, action: 'publish' });
+                if ($scope.shieldForm.$invalid) {
+                    //validation error, don't save
+
+                    angular.element(event.target).addClass('show-validation');
+
+                    localizationService.localize('Shield.General_InvalidError').then(function (value) {
+                        notificationsService.error(value);
+                    });
+                    vm.saveButtonState = 'error';
+                    return;
+                }
+                shieldResource.postEnvironment(vm.id, vm.environment).then(function (response) {
+                    if (response.data === null) {
+                        localizationService.localize('Shield.General_SaveSuccess').then(function (value) {
+                            notificationsService.success(value);
+                        });
+                        vm.id = response.data.id;
+                        vm.saveButtonState = 'init';
+                        $scope.shieldForm.$setPristine();
+                        navigationService.syncTree({ tree: 'Shield', path: vm.path + ',' + vm.id, forceReload: true, activate: true });
+                        $location.path('shield/shield/edit/' + vm.id);
+                    } else {
+                        localizationService.localize('Shield.General_SaveError').then(function (value) {
+                            notificationsService.error(value);
+                        });
+                        vm.saveButtonState = 'error';
+                    }
+                });
+            }
+        });
+    }]
+);
+
+/**
+    * @ngdoc resource
+    * @name Shield.Dashboards.Overview
+    * @function
+    *
+    * @description
+    * Handles Overview dashboard view
 */
 angular.module('umbraco').controller('Shield.Dashboards.Overview',
     ['$scope', 'localizationService', 'shieldResource',

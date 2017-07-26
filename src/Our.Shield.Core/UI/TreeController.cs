@@ -3,6 +3,7 @@
     using Models;
     using System.Linq;
     using System.Net.Http.Formatting;
+    using umbraco.BusinessLogic.Actions;
     using Umbraco.Web.Models.Trees;
     using Umbraco.Web.Mvc;
 
@@ -22,12 +23,26 @@
         protected override MenuItemCollection GetMenuForNode(string idText, FormDataCollection queryStrings)
         {
             var menu = new MenuItemCollection();
-            //int id = int.Parse(idText);
+            int id = int.Parse(idText);
 
-            //if(id == global::Umbraco.Core.Constants.System.Root || id == Constants.Tree.EnvironmentsRootId)
-            //{
-            //    menu.Items.Add(new MenuItem("createEnvironment", "Create Environment"));
-            //}
+            if (id == global::Umbraco.Core.Constants.System.Root || id == Constants.Tree.EnvironmentsRootId)
+            {
+                menu.DefaultMenuAlias = ActionNew.Instance.Alias;
+                menu.Items.Add<ActionNew>("Create");
+                return menu;
+            }
+
+            var environments = Operation.JobService.Instance.Environments;
+
+            foreach(var environment in environments)
+            {
+                if (environment.Key.Id.Equals(id))
+                {
+                    menu.DefaultMenuAlias = ActionDelete.Instance.Alias;
+                    menu.Items.Add<ActionDelete>("Delete");
+                    return menu;
+                }
+            }
 
             return menu;
         }

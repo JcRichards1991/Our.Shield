@@ -22,5 +22,7 @@
   <area alias="Shield.General.Properties">
     <key alias="EnableLabel">Enable</key>
     <key alias="EnableDescription">Is this App active</key>
+    <key alias="DomainsLabel">Domains</key>
+    <key alias="DomainsDescription">The domains that are associated to the environment</key>
   </area>
 </language>

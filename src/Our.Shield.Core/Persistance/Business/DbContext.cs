@@ -113,7 +113,7 @@
                 return Enumerable.Empty<Data.Dto.Domain>();
             }
             var umbracoDomains = UmbracoDomains();
-            foreach ( var domain in domains)
+            foreach (var domain in domains)
             {
                 if (domain.UmbracoDomainId != null)
                 {

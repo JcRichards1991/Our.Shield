@@ -191,7 +191,7 @@
 
             foreach (var ev in evs)
             {
-                var enviroment = new Models.Environment(ev);
+                var environment = new Models.Environment(ev);
                 foreach(var appId in appIds)
                 {
                     var app = App<IConfiguration>.Create(appId.Key);
@@ -201,7 +201,7 @@
 
                     if (app.Init())
                     {
-                        Register(enviroment, app);
+                        Register(environment, app);
                     }
                 }
             }
@@ -376,6 +376,73 @@
         /// <returns></returns>
         public IEnumerable<T> ListJournals<T>(IJob job, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
             DbContext.Instance.Journal.List<T>(job.Environment.Id, job.App.Id, page, itemsPerPage, out totalPages);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="environment"></param>
+        /// <returns></returns>
+        public bool WriteEnvironment(Models.Environment environment)
+        {
+            var data = new Persistance.Data.Dto.Environment
+            {
+                Name = environment.Name,
+                Icon = environment.Icon,
+                Id = environment.Id,
+                Domains = environment.Domains.Select(x => new Persistance.Data.Dto.Domain
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    UmbracoDomainId = x.UmbracoDomainId
+                })
+            };
+
+            if(!DbContext.Instance.Environment.Write(data))
+            {
+                return false;
+            }
+
+            if (environment.Id == 0)
+            {
+                environment.Id = data.Id;
+                var appIds = App<IConfiguration>.Register;
+
+                foreach(var appId in appIds)
+                {
+                    var app = App<IConfiguration>.Create(appId.Key);
+                    if(app.Init())
+                    {
+                        Register(environment, app);
+                    }
+                }
+            }
+
+            ranTick = ranRepeat;
+            Poll();
+
+            return true;
+        }
+
+
+        public bool DeleteEnvironment(Models.Environment environment)
+        {
+            if(!DbContext.Instance.Environment.Delete(environment.Id))
+            {
+                return false;
+            }
+
+            var jobs = Environments.FirstOrDefault(x => x.Key.Id.Equals(environment.Id)).Value;
+
+            foreach(var job in jobs)
+            {
+                Unregister(job);
+            }
+
+            ranTick = ranRepeat;
+            Poll();
+
+            return true;
+        }
 
         /// <summary>
         /// 

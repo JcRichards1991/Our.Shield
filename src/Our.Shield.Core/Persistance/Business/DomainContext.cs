@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Models;
     using Umbraco.Core.Logging;
 
     /// <summary>
@@ -19,8 +20,6 @@
         {
             try
             {
-                var umbracoDomains = UmbracoDomains();
-
                 IEnumerable<Data.Dto.Domain> domains = null;
                 if (enviromentId == null)
                 {
@@ -44,7 +43,6 @@
         {
             try
             {
-                var umbracoDomains = UmbracoDomains();
                 return MapUmbracoDomain(Database.SingleOrDefault<Data.Dto.Domain>((object)id));
             }
             catch(Exception ex)
@@ -69,14 +67,32 @@
                 }
                 else
                 {
-                    domain.Id = (int) Database.Insert(domain);
+                    domain.Id = (int)((decimal)Database.Insert(domain));
                 }
 
                 return true;
             }
             catch(Exception ex)
             {
-                LogHelper.Error(typeof(DomainContext), $"Error writing environment with id: {domain.Id}", ex);
+                LogHelper.Error(typeof(DomainContext), $"Error writing domain with id: {domain.Id}", ex);
+            }
+            return false;
+        }
+
+        public bool Write(IEnumerable<Data.Dto.Domain> domains)
+        {
+            try
+            {
+                foreach (var domain in domains)
+                {
+                    Write(domain);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error(typeof(DomainContext), $"Error writing domains", ex);
             }
             return false;
         }
@@ -98,10 +114,9 @@
             }
             catch(Exception ex)
             {
-                LogHelper.Error(typeof(DomainContext), $"Error writing environment with id: {domain.Id}", ex);
+                LogHelper.Error(typeof(DomainContext), $"Error deleting domain with id: {domain.Id}", ex);
             }
             return false;
         }
-
     }
 }

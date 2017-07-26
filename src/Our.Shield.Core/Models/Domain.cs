@@ -1,14 +1,30 @@
 ﻿namespace Our.Shield.Core.Models
 {
+    using System;
+    using Newtonsoft.Json;
+
     /// <summary>
     /// Domain class
     /// </summary>
     internal class Domain : IDomain
     {
         /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
+        /// <summary>
         /// The name of the Domain
         /// </summary>
+        [JsonProperty("name")]
         public string Name { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("umbracoDomainId")]
+        public int? UmbracoDomainId { get; set; }
 
         /// <summary>
         /// Default constructor
@@ -17,6 +33,7 @@
         internal Domain(Persistance.Data.Dto.Domain data)
         {
             Name = data.Name;
+            UmbracoDomainId = data.UmbracoDomainId;
         }
 
         /// <summary>
@@ -42,6 +59,5 @@
         {
             return Name.GetHashCode();
         }
-
     }
 }

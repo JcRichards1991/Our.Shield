@@ -144,9 +144,19 @@
         /// <param name="domains">The list of new domains you wish to save</param>
         /// <returns>True if save is successfully</returns>
         [HttpPost]
-        public bool Domains(int id, [FromBody] IEnumerable<IDomain> domains)
+        public Environment Environment(int id, [FromBody] JObject json)
         {
-            return true;
+            if (json == null)
+            {
+                //  json is invalid
+                return null;
+            }
+
+            var environment = json.ToObject<Environment>();
+
+            environment.WriteEnvironment(id);
+
+            return environment;
         }
 
         /// <summary>

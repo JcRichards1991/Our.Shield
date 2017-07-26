@@ -69,13 +69,19 @@
         {
             try
             {
-                if (environment.Id == 0 && Database.Exists<Data.Dto.Environment>(environment.Id))
+                if (environment.Id != 0 && Database.Exists<Data.Dto.Environment>(environment.Id))
                 {
                     Database.Update(environment);
                 }
                 else
                 {
-                    environment.Id = (int) Database.Insert(environment);
+                    environment.Id = (int)((decimal)Database.Insert(environment));
+                }
+
+                foreach (var domain in environment.Domains)
+                {
+                    domain.EnvironmentId = environment.Id;
+                    Instance.Domain.Write(domain);
                 }
 
                 return true;
@@ -83,6 +89,30 @@
             catch(Exception ex)
             {
                 LogHelper.Error(typeof(EnvironmentContext), $"Error writing environment with id: {environment.Id}", ex);
+            }
+            return false;
+        }
+
+        public bool Delete(int id)
+        {
+            try
+            {
+                if (id != 0 && Database.Exists<Data.Dto.Environment>(id))
+                {
+                    var domains = Database.FetchAll<Data.Dto.Domain>();
+
+                    foreach (var domain in domains.Where(x => x.EnvironmentId.Equals(id)))
+                    {
+                        Instance.Domain.Delete(domain);
+                    }
+
+                    Database.Delete<Data.Dto.Environment>(id);
+                    return true;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogHelper.Error(typeof(DomainContext), $"Error deleting Environment with id: {id}", ex);
             }
             return false;
         }

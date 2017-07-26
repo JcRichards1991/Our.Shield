@@ -1,5 +1,7 @@
 ﻿namespace Our.Shield.Core.Models
 {
+    using Newtonsoft.Json;
+    using Operation;
     using Persistance.Business;
     using System;
     using System.Collections.Generic;
@@ -8,26 +10,30 @@
     /// <summary>
     /// Environment Class
     /// </summary>
-    internal class Environment : IEnvironment
+    public class Environment : IEnvironment
     {
         /// <summary>
         /// The Id of the Environment
         /// </summary>
+        [JsonProperty("id")]
         public int Id { get; set; }
 
         /// <summary>
         /// The Name of the Environment
         /// </summary>
+        [JsonProperty("name")]
         public string Name { get; set; }
 
         /// <summary>
         /// The Icon of the Environment
         /// </summary>
+        [JsonProperty("icon")]
         public string Icon { get; set; }
 
         /// <summary>
         /// The Domains for the Environment
         /// </summary>
+        [JsonProperty("domains")]
         public IEnumerable<IDomain> Domains { get; set; }
 
         /// <summary>
@@ -101,5 +107,11 @@
         /// <returns></returns>
         public IEnumerable<T> JournalListing<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal =>
             DbContext.Instance.Journal.List(Id, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
+
+        public bool WriteEnvironment(int id) =>
+            JobService.Instance.WriteEnvironment(this);
+
+        public bool RemoveEnvironment() =>
+            JobService.Instance.DeleteEnvironment(this);
     }
 }

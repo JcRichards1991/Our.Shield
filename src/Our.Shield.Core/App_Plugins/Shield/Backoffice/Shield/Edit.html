@@ -8,11 +8,12 @@
 
             <umb-editor-header name="vm.name"
                                tabs="vm.tabs"
-                               name-locked="vm.nameLocked"
+                               name-locked="true"
                                hide-icon="true"
                                hide-description="true"
                                hide-alias="true">
             </umb-editor-header>
+
             <umb-editor-container>
                 <umb-tabs-content class="form-horizontal" view="true">
                     <umb-tab id="tab0" rel="0">
@@ -28,7 +29,7 @@
                                 <div class="umb-table-head">
                                     <div class="umb-table-row">
 
-                                        <div class="umb-table-cell">
+                                        <div class="umb-table-cell app-icon-cell">
                                             &nbsp;
                                         </div>
 
@@ -51,8 +52,10 @@
                                 <div class="umb-table-body">
                                     <div class="umb-table-row" ng-repeat="environment in vm.environments track by $index">
 
-                                        <div class="umb-table-cell">
-                                            &nbsp;
+                                        <div class="umb-table-cell app-icon-cell">
+                                            <i class="umb-table-body__icon umb-table-body__fileicon">
+                                                <span class="{{environment.icon}}"></span>
+                                            </i>
                                         </div>
 
                                         <div class="umb-table-cell umb-table__name" ng-click="vm.editItem(environment, $index)">
@@ -129,7 +132,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
                         <!-- Apps -->
@@ -207,8 +209,7 @@
 
             <umb-editor-footer>
                 <umb-editor-footer-content-left>
-                    <umb-breadcrumbs ng-if="vm.ancestors && vm.ancestors.length > 0"
-                                     ancestors="vm.ancestors"
+                    <umb-breadcrumbs ancestors="vm.ancestors"
                                      entity-type="shield">
                     </umb-breadcrumbs>
                 </umb-editor-footer-content-left>
@@ -219,7 +220,7 @@
                                     type="submit"
                                     button-style="success"
                                     shortcut="ctrl+s"
-                                    state="saveButtonState">
+                                    state="vm.saveButtonState">
                         </umb-button>
                     </umb-editor-footer-content-right>
                 </div>

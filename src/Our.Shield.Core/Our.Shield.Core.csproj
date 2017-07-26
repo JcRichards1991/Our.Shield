@@ -325,7 +325,9 @@
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Overview.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Scripts\Shield.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Create.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Environment.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />
     <Content Include="UI\Scripts\ShieldControllers.js" />
     <Content Include="UI\Scripts\ShieldDirectives.js" />

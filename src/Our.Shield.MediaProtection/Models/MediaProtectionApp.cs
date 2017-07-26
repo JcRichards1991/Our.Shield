@@ -432,10 +432,11 @@
         
         private void AddMediaTypes()
         {
-            if (!((MediaProtectionMigration) Migrations["1.0.0"]).AddMediaTypes)
+            if (Migrations == null || !((MediaProtectionMigration) Migrations["1.0.0"]).AddMediaTypes)
             {
                 return;
             }
+
             ((MediaProtectionMigration) Migrations["1.0.0"]).AddMediaTypes = false;
 
             var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
