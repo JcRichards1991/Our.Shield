@@ -38,6 +38,7 @@ PM> Install-Package Our.Shield.Core
 ### Log ###
 
 **1.0.0 - 26/07/2017**
+
 Our.Shield.Core, Our.Shield.BackofficeAccess & Our.Shield.MediaProtection released
 
 ---
