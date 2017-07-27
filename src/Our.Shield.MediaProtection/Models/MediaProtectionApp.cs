@@ -144,6 +144,11 @@
                         IMediaService mediaService = ApplicationContext.Current.Services.MediaService;
                         IMedia media = mediaService.GetMediaByPath(filename);
 
+                        if (media == null)
+                        {
+                            return false;
+                        }
+
                         mediaId = media.Id;
                         mediaName = media.Name;
 
