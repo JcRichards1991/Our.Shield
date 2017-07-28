@@ -23,6 +23,7 @@
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
         [Length(256)]
+        [ForeignKey(typeof(Configuration), Name = "FK_" + nameof(Shield) + "_" + nameof(Journal) + "_" + nameof(Configuration), Column = nameof(Configuration.AppId))]
         [Index(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(AppId))]
         public string AppId { get; set; }
 
@@ -38,13 +39,13 @@
         /// The Date stamp of the journal
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        [Index(IndexTypes.Clustered, Name = "IX_" + nameof(Shield) + "_" + nameof(Datestamp))]
         public DateTime Datestamp { get; set; }
 
         /// <summary>
         /// Gets or sets the Value (Should be json)
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
+        [Length(4000)]
         public string Value { get; set; }
     }
 }
