@@ -39,7 +39,7 @@
             if (latestMigration != null)
                 currentVersion = latestMigration.Version;
 
-            var targetVersion = new SemVersion(1, 0, 0);
+            var targetVersion = new SemVersion(1, 0, 1);
             if (targetVersion == currentVersion)
                 return;
 

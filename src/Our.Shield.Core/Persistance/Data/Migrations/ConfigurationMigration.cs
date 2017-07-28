@@ -9,7 +9,7 @@
     /// <summary>
     /// Handles Creating/Editing the Configuration table
     /// </summary>
-    [Migration("1.0.0", 1, nameof(Shield))]
+    [Migration("1.0.1", 1, nameof(Shield))]
     internal class ConfigurationMigration : MigrationBase
     {
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
