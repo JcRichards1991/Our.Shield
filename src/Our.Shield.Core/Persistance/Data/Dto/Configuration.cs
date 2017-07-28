@@ -23,7 +23,7 @@
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
         [Length(256)]
-        [Index(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(AppId))]
+        [Index(IndexTypes.UniqueNonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(AppId))]
         public string AppId { get; set; }
 
         /// <summary>
