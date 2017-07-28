@@ -1,5 +1,6 @@
 ﻿namespace Our.Shield.Core.Persistance.Data.Migrations
 {
+    using System.Linq;
     using Umbraco.Core;
     using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence;
@@ -32,11 +33,14 @@
         {
             _schemaHelper.CreateTable<Dto.Environment>(false);
 
-            Context.Database.Insert(new Dto.Environment
+            if(!Business.DbContext.Instance.Environment.List().Any())
             {
-                Name = "Default",
-                Icon = "icon-firewall red"
-            });
+                Context.Database.Insert(new Dto.Environment
+                {
+                    Name = "Default",
+                    Icon = "icon-firewall red"
+                });
+            }
         }
 
         /// <summary>
