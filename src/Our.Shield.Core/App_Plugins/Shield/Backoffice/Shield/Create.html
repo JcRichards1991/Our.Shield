@@ -1,10 +1,10 @@
-﻿<div class="umb-dialog-body">
+﻿<div class="umb-dialog-body with-footer">
     <div class="umb-pane">
-        <h5><localize key="create_createUnder">Create something under </localize> {{currentNode.name}}</h5>
+        <h5><localize key="create_createUnder">Create an item under</localize> Environments</h5>
 
         <ul class="umb-actions umb-actions-child">
             <li>
-                <a href="#/shield/shield/environment/0?create=true" ng-click="nav.hideNavigation()">
+                <a href="#shield/shield/environment/0?create=true" ng-click="nav.hideNavigation()">
                     <i class="large icon-firewall"></i>
                     <span class="menu-label">
                         Create New Environment
@@ -13,4 +13,10 @@
             </li>
         </ul>
     </div>
+</div>
+
+<div class="umb-dialog-footer btn-toolbar umb-btn-toolbar">
+    <button class="btn" ng-click="nav.hideDialog(true)">
+        <localize key="buttons_somethingElse">Do something else</localize>
+    </button>
 </div>

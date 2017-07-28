@@ -268,7 +268,7 @@ angular.module('umbraco').controller('Shield.Editors.Environment',
                     return;
                 }
                 shieldResource.postEnvironment(vm.id, vm.environment).then(function (response) {
-                    if (response.data === null) {
+                    if (response.data !== null) {
                         localizationService.localize('Shield.General_SaveSuccess').then(function (value) {
                             notificationsService.success(value);
                         });

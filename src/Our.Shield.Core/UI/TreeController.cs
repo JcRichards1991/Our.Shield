@@ -25,10 +25,16 @@
             var menu = new MenuItemCollection();
             int id = int.Parse(idText);
 
-            if (id == global::Umbraco.Core.Constants.System.Root || id == Constants.Tree.EnvironmentsRootId)
+            if(id == global::Umbraco.Core.Constants.System.Root)
             {
-                menu.DefaultMenuAlias = ActionNew.Instance.Alias;
-                menu.Items.Add<ActionNew>("Create");
+                return menu;
+            }
+
+            if (id == Constants.Tree.EnvironmentsRootId)
+            {
+                menu.Items.Add<ActionNew>("Create Environment");
+                menu.Items.Add<ActionRefresh>("Reload Environments");
+
                 return menu;
             }
 
@@ -38,8 +44,9 @@
             {
                 if (environment.Key.Id.Equals(id))
                 {
-                    menu.DefaultMenuAlias = ActionDelete.Instance.Alias;
-                    menu.Items.Add<ActionDelete>("Delete");
+                    menu.Items.Add(new MenuItem("environment", "Edit Environment"));
+                    menu.Items.Add<ActionDelete>("Delete Environment");
+                    menu.Items.Add<ActionRefresh>("Reload Apps");
                     return menu;
                 }
             }
