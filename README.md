@@ -35,10 +35,19 @@ PM> Install-Package Our.Shield.Core
 
 ---
 
+### Upgrading ###
+
+**v1.0.0 to v1.0.1**
+After upgrading, you will need to re-save the configurations of the installed apps
+
+---
+
 ### Log ###
 
-**1.0.0 - 26/07/2017**
+**1.0.1 - 28/07/2017**
+Fixes Our.Shield.Core migration not creating the Journal table, and therefore, not adding an entry to the umbracoMigration table
 
+**1.0.0 - 26/07/2017**
 Our.Shield.Core, Our.Shield.BackofficeAccess & Our.Shield.MediaProtection released
 
 ---
