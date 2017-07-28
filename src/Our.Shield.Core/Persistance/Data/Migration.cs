@@ -28,9 +28,9 @@
             var scriptsForMigration = new IMigration[]
             {
                 new Migrations.EnvironmentMigration(sqlSyntax, logger),
+                new Migrations.DomainMigration(sqlSyntax,logger),
                 new Migrations.ConfigurationMigration(sqlSyntax, logger),
-                new Migrations.JournalMigration(sqlSyntax, logger),
-                new Migrations.DomainMigration(sqlSyntax,logger)
+                new Migrations.JournalMigration(sqlSyntax, logger)
             };
 
             var migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName);
