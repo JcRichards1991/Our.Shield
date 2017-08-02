@@ -21,8 +21,8 @@
         /// Gets or sets the Environment Id
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        [ForeignKey (typeof (Environment), Name = "FK_" + nameof(Shield) + "_" + nameof(Domain) + "_" + nameof(Environment))]
-        [IndexAttribute (IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(EnvironmentId))]
+        [ForeignKey(typeof (Environment), Name = "FK_" + nameof(Shield) + "_" + nameof(Domain) + "_" + nameof(Environment))]
+        [Index(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(EnvironmentId))]
         public int EnvironmentId { get; set; }
 
         /// <summary>
@@ -36,8 +36,8 @@
         /// Gets or sets the umbracoDomain Id
         /// </summary>
         [NullSetting(NullSetting = NullSettings.Null)]
-        [ForeignKey (typeof (UmbracoDomainDto), Name = "FK_" + nameof(Shield) + "_" + nameof(Domain) + "_" + nameof(UmbracoDomainDto))]
-        [IndexAttribute (IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(UmbracoDomainId))]
+        [ForeignKey(typeof (UmbracoDomainDto), Name = "FK_" + nameof(Shield) + "_" + nameof(Domain) + "_" + nameof(UmbracoDomainDto))]
+        [Index(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(UmbracoDomainId))]
         public int? UmbracoDomainId { get; set; }
 
     }

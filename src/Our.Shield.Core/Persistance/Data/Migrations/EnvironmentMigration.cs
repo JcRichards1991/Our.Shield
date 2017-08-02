@@ -1,5 +1,6 @@
 ﻿namespace Our.Shield.Core.Persistance.Data.Migrations
 {
+    using System.Linq;
     using Umbraco.Core;
     using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence;
@@ -9,7 +10,7 @@
     /// <summary>
     /// Handles Creating/Editing the Environment table
     /// </summary>
-    [Migration("1.0.0", 1, nameof(Shield))]
+    [Migration("1.0.1", 1, nameof(Shield))]
     internal class EnvironmentMigration : MigrationBase
     {
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
@@ -32,11 +33,14 @@
         {
             _schemaHelper.CreateTable<Dto.Environment>(false);
 
-            Context.Database.Insert(new Dto.Environment
+            if(!Business.DbContext.Instance.Environment.List().Any())
             {
-                Name = "Default",
-                Icon = "icon-firewall red"
-            });
+                Context.Database.Insert(new Dto.Environment
+                {
+                    Name = "Default",
+                    Icon = "icon-firewall red"
+                });
+            }
         }
 
         /// <summary>
