@@ -401,9 +401,12 @@
             {
                 return false;
             }
-
+            
             if (environment.Id == 0)
             {
+                //created new environment, need
+                //to register the apps for the environment
+                //and set the environment's id to that from the DB
                 environment.Id = data.Id;
                 var appIds = App<IConfiguration>.Register;
 
@@ -426,16 +429,26 @@
 
         public bool DeleteEnvironment(Models.Environment environment)
         {
-            if(!DbContext.Instance.Environment.Delete(environment.Id))
+            var jobs = Environments.FirstOrDefault(x => x.Key.Id.Equals(environment.Id)).Value;
+
+            var removedJobs = true;
+
+            foreach (var job in jobs)
+            {
+                if(!Unregister(job))
+                {
+                    removedJobs = false;
+                }
+            }
+
+            if (!removedJobs)
             {
                 return false;
             }
 
-            var jobs = Environments.FirstOrDefault(x => x.Key.Id.Equals(environment.Id)).Value;
-
-            foreach(var job in jobs)
+            if (!DbContext.Instance.Environment.Delete(environment.Id))
             {
-                Unregister(job);
+                return false;
             }
 
             ranTick = ranRepeat;

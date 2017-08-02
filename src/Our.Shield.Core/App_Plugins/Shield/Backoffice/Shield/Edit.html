@@ -1,4 +1,4 @@
-﻿<div ng-controller="Shield.Editors.Edit as vm" ng-init="vm.init()">
+﻿<div class="shield-editor" ng-controller="Shield.Editors.Edit as vm" ng-init="vm.init()">
     <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
     <form name="shieldForm"
           ng-submit="vm.save()"
@@ -6,7 +6,16 @@
           val-form-manager>
         <umb-editor-view ng-if="!vm.loading" umb-tabs>
 
-            <umb-editor-header name="vm.name"
+            <umb-editor-header ng-if="vm.editingEnvironment"
+                               name="vm.environment.name"
+                               name-locked="false"
+                               hide-description="true"
+                               hide-alias="true"
+                               icon="vm.environment.icon">
+            </umb-editor-header>
+
+            <umb-editor-header ng-if="!vm.editingEnvironment"
+                               name="vm.name"
                                tabs="vm.tabs"
                                name-locked="true"
                                hide-icon="true"
@@ -14,8 +23,31 @@
                                hide-alias="true">
             </umb-editor-header>
 
+            <div class="umb-editor-header__actions-menu shield-editor-header" ng-if="vm.type == 1 && !vm.editingEnvironment && vm.id !== '1'">
+                <div class="btn-group pull-right">
+                    <a class="btn" href="#" ng-click="vm.editEnvironment()" prevent-default>
+                        <localize key="general_edit">Edit</localize>
+                    </a>
+                </div>
+            </div>
+
             <umb-editor-container>
-                <umb-tabs-content class="form-horizontal" view="true">
+
+                <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.editingEnvironment">
+                    <div>
+                        <label for="enable" class="control-label">
+                            <localize key="Shield.General.Properties_DomainsLabel">Domains</localize>
+                            <small>
+                                <localize key="Shield.General.Properties_DomainsDescription">The domains that are associated to the environment</localize>
+                            </small>
+                        </label>
+                        <div class="controls">
+                            <input type="checkbox" id="enable" />
+                        </div>
+                    </div>
+                </div>
+
+                <umb-tabs-content class="form-horizontal" view="true" ng-if="!vm.editingEnvironment">
                     <umb-tab id="tab0" rel="0">
                         <div class="umb-el-wrap control-group umb-control-group">
                             <div>
@@ -214,13 +246,13 @@
                     </umb-breadcrumbs>
                 </umb-editor-footer-content-left>
 
-                <div ng-if="vm.type == 2">
+                <div ng-if="vm.editingEnvironment || vm.type == 2">
                     <umb-editor-footer-content-right>
-                        <umb-button label="Update"
+                        <umb-button label="{{vm.button.label}}"
                                     type="submit"
                                     button-style="success"
                                     shortcut="ctrl+s"
-                                    state="vm.saveButtonState">
+                                    state="vm.button.state">
                         </umb-button>
                     </umb-editor-footer-content-right>
                 </div>

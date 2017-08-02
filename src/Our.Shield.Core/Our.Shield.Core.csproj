@@ -318,7 +318,9 @@
     <None Include="Our.Shield.Core.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="UI\Scss\umb-table.scss" />
+    <None Include="UI\Scss\Partials\_shield-editor-header.scss" />
+    <None Include="UI\Scss\Partials\_shield-umb-table.scss" />
+    <None Include="UI\Scss\Styles.scss" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield\Backoffice\Css\Shield.css" />
@@ -328,7 +330,6 @@
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Create.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Delete.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\Environment.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -340,7 +341,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>nuget pack $(ProjectPath) -Properties Configuration=$(ConfigurationName) -OutputDirectory C:\Projects\NugetPackages</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

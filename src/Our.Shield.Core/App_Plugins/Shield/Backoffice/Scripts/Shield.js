@@ -1,31 +1,31 @@
 (function(root){
 /**
     * @ngdoc resource
-    * @name Environments
+    * @name Shield.Editors.Edit
     * @function
     *
     * @description
-    * Handles environment page
+    * Handles the main view for Shield
 */
 angular.module('umbraco').controller('Shield.Editors.Edit', 
-    ['$scope', '$routeParams', '$location', '$timeout', '$filter', 'notificationsService', 'localizationService', 'listViewHelper', 'navigationService', 'assetsService', 'shieldResource',
-    function ($scope, $routeParams, $location, $timeout, $filter, notificationsService, localizationService, listViewHelper, navigationService, assetsService, shieldResource) {
+    ['$scope', '$routeParams', '$location', '$timeout', 'notificationsService', 'localizationService', 'listViewHelper', 'navigationService', 'assetsService', 'shieldResource',
+    function ($scope, $routeParams, $location, $timeout, notificationsService, localizationService, listViewHelper, navigationService, assetsService, shieldResource) {
 
         var vm = this;
 
         angular.extend(vm, {
             type: null,
             id: $routeParams.id,
+            editingEnvironment: $routeParams.environment === true || $routeParams.environment === 'true' ? true : false,
             name: '',
             description: '',
             loading: true,
-            saveButtonState: 'init',
             environments: [],
             environment: null,
             app: null,
             appView: null,
             configuration: null,
-            path: null,
+            path: [],
             ancestors: null,
             tabs: [
                 {
@@ -39,7 +39,15 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     active: false
                 }
             ],
+            button: {
+                label: '',
+                state: 'init'
+            },
             init: function () {
+                localizationService.localize('general_update').then(function (value) {
+                    vm.button.label = value;
+                });
+
                 shieldResource.getView(vm.id).then(function (response) {
                     vm.name = response.data.name;
                     vm.description = response.data.description;
@@ -48,8 +56,23 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     switch (vm.type = response.data.type) {
                         case 0:     //  Environments
                             vm.environments = response.data.environments;
-                            vm.path = '-1,0';
+                            vm.path = ['-1', vm.id];
                             vm.ancestors = [{ id: vm.id, name: vm.name }]
+
+                            if (vm.editingEnvironment) {
+                                vm.type = 1;
+                                vm.environment = {
+                                    name: '',
+                                    icon: 'icon-firewall red',
+                                    domains: []
+                                };
+                                localizationService.localize('general_create').then(function (value) {
+                                    vm.button.label = value;
+                                    vm.loading = false;
+                                });
+                                return;
+                            }
+
                             break;
 
                         case 1:     //  Environment
@@ -57,7 +80,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             vm.environment = response.data.environment;
                             vm.tabs[0].label = 'Apps';
                             vm.journalListing.columns.splice(1, 1);
-                            vm.path = '-1,0,' + vm.id;
+                            vm.path = ['-1', '0' , vm.id];
                             vm.ancestors = [{ id: 0, name: 'Environments' }, { id: vm.id, name: vm.name }]
                             vm.appListing.apps = response.data.apps;
                             break;
@@ -70,7 +93,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             vm.tabs[0].label = 'Configuration'
                             vm.journalListing.columns.splice(1, 2);
                             vm.journalListing.columns[1].cssClass = 'shield-table__name-large'
-                            vm.path = '-1,0,' + vm.environment.id + ',' + vm.id;
+                            vm.path = ['-1', '0', vm.environment.id, vm.id];
                             vm.ancestors = [{ id: 0, name: 'Environments' }, { id: vm.environment.id, name: vm.environment.name }, { id: vm.id, name: vm.name }]
 
                             angular.forEach(response.data.appAssests.stylesheets, function (item, index) {
@@ -90,37 +113,93 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     });
                 });
             },
+            editEnvironment: function () {
+                vm.editingEnvironment = true;
+            },
             save: function () {
-                vm.saveButtonState = 'busy';
+                vm.button.state = 'busy';
                 $scope.$broadcast("formSubmitting", { scope: $scope, action: 'publish' });
                 if ($scope.shieldForm.$invalid) {
                     //validation error, don't save
 
                     angular.element(event.target).addClass('show-validation');
 
-                    localizationService.localize('Shield.General_InvalidError').then(function (value) {
+                    var errorMsgDictionaryItem = '';
+
+                    switch (vm.type) {
+                        case 1:
+                            if (vm.id === 0) {
+                                errorMsgDictionaryItem = 'InvalidCreateEnvironmentError';
+                            } else {
+                                errorMsgDictionaryItem = 'InvalidSaveEnvironmentError';
+                            }
+                            break;
+
+                        case 2:
+                            errorMsgDictionaryItem = 'InvalidSaveConfigurationError';
+                            break;
+                    }
+
+                    localizationService.localize('Shield.General_' + errorMsgDictionaryItem).then(function (value) {
                         notificationsService.error(value);
                     });
-                    vm.saveButtonState = 'error';
+                    vm.button.state = 'error';
                     return;
                 }
 
-                shieldResource.postConfiguration(vm.id, vm.configuration).then(function (response) {
-                    if (response.data === true || response.data === 'true') {
-                        localizationService.localize('Shield.General_SaveSuccess').then(function (value) {
-                            notificationsService.success(value);
+                switch (vm.type) {
+                    case 1:
+                        shieldResource.postEnvironment(vm.environment).then(function (response) {
+                            if (response.data === true || response.data === 'true') {
+                                localizationService.localize('Shield.General_SaveEnvironmentSuccess').then(function (value) {
+                                    notificationsService.success(value);
+                                });
+                                vm.button.state = 'init';
+                                $scope.shieldForm.$setPristine();
+
+                                $timeout(function () {
+                                    navigationService.syncTree({ tree: 'Shield', path: vm.path, forceReload: true, activate: true });
+                                    $location.path('shield/shield/edit/' + vm.id);
+                                }, 1000);
+
+                                //vm.editingEnvironment = false;
+                                //if (vm.id === '0') {
+                                //    vm.type = 0;
+                                //}
+                            } else {
+                                var errorMsgDictionaryItem = 'SaveEnvironmentError';
+
+                                if (vm.id === '0') {
+                                    errorMsgDictionaryItem = 'CreateEnvironmentError';
+                                }
+
+                                localizationService.localize('Shield.General_' + errorMsgDictionaryItem).then(function (value) {
+                                    notificationsService.error(value);
+                                });
+                                vm.button.state = 'error';
+                            }
                         });
-                        navigationService.syncTree({ tree: 'Shield', path: vm.path, forceReload: true, activate: true });
-                        vm.saveButtonState = 'init';
-                        $scope.shieldForm.$setPristine();
-                        $location.path('shield/shield/edit/' + vm.id);
-                    } else {
-                        localizationService.localize('Shield.General_SaveError').then(function (value) {
-                            notificationsService.error(value);
+                        break;
+
+                    case 2:
+                        shieldResource.postConfiguration(vm.id, vm.configuration).then(function (response) {
+                            if (response.data === true || response.data === 'true') {
+                                localizationService.localize('Shield.General_SaveConfigurationSuccess').then(function (value) {
+                                    notificationsService.success(value);
+                                });
+                                navigationService.syncTree({ tree: 'Shield', path: vm.path, forceReload: true, activate: true });
+                                vm.button.state = 'init';
+                                $scope.shieldForm.$setPristine();
+                                $location.path('shield/shield/edit/' + vm.id);
+                            } else {
+                                localizationService.localize('Shield.General_SaveConfigurationError').then(function (value) {
+                                    notificationsService.error(value);
+                                });
+                                vm.button.state = 'error';
+                            }
                         });
-                        vm.saveButtonState = 'error';
-                    }
-                });
+                        break;
+                }
             },
             editItem: function (item, index) {
                 $location.path('shield/shield/edit/' + item.id);
@@ -217,74 +296,47 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
 
 /**
     * @ngdoc resource
-    * @name Shield.Editors.Environment
+    * @name Shield.Editors.Overview.Delete
     * @function
     *
     * @description
-    * Handles environment create/edit view
+    * Handles the delete panel overview view
 */
-angular.module('umbraco').controller('Shield.Editors.Environment',
-    ['$scope', '$routeParams', '$location', '$timeout', '$filter', 'notificationsService', 'localizationService', 'listViewHelper', 'navigationService', 'assetsService', 'shieldResource',
-    function ($scope, $routeParams, $location, $timeout, $filter, notificationsService, localizationService, listViewHelper, navigationService, assetsService, shieldResource) {
+angular.module('umbraco').controller('Shield.Editors.Overview.Delete',
+    ['$scope', 'treeService', 'editorState', 'navigationService', 'localizationService', 'notificationsService', 'shieldResource',
+    function ($scope, treeService, editorState, navigationService, localizationService, notificationsService, shieldResource) {
 
         var vm = this;
 
         angular.extend(vm, {
-            id: $routeParams.id,
-            loading: true,
-            create: $routeParams.create === 'true' ? true : false,
-            ancestors: null,
-            saveButtonState: 'init',
-            path: '',
-            init: function () {
-                if (vm.create) {
-                    vm.environment = {
-                        name: '',
-                        icon: 'icon-firewall red',
-                        domains: []
-                    };
-                    vm.ancestors = [{ id: 0, name: 'Environments' }];
-                    vm.path = '-1,0';
-                    vm.loading = false;
-                } else {
-                    shieldResource.getView(vm.id).then(function (response) {
-                        vm.environment = response.data.environment;
-                        vm.ancestors = [{ id: 0, name: 'Environments' }, { id: vm.id, name: vm.environment.name }];
-                        vm.path = '-1,0' + vm.id;
-                    });
+            busy: false,
+            currentNode: $scope.currentNode,
+            performDelete: function () {
+                if (vm.busy) {
+                    return false;
                 }
-            },
-            save: function () {
-                vm.saveButtonState = 'busy';
-                $scope.$broadcast("formSubmitting", { scope: $scope, action: 'publish' });
-                if ($scope.shieldForm.$invalid) {
-                    //validation error, don't save
 
-                    angular.element(event.target).addClass('show-validation');
+                vm.currentNode.loading = true;
+                vm.busy = true;
 
-                    localizationService.localize('Shield.General_InvalidError').then(function (value) {
-                        notificationsService.error(value);
-                    });
-                    vm.saveButtonState = 'error';
-                    return;
-                }
-                shieldResource.postEnvironment(vm.id, vm.environment).then(function (response) {
-                    if (response.data !== null) {
-                        localizationService.localize('Shield.General_SaveSuccess').then(function (value) {
+                shieldResource.deleteEnvironment(vm.currentNode.id).then(function (response) {
+                    if (response.data === true || response.data === 'true') {
+                        localizationService.localize('Shield.General_DeleteEnvironmentSuccess').then(function (value) {
                             notificationsService.success(value);
+                            vm.currentNode.loading = false;
+                            treeService.removeNode(vm.currentNode);
+                            $location.path("/shield/shield/edit/0");
                         });
-                        vm.id = response.data.id;
-                        vm.saveButtonState = 'init';
-                        $scope.shieldForm.$setPristine();
-                        navigationService.syncTree({ tree: 'Shield', path: vm.path + ',' + vm.id, forceReload: true, activate: true });
-                        $location.path('shield/shield/edit/' + vm.id);
+                        navigationService.hideMenu();
                     } else {
-                        localizationService.localize('Shield.General_SaveError').then(function (value) {
+                        localizationService.localize('Shield.General_DeleteEnvironmentError').then(function (value) {
                             notificationsService.error(value);
                         });
-                        vm.saveButtonState = 'error';
                     }
                 });
+            },
+            cancel: function () {
+                navigationService.hideDialog();
             }
         });
     }]
@@ -296,7 +348,7 @@ angular.module('umbraco').controller('Shield.Editors.Environment',
     * @function
     *
     * @description
-    * Handles Overview dashboard view
+    * Handles dashboard overview view
 */
 angular.module('umbraco').controller('Shield.Dashboards.Overview',
     ['$scope', 'localizationService', 'shieldResource',
@@ -410,15 +462,25 @@ angular.module('umbraco.resources').factory('shieldResource', ['$http', function
                 },
             });
         },
-        postEnvironment: function (id, data) {
+        postEnvironment: function (data) {
             return $http({
                 method: 'POST',
-                url: apiRoot + 'Environment?id=' + id,
+                url: apiRoot + 'Environment',
                 data: JSON.stringify(data),
                 dataType: 'json',
                 headers: {
                     'Content-Type': 'application/json'
-                },
+                }
+            });
+        },
+        deleteEnvironment: function (id) {
+            return $http({
+                method: 'POST',
+                url: apiRoot + 'DeleteEnvironment?id=' + id,
+                dataType: 'json',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
         },
         getJournals: function (id, page) {

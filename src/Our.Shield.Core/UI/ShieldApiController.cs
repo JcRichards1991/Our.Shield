@@ -140,23 +140,38 @@
         /// <summary>
         /// Save domains to an environment
         /// </summary>
-        /// <param name="id">jobId</param>
-        /// <param name="domains">The list of new domains you wish to save</param>
+        /// <param name="json">An Environment as json</param>
         /// <returns>True if save is successfully</returns>
         [HttpPost]
-        public Environment Environment(int id, [FromBody] JObject json)
+        public bool Environment([FromBody] JObject json)
         {
             if (json == null)
             {
                 //  json is invalid
-                return null;
+                return false;
             }
 
             var environment = json.ToObject<Environment>();
 
-            environment.WriteEnvironment(id);
+            if(environment.WriteEnvironment())
+            {
+                return true;
+            }
 
-            return environment;
+            return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public bool DeleteEnvironment(int id)
+        {
+            var environment = (Environment) Operation.JobService.Instance.Environments.FirstOrDefault(x => x.Key.Id.Equals(id)).Key;
+
+            return environment.DeleteEnvironment();
         }
 
         /// <summary>
@@ -195,10 +210,8 @@
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="environmentId"></param>
-        /// <param name="appId"></param>
+        /// <param name="id"></param>
         /// <param name="page"></param>
-        /// <param name="itemsPerPage"></param>
         /// <returns></returns>
         [HttpGet]
         public JournalListing Journals(int id, int page)

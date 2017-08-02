@@ -35,6 +35,11 @@
             /// The Environment Node Root Id
             /// </summary>
             public const int EnvironmentsRootId = 0;
+
+            /// <summary>
+            /// The default environment id
+            /// </summary>
+            public const int DefaultEnvironmentId = 1;
         }
     }
 }

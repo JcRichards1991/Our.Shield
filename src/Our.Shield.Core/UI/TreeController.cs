@@ -38,13 +38,18 @@
                 return menu;
             }
 
-            var environments = Operation.JobService.Instance.Environments;
+            if (id.Equals(Constants.Tree.DefaultEnvironmentId))
+            {
+                menu.Items.Add<ActionRefresh>("Reload Apps");
+                return menu;
+            }
 
+            var environments = Operation.JobService.Instance.Environments;
+            
             foreach(var environment in environments)
             {
                 if (environment.Key.Id.Equals(id))
                 {
-                    menu.Items.Add(new MenuItem("environment", "Edit Environment"));
                     menu.Items.Add<ActionDelete>("Delete Environment");
                     menu.Items.Add<ActionRefresh>("Reload Apps");
                     return menu;
@@ -64,7 +69,7 @@
         {
             int id = int.Parse(idText);
             var treeNodeCollection = new TreeNodeCollection();
-            var environments = Operation.JobService.Instance.Environments;
+            var environments = Operation.JobService.Instance.Environments.OrderBy(x => x.Key.Id);
             
             if (id == global::Umbraco.Core.Constants.System.Root)
             {

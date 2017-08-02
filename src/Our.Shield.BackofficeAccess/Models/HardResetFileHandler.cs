@@ -56,24 +56,6 @@
             }
         }
 
-        private int? environmentId;
-        public int? EnvironmentId
-        {
-            get
-            {
-                if(!hasInit)
-                {
-                    Load();
-                }
-
-                return environmentId;
-            }
-            set
-            {
-                environmentId = value;
-            }
-        }
-
         private void Load()
         {
             hasInit = true;
@@ -81,7 +63,6 @@
             if(!System.IO.File.Exists(DirectoryPath + File))
             {
                 HardLocation = SoftLocation = null;
-                EnvironmentId = null;
                 return;
             }
 
@@ -89,8 +70,6 @@
             {
                 HardLocation = txtFile.ReadLine();
                 SoftLocation = txtFile.ReadLine();
-                int tempId;
-                EnvironmentId = int.TryParse(txtFile.ReadLine(), out tempId) ? tempId : (int?) null;
             }
         }
 
@@ -102,7 +81,6 @@
             {
                 txtFile.WriteLine(HardLocation);
                 txtFile.WriteLine(SoftLocation);
-                txtFile.WriteLine(EnvironmentId);
             }
         }
 
@@ -115,7 +93,6 @@
 
             System.IO.File.Delete(DirectoryPath + File);
             HardLocation = SoftLocation = null;
-            EnvironmentId = null;
         }
     }
 }

@@ -108,10 +108,10 @@
         public IEnumerable<T> JournalListing<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal =>
             DbContext.Instance.Journal.List(Id, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
 
-        public bool WriteEnvironment(int id) =>
+        public bool WriteEnvironment() =>
             JobService.Instance.WriteEnvironment(this);
 
-        public bool RemoveEnvironment() =>
+        public bool DeleteEnvironment() =>
             JobService.Instance.DeleteEnvironment(this);
     }
 }

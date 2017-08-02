@@ -220,16 +220,16 @@
                     false);
             }
 
-            var resetter = new HardResetFileHandler();
-
             //if the softLocation and the hardLocation
             //are the same we don't need to add any watches
             //we can exit the function
             if (softLocation.Equals(hardLocation, StringComparison.InvariantCultureIgnoreCase))
             {
-                resetter.Delete();
                 return;
             }
+
+            var resetter = new HardResetFileHandler();
+            resetter.Delete();
 
             var path = HttpRuntime.AppDomainAppPath;
             

@@ -25,15 +25,25 @@ angular.module('umbraco.resources').factory('shieldResource', ['$http', function
                 },
             });
         },
-        postEnvironment: function (id, data) {
+        postEnvironment: function (data) {
             return $http({
                 method: 'POST',
-                url: apiRoot + 'Environment?id=' + id,
+                url: apiRoot + 'Environment',
                 data: JSON.stringify(data),
                 dataType: 'json',
                 headers: {
                     'Content-Type': 'application/json'
-                },
+                }
+            });
+        },
+        deleteEnvironment: function (id) {
+            return $http({
+                method: 'POST',
+                url: apiRoot + 'DeleteEnvironment?id=' + id,
+                dataType: 'json',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
         },
         getJournals: function (id, page) {
