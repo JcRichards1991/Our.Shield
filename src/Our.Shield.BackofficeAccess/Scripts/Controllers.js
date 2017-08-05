@@ -75,8 +75,6 @@ angular.module('umbraco').controller('Shield.Properties.IpAddress',
                     ipAddress: '',
                     description: ''
                 });
-
-                $scope.backofficeAccessForm.addControl();
             },
             remove: function ($index) {
                 var ip = vm.configuration.ipAddresses[$index];

@@ -8,7 +8,7 @@
 
     <div class="controls">
         <div class="umb-editor">
-            <table class="ips-container">
+            <table class="domains-container">
                 <thead>
                     <tr>
                         <th><localize key="Shield.BackofficeAccess.Properties_AllowedIpsIpAddressHeader">IP Address</localize></th>
@@ -20,7 +20,7 @@
                 <tbody>
                     <tr ng-repeat="ip in vm.configuration.ipAddresses track by $index">
                         <td>
-                            <input type="text" id="ipAddress{{$index}}" name="ipAddress{{$index}}" ng-model="ip.ipAddress" required shield-ipaddressvalid shield-ipaddressduplicate="{{vm.configuration.ipAddresses}}" shield-add-to-form />
+                            <input type="text" id="ipAddress{{$index}}" name="ipAddress{{$index}}" ng-model="ip.ipAddress" required shield-ipaddressvalid shield-ipaddressduplicate="{{vm.configuration.ipAddresses}}" shield-add-to-form="backofficeAccessForm" />
                             <span class="help-inline" val-msg-for="ipAddress{{$index}}" val-toggle-msg="required">
                                 <localize key="Shield.BackofficeAccess.ErrorMessages_IpRequired">IP Address is required</localize>
                             </span>
@@ -50,7 +50,7 @@
 
                         <td>
                             <span class="btn btn-success" ng-click="vm.add()">
-                                <localize key="Shield.General_Add">Add</localize>
+                                <localize key="general_add">Add</localize>
                             </span>
                         </td>
 

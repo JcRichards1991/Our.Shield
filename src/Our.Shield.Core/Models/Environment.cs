@@ -95,7 +95,7 @@
         /// <param name="totalPages"></param>
         /// <returns></returns>
         public IEnumerable<IJournal> JournalListing(int page, int itemsPerPage, Type type, out int totalPages) =>
-            DbContext.Instance.Journal.List(Id, page, itemsPerPage, type, out totalPages);
+            DbContext.Instance.Journal.Read(Id, page, itemsPerPage, type, out totalPages);
 
         /// <summary>
         /// 
@@ -106,11 +106,19 @@
         /// <param name="totalPages"></param>
         /// <returns></returns>
         public IEnumerable<T> JournalListing<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal =>
-            DbContext.Instance.Journal.List(Id, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
+            DbContext.Instance.Journal.Read(Id, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public bool WriteEnvironment() =>
             JobService.Instance.WriteEnvironment(this);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public bool DeleteEnvironment() =>
             JobService.Instance.DeleteEnvironment(this);
     }

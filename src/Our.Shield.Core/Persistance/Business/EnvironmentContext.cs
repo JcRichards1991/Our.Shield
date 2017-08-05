@@ -7,15 +7,15 @@
     using Umbraco.Core.Persistence;
 
     /// <summary>
-    /// The Environment Context.
+    /// The Environment Context for handling CRUD operations to and from the database
     /// </summary>
     public class EnvironmentContext : DbContext
     {
         /// <summary>
-        /// 
+        /// Reads a collection of environments from the database
         /// </summary>
-        /// <returns></returns>
-        public IEnumerable<Data.Dto.Environment> List()
+        /// <returns>A collection of environments</returns>
+        public IEnumerable<Data.Dto.Environment> Read()
         {
             try
             {
@@ -37,10 +37,10 @@
         }
 
         /// <summary>
-        /// 
+        /// Reads a single environment from the database by it's id
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">the id of the environment to read</param>
+        /// <returns>null if doesn't exist; otherwise the environment</returns>
         public Data.Dto.Environment Read(int id)
         {
             try
@@ -61,10 +61,10 @@
         }
 
         /// <summary>
-        /// 
+        /// Writes a new environment to the database; Or updates a pre-existing environment
         /// </summary>
-        /// <param name="environment"></param>
-        /// <returns></returns>
+        /// <param name="environment">the environment to write</param>
+        /// <returns>True if successfully written; otherwise, False</returns>
         public bool Write(Data.Dto.Environment environment)
         {
             try
@@ -93,19 +93,17 @@
             return false;
         }
 
+        /// <summary>
+        /// Removes an environment from the database
+        /// </summary>
+        /// <param name="id">the id of the environment to remove</param>
+        /// <returns>True if successfully removed; otherwise, False</returns>
         public bool Delete(int id)
         {
             try
             {
                 if (id != 0 && Database.Exists<Data.Dto.Environment>(id))
                 {
-                    var domains = Database.FetchAll<Data.Dto.Domain>();
-
-                    foreach (var domain in domains.Where(x => x.EnvironmentId.Equals(id)))
-                    {
-                        Instance.Domain.Delete(domain);
-                    }
-
                     Database.Delete<Data.Dto.Environment>(id);
                     return true;
                 }

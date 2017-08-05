@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Net;
     using System.Text.RegularExpressions;
+    using System.Threading;
     using System.Web;
     using Umbraco.Core;
     using Umbraco.Core.Security;
@@ -129,11 +130,25 @@
             }, CacheLength) as string;
         }
 
+        private static int ResetterLock = 0;
+
         private int SoftWatcher(IJob job, Regex regex, int priority, string hardLocation, string softLocation, bool rewrite = true)
         {
             //Add watch on the soft location
             return job.WatchWebRequests(regex, priority, (count, httpApp) =>
             {
+                if (Interlocked.CompareExchange(ref ResetterLock, 0, 1) == 0)
+                {
+                    var resetter = new HardResetFileHandler();
+                    resetter.Delete();
+
+                    var path = HttpRuntime.AppDomainAppPath;
+
+                    resetter.HardLocation = path + hardLocation.Trim('/');
+                    resetter.SoftLocation = path + softLocation.Trim('/');
+                    resetter.Save();
+                }
+
                 //change the Url to point to the hardLocation
                 //for the request to work as expected
                 var rewritePath = httpApp.Request.Url.AbsolutePath.Length > softLocation.Length
@@ -227,15 +242,6 @@
             {
                 return;
             }
-
-            var resetter = new HardResetFileHandler();
-            resetter.Delete();
-
-            var path = HttpRuntime.AppDomainAppPath;
-            
-            resetter.HardLocation = path + hardLocation.Trim('/');
-            resetter.SoftLocation = path + softLocation.Trim('/');
-            resetter.Save();
 
             //A hard save has occurred so we need
             //to make sure backoffice is accessible
@@ -432,6 +438,8 @@
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(allowKey);
             job.UnwatchWebRequests();
+
+            ResetterLock = 0;
 
             var config = c as BackofficeAccessConfiguration;
 

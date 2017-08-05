@@ -24,7 +24,7 @@
         private const int poll = 60 * 10;               //in secs
 #endif
 
-        public const int JobIdStart = 1000;             //  Starting id for Jobs
+        private const int JobIdStart = 1000;             //  Starting id for Jobs
 
         private static readonly Lazy<JobService> _instance = new Lazy<JobService>(() => new JobService());
 
@@ -182,11 +182,11 @@
         }
 
         /// <summary>
-        /// 
+        /// The initalisation method for the job service
         /// </summary>
         public void Init(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
-            var evs = DbContext.Instance.Environment.List();
+            var evs = DbContext.Instance.Environment.Read();
             var appIds = App<IConfiguration>.Register;
 
             foreach (var ev in evs)
@@ -324,11 +324,11 @@
         }
 
         /// <summary>
-        /// 
+        /// Writes an app configuration to the database
         /// </summary>
-        /// <param name="job"></param>
-        /// <param name="config"></param>
-        /// <returns></returns>
+        /// <param name="job">the job handling the write</param>
+        /// <param name="config">the configuration to write</param>
+        /// <returns>True if successfully written; otherwise, False</returns>
         public bool WriteConfiguration(IJob job, IConfiguration config)
         {
             if (!DbContext.Instance.Configuration.Write(job.Environment.Id, job.App.Id, config))
@@ -343,22 +343,22 @@
         }
 
         /// <summary>
-        /// 
+        /// writes an journal to the database
         /// </summary>
-        /// <param name="job"></param>
-        /// <param name="journal"></param>
-        /// <returns></returns>
+        /// <param name="job">the job handling the write</param>
+        /// <param name="journal">the journal to write</param>
+        /// <returns>True if successfully written; otherwise, False</returns>
         public bool WriteJournal(IJob job, IJournal journal)
         {
             return DbContext.Instance.Journal.Write(job.Environment.Id, job.App.Id, journal);
         }
 
         /// <summary>
-        /// 
+        /// Reads an app configuration from the database
         /// </summary>
-        /// <param name="job"></param>
-        /// <param name="defaultConfiguration"></param>
-        /// <returns></returns>
+        /// <param name="job">the job handling the read</param>
+        /// <param name="defaultConfiguration">the default configuration for the app</param>
+        /// <returns>Default configuration if not stored within the database; otherwised the configuration</returns>
         public IConfiguration ReadConfiguration(IJob job, IConfiguration defaultConfiguration = null)
         {
             return DbContext.Instance.Configuration.Read(job.Environment.Id, job.App.Id, ((Job) job).ConfigType, 
@@ -366,22 +366,22 @@
         }
 
         /// <summary>
-        /// 
+        /// Gets a collection of journals from the database
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="job"></param>
-        /// <param name="page"></param>
-        /// <param name="itemsPerPage"></param>
-        /// <param name="totalPages"></param>
+        /// <typeparam name="T">The type of journal to read</typeparam>
+        /// <param name="job">The job handling the reading</param>
+        /// <param name="page">The page of journals to return</param>
+        /// <param name="itemsPerPage">The number of journals to return per page</param>
+        /// <param name="totalPages">The total number of pages</param>
         /// <returns></returns>
         public IEnumerable<T> ListJournals<T>(IJob job, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
-            DbContext.Instance.Journal.List<T>(job.Environment.Id, job.App.Id, page, itemsPerPage, out totalPages);
+            DbContext.Instance.Journal.Read<T>(job.Environment.Id, job.App.Id, page, itemsPerPage, out totalPages);
 
         /// <summary>
-        /// 
+        /// Writes an environment to the database
         /// </summary>
-        /// <param name="environment"></param>
-        /// <returns></returns>
+        /// <param name="environment">the environment to write</param>
+        /// <returns>True if successfully written; otherwise, False</returns>
         public bool WriteEnvironment(Models.Environment environment)
         {
             var data = new Persistance.Data.Dto.Environment
@@ -426,27 +426,16 @@
             return true;
         }
 
-
+        /// <summary>
+        /// Deletes an environment from the database
+        /// </summary>
+        /// <param name="environment">the environment to remove</param>
+        /// <returns></returns>
         public bool DeleteEnvironment(Models.Environment environment)
         {
             var jobs = Environments.FirstOrDefault(x => x.Key.Id.Equals(environment.Id)).Value;
 
-            var removedJobs = true;
-
-            foreach (var job in jobs)
-            {
-                if(!Unregister(job))
-                {
-                    removedJobs = false;
-                }
-            }
-
-            if (!removedJobs)
-            {
-                return false;
-            }
-
-            if (!DbContext.Instance.Environment.Delete(environment.Id))
+            if (!Unregister(jobs) || !DbContext.Instance.Environment.Delete(environment.Id))
             {
                 return false;
             }
@@ -456,35 +445,14 @@
 
             return true;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="job"></param>
-        /// <param name="config"></param>
-        /// <returns></returns>
-        public bool Execute(IJob job, IConfiguration config = null)
-        {
-            if (config == null)
-            {
-                config = ReadConfiguration(job, job.App.DefaultConfiguration);
-
-                if (config == null)
-                {
-                    return false;
-                }
-            }
-
-            return job.App.Execute(job, config);
-        }
         
         /// <summary>
-        /// 
+        /// Adds an environment and an app as a job to the job service
         /// </summary>
-        /// <param name="e"></param>
-        /// <param name="appId"></param>
-        /// <returns></returns>
-        public bool Register(IEnvironment e, IApp app)
+        /// <param name="environment">The environment to add</param>
+        /// <param name="app">The app to add</param>
+        /// <returns>True if successfully added; otherwise, False</returns>
+        public bool Register(IEnvironment environment, IApp app)
         {
             if (jobLock.TryEnterWriteLock(taskLockTimeout))
             {
@@ -493,7 +461,7 @@
                     var job = new Job
                     {
                         Id = registerCount++,
-                        Environment = e,
+                        Environment = environment,
                         App = app,
                         ConfigType = app.GetType().BaseType.GenericTypeArguments[0]
                     };
@@ -510,24 +478,24 @@
         }
 
         /// <summary>
-        /// 
+        /// Removes a Job from the JobService by it's id
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="id">The Job id</param>
         /// <returns></returns>
-        public bool Unregister(int key)
+        public bool Unregister(int id)
         {
             if (jobLock.TryEnterWriteLock(taskLockTimeout))
             {
                 try
                 {
                     Job job = null;
-                    if (jobs.Value.TryGetValue(key, out job))
+                    if (jobs.Value.TryGetValue(id, out job))
                     {
                         if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
                         {
                             job.CancelToken.Cancel();
                         }
-                        jobs.Value.Remove(key);
+                        jobs.Value.Remove(id);
                         return true;
                     }
                 }
@@ -540,17 +508,49 @@
         }
 
         /// <summary>
-        /// 
+        /// Removes a job from the job service
         /// </summary>
-        /// <param name="job"></param>
-        /// <returns></returns>
+        /// <param name="job">the job to remove</param>
+        /// <returns>True if successfully removed; otherwise, False</returns>
         public bool Unregister(IJob job) => Unregister(job.Id);
 
         /// <summary>
-        /// 
+        /// Removes a collection of jobs from the job service
         /// </summary>
-        /// <param name="appId"></param>
-        /// <returns></returns>
+        /// <param name="jobsToUnregister">The collection of jobs to remove</param>
+        /// <returns>True if successfuly removed; otherwise, False</returns>
+        public bool Unregister(IEnumerable<IJob> jobsToUnregister)
+        {
+            if (jobLock.TryEnterWriteLock(taskLockTimeout))
+            {
+                try
+                {
+                    foreach(var jobToUnregister in jobsToUnregister)
+                    {
+                        Job job = null;
+                        if (jobs.Value.TryGetValue(jobToUnregister.Id, out job))
+                        {
+                            if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
+                            {
+                                job.CancelToken.Cancel();
+                            }
+                            jobs.Value.Remove(jobToUnregister.Id);
+                        }
+                    }
+                }
+                finally
+                {
+                    jobLock.ExitWriteLock();
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Removes all jobs from the job service where the app's id are the same
+        /// </summary>
+        /// <param name="appId">The id of the app</param>
+        /// <returns>True if successfully removed; otherwise, False</returns>
         public bool Unregister(string appId)
         {
             if (jobLock.TryEnterWriteLock(taskLockTimeout))
@@ -585,10 +585,10 @@
         }
 
         /// <summary>
-        /// 
+        /// Removes all jobs from the job service where the app are the same
         /// </summary>
-        /// <param name="app"></param>
-        /// <returns></returns>
+        /// <param name="app">the app to remove</param>
+        /// <returns>True if successfully removed; otherwise, False</returns>
         public bool Unregister(IApp app) => Unregister(app.Id);
 
     }

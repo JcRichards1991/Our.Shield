@@ -282,7 +282,6 @@
     <None Include="app.config" />
     <None Include="App_Plugins\Shield.BackofficeAccess\package.manifest" />
     <None Include="packages.config" />
-    <None Include="Scss\Partials\_white-Listed-Ip-Property.scss" />
     <None Include="Our.Shield.BackofficeAccess.nuspec" />
     <None Include="Scss\Styles.scss" />
     <None Include="Scss\Partials\_form-validation.scss" />

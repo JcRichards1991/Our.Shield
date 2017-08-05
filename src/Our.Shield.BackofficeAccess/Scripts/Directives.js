@@ -62,23 +62,3 @@ angular.module('umbraco.directives').directive('shieldIpaddressduplicate', funct
         }
     };
 });
-
-/**
-   * @ngdoc directive
-   * @name shield-add-to-form
-   * @function
-   *
-   * @description
-   * Adds form input elements to the backoffice access form for validation
-*/
-angular.module('umbraco.directives').directive('shieldAddToForm', function () {
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: function ($scope, $element, $attr, ctrl) {
-            $scope.backofficeAccessForm.$removeControl(ctrl);
-            ctrl.$name = $attr.name;
-            $scope.backofficeAccessForm.$addControl(ctrl);
-        }
-    }
-});

@@ -33,7 +33,7 @@
         {
             _schemaHelper.CreateTable<Dto.Environment>(false);
 
-            if(!Business.DbContext.Instance.Environment.List().Any())
+            if(!Business.DbContext.Instance.Environment.Read().Any())
             {
                 Context.Database.Insert(new Dto.Environment
                 {

@@ -2,9 +2,11 @@
 {
     using Models;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using Umbraco.Core.Logging;
     using Umbraco.Core.Persistence;
 
@@ -13,6 +15,36 @@
     /// </summary>
     public class JournalContext : DbContext
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        internal class ShouldSerializeContractResolver : DefaultContractResolver
+        {
+            public static readonly ShouldSerializeContractResolver Instance = new ShouldSerializeContractResolver();
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="member"></param>
+            /// <param name="memberSerialization"></param>
+            /// <returns></returns>
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                JsonProperty property = base.CreateProperty(member, memberSerialization);
+
+                if (property.PropertyName.Equals(nameof(IJournal.EnvironmentId), StringComparison.InvariantCultureIgnoreCase) ||
+                    property.PropertyName.Equals(nameof(IJournal.AppId), StringComparison.InvariantCultureIgnoreCase) ||
+                    property.PropertyName.Equals(nameof(IJournal.Datestamp), StringComparison.InvariantCultureIgnoreCase))
+                {
+                    property.ShouldSerialize = instance =>
+                    {
+                        return false;
+                    };
+                }
+                return property;
+            }
+        }
+
         private IEnumerable<IJournal> GetListingResults(int? environmentId, string appId, int page, int itemsPerPage, Type type, out int totalPages)
         {
             totalPages = 0;
@@ -83,7 +115,7 @@
         /// <param name="type"></param>
         /// <param name="totalPages"></param>
         /// <returns></returns>
-        public IEnumerable<IJournal> List(int environmentId, string appId, int page, int itemsPerPage, Type type, out int totalPages) => 
+        public IEnumerable<IJournal> Read(int environmentId, string appId, int page, int itemsPerPage, Type type, out int totalPages) => 
             GetListingResults(environmentId, appId, page, itemsPerPage, type, out totalPages);
 
         /// <summary>
@@ -95,7 +127,7 @@
         /// <param name="type"></param>
         /// <param name="totalPages"></param>
         /// <returns></returns>
-        public IEnumerable<IJournal> List(int environmentId, int page, int itemsPerPage, Type type, out int totalPages) => 
+        public IEnumerable<IJournal> Read(int environmentId, int page, int itemsPerPage, Type type, out int totalPages) => 
             GetListingResults(environmentId, null, page, itemsPerPage, type, out totalPages);
 
         /// <summary>
@@ -108,7 +140,7 @@
         /// <param name="itemsPerPage"></param>
         /// <param name="totalPages"></param>
         /// <returns></returns>
-        public IEnumerable<T> List<T>(int environmentId, string appId, int page, int itemsPerPage, out int totalPages) where T : IJournal => 
+        public IEnumerable<T> Read<T>(int environmentId, string appId, int page, int itemsPerPage, out int totalPages) where T : IJournal => 
             GetListingResults(environmentId, appId, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
 
         /// <summary>
@@ -119,7 +151,7 @@
         /// <param name="type"></param>
         /// <param name="totalPages"></param>
         /// <returns></returns>
-        public IEnumerable<IJournal> FetchAll(int page, int itemsPerPage, Type type, out int totalPages) => 
+        public IEnumerable<IJournal> Read(int page, int itemsPerPage, Type type, out int totalPages) => 
             GetListingResults(null, null, page, itemsPerPage, type, out totalPages);
 
         /// <summary>
@@ -130,7 +162,7 @@
         /// <param name="itemsPerPage"></param>
         /// <param name="totalPages"></param>
         /// <returns></returns>
-        public IEnumerable<T> FetchAll<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal =>
+        public IEnumerable<T> Read<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal =>
             GetListingResults(null, null, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
 
         /// <summary>
@@ -149,7 +181,8 @@
                     EnvironmentId = environmentId,
                     AppId = appId,
                     Datestamp = DateTime.UtcNow,
-                    Value = JsonConvert.SerializeObject(journal)
+                    Value = JsonConvert.SerializeObject(journal, Formatting.None,
+                        new JsonSerializerSettings { ContractResolver = new ShouldSerializeContractResolver() })
                 });
                 return true;
             }

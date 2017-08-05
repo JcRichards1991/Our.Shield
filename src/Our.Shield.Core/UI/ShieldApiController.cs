@@ -29,7 +29,7 @@
 
             if (id == Constants.Tree.EnvironmentsRootId)
             {
-                var journals = Persistance.Business.DbContext.Instance.Journal.FetchAll<JournalMessage>(1, 200, out totalPages);
+                var journals = Persistance.Business.DbContext.Instance.Journal.Read<JournalMessage>(1, 200, out totalPages);
                 var apps = environments.First().Value.Select(x => x.App);
 
                 //  Is the environments node
@@ -224,7 +224,7 @@
             {
                 return new JournalListing
                 {
-                    Journals = Persistance.Business.DbContext.Instance.Journal.FetchAll<JournalMessage>(page, 200, out totalPages).Select(x => new JournalListingItem
+                    Journals = Persistance.Business.DbContext.Instance.Journal.Read<JournalMessage>(page, 200, out totalPages).Select(x => new JournalListingItem
                     {
                         Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
                         App = apps.FirstOrDefault(a => a.Id == x.AppId).Name,

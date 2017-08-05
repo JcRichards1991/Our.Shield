@@ -33,19 +33,7 @@
 
             <umb-editor-container>
 
-                <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.editingEnvironment">
-                    <div>
-                        <label for="enable" class="control-label">
-                            <localize key="Shield.General.Properties_DomainsLabel">Domains</localize>
-                            <small>
-                                <localize key="Shield.General.Properties_DomainsDescription">The domains that are associated to the environment</localize>
-                            </small>
-                        </label>
-                        <div class="controls">
-                            <input type="checkbox" id="enable" />
-                        </div>
-                    </div>
-                </div>
+                <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.editingEnvironment" ng-include="'/App_Plugins/Shield/Backoffice/Shield/DomainListing.html?version=1.0.1'"></div>
 
                 <umb-tabs-content class="form-horizontal" view="true" ng-if="!vm.editingEnvironment">
                     <umb-tab id="tab0" rel="0">
@@ -72,12 +60,12 @@
                                             </a>
                                         </div>
 
-                                        <!--<div class="umb-table-cell">
+                                        <div class="umb-table-cell">
                                             <a class="umb-table-head__link" href="#" prevent-default>
                                                 <span>Domains</span>
                                                 <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
                                             </a>
-                                        </div>-->
+                                        </div>
                                     </div>
                                 </div>
 
@@ -94,11 +82,11 @@
                                             <span ng-bind-html="environment.name"></span>
                                         </div>
 
-                                        <!--<div class="umb-table-cell">
+                                        <div class="umb-table-cell">
                                             <ul ng-repeat="domain in environment.domains track by $index">
                                                 <li>{{domain.name}}</li>
                                             </ul>
-                                        </div>-->
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -186,7 +174,12 @@
                             </div>
                         </div>
                     </umb-tab>
-                    <umb-tab id="tab1" rel="1">
+
+                    <umb-tab id="tab1" rel="1" ng-if="vm.type == 1 && vm.id != '1'">
+                        <div class="umb-el-wrap control-group umb-control-group" ng-include="'/App_Plugins/Shield/Backoffice/Shield/DomainListing.html?version=1.0.1'"></div>
+                    </umb-tab>
+
+                    <umb-tab id="tab2" rel="2">
 
                         <!-- Journal -->
                         <div class="umb-table">
@@ -246,7 +239,7 @@
                     </umb-breadcrumbs>
                 </umb-editor-footer-content-left>
 
-                <div ng-if="vm.editingEnvironment || vm.type == 2">
+                <div ng-if="vm.type != 0 && vm.shieldForm.dirty">
                     <umb-editor-footer-content-right>
                         <umb-button label="{{vm.button.label}}"
                                     type="submit"

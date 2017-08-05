@@ -15,7 +15,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
         angular.extend(vm, {
             type: null,
             id: $routeParams.id,
-            editingEnvironment: $routeParams.environment === true || $routeParams.environment === 'true' ? true : false,
+            editingEnvironment: $routeParams.create === true || $routeParams.create === 'true' ? true : false,
             name: '',
             description: '',
             loading: true,
@@ -33,7 +33,12 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     active: true,
                 },
                 {
-                    id:'1',
+                    id: '1',
+                    label: 'Domains',
+                    active: true,
+                },
+                {
+                    id:'2',
                     label:'Journal',
                     active: false
                 }
@@ -57,6 +62,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             vm.environments = response.data.environments;
                             vm.path = ['-1', vm.id];
                             vm.ancestors = [{ id: vm.id, name: vm.name }]
+                            vm.tabs.splice(1, 1);
 
                             if (vm.editingEnvironment) {
                                 vm.type = 1;
@@ -82,6 +88,11 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             vm.path = ['-1', '0' , vm.id];
                             vm.ancestors = [{ id: 0, name: 'Environments' }, { id: vm.id, name: vm.name }]
                             vm.appListing.apps = response.data.apps;
+
+                            if (vm.id === '1') {
+                                vm.tabs.splice(1, 1);
+                            }
+
                             break;
 
                         case 2:     //  App
@@ -90,6 +101,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             vm.appView = response.data.appAssests.view;
                             vm.configuration = response.data.configuration;
                             vm.tabs[0].label = 'Configuration'
+                            vm.tabs.splice(1, 1);
                             vm.journalListing.columns.splice(1, 2);
                             vm.journalListing.columns[1].cssClass = 'shield-table__name-large'
                             vm.path = ['-1', '0', vm.environment.id, vm.id];
@@ -157,14 +169,9 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                 $scope.shieldForm.$setPristine();
 
                                 $timeout(function () {
-                                    navigationService.syncTree({ tree: 'Shield', path: vm.path, forceReload: true, activate: true });
-                                    $location.path('shield/shield/edit/' + vm.id);
-                                }, 1000);
-
-                                //vm.editingEnvironment = false;
-                                //if (vm.id === '0') {
-                                //    vm.type = 0;
-                                //}
+                                    navigationService.syncTree({ tree: 'Shield', path: ['-1', '0'], forceReload: true, activate: true });
+                                    vm.editingEnvironment = false;
+                                }, 500);
                             } else {
                                 var errorMsgDictionaryItem = 'SaveEnvironmentError';
 

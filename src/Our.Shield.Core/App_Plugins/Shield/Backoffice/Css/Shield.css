@@ -31,3 +31,27 @@
   max-width: 14%;
   -ms-flex: 1 1 14%;
   flex: 1 1 14%; }
+
+table.domains-container {
+  width: 75%; }
+  table.domains-container thead tr, table.domains-container tbody tr, table.domains-container tfoot tr {
+    height: 72px; }
+    table.domains-container thead tr td, table.domains-container thead tr th, table.domains-container tbody tr td, table.domains-container tbody tr th, table.domains-container tfoot tr td, table.domains-container tfoot tr th {
+      max-width: 300px; }
+      table.domains-container thead tr td:last-child, table.domains-container thead tr th:last-child, table.domains-container tbody tr td:last-child, table.domains-container tbody tr th:last-child, table.domains-container tfoot tr td:last-child, table.domains-container tfoot tr th:last-child {
+        text-align: right;
+        min-width: 160px;
+        max-width: 160px; }
+    table.domains-container thead tr td input, table.domains-container tbody tr td input, table.domains-container tfoot tr td input {
+      display: block; }
+    table.domains-container thead tr td span.help-inline, table.domains-container tbody tr td span.help-inline, table.domains-container tfoot tr td span.help-inline {
+      position: absolute;
+      color: #9d261d; }
+    table.domains-container thead tr td:last-child span.btn:last-child, table.domains-container tbody tr td:last-child span.btn:last-child, table.domains-container tfoot tr td:last-child span.btn:last-child {
+      margin-left: 4px; }
+    table.domains-container thead tr th, table.domains-container tbody tr th, table.domains-container tfoot tr th {
+      text-align: left; }
+  table.domains-container tbody tr {
+    border-top: 1px solid #000; }
+    table.domains-container tbody tr:last-child {
+      border-bottom: 1px solid #000; }
