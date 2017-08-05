@@ -246,7 +246,7 @@ ModelManifest.xml
 # Test Development Site ignore items
 !src/Our.Shield.Site/App_Data/*.sdf
 src/Our.Shield.Site/App_Data
-src/Our.Shield.Site/App_Plugins
+src/Our.Shield.Site/App_Plugins/Shield*
 src/Our.Shield.Site/uSync
 
 #Test Nuget Package Site ignore items
