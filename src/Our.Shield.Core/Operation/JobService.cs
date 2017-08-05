@@ -182,30 +182,34 @@
         }
 
         /// <summary>
-        /// The initalisation method for the job service
+        /// The initializations method for the job service
         /// </summary>
         public void Init(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             var evs = DbContext.Instance.Environment.Read();
-            var appIds = App<IConfiguration>.Register;
 
             foreach (var ev in evs)
             {
-                var environment = new Models.Environment(ev);
-                foreach(var appId in appIds)
+                Register(new Models.Environment(ev), applicationContext);
+            }
+            Poll(true);
+        }
+
+        public void Register(IEnvironment environment, ApplicationContext applicationContext)
+        {
+            var appIds = App<IConfiguration>.Register;
+            foreach(var appId in appIds)
+            {
+                var app = App<IConfiguration>.Create(appId.Key);
+
+                LoadMigrations(app, applicationContext);
+                RunMigrations(app, applicationContext);
+
+                if (app.Init())
                 {
-                    var app = App<IConfiguration>.Create(appId.Key);
-
-                    LoadMigrations(app, applicationContext);
-                    RunMigrations(app, applicationContext);
-
-                    if (app.Init())
-                    {
-                        Register(environment, app);
-                    }
+                    Register(environment, app);
                 }
             }
-            Poll();
         }
 
         private const long ranRepeat = 0L;
@@ -213,6 +217,15 @@
         private long ranTick = ranNow;
 
         private int runningPoll = 0;
+
+        public void Poll(bool forceUpdate)
+        {
+            if (forceUpdate)
+            {
+                ranTick = ranRepeat;
+            }
+            Poll();
+        }
 
         /// <summary>
         /// 
@@ -231,7 +244,7 @@
 
             try
             {
-                System.Diagnostics.Debug.WriteLine("START running poll with " + ranTick.ToString());
+                //System.Diagnostics.Debug.WriteLine("START running poll with " + ranTick.ToString());
                 ranTick = ranNow;
                 if (jobLock.TryEnterUpgradeableReadLock(taskLockTimeout))
                 {
@@ -270,7 +283,7 @@
                 {
                     ranTick = DateTime.UtcNow.AddSeconds(poll).Ticks;
                 }
-                System.Diagnostics.Debug.WriteLine("END running poll with " + ranTick.ToString());
+                //System.Diagnostics.Debug.WriteLine("END running poll with " + ranTick.ToString());
             }
             finally
             {
@@ -336,8 +349,7 @@
                 return false;
             }
             
-            ranTick = ranRepeat;
-            Poll();
+            Poll(true);
 
             return true;
         }
@@ -377,75 +389,6 @@
         public IEnumerable<T> ListJournals<T>(IJob job, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
             DbContext.Instance.Journal.Read<T>(job.Environment.Id, job.App.Id, page, itemsPerPage, out totalPages);
 
-        /// <summary>
-        /// Writes an environment to the database
-        /// </summary>
-        /// <param name="environment">the environment to write</param>
-        /// <returns>True if successfully written; otherwise, False</returns>
-        public bool WriteEnvironment(Models.Environment environment)
-        {
-            var data = new Persistance.Data.Dto.Environment
-            {
-                Name = environment.Name,
-                Icon = environment.Icon,
-                Id = environment.Id,
-                Domains = environment.Domains.Select(x => new Persistance.Data.Dto.Domain
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    UmbracoDomainId = x.UmbracoDomainId
-                })
-            };
-
-            if(!DbContext.Instance.Environment.Write(data))
-            {
-                return false;
-            }
-            
-            if (environment.Id == 0)
-            {
-                //created new environment, need
-                //to register the apps for the environment
-                //and set the environment's id to that from the DB
-                environment.Id = data.Id;
-                var appIds = App<IConfiguration>.Register;
-
-                foreach(var appId in appIds)
-                {
-                    var app = App<IConfiguration>.Create(appId.Key);
-                    if(app.Init())
-                    {
-                        Register(environment, app);
-                    }
-                }
-            }
-
-            ranTick = ranRepeat;
-            Poll();
-
-            return true;
-        }
-
-        /// <summary>
-        /// Deletes an environment from the database
-        /// </summary>
-        /// <param name="environment">the environment to remove</param>
-        /// <returns></returns>
-        public bool DeleteEnvironment(Models.Environment environment)
-        {
-            var jobs = Environments.FirstOrDefault(x => x.Key.Id.Equals(environment.Id)).Value;
-
-            if (!Unregister(jobs) || !DbContext.Instance.Environment.Delete(environment.Id))
-            {
-                return false;
-            }
-
-            ranTick = ranRepeat;
-            Poll();
-
-            return true;
-        }
-        
         /// <summary>
         /// Adds an environment and an app as a job to the job service
         /// </summary>
@@ -518,24 +461,28 @@
         /// Removes a collection of jobs from the job service
         /// </summary>
         /// <param name="jobsToUnregister">The collection of jobs to remove</param>
-        /// <returns>True if successfuly removed; otherwise, False</returns>
-        public bool Unregister(IEnumerable<IJob> jobsToUnregister)
+        /// <returns>True if successfully removed; otherwise, False</returns>
+        public bool Unregister(IEnvironment environment)
         {
             if (jobLock.TryEnterWriteLock(taskLockTimeout))
             {
                 try
                 {
-                    foreach(var jobToUnregister in jobsToUnregister)
+                    var keys = new List<int>();
+                    foreach (var job in jobs.Value)
                     {
-                        Job job = null;
-                        if (jobs.Value.TryGetValue(jobToUnregister.Id, out job))
+                        if (job.Value.Environment.Id == environment.Id)
                         {
-                            if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
+                            if (job.Value.Task != null && !job.Value.Task.IsCanceled && !job.Value.Task.IsCompleted && !job.Value.CancelToken.IsCancellationRequested)
                             {
-                                job.CancelToken.Cancel();
+                                job.Value.CancelToken.Cancel();
                             }
-                            jobs.Value.Remove(jobToUnregister.Id);
+                            keys.Add(job.Key);
                         }
+                    }
+                    foreach (var key in keys)
+                    {
+                        jobs.Value.Remove(key);
                     }
                 }
                 finally

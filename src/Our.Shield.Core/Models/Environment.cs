@@ -36,6 +36,15 @@
         [JsonProperty("domains")]
         public IEnumerable<IDomain> Domains { get; set; }
 
+        [JsonProperty("sortOrder")]
+        public int SortOrder { get; set; }
+
+        [JsonProperty("enable")]
+        public bool Enable { get; set; }
+
+        [JsonProperty("continueProcessing")]
+        public bool ContinueProcessing { get; set; }
+
         /// <summary>
         /// Checks whether or not two Environments are the same
         /// </summary>
@@ -68,7 +77,7 @@
         }
 
         /// <summary>
-        /// Default constructure
+        /// Default constructor
         /// </summary>
         internal Environment()
         {
@@ -84,6 +93,9 @@
             Name = data.Name;
             Icon = data.Icon;
             Domains = data.Domains.Select(x => new Domain(x));
+            SortOrder = data.SortOrder;
+            Enable = data.Enable;
+            ContinueProcessing = data.ContinueProcessing;
         }
 
         /// <summary>
@@ -108,18 +120,10 @@
         public IEnumerable<T> JournalListing<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal =>
             DbContext.Instance.Journal.Read(Id, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public bool WriteEnvironment() =>
-            JobService.Instance.WriteEnvironment(this);
+        public bool Write() =>
+            EnvironmentService.Instance.Write(this);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public bool DeleteEnvironment() =>
-            JobService.Instance.DeleteEnvironment(this);
+        public bool Delete() =>
+            EnvironmentService.Instance.Delete(this);
     }
 }

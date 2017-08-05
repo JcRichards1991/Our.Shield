@@ -1,4 +1,4 @@
-﻿namespace Our.Shield.Core.Persistance.Data
+﻿namespace Our.Shield.Core.Persistance.Data.Migrations
 {
     using System;
     using System.Linq;
@@ -14,6 +14,8 @@
     /// </summary>
     internal class Migration
     {
+        private readonly SemVersion TargetVersion = new SemVersion(1, 0, 2);
+
         /// <summary>
         /// 
         /// </summary>
@@ -27,10 +29,9 @@
 
             var scriptsForMigration = new IMigration[]
             {
-                new Migrations.EnvironmentMigration(sqlSyntax, logger),
-                new Migrations.DomainMigration(sqlSyntax,logger),
-                new Migrations.ConfigurationMigration(sqlSyntax, logger),
-                new Migrations.JournalMigration(sqlSyntax, logger)
+                new Versions.Migration100(sqlSyntax, logger),
+                new Versions.Migration101(sqlSyntax, logger),
+                new Versions.Migration102(sqlSyntax, logger)
             };
 
             var migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName);
@@ -38,12 +39,11 @@
 
             if (latestMigration != null)
                 currentVersion = latestMigration.Version;
-
-            var targetVersion = new SemVersion(1, 0, 1);
-            if (targetVersion == currentVersion)
+            
+            if (TargetVersion == currentVersion)
                 return;
 
-            MigrationRunner migrationsRunner = new MigrationRunner(migrationEntryService, logger, currentVersion, targetVersion, 
+            MigrationRunner migrationsRunner = new MigrationRunner(migrationEntryService, logger, currentVersion, TargetVersion, 
                 productName, scriptsForMigration);
 
             try
