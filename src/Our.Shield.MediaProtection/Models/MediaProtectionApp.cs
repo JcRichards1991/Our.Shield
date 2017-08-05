@@ -84,16 +84,11 @@
             var config = c as MediaProtectionConfiguration;
 
             job.UnwatchWebRequests();
-            Umbraco.Core.Services.MediaService.Saved += MediaService_Saved;
 
-
-            if (!config.Enable)
+            if (!config.Enable || !job.Environment.Enable)
             {
                 return true;
             }
-
-            Umbraco.Core.Services.MediaService.Saved += MediaService_Saved;
-
 
             var mediaFolder = VirtualPathUtility.ToAbsolute(new Uri(Umbraco.Core.IO.SystemDirectories.Media, UriKind.Relative).ToString()) + "/";
 
@@ -258,7 +253,7 @@
 
         private void MediaService_Saved(IMediaService sender, Umbraco.Core.Events.SaveEventArgs<IMedia> e)
         {
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         private MediaType SecureImage()

@@ -265,7 +265,20 @@
   <ItemGroup>
     <Compile Include="Models\AppMigrationAttribute.cs" />
     <Compile Include="Models\JournalMessage.cs" />
+    <Compile Include="Operation\EnvironmentService.cs" />
     <Compile Include="Operation\ServiceHandler.cs" />
+    <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration101.cs" />
+    <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration100.cs" />
+    <Compile Include="Persistance\Data\Migrations\Dto\Domain\Domain100.cs" />
+    <Compile Include="Persistance\Data\Migrations\Dto\Environment\Environment102.cs" />
+    <Compile Include="Persistance\Data\Migrations\Dto\Environment\Environment100.cs" />
+    <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal102.cs" />
+    <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal101.cs" />
+    <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal100.cs" />
+    <Compile Include="Persistance\Data\Migrations\MigrationExtensions.cs" />
+    <Compile Include="Persistance\Data\Migrations\Versions\Migration102.cs" />
+    <Compile Include="Persistance\Data\Migrations\Versions\Migration101.cs" />
+    <Compile Include="Persistance\Data\Migrations\Versions\Migration100.cs" />
     <Compile Include="UI\AppAssest.cs" />
     <Compile Include="UI\Constants.cs" />
     <Compile Include="Models\Configuration.cs" />
@@ -285,10 +298,8 @@
     <Compile Include="Persistance\Business\DomainContext.cs" />
     <Compile Include="Persistance\Data\Dto\Domain.cs" />
     <Compile Include="Persistance\Data\Dto\UmbracoDomainDto.cs" />
-    <Compile Include="Persistance\Data\Migrations\DomainMigration.cs" />
-    <Compile Include="Persistance\Data\Migrations\EnvironmentMigration.cs" />
     <Compile Include="Persistance\Data\Dto\Environment.cs" />
-    <Compile Include="Persistance\Data\Migration.cs" />
+    <Compile Include="Persistance\Data\Migrations\Migration.cs" />
     <Compile Include="UI\AppEditorAttribute.cs" />
     <Compile Include="UI\AppAssetAttribute.cs" />
     <Compile Include="UI\ShieldApiController.cs" />
@@ -301,9 +312,7 @@
     <Compile Include="Operation\Frisk.cs" />
     <Compile Include="Operation\WebRequestHandler.cs" />
     <Compile Include="Persistance\Business\ConfigurationContext.cs" />
-    <Compile Include="Persistance\Data\Migrations\ConfigurationMigration.cs" />
     <Compile Include="Persistance\Business\JournalContext.cs" />
-    <Compile Include="Persistance\Data\Migrations\JournalMigration.cs" />
     <Compile Include="Persistance\Data\Dto\Configuration.cs" />
     <Compile Include="Persistance\Data\Dto\Journal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

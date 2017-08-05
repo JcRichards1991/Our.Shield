@@ -22,10 +22,25 @@
         string Name { get; }
 
         /// <summary>
+        /// The Icon of the Environment
+        /// </summary>
+        [JsonProperty("icon")]
+        string Icon { get; }
+
+        /// <summary>
         /// The Domains for the Environment
         /// </summary>
         [JsonProperty("domains")]
         IEnumerable<IDomain> Domains { get; }
+
+        [JsonProperty("sortOrder")]
+        int SortOrder { get; }
+
+        [JsonProperty("enable")]
+        bool Enable { get; }
+
+        [JsonProperty("continueProcessing")]
+        bool ContinueProcessing { get; }
 
         /// <summary>
         /// 
@@ -46,5 +61,10 @@
         /// <param name="totalPages"></param>
         /// <returns></returns>
         IEnumerable<T> JournalListing<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal;
+
+        bool Write();
+
+        bool Delete();
+
     }
 }

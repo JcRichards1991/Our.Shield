@@ -15,6 +15,7 @@ namespace Our.Shield.Core.Operation
     internal class WebRequestHandler : IHttpModule
     {
         private const int watchLockTimeout = 1000;
+        private const int requestRestartLimit = 100;
 
         /// <summary>
         /// 
@@ -48,7 +49,8 @@ namespace Our.Shield.Core.Operation
         {
             public int Compare(Watcher a, Watcher b)
             {
-                return a.priority - b.priority;
+                var sortOrder = a.environment.SortOrder - b.environment.SortOrder;
+                return (sortOrder != 0) ? sortOrder : a.priority - b.priority;
             }
         }
 
@@ -276,29 +278,47 @@ namespace Our.Shield.Core.Operation
             application.EndRequest += (new EventHandler(this.Application_EndRequest));
         }
 
-        private void Application_BeginRequest(object source, EventArgs e)
+        private void Request(ReaderWriterLockSlim locker, IEnumerable<Watcher> watchers, HttpApplication application)
         {
-            JobService.Instance.Poll();
-            int count = 0;
-
-            if (beginWatchLock.TryEnterReadLock(watchLockTimeout))
+            if (locker.TryEnterReadLock(watchLockTimeout))
             {
                 try
                 {
+                    if (!watchers.Any())
+                    {
+                        return;
+                    }
+
+                    int count = 0;
 restart:
-                    string uri = ((HttpApplication)source).Context.Request.Url.AbsoluteUri;
+                    if (count++ > requestRestartLimit)
+                    {
+                        application.Context.Response.StatusCode = 500;
+                        application.CompleteRequest();
+                    }
+
+                    IEnvironment environment = null;
+                    string uri = application.Context.Request.Url.AbsoluteUri;
                     string uriWithoutDomain = null;
 
-                    count++;
-
-                    foreach (var watch in beginWatchers)
+                    foreach (var watch in watchers)
                     {
+                        if (!watch.environment.Enable)
+                        {
+                            continue;
+                        }
+
+                        if (environment != null && environment.Id != watch.environment.Id)
+                        {
+                            return;
+                        }
+
                         string filePath = null;
                         if (watch.domains == null)
                         {
                             if (uriWithoutDomain == null)
                             {
-                                uriWithoutDomain = ((HttpApplication)source).Context.Request.Url.LocalPath;
+                                uriWithoutDomain = application.Context.Request.Url.LocalPath;
                             }
                             filePath = uriWithoutDomain;
                         }
@@ -317,7 +337,11 @@ restart:
 
                         if ((watch.regex == null || watch.regex.IsMatch(filePath)))
                         {
-                            switch (watch.request(count, (HttpApplication)source))
+                            if (!watch.environment.ContinueProcessing)
+                            {
+                                environment = watch.environment;
+                            }
+                            switch (watch.request(count, application))
                             {
                                 case WatchCycle.Stop:
                                     return;
@@ -326,8 +350,8 @@ restart:
                                     goto restart;
 
                                 case WatchCycle.Error:
-                                    ((HttpApplication)source).Context.Response.StatusCode = 500;
-                                    ((HttpApplication)source).CompleteRequest();
+                                    application.Context.Response.StatusCode = 500;
+                                    application.CompleteRequest();
                                     break;
 
                                 //  If WatchCycle.Continue we do nothing
@@ -337,56 +361,20 @@ restart:
                 }
                 finally
                 {
-                    beginWatchLock.ExitReadLock();
+                    locker.ExitReadLock();
                 }
             }
         }
 
+        private void Application_BeginRequest(object source, EventArgs e)
+        {
+            JobService.Instance.Poll();
+            Request(beginWatchLock, beginWatchers, (HttpApplication)source);
+        }
+
         private void Application_EndRequest(Object source, EventArgs e)
         {
-            string filePath = ((HttpApplication)source).Context.Request.FilePath;
-
-            if (filePath == "/umbraco/backoffice/UmbracoApi/Authentication/GetRemainingTimeoutSeconds")
-            {
-                return;
-            }
-
-            int count = 0;
-
-            if (endWatchLock.TryEnterReadLock(watchLockTimeout))
-            {
-                try
-                {
-restart:
-                    count++;
-                    foreach (var watch in endWatchers)
-                    {
-                        if ((watch.regex == null || watch.regex.IsMatch(filePath)) &&
-                            (watch.domains == null || watch.domains.Any(x => filePath.StartsWith(x, StringComparison.InvariantCultureIgnoreCase))))
-                        {
-                            switch (watch.request(count, (HttpApplication)source))
-                            {
-                                case WatchCycle.Stop:
-                                    return;
-
-                                case WatchCycle.Restart:
-                                    goto restart;
-
-                                case WatchCycle.Error:
-                                    ((HttpApplication)source).Context.Response.StatusCode = 500;
-                                    ((HttpApplication)source).CompleteRequest();
-                                    break;
-
-                                //  If WatchCycle.Continue we do nothing
-                            }
-                        }
-                    }
-                }
-                finally
-                {
-                    endWatchLock.ExitReadLock();
-                }
-            }
+            Request(endWatchLock, endWatchers, (HttpApplication)source);
         }
 
         /// <summary>

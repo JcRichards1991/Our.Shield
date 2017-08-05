@@ -153,7 +153,7 @@
 
             var environment = json.ToObject<Environment>();
 
-            if(environment.WriteEnvironment())
+            if(environment.Write())
             {
                 return true;
             }
@@ -171,7 +171,7 @@
         {
             var environment = (Environment) Operation.JobService.Instance.Environments.FirstOrDefault(x => x.Key.Id.Equals(id)).Key;
 
-            return environment.DeleteEnvironment();
+            return environment.Delete();
         }
 
         /// <summary>

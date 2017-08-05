@@ -1,5 +1,5 @@
 ﻿DELETE FROM [umbracoMigration]
-WHERE name = 'Shield'
+WHERE name like 'Shield%'
 GO
 
 DROP TABLE [ShieldJournal]

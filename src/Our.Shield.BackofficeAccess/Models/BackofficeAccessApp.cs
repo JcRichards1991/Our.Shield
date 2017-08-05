@@ -220,7 +220,7 @@
         {
             var umbracoLocation = ((BackofficeAccessConfiguration)this.DefaultConfiguration).BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/');
             var hardLocation = ApplicationSettings.UmbracoPath;
-            var softLocation = (config.Enable)
+            var softLocation = (config.Enable && job.Environment.Enable)
                 ? config.BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/')
                 : umbracoLocation;
 
@@ -295,7 +295,7 @@
 
                 //if we're disabled, then we just want
                 //to change the status code to 404
-                if (!config.Enable)
+                if (!config.Enable || !job.Environment.Enable)
                 {
                     httpApp.Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     return WatchCycle.Stop;
@@ -312,7 +312,7 @@
                 }
 
                 //We have a url, so we need to redirect/rewrite the request
-                //dependant on what is configured
+                //dependent on what is configured
                 if (config.UnauthorisedAction == Enums.UnauthorisedAction.Redirect)
                 {
                     httpApp.Context.Response.Redirect(url, true);
@@ -448,7 +448,7 @@
             AddSoftWatches(job, config);
 
             //if we're enabled, we need to add our IP checking watch
-            if (config.Enable)
+            if (config.Enable && job.Environment.Enable)
             {
                 //Add our Hard Watch to
                 //do the security checking
