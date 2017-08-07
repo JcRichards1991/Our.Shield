@@ -65,5 +65,10 @@ namespace Our.Shield.Core.Persistance.Data.Migrations
         {
             alter.OnTable(tableNameAttribute<T>());
         }
+
+        public static bool TableExist<T>(this DatabaseSchemaHelper schemaHelper) where T : new()
+        {
+            return schemaHelper.TableExist(tableNameAttribute<T>());
+        }
     }
 }

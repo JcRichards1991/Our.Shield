@@ -8,13 +8,19 @@
     using Umbraco.Core.Persistence.Migrations;
     using Umbraco.Core.Persistence.SqlSyntax;
     using Umbraco.Core.Services;
+    using System.Collections.Generic;
+    using Umbraco.Core.Models;
 
     /// <summary>
     /// 
     /// </summary>
     internal class Migration
     {
-        private readonly SemVersion TargetVersion = new SemVersion(1, 0, 2);
+        public static readonly SemVersion TargetVersion = new SemVersion(1, 0, 2);
+
+        public static SemVersion CurrentVersion = new SemVersion(0, 0, 0);
+
+        public static IEnumerable<IMigrationEntry> Migrations;
 
         /// <summary>
         /// 
@@ -25,25 +31,24 @@
         public void RunMigrations(ISqlSyntaxProvider sqlSyntax, IMigrationEntryService migrationEntryService, ILogger logger)
         {
             const string productName = nameof(Shield);
-            var currentVersion = new SemVersion(0, 0, 0);
 
             var scriptsForMigration = new IMigration[]
             {
-                new Versions.Migration100(sqlSyntax, logger),
-                new Versions.Migration101(sqlSyntax, logger),
+                //new Versions.Migration100(sqlSyntax, logger),
+                //new Versions.Migration101(sqlSyntax, logger),
                 new Versions.Migration102(sqlSyntax, logger)
             };
 
-            var migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName);
-            var latestMigration = migrations.OrderByDescending(x => x.Version).FirstOrDefault();
+            Migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName).OrderByDescending(x => x.CreateDate);
+            var latestMigration = Migrations.FirstOrDefault();
 
             if (latestMigration != null)
-                currentVersion = latestMigration.Version;
+                CurrentVersion = latestMigration.Version;
             
-            if (TargetVersion == currentVersion)
+            if (TargetVersion == CurrentVersion)
                 return;
 
-            MigrationRunner migrationsRunner = new MigrationRunner(migrationEntryService, logger, currentVersion, TargetVersion, 
+            MigrationRunner migrationsRunner = new MigrationRunner(migrationEntryService, logger, CurrentVersion, TargetVersion, 
                 productName, scriptsForMigration);
 
             try

@@ -40,16 +40,19 @@
         /// <summary>
         /// 
         /// </summary>
+        [NullSetting(NullSetting = NullSettings.NotNull)]
         public int SortOrder { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
+        [NullSetting(NullSetting = NullSettings.NotNull)]
         public bool Enable { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
+        [NullSetting(NullSetting = NullSettings.NotNull)]
         public bool ContinueProcessing { get; set; }
     }
 }

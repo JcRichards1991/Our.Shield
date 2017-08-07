@@ -1,5 +1,5 @@
 ﻿{
   "javascript": [
-    "~/App_Plugins/Shield.MediaProtection/Scripts/MediaProtection.js?version=1.0.0"
+    "~/App_Plugins/Shield.MediaProtection/Scripts/MediaProtection.js?version=1.0.2"
   ]
 }

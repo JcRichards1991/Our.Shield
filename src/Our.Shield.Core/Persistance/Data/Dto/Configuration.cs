@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines the Configuration table
     /// </summary>
-    internal class Configuration : Migrations.Dto.Configuration.Configuration101
+    internal class Configuration : Migrations.Dto.Configuration.Configuration102
     {
         
     }

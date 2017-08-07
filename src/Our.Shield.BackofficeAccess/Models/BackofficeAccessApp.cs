@@ -16,7 +16,7 @@
     /// <summary>
     /// 
     /// </summary>
-    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.0")]
+    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.2")]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
     {
         /// <summary>
