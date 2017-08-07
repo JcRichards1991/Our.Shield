@@ -34,8 +34,6 @@
 
             var scriptsForMigration = new IMigration[]
             {
-                //new Versions.Migration100(sqlSyntax, logger),
-                //new Versions.Migration101(sqlSyntax, logger),
                 new Versions.Migration102(sqlSyntax, logger)
             };
 
