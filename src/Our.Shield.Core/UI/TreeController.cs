@@ -34,6 +34,7 @@ namespace Our.Shield.Core.UI
             {
                 menu.Items.Add<ActionNew>("Create Environment");
                 menu.Items.Add<ActionRefresh>("Reload Environments");
+                menu.Items.Add<ActionSort>("Sort Environments");
 
                 return menu;
             }
@@ -41,6 +42,7 @@ namespace Our.Shield.Core.UI
             if (id.Equals(Constants.Tree.DefaultEnvironmentId))
             {
                 menu.Items.Add<ActionRefresh>("Reload Apps");
+
                 return menu;
             }
 
@@ -52,6 +54,7 @@ namespace Our.Shield.Core.UI
                 {
                     menu.Items.Add<ActionDelete>("Delete Environment");
                     menu.Items.Add<ActionRefresh>("Reload Apps");
+
                     return menu;
                 }
             }
@@ -69,7 +72,7 @@ namespace Our.Shield.Core.UI
         {
             int id = int.Parse(idText);
             var treeNodeCollection = new TreeNodeCollection();
-            var environments = Operation.JobService.Instance.Environments.OrderBy(x => x.Key.Id);
+            var environments = Operation.JobService.Instance.Environments.OrderBy(x => x.Key.SortOrder);
             
             if (id == global::Umbraco.Core.Constants.System.Root)
             {

@@ -65,6 +65,22 @@ namespace Our.Shield.Core.Operation
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="environments">All environments in the correct sort order</param>
+        /// <returns></returns>
+        public bool Sort(IEnumerable<IEnvironment> environments)
+        {
+            if (!DbContext.Instance.Environment.SortEnvironments(environments))
+            {
+                return false;
+            }
+
+            JobService.Instance.Poll(true);
+            return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="id">Id of the environment to return the journals for</param>
         /// <param name="page">The page of results to return</param>
         /// <param name="itemsPerPage">The number of items to return per page</param>

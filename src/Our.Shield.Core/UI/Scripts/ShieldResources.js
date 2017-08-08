@@ -46,6 +46,20 @@ angular.module('umbraco.resources').factory('shieldResource', ['$http', function
                 }
             });
         },
+        getEnvironments: function () {
+            return $http.get(apiRoot + 'GetEnvironments');
+        },
+        setEnvironmentsSortOrder: function (environments) {
+            return $http({
+                method: 'POST',
+                url: apiRoot + 'SortEnvironments',
+                data: JSON.stringify(environments),
+                dataType: 'json',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        },
         getJournals: function (id, page) {
             return $http.get(apiRoot + 'Journals?id=' + id + '&page=' + page);
         },

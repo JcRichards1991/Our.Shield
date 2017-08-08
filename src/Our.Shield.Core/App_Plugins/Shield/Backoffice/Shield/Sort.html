@@ -1,0 +1,57 @@
+﻿<div ng-controller="Shield.Editors.Overview.Sort as vm" ng-init="vm.init()">
+    <div class="umb-dialog-body with-footer shield-sort">
+        <div class="umb-pane " style="">
+            <div class="control-group umb-control-group" style="">
+
+                <div style="margin-bottom: 35px;" ng-show="vm.sorting">
+                    <div class="notice">
+                        <p>Please wait. Enviornments are being sorted, this can take a while.<br> <br> Do not close this window during sorting</p>
+                    </div>
+
+                    <div class="umb-loader-wrapper">
+                        <div class="umb-loader">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="success" ng-show="vm.sortingComplete">
+                    <p>
+                        Sorting complete.
+                    </p>
+                    <p>
+                        <a href="#" ng-click="vm.close()">Close this window</a>
+                    </p>
+                </div>
+
+                <div id="sortArea" ng-show="!vm.sorting && !vm.sortingComplete">
+                    <p class="help">
+                        Drag the environment up or down below to set how they should be arranged.
+                    </p>
+
+                    <div class="sortableFrame">
+                        <table class="sortableNodes">
+                            <thead>
+                                <tr>
+                                    <th class="header">Environment</th>
+                                    <th class="nowrap header">Sort Order</th>
+                                </tr>
+                            </thead>
+                            <tbody ui:sortable ng-model="vm.environments">
+                                <tr ng-repeat="environment in vm.environments track by $index" id="environment_{{environment.id}}">
+                                    <td>{{environment.name}}</td>
+                                    <td style="text-align: center;">{{environment.sortOrder}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="umb-dialog-footer btn-toolbar umb-btn-toolbar">
+        <a href="#" class="btn btn-link" ng-click="nav.hideDialog(true)">Cancel</a>
+        <input type="button" class="btn btn-primary" value="Save" ng-click="vm.save()">
+    </div>
+</div>

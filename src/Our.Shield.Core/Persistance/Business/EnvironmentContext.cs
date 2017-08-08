@@ -118,6 +118,39 @@ namespace Our.Shield.Core.Persistance.Business
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="environments"></param>
+        /// <returns></returns>
+        public bool SortEnvironments(IEnumerable<IEnvironment> environments)
+        {
+            try
+            {
+                foreach (var environment in environments)
+                {
+                    var dto = new Data.Dto.Environment
+                    {
+                        Id = environment.Id,
+                        Name = environment.Name,
+                        Icon = environment.Icon,
+                        Enable = environment.Enable,
+                        ContinueProcessing = environment.ContinueProcessing,
+                        SortOrder = environment.SortOrder
+                    };
+
+                    Database.Update(dto);
+                }
+                return true;
+            }
+            catch(Exception ex)
+            {
+                LogHelper.Error(typeof(EnvironmentContext), $"Error sorting environments", ex);
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Removes an environment from the database
         /// </summary>
         /// <param name="id">the id of the environment to remove</param>

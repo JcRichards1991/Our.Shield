@@ -55,3 +55,31 @@ table.domains-container {
     border-top: 1px solid #000; }
     table.domains-container tbody tr:last-child {
       border-bottom: 1px solid #000; }
+
+.umb-dialog-body.shield-sort .sortableFrame {
+  height: auto;
+  overflow: auto; }
+  .umb-dialog-body.shield-sort .sortableFrame .sortableNodes {
+    padding: 4px;
+    display: block;
+    border-spacing: 0;
+    border-collapse: collapse; }
+    .umb-dialog-body.shield-sort .sortableFrame .sortableNodes thead th:first-child {
+      width: 100%; }
+    .umb-dialog-body.shield-sort .sortableFrame .sortableNodes thead .header {
+      border-bottom: 1px solid #ccc;
+      padding: 4px;
+      padding-right: 25px;
+      background-image: url(/Umbraco_Client/Tablesorting/img/bg.gif);
+      cursor: pointer;
+      font-weight: bold;
+      background-repeat: no-repeat;
+      background-position: center right; }
+      .umb-dialog-body.shield-sort .sortableFrame .sortableNodes thead .header.nowrap {
+        white-space: nowrap; }
+    .umb-dialog-body.shield-sort .sortableFrame .sortableNodes tbody tr {
+      cursor: move; }
+      .umb-dialog-body.shield-sort .sortableFrame .sortableNodes tbody tr td {
+        border-bottom: 1px solid #efefef;
+        padding: 4px;
+        cursor: move; }

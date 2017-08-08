@@ -21,6 +21,8 @@
     <key alias="DeleteEnvironmentSuccess">Successfully deleted environment</key>
     <key alias="DeleteEnvironmentError">Unable to delete environment</key>
     <key alias="CreateEnvironmentError">Unable to create environment</key>
+    <key alias="SortEnvironmentSuccess">Successfully re-ordered the environments</key>
+    <key alias="SortEnvironmentError">Unable to re-order the environments, there was an error</key>
     <key alias="InvalidSaveConfigurationError">Unable to update app, there are validation errors</key>
     <key alias="InvalidSaveEnvironmentError">Unable to update environment, there are validation errors</key>
     <key alias="InvalidCreateEnvironmentError">Unable to create environment, there are validation errors</key>

@@ -256,12 +256,7 @@ namespace Our.Shield.Core.UI
 
             var environment = json.ToObject<Environment>();
 
-            if (Operation.EnvironmentService.Instance.Write(environment))
-            {
-                return true;
-            }
-
-            return false;
+            return Operation.EnvironmentService.Instance.Write(environment);
         }
 
         /// <summary>
@@ -279,6 +274,34 @@ namespace Our.Shield.Core.UI
                 return Operation.EnvironmentService.Instance.Delete(environment);
             }
             return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IEnumerable<IEnvironment> GetEnvironments()
+        {
+            return Operation.JobService.Instance.Environments.Select(x => x.Key);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="environments"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public bool SortEnvironments([FromBody] IEnumerable<JObject> json)
+        {
+            if (json == null || !json.Any())
+            {
+                return false;
+            }
+
+            var environments = json.Select(x => x.ToObject<Environment>());
+
+            return Operation.EnvironmentService.Instance.Sort(environments);
         }
 
         /// <summary>

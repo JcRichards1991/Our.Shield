@@ -330,6 +330,7 @@
     </None>
     <None Include="UI\Scss\Partials\_shield-domain-listing-table.scss" />
     <None Include="UI\Scss\Partials\_shield-editor-header.scss" />
+    <None Include="UI\Scss\Partials\_shield-Sort-Panel-Overview.scss" />
     <None Include="UI\Scss\Partials\_shield-umb-table.scss" />
     <None Include="UI\Scss\Styles.scss" />
   </ItemGroup>
@@ -342,6 +343,7 @@
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Delete.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\DomainListing.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Shield\Sort.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml">
       <SubType>Designer</SubType>
     </Content>

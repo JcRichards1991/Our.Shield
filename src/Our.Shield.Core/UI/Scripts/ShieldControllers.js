@@ -353,6 +353,60 @@ angular.module('umbraco').controller('Shield.Editors.Overview.Delete',
 
 /**
     * @ngdoc resource
+    * @name Shield.Editors.Overview.Sort
+    * @function
+    *
+    * @description
+    * Handles the sort panel overview view
+*/
+angular.module('umbraco').controller('Shield.Editors.Overview.Sort',
+    ['$scope', 'navigationService', 'localizationService', 'notificationsService', 'shieldResource',
+    function ($scope, navigationService, localizationService, notificationsService, shieldResource) {
+
+        var vm = this;
+
+        angular.extend(vm, {
+            loading: true,
+            sorting: false,
+            sortingComplete: false,
+            environments: null,
+            init: function () {
+                shieldResource.getEnvironments().then(function (response) {
+                    vm.environments = response.data;
+                    vm.loading = false;
+                });
+            },
+            save: function () {
+                vm.sorting = true;
+
+                for (var i = 0; i < vm.environments.length; i++) {
+                    vm.environments[i].sortOrder = i;
+                };
+
+                shieldResource.setEnvironmentsSortOrder(vm.environments).then(function (response) {
+                    if (response.data === true || response.data === 'true') {
+                        localizationService.localize('Shield.General_SortEnvironmentSuccess').then(function (value) {
+                            notificationsService.success(value);
+                            vm.sortingComplete = true;
+                        });
+                    } else {
+                        localizationService.localize('Shield.General_SortEnvironmentError').then(function (value) {
+                            notificationsService.error(value);
+                        });
+                    }
+                    vm.sorting = false;
+                });
+            },
+            close: function () {
+                navigationService.syncTree({ tree: 'Shield', path: ['-1', '0'], forceReload: true, activate: true });
+                navigationService.hideDialog();
+            }
+        });
+    }]
+);
+
+/**
+    * @ngdoc resource
     * @name Shield.Dashboards.Overview
     * @function
     *
