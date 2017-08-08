@@ -1,18 +1,19 @@
-﻿namespace Our.Shield.BackofficeAccess.Models
-{
-    using Core.Models;
-    using Core.UI;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Text.RegularExpressions;
-    using System.Threading;
-    using System.Web;
-    using Umbraco.Core;
-    using Umbraco.Core.Security;
-    using Umbraco.Web;
+﻿using Our.Shield.Core.Attributes;
+using Our.Shield.Core.Models;
+using Our.Shield.Core.Operation;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Web;
+using Umbraco.Core;
+using Umbraco.Core.Security;
+using Umbraco.Web;
 
+namespace Our.Shield.BackofficeAccess.Models
+{
     /// <summary>
     /// 
     /// </summary>

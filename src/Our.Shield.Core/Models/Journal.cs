@@ -1,8 +1,8 @@
-﻿namespace Our.Shield.Core.Models
-{
-    using Newtonsoft.Json;
-    using System;
+﻿using Newtonsoft.Json;
+using System;
 
+namespace Our.Shield.Core.Models
+{
     /// <summary>
     /// The Journal class to inherit from
     /// </summary>

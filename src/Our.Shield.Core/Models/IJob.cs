@@ -1,10 +1,11 @@
-﻿namespace Our.Shield.Core.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
-    using System.Web;
+﻿using Our.Shield.Core.Operation;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Web;
 
+namespace Our.Shield.Core.Models
+{
     /// <summary>
     /// job interface
     /// </summary>

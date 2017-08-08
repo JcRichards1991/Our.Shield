@@ -1,8 +1,9 @@
-﻿namespace Our.Shield.BackofficeAccess.Models
-{
-    using Core.Models;
-    using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using Our.Shield.Core.Attributes;
+using Our.Shield.Core.Models;
 
+namespace Our.Shield.BackofficeAccess.Models
+{
     /// <summary>
     /// The Backofffice Access Configuration
     /// </summary>
@@ -13,6 +14,7 @@
         /// Gets or sets the Backend Access URL.
         /// </summary>
         [JsonProperty("backendAccessUrl")]
+        [SingleEnvironment]
         public string BackendAccessUrl { get; set; }
 
         /// <summary>

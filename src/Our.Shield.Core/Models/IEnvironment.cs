@@ -1,9 +1,9 @@
-﻿namespace Our.Shield.Core.Models
-{
-    using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
+namespace Our.Shield.Core.Models
+{
     /// <summary>
     /// Environment interface 
     /// </summary>
@@ -33,12 +33,21 @@
         [JsonProperty("domains")]
         IEnumerable<IDomain> Domains { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [JsonProperty("sortOrder")]
         int SortOrder { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [JsonProperty("enable")]
         bool Enable { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [JsonProperty("continueProcessing")]
         bool ContinueProcessing { get; }
 
@@ -62,8 +71,16 @@
         /// <returns></returns>
         IEnumerable<T> JournalListing<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         bool Write();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         bool Delete();
 
     }

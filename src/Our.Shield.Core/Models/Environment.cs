@@ -1,12 +1,12 @@
-﻿namespace Our.Shield.Core.Models
-{
-    using Newtonsoft.Json;
-    using Operation;
-    using Persistance.Business;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+﻿using Newtonsoft.Json;
+using Our.Shield.Core.Operation;
+using Our.Shield.Core.Persistance.Business;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
+namespace Our.Shield.Core.Models
+{
     /// <summary>
     /// Environment Class
     /// </summary>

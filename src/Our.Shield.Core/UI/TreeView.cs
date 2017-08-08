@@ -1,9 +1,9 @@
-﻿namespace Our.Shield.Core.UI
-{
-    using Models;
-    using Newtonsoft.Json;
-    using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Our.Shield.Core.Models;
+using System.Collections.Generic;
 
+namespace Our.Shield.Core.UI
+{
     /// <summary>
     /// 
     /// </summary>

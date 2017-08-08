@@ -1,12 +1,12 @@
-﻿namespace Our.Shield.Core.UI
-{
-    using Models;
-    using System.Linq;
-    using System.Net.Http.Formatting;
-    using umbraco.BusinessLogic.Actions;
-    using Umbraco.Web.Models.Trees;
-    using Umbraco.Web.Mvc;
+﻿using Our.Shield.Core.Models;
+using System.Linq;
+using System.Net.Http.Formatting;
+using umbraco.BusinessLogic.Actions;
+using Umbraco.Web.Models.Trees;
+using Umbraco.Web.Mvc;
 
+namespace Our.Shield.Core.UI
+{
     /// <summary>
     /// The Umbraco Access Tree Controller for the custom section
     /// </summary>

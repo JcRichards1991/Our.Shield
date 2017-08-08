@@ -1,11 +1,11 @@
-﻿namespace Our.Shield.Core.Persistance.Business
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Umbraco.Core.Logging;
-    using Umbraco.Core.Persistence;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Persistence;
 
+namespace Our.Shield.Core.Persistance.Business
+{
     /// <summary>
     /// The Environment Context for handling CRUD operations to and from the database
     /// </summary>

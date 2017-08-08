@@ -1,10 +1,10 @@
-﻿namespace Our.Shield.Core.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
-    using Umbraco.Core.Persistence.Migrations;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using Umbraco.Core.Persistence.Migrations;
 
+namespace Our.Shield.Core.Models
+{
     /// <summary>
     /// Definition of an App to plugin to Our.Shield custom umbraco section
     /// </summary>
@@ -34,7 +34,6 @@
         /// </summary>
         [JsonProperty("icon")]
         public abstract string Icon { get; }
-
 
         /// <summary>
         /// The initialise method for the App

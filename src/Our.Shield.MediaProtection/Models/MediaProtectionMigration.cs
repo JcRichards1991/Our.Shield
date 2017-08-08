@@ -1,11 +1,11 @@
-﻿namespace Our.Shield.MediaProtection.Models
-{
-    using Umbraco.Core;
-    using Umbraco.Core.Logging;
-    using Umbraco.Core.Persistence;
-    using Umbraco.Core.Persistence.Migrations;
-    using Umbraco.Core.Persistence.SqlSyntax;
+﻿using Umbraco.Core;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Persistence;
+using Umbraco.Core.Persistence.Migrations;
+using Umbraco.Core.Persistence.SqlSyntax;
 
+namespace Our.Shield.MediaProtection.Models
+{
     /// <summary>
     /// Handles Creating/Editing the Configuration table.
     /// </summary>

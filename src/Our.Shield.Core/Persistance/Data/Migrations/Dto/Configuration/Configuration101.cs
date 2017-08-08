@@ -1,9 +1,9 @@
-﻿namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Configuration
-{
-    using System;
-    using Umbraco.Core.Persistence;
-    using Umbraco.Core.Persistence.DatabaseAnnotations;
+﻿using System;
+using Umbraco.Core.Persistence;
+using Umbraco.Core.Persistence.DatabaseAnnotations;
 
+namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Configuration
+{
     /// <summary>
     /// Defines the Configuration table
     /// </summary>

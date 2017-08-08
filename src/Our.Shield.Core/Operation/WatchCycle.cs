@@ -1,4 +1,4 @@
-﻿namespace Our.Shield.Core.Models
+﻿namespace Our.Shield.Core.Operation
 {
     /// <summary>
     /// The type of result to return for a given Web Request Watcher

@@ -1,12 +1,12 @@
-﻿namespace Our.Shield.Core.UI
-{
-    using System;
+﻿using System;
 
+namespace Our.Shield.Core.Attributes
+{
     /// <summary>
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class AppEditorAttribute : System.Attribute
+    public class AppEditorAttribute : Attribute
     {
         /// <summary>
         /// 

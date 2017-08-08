@@ -1,8 +1,8 @@
-﻿namespace Our.Shield.MediaProtection.Models
-{
-    using Core.Models;
-    using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using Our.Shield.Core.Models;
 
+namespace Our.Shield.MediaProtection.Models
+{
     /// <summary>
     /// 
     /// </summary>

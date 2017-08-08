@@ -1,7 +1,7 @@
-﻿namespace Our.Shield.Core.Models
-{
-    using System;
+﻿using System;
 
+namespace Our.Shield.Core.Models
+{
     /// <summary>
     /// The Base class for an App's Configuration
     /// </summary>
@@ -16,6 +16,5 @@
         /// Gets or sets the configuration last modified data time
         /// </summary>
         public DateTime? LastModified { get; internal set; }
-
     }
 }

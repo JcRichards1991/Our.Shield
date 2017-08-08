@@ -1,7 +1,7 @@
-﻿namespace Our.Shield.BackofficeAccess.Models
-{
-    using System;
+﻿using System;
 
+namespace Our.Shield.BackofficeAccess.Models
+{
     internal class HardResetFileHandler
     {
         private const string Directory = "App_Data\\Temp\\" + nameof(Shield) + "\\" + nameof(BackofficeAccess) + "\\";

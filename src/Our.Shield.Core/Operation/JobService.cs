@@ -1,16 +1,17 @@
-﻿namespace Our.Shield.Core.Operation
-{
-    using Models;
-    using Persistance.Business;
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Umbraco.Core;
-    using Umbraco.Core.Persistence.Migrations;
-    using System.Linq;
-    using Semver;
+﻿using Our.Shield.Core.Attributes;
+using Our.Shield.Core.Models;
+using Our.Shield.Core.Persistance.Business;
+using Semver;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Umbraco.Core;
+using Umbraco.Core.Persistence.Migrations;
 
+namespace Our.Shield.Core.Operation
+{
     /// <summary>
     /// 
     /// </summary>

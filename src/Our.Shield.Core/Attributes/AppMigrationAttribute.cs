@@ -1,7 +1,7 @@
-﻿namespace Our.Shield.Core.Models
-{
-    using System;
+﻿using System;
 
+namespace Our.Shield.Core.Attributes
+{
     /// <summary>
     /// 
     /// </summary>

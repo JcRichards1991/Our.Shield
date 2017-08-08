@@ -1,8 +1,8 @@
-﻿namespace Our.Shield.MediaProtection.Models
-{
-    using Umbraco.Core.Models;
-    using Umbraco.Core.Services;
+﻿using Umbraco.Core.Models;
+using Umbraco.Core.Services;
 
+namespace Our.Shield.MediaProtection.Models
+{
     /// <summary>
     /// 
     /// </summary>

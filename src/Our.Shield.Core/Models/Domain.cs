@@ -1,8 +1,7 @@
-﻿namespace Our.Shield.Core.Models
-{
-    using System;
-    using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
+namespace Our.Shield.Core.Models
+{
     /// <summary>
     /// Domain class
     /// </summary>

@@ -1,7 +1,7 @@
-﻿namespace Our.Shield.Core.UI
-{
-    using Umbraco.Core;
+﻿using Umbraco.Core;
 
+namespace Our.Shield.Core.UI
+{
     /// <summary>
     /// Initialization class
     /// </summary>

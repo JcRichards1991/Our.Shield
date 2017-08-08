@@ -1,12 +1,15 @@
-﻿namespace Our.Shield.Core.Persistance.Business
-{
-    using Models;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
-    using System;
-    using System.Reflection;
-    using Umbraco.Core.Logging;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Our.Shield.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Persistence;
 
+namespace Our.Shield.Core.Persistance.Business
+{
     /// <summary>
     /// The Configuration Context.
     /// </summary>
@@ -55,12 +58,14 @@
             var config = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(defaultConfiguration), type) as Configuration;
             config.LastModified = null;
             config.Enable = false;
+
             try
             {
                 var record = Database.SingleOrDefault<Data.Dto.Configuration>(
                     "WHERE " + nameof(Data.Dto.Configuration.EnvironmentId) + " = @0 AND " +
                     nameof(Data.Dto.Configuration.AppId) + " = @1",
                     environmentId, appId);
+
                 if (record != null && !string.IsNullOrEmpty(record.Value))
                 {
                     config = JsonConvert.DeserializeObject(record.Value, type) as Configuration;
@@ -80,7 +85,6 @@
             }
 
             return config;
-
         }
 
         /// <summary>
@@ -93,7 +97,37 @@
         /// <returns></returns>
         public T Read<T>(int environmentId, string appId, T defaultConfiguration) where T : IConfiguration
         {
-            return (T) Read(environmentId, appId, typeof(T), defaultConfiguration);
+            return (T)Read(environmentId, appId, typeof(T), defaultConfiguration);
+        }
+
+        private void SetSingleEnvironmentValues(IConfiguration configuration, int environmentId, string appId)
+        {
+            var configurationType = configuration.GetType();
+            var properties = configurationType.GetProperties().Where(x => x.GetCustomAttribute<Attributes.SingleEnvironmentAttribute>() != null);
+
+            if (properties.Any())
+            {
+                var records = Database.Fetch<Data.Dto.Configuration>(
+                    "WHERE " + nameof(Data.Dto.Configuration.EnvironmentId) + " != @0 AND " +
+                    nameof(Data.Dto.Configuration.AppId) + " = @1",
+                    environmentId, appId);
+
+                foreach (var record in records)
+                {
+                    var config = JsonConvert.DeserializeObject(record.Value, configurationType) as Configuration;
+
+                    foreach (var property in properties)
+                    {
+                        property.SetValue(config, property.GetValue(configuration));
+
+                        record.Value = JsonConvert.SerializeObject(config, Formatting.None,
+                            new JsonSerializerSettings { ContractResolver = new ShouldSerializeContractResolver() });
+                    }
+
+                    config.LastModified = DateTime.UtcNow;
+                    Database.Update(record);
+                }
+            }
         }
 
         /// <summary>
@@ -107,14 +141,16 @@
         {
             try
             {
+                SetSingleEnvironmentValues(config, environmentId, appId);
+
                 var record = Database.SingleOrDefault<Data.Dto.Configuration>(
                     "WHERE " + 
                     nameof(Data.Dto.Configuration.EnvironmentId) + " = @0 AND " +
                     nameof(Data.Dto.Configuration.AppId) + " = @1",
                     environmentId, appId);
 
-                var value = JsonConvert.SerializeObject(config, Formatting.None, 
-                            new JsonSerializerSettings { ContractResolver = new ShouldSerializeContractResolver() });
+                var value = JsonConvert.SerializeObject(config, Formatting.None,
+                    new JsonSerializerSettings { ContractResolver = new ShouldSerializeContractResolver() });
 
                 if (record == null)
                 {

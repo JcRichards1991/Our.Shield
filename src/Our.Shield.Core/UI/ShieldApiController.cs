@@ -1,14 +1,15 @@
-﻿namespace Our.Shield.Core.UI
-{
-    using Models;
-    using Newtonsoft.Json.Linq;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Web.Http;
-    using Umbraco.Web.Editors;
-    using Umbraco.Web.Mvc;
+﻿using Newtonsoft.Json.Linq;
+using Our.Shield.Core.Attributes;
+using Our.Shield.Core.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Web.Http;
+using Umbraco.Web.Editors;
+using Umbraco.Web.Mvc;
 
+namespace Our.Shield.Core.UI
+{
     /// <summary>
     /// Api Controller for the Umbraco Access area of the custom section
     /// </summary>

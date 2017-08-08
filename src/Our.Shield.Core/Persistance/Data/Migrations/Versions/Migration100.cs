@@ -1,12 +1,12 @@
-﻿namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
-{
-    using System.Linq;
-    using Umbraco.Core;
-    using Umbraco.Core.Logging;
-    using Umbraco.Core.Persistence;
-    using Umbraco.Core.Persistence.Migrations;
-    using Umbraco.Core.Persistence.SqlSyntax;
+﻿using System.Linq;
+using Umbraco.Core;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Persistence;
+using Umbraco.Core.Persistence.Migrations;
+using Umbraco.Core.Persistence.SqlSyntax;
 
+namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
+{
     /// <summary>
     /// Handles Creating/Editing the Configuration table
     /// </summary>

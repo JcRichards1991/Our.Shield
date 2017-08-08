@@ -1,11 +1,10 @@
-﻿namespace Our.Shield.Core.Persistance.Business
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Models;
-    using Umbraco.Core.Logging;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Umbraco.Core.Logging;
 
+namespace Our.Shield.Core.Persistance.Business
+{
     /// <summary>
     /// The Journal context
     /// </summary>

@@ -1,11 +1,8 @@
-﻿namespace Our.Shield.BackofficeAccess.Models
-{
-    using System;
-    using System.Configuration;
-    using System.Xml.Linq;
-    using System.Xml.XPath;
-    using Umbraco.Core;
+﻿using System.Configuration;
+using Umbraco.Core;
 
+namespace Our.Shield.BackofficeAccess.Models
+{
     /// <summary>
     /// Class for returning values from the app settings section of the web.config
     /// </summary>

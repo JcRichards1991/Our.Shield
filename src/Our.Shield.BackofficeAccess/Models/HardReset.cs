@@ -1,14 +1,14 @@
-﻿[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.BackofficeAccess.Models.HardReset), nameof(Our.Shield.BackofficeAccess.Models.HardReset.Start))]
+﻿using System;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using Umbraco.Core.Logging;
+
+[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.BackofficeAccess.Models.HardReset), nameof(Our.Shield.BackofficeAccess.Models.HardReset.Start))]
 namespace Our.Shield.BackofficeAccess.Models
 {
-    using System;
-    using System.IO;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using System.Xml.Linq;
-    using System.Xml.XPath;
-    using Umbraco.Core.Logging;
-
     internal class HardReset
     {
         public static void Start()

@@ -1,8 +1,8 @@
-﻿namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Domain
-{
-    using Umbraco.Core.Persistence;
-    using Umbraco.Core.Persistence.DatabaseAnnotations;
+﻿using Umbraco.Core.Persistence;
+using Umbraco.Core.Persistence.DatabaseAnnotations;
 
+namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Domain
+{
     /// <summary>
     /// Defines the Domain table
     /// </summary>

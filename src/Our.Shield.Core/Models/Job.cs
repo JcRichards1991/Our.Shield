@@ -1,12 +1,13 @@
-﻿namespace Our.Shield.Core.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Web;
+﻿using Our.Shield.Core.Operation;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
 
+namespace Our.Shield.Core.Models
+{
     /// <summary>
     /// Class that conatins each of our executions
     /// </summary>

@@ -1,15 +1,15 @@
-﻿namespace Our.Shield.Core.Persistance.Business
-{
-    using Models;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using Umbraco.Core.Logging;
-    using Umbraco.Core.Persistence;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Our.Shield.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Persistence;
 
+namespace Our.Shield.Core.Persistance.Business
+{
     /// <summary>
     /// The Journal context
     /// </summary>

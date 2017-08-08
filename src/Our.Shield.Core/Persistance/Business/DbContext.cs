@@ -1,11 +1,12 @@
-﻿namespace Our.Shield.Core.Persistance.Business
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Umbraco.Core;
-    using Umbraco.Core.Persistence;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Umbraco.Core;
+using Umbraco.Core.Persistence;
+using Umbraco.Core.Persistence.SqlSyntax;
 
+namespace Our.Shield.Core.Persistance.Business
+{
     /// <summary>
     /// 
     /// </summary>
@@ -76,7 +77,7 @@
         /// <summary>
         /// 
         /// </summary>
-        internal Umbraco.Core.Persistence.UmbracoDatabase Database
+        internal UmbracoDatabase Database
         {
             get
             {
@@ -87,7 +88,7 @@
         /// <summary>
         /// 
         /// </summary>
-        protected Umbraco.Core.Persistence.SqlSyntax.ISqlSyntaxProvider Syntax
+        protected ISqlSyntaxProvider Syntax
         {
             get
             {
@@ -158,7 +159,7 @@
         /// <typeparam name="T"></typeparam>
         /// <param name="database"></param>
         /// <returns></returns>
-        internal static IEnumerable<T> FetchAll<T>(this Umbraco.Core.Persistence.UmbracoDatabase database)
+        internal static IEnumerable<T> FetchAll<T>(this UmbracoDatabase database)
         {
             return database.Fetch<T>(new Sql().Select("*").From<T>(ApplicationContext.Current.DatabaseContext.SqlSyntax));
         }

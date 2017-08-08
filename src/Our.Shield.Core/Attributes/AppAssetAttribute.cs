@@ -1,13 +1,13 @@
-﻿namespace Our.Shield.Core.UI
-{
-    using ClientDependency.Core;
-    using System;
+﻿using ClientDependency.Core;
+using System;
 
+namespace Our.Shield.Core.Attributes
+{
     /// <summary>
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
-    public class AppAssetAttribute : System.Attribute
+    public class AppAssetAttribute : Attribute
     {
         /// <summary>
         /// 

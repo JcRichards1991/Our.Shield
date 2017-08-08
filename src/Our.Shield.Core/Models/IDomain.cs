@@ -1,7 +1,7 @@
-﻿namespace Our.Shield.Core.Models
-{
-    using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
+namespace Our.Shield.Core.Models
+{
     /// <summary>
     /// Domain interface
     /// </summary>

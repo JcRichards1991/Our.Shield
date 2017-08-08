@@ -1,7 +1,7 @@
-﻿namespace Our.Shield.Core.Operation
-{
-    using Umbraco.Core;
+﻿using Umbraco.Core;
 
+namespace Our.Shield.Core.Operation
+{
     /// <summary>
     /// Initialization class
     /// </summary>

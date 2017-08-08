@@ -1,16 +1,16 @@
-﻿namespace Our.Shield.Core.Persistance.Data.Migrations
-{
-    using System;
-    using System.Linq;
-    using Semver;
-    using Umbraco.Core;
-    using Umbraco.Core.Logging;
-    using Umbraco.Core.Persistence.Migrations;
-    using Umbraco.Core.Persistence.SqlSyntax;
-    using Umbraco.Core.Services;
-    using System.Collections.Generic;
-    using Umbraco.Core.Models;
+﻿using Semver;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Umbraco.Core;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Models;
+using Umbraco.Core.Persistence.Migrations;
+using Umbraco.Core.Persistence.SqlSyntax;
+using Umbraco.Core.Services;
 
+namespace Our.Shield.Core.Persistance.Data.Migrations
+{
     /// <summary>
     /// 
     /// </summary>

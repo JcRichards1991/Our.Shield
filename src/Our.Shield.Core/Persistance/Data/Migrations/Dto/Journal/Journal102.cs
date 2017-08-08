@@ -1,9 +1,9 @@
-﻿namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Journal
-{
-    using System;
-    using Umbraco.Core.Persistence;
-    using Umbraco.Core.Persistence.DatabaseAnnotations;
+﻿using System;
+using Umbraco.Core.Persistence;
+using Umbraco.Core.Persistence.DatabaseAnnotations;
 
+namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Journal
+{
     /// <summary>
     /// Defines the Journal database table
     /// </summary>

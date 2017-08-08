@@ -1,11 +1,11 @@
-﻿namespace Our.Shield.Core.Operation
-{
-    using Models;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Reflection;
+﻿using Our.Shield.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
+namespace Our.Shield.Core.Operation
+{
     /// <summary>
     /// 
     /// </summary>

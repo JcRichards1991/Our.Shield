@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Our.Shield.Core.Models;
+﻿using Our.Shield.Core.Models;
 using Our.Shield.Core.Persistance.Business;
+using System;
+using System.Linq;
 
 namespace Our.Shield.Core.Operation
 {

@@ -1,8 +1,8 @@
-﻿namespace Our.Shield.Core.UI
-{
-    using Newtonsoft.Json;
-    using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
+namespace Our.Shield.Core.UI
+{
     /// <summary>
     /// 
     /// </summary>

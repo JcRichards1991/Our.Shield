@@ -263,10 +263,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\AppMigrationAttribute.cs" />
+    <Compile Include="Attributes\AppMigrationAttribute.cs" />
+    <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
     <Compile Include="Models\JournalMessage.cs" />
     <Compile Include="Operation\EnvironmentService.cs" />
-    <Compile Include="Operation\ServiceHandler.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration100.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration101.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration102.cs" />
@@ -293,7 +293,7 @@
     <Compile Include="Models\IFrisk.cs" />
     <Compile Include="Models\IJournal.cs" />
     <Compile Include="Models\Journal.cs" />
-    <Compile Include="Models\WatchCycle.cs" />
+    <Compile Include="Operation\WatchCycle.cs" />
     <Compile Include="Persistance\Business\DbContext.cs" />
     <Compile Include="Persistance\Business\EnvironmentContext.cs" />
     <Compile Include="Persistance\Business\DomainContext.cs" />
@@ -301,8 +301,8 @@
     <Compile Include="Persistance\Data\Dto\UmbracoDomainDto.cs" />
     <Compile Include="Persistance\Data\Dto\Environment.cs" />
     <Compile Include="Persistance\Data\Migrations\Migration.cs" />
-    <Compile Include="UI\AppEditorAttribute.cs" />
-    <Compile Include="UI\AppAssetAttribute.cs" />
+    <Compile Include="Attributes\AppEditorAttribute.cs" />
+    <Compile Include="Attributes\AppAssetAttribute.cs" />
     <Compile Include="UI\ShieldApiController.cs" />
     <Compile Include="UI\Register.cs" />
     <Compile Include="UI\TreeController.cs" />

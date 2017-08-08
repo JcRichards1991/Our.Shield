@@ -1,8 +1,8 @@
-﻿namespace Our.Shield.Core.Persistance.Data.Dto
-{
-    using Umbraco.Core.Persistence;
-    using Umbraco.Core.Persistence.DatabaseAnnotations;
+﻿using Umbraco.Core.Persistence;
+using Umbraco.Core.Persistence.DatabaseAnnotations;
 
+namespace Our.Shield.Core.Persistance.Data.Dto
+{
     /// <summary>
     /// 
     /// </summary>

@@ -1,9 +1,9 @@
-﻿namespace Our.Shield.Core.Models
-{
-    using Newtonsoft.Json;
-    using System.Collections.Generic;
-    using Umbraco.Core.Persistence.Migrations;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using Umbraco.Core.Persistence.Migrations;
 
+namespace Our.Shield.Core.Models
+{
     /// <summary>
     /// 
     /// </summary>
