@@ -69,7 +69,10 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                 vm.environment = {
                                     name: '',
                                     icon: 'icon-firewall red',
-                                    domains: []
+                                    domains: [],
+                                    continueProcessing: false,
+                                    enabled: true,
+                                    sortOrder: vm.environments.length
                                 };
                                 localizationService.localize('general_create').then(function (value) {
                                     vm.button.label = value;

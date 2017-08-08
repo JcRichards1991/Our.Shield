@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Our.Shield.Core.Models;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence;
 
@@ -65,8 +66,24 @@ namespace Our.Shield.Core.Persistance.Business
         /// </summary>
         /// <param name="environment">the environment to write</param>
         /// <returns>True if successfully written; otherwise, False</returns>
-        public bool Write(Data.Dto.Environment environment)
+        public bool Write(IEnvironment environment)
         {
+            var dto = new Data.Dto.Environment
+            {
+                Name = environment.Name,
+                Icon = environment.Icon,
+                Id = environment.Id,
+                Domains = environment.Domains.Select(x => new Persistance.Data.Dto.Domain
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    UmbracoDomainId = x.UmbracoDomainId
+                }),
+                SortOrder = environment.SortOrder,
+                Enable = environment.Enable,
+                ContinueProcessing = environment.ContinueProcessing
+            };
+            
             try
             {
                 if (environment.Id != 0 && Database.Exists<Data.Dto.Environment>(environment.Id))
@@ -75,12 +92,19 @@ namespace Our.Shield.Core.Persistance.Business
                 }
                 else
                 {
-                    environment.Id = (int)((decimal)Database.Insert(environment));
+                    ((Models.Environment)environment).Id = (int)((decimal)Database.Insert(dto));
                 }
 
-                foreach (var domain in environment.Domains)
+                foreach (var item in environment.Domains)
                 {
-                    domain.EnvironmentId = environment.Id;
+                    var domain = new Data.Dto.Domain
+                    {
+                        Id = item.Id,
+                        EnvironmentId = environment.Id,
+                        Name = item.Name,
+                        UmbracoDomainId = item.UmbracoDomainId
+                    };
+
                     Instance.Domain.Write(domain);
                 }
 

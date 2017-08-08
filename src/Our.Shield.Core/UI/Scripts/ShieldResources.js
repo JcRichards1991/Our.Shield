@@ -25,11 +25,11 @@ angular.module('umbraco.resources').factory('shieldResource', ['$http', function
                 },
             });
         },
-        postEnvironment: function (data) {
+        postEnvironment: function (environment) {
             return $http({
                 method: 'POST',
-                url: apiRoot + 'Environment',
-                data: JSON.stringify(data),
+                url: apiRoot + 'WriteEnvironment',
+                data: JSON.stringify(environment),
                 dataType: 'json',
                 headers: {
                     'Content-Type': 'application/json'

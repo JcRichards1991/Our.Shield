@@ -97,33 +97,5 @@ namespace Our.Shield.Core.Models
             Enable = data.Enable;
             ContinueProcessing = data.ContinueProcessing;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="itemsPerPage"></param>
-        /// <param name="type"></param>
-        /// <param name="totalPages"></param>
-        /// <returns></returns>
-        public IEnumerable<IJournal> JournalListing(int page, int itemsPerPage, Type type, out int totalPages) =>
-            DbContext.Instance.Journal.Read(Id, page, itemsPerPage, type, out totalPages);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="page"></param>
-        /// <param name="itemsPerPage"></param>
-        /// <param name="totalPages"></param>
-        /// <returns></returns>
-        public IEnumerable<T> JournalListing<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal =>
-            DbContext.Instance.Journal.Read(Id, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
-
-        public bool Write() =>
-            EnvironmentService.Instance.Write(this);
-
-        public bool Delete() =>
-            EnvironmentService.Instance.Delete(this);
     }
 }

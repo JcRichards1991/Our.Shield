@@ -50,38 +50,5 @@ namespace Our.Shield.Core.Models
         /// </summary>
         [JsonProperty("continueProcessing")]
         bool ContinueProcessing { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="itemsPerPage"></param>
-        /// <param name="type"></param>
-        /// <param name="totalPages"></param>
-        /// <returns></returns>
-        IEnumerable<IJournal> JournalListing(int page, int itemsPerPage, Type type, out int totalPages);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="page"></param>
-        /// <param name="itemsPerPage"></param>
-        /// <param name="totalPages"></param>
-        /// <returns></returns>
-        IEnumerable<T> JournalListing<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        bool Write();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        bool Delete();
-
     }
 }

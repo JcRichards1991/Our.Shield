@@ -70,7 +70,10 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                 vm.environment = {
                                     name: '',
                                     icon: 'icon-firewall red',
-                                    domains: []
+                                    domains: [],
+                                    continueProcessing: false,
+                                    enabled: true,
+                                    sortOrder: vm.environments.length
                                 };
                                 localizationService.localize('general_create').then(function (value) {
                                     vm.button.label = value;
@@ -492,11 +495,11 @@ angular.module('umbraco.resources').factory('shieldResource', ['$http', function
                 },
             });
         },
-        postEnvironment: function (data) {
+        postEnvironment: function (environment) {
             return $http({
                 method: 'POST',
-                url: apiRoot + 'Environment',
-                data: JSON.stringify(data),
+                url: apiRoot + 'WriteEnvironment',
+                data: JSON.stringify(environment),
                 dataType: 'json',
                 headers: {
                     'Content-Type': 'application/json'

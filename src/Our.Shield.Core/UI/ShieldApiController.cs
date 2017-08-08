@@ -58,7 +58,7 @@ namespace Our.Shield.Core.UI
             {
                 if (id == environment.Key.Id)
                 {
-                    var journals = environment.Key.JournalListing<JournalMessage>(1, 100, out totalPages);
+                    var journals = Operation.EnvironmentService.Instance.JournalListing<JournalMessage>(id, 1, 100, out totalPages);
                     var apps = environment.Value.Select(x => new AppListingItem
                     {
                         Id = x.Id,
@@ -139,43 +139,6 @@ namespace Our.Shield.Core.UI
         }
 
         /// <summary>
-        /// Save domains to an environment
-        /// </summary>
-        /// <param name="json">An Environment as json</param>
-        /// <returns>True if save is successfully</returns>
-        [HttpPost]
-        public bool Environment([FromBody] JObject json)
-        {
-            if (json == null)
-            {
-                //  json is invalid
-                return false;
-            }
-
-            var environment = json.ToObject<Environment>();
-
-            if(environment.Write())
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public bool DeleteEnvironment(int id)
-        {
-            var environment = (Environment) Operation.JobService.Instance.Environments.FirstOrDefault(x => x.Key.Id.Equals(id)).Key;
-
-            return environment.Delete();
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="id"></param>
@@ -243,7 +206,7 @@ namespace Our.Shield.Core.UI
                     {
                         return new JournalListing
                         {
-                            Journals = environment.Key.JournalListing<JournalMessage>(page, 100, out totalPages).Select(x => new JournalListingItem
+                            Journals = Operation.EnvironmentService.Instance.JournalListing<JournalMessage>(id, page, 100, out totalPages).Select(x => new JournalListingItem
                             {
                                 Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
                                 App = apps.FirstOrDefault(a => a.Id == x.AppId).Name,
@@ -275,6 +238,47 @@ namespace Our.Shield.Core.UI
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Save domains to an environment
+        /// </summary>
+        /// <param name="json">An Environment as json</param>
+        /// <returns>True if save is successfully</returns>
+        [HttpPost]
+        public bool WriteEnvironment([FromBody] JObject json)
+        {
+            if (json == null)
+            {
+                //  json is invalid
+                return false;
+            }
+
+            var environment = json.ToObject<Environment>();
+
+            if (Operation.EnvironmentService.Instance.Write(environment))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public bool DeleteEnvironment(int id)
+        {
+            var environment = (Environment)Operation.JobService.Instance.Environments.FirstOrDefault(x => x.Key.Id.Equals(id)).Key;
+
+            if(environment != null)
+            {
+                return Operation.EnvironmentService.Instance.Delete(environment);
+            }
+            return false;
         }
 
         /// <summary>
