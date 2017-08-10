@@ -128,7 +128,7 @@ namespace Our.Shield.Core.UI
             {
                 if (environment.Key.Id == id)
                 {
-                    foreach (var job in environment.Value)
+                    foreach (var job in environment.Value.OrderBy(x => x.App.Name))
                     {
                         var jobId = job.Id.ToString();
                         var node = CreateTreeNode(

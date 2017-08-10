@@ -25,13 +25,13 @@ namespace Our.Shield.Core.UI
         [HttpGet]
         public TreeView View(int id)
         {
-            var environments = Operation.JobService.Instance.Environments;
+            var environments = Operation.JobService.Instance.Environments.OrderBy(x => x.Key.SortOrder).ToDictionary(x => x.Key, v => v.Value);
             int totalPages = 1;
 
             if (id == Constants.Tree.EnvironmentsRootId)
             {
                 var journals = Persistance.Business.DbContext.Instance.Journal.Read<JournalMessage>(1, 200, out totalPages);
-                var apps = environments.First().Value.Select(x => x.App);
+                var apps = environments.First().Value.Select(x => x.App).OrderBy(x => x.Name);
 
                 //  Is the environments node
                 return new TreeView
@@ -76,7 +76,7 @@ namespace Our.Shield.Core.UI
                         Description = $"View apps for the {environment.Key.Name} environment",
                         Environments = environments.Keys,
                         Environment = environment.Key,
-                        Apps = apps,
+                        Apps = apps.OrderBy(x => x.Name),
                         JournalListing = new JournalListing
                         {
                             Journals = journals.Select(x => new JournalListingItem
@@ -283,7 +283,7 @@ namespace Our.Shield.Core.UI
         [HttpGet]
         public IEnumerable<IEnvironment> GetEnvironments()
         {
-            return Operation.JobService.Instance.Environments.Select(x => x.Key);
+            return Operation.JobService.Instance.Environments.Select(x => x.Key).OrderBy(x => x.SortOrder);
         }
 
         /// <summary>
@@ -300,8 +300,26 @@ namespace Our.Shield.Core.UI
             }
 
             var environments = json.Select(x => x.ToObject<Environment>());
+            var oldEnvironments = Operation.JobService.Instance.Environments;
 
-            return Operation.EnvironmentService.Instance.Sort(environments);
+            foreach (var environment in environments)
+            {
+                if (oldEnvironments.Any(x => x.Key.Id.Equals(environment.Id) && !x.Key.SortOrder.Equals(environment.SortOrder)))
+                {
+                    if (!Operation.EnvironmentService.Instance.Write(environment))
+                    {
+                        return false;
+                    }
+
+                    if (!Operation.JobService.Instance.Unregister(environment))
+                    {
+                        return false;
+                    }
+
+                    Operation.JobService.Instance.Register(environment);
+                }
+            }
+            return true;
         }
 
         /// <summary>

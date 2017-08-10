@@ -241,7 +241,15 @@
 
                 <div ng-if="vm.type != 0">
                     <umb-editor-footer-content-right>
+                        <umb-button ng-if="vm.editingEnvironment"
+                                    label="Cancel"
+                                    label-key="general_cancel"
+                                    type="button"
+                                    action="vm.cancelEditing()">
+                        </umb-button>
+
                         <umb-button label="{{vm.button.label}}"
+                                    label-key="{{vm.button.labelKey}}"
                                     type="submit"
                                     button-style="success"
                                     shortcut="ctrl+s"

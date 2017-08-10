@@ -70,25 +70,20 @@ namespace Our.Shield.Core.Persistance.Business
         {
             var dto = new Data.Dto.Environment
             {
+                Id = environment.Id,
                 Name = environment.Name,
                 Icon = environment.Icon,
-                Id = environment.Id,
-                Domains = environment.Domains.Select(x => new Persistance.Data.Dto.Domain
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    UmbracoDomainId = x.UmbracoDomainId
-                }),
-                SortOrder = environment.SortOrder,
                 Enable = environment.Enable,
-                ContinueProcessing = environment.ContinueProcessing
+                ContinueProcessing = environment.ContinueProcessing,
+                SortOrder = environment.SortOrder,
+                Domains = Enumerable.Empty<Data.Dto.Domain>()
             };
-            
+
             try
             {
                 if (environment.Id != 0 && Database.Exists<Data.Dto.Environment>(environment.Id))
                 {
-                    Database.Update(environment);
+                    Database.Update(dto);
                 }
                 else
                 {
@@ -114,39 +109,6 @@ namespace Our.Shield.Core.Persistance.Business
             {
                 LogHelper.Error(typeof(EnvironmentContext), $"Error writing environment with id: {environment.Id}", ex);
             }
-            return false;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="environments"></param>
-        /// <returns></returns>
-        public bool SortEnvironments(IEnumerable<IEnvironment> environments)
-        {
-            try
-            {
-                foreach (var environment in environments)
-                {
-                    var dto = new Data.Dto.Environment
-                    {
-                        Id = environment.Id,
-                        Name = environment.Name,
-                        Icon = environment.Icon,
-                        Enable = environment.Enable,
-                        ContinueProcessing = environment.ContinueProcessing,
-                        SortOrder = environment.SortOrder
-                    };
-
-                    Database.Update(dto);
-                }
-                return true;
-            }
-            catch(Exception ex)
-            {
-                LogHelper.Error(typeof(EnvironmentContext), $"Error sorting environments", ex);
-            }
-
             return false;
         }
 

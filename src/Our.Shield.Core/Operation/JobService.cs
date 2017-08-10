@@ -196,15 +196,18 @@ namespace Our.Shield.Core.Operation
             Poll(true);
         }
 
-        public void Register(IEnvironment environment, ApplicationContext applicationContext)
+        public void Register(IEnvironment environment, ApplicationContext applicationContext = null)
         {
             var appIds = App<IConfiguration>.Register;
             foreach(var appId in appIds)
             {
                 var app = App<IConfiguration>.Create(appId.Key);
 
-                LoadMigrations(app, applicationContext);
-                RunMigrations(app, applicationContext);
+                if(applicationContext != null)
+                {
+                    LoadMigrations(app, applicationContext);
+                    RunMigrations(app, applicationContext);
+                }
 
                 if (app.Init())
                 {
@@ -485,6 +488,8 @@ namespace Our.Shield.Core.Operation
                     {
                         jobs.Value.Remove(key);
                     }
+
+                    return true;
                 }
                 finally
                 {

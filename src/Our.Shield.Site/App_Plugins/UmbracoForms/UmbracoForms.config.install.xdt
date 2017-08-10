@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<umbracocontour xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform"> 
+  <settings>
+  <setting key="DatePickerYearRange" value="10" 
+    xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+    <setting key="AllowEditableFormSubmissions" value="false" 
+         xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
+  </settings>
+</umbracocontour>

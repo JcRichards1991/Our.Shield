@@ -1,4 +1,5 @@
 ﻿<div ng-controller="Shield.Editors.Overview.Sort as vm" ng-init="vm.init()">
+    <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
     <div class="umb-dialog-body with-footer shield-sort">
         <div class="umb-pane " style="">
             <div class="control-group umb-control-group" style="">
@@ -17,10 +18,7 @@
 
                 <div class="success" ng-show="vm.sortingComplete">
                     <p>
-                        Sorting complete.
-                    </p>
-                    <p>
-                        <a href="#" ng-click="vm.close()">Close this window</a>
+                        Sorting complete. To see the new environment order, please refresh the Environments
                     </p>
                 </div>
 
@@ -51,7 +49,6 @@
         </div>
     </div>
     <div class="umb-dialog-footer btn-toolbar umb-btn-toolbar">
-        <a href="#" class="btn btn-link" ng-click="nav.hideDialog(true)">Cancel</a>
         <input type="button" class="btn btn-primary" value="Save" ng-click="vm.save()">
     </div>
 </div>

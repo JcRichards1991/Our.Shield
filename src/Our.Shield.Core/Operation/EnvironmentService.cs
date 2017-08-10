@@ -39,7 +39,19 @@ namespace Our.Shield.Core.Operation
             
             if (!JobService.Instance.Environments.Any(x => x.Key.Id.Equals(environment.Id)))
             {
+                //created new environment, we need to register it
                 JobService.Instance.Register(environment, Umbraco.Core.ApplicationContext.Current);
+            }
+            else
+            {
+                //Environment has changed, we need to unregister it
+                //and then regester it with the new changes
+                if (!JobService.Instance.Unregister(environment))
+                {
+                    return false;
+                }
+
+                JobService.Instance.Register(environment);
             }
 
             JobService.Instance.Poll(true);
@@ -54,22 +66,6 @@ namespace Our.Shield.Core.Operation
         public bool Delete(Models.Environment environment)
         {
             if (!JobService.Instance.Unregister(environment) || !DbContext.Instance.Environment.Delete(environment.Id))
-            {
-                return false;
-            }
-
-            JobService.Instance.Poll(true);
-            return true;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="environments">All environments in the correct sort order</param>
-        /// <returns></returns>
-        public bool Sort(IEnumerable<IEnvironment> environments)
-        {
-            if (!DbContext.Instance.Environment.SortEnvironments(environments))
             {
                 return false;
             }
