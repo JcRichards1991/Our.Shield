@@ -28,8 +28,11 @@
 
     <key alias="AllowedIpsLabel">White-listed IP address(es)</key>
     <key alias="AllowedIpsDescription">The allowed IP address(es) that can access the Backend Office Access Url.</key>
-    <key alias="AllowedIpsIpAddressHeader">IP Address</key>
-    <key alias="AllowedIpsDescriptionHeader">Description</key>
+  </area>
+
+  <area alias="Shield.BackofficeAccess.Table">
+    <key alias="IpAddressHeader">IP Address</key>
+    <key alias="DescriptionHeader">Description</key>
   </area>
 
   <area alias="Shield.BackofficeAccess.AlertMessages">

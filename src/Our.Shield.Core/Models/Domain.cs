@@ -25,6 +25,8 @@ namespace Our.Shield.Core.Models
         [JsonProperty("umbracoDomainId")]
         public int? UmbracoDomainId { get; set; }
 
+        internal Domain() { }
+
         /// <summary>
         /// Default constructor
         /// </summary>

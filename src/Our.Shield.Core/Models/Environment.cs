@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Our.Shield.Core.Operation;
-using Our.Shield.Core.Persistance.Business;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 

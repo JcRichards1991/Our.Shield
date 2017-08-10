@@ -31,7 +31,22 @@
   <area alias="Shield.General.Properties">
     <key alias="EnableLabel">Enable</key>
     <key alias="EnableDescription">Is this App active</key>
+  </area>
+
+  <area alias="Shield.EnvironmentProperties">
+    <key alias="EnableDescription">Is this Environment active</key>
+    <key alias="ContinueProcessingLabel">Continue Processing</key>
+    <key alias="ContinueProcessingDescription">Whether or not to continue processing when an environment has been found by Shield's HttpModule (recommended is false)</key>
     <key alias="DomainsLabel">Domains</key>
-    <key alias="DomainsDescription">The domains that are associated to the environment</key>
+    <key alias="DomainsDescription">The domains that are associated to this environment</key>
+  </area>
+  
+  <area alias="Shield.EnvironmentProperties.Table">
+    <key alias="DomainsHeader">Domain</key>
+  </area>
+
+  <area alias="Shield.EnvironmentProperties.ErrorMessages">
+    <key alias="DomainRequired">Domain is required</key>
+    <key alias="DomainInvalid">Domain is invalid</key>
   </area>
 </language>

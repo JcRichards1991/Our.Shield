@@ -1,6 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -240,6 +243,14 @@ namespace Our.Shield.Core.UI
             return null;
         }
 
+        private class DomainConverter : CustomCreationConverter<IDomain>
+        {
+            public override IDomain Create(Type objectType)
+            {
+                return new Domain();
+            }
+        }
+
         /// <summary>
         /// Save domains to an environment
         /// </summary>
@@ -254,7 +265,7 @@ namespace Our.Shield.Core.UI
                 return false;
             }
 
-            var environment = json.ToObject<Environment>();
+            var environment = JsonConvert.DeserializeObject<Models.Environment>(json.ToString(), new DomainConverter());
 
             return Operation.EnvironmentService.Instance.Write(environment);
         }
@@ -267,7 +278,7 @@ namespace Our.Shield.Core.UI
         [HttpPost]
         public bool DeleteEnvironment(int id)
         {
-            var environment = (Environment)Operation.JobService.Instance.Environments.FirstOrDefault(x => x.Key.Id.Equals(id)).Key;
+            var environment = (Models.Environment)Operation.JobService.Instance.Environments.FirstOrDefault(x => x.Key.Id.Equals(id)).Key;
 
             if(environment != null)
             {
@@ -299,7 +310,7 @@ namespace Our.Shield.Core.UI
                 return false;
             }
 
-            var environments = json.Select(x => x.ToObject<Environment>());
+            var environments = json.Select(x => x.ToObject<Models.Environment>());
             var oldEnvironments = Operation.JobService.Instance.Environments;
 
             foreach (var environment in environments)

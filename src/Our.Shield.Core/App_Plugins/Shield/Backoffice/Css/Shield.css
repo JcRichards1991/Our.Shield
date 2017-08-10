@@ -9,6 +9,9 @@
   font-weight: bold;
   color: #000; }
 
+.shield-editor .umb-table .umb-table-body .umb-table-cell ul {
+  margin: 0; }
+
 .shield-editor .umb-table .umb-table-row.-selected .umb-table-cell.app-icon-cell .umb-table-body__fileicon {
   display: block; }
 
@@ -37,13 +40,12 @@ table.domains-container {
   table.domains-container thead tr, table.domains-container tbody tr, table.domains-container tfoot tr {
     height: 72px; }
     table.domains-container thead tr td, table.domains-container thead tr th, table.domains-container tbody tr td, table.domains-container tbody tr th, table.domains-container tfoot tr td, table.domains-container tfoot tr th {
-      max-width: 300px; }
+      max-width: 100%; }
       table.domains-container thead tr td:last-child, table.domains-container thead tr th:last-child, table.domains-container tbody tr td:last-child, table.domains-container tbody tr th:last-child, table.domains-container tfoot tr td:last-child, table.domains-container tfoot tr th:last-child {
-        text-align: right;
-        min-width: 160px;
-        max-width: 160px; }
+        text-align: right; }
     table.domains-container thead tr td input, table.domains-container tbody tr td input, table.domains-container tfoot tr td input {
-      display: block; }
+      display: block;
+      width: 85%; }
     table.domains-container thead tr td span.help-inline, table.domains-container tbody tr td span.help-inline, table.domains-container tfoot tr td span.help-inline {
       position: absolute;
       color: #9d261d; }

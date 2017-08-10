@@ -76,7 +76,7 @@ angular.module('umbraco.directives').directive('shieldAddToForm', function () {
 
             $form.$removeControl(ctrl);
             ctrl.$name = $attr.name;
-            $scope.backofficeAccessForm.$addControl(ctrl);
+            $form.$addControl(ctrl);
         }
     }
 });

@@ -1,0 +1,82 @@
+﻿<div class="umb-el-wrap control-group umb-control-group">
+    <div>
+        <label for="enable" class="control-label">
+            <localize key="Shield.General.Properties_EnableLabel">Enable</localize>
+            <small>
+                <localize key="Shield.EnvironmentProperties_EnableDescription">Is this Environment active</localize>
+            </small>
+        </label>
+        <div class="controls">
+            <input type="checkbox" id="enable" ng-model="vm.environment.enable" />
+        </div>
+    </div>
+</div>
+
+<div class="umb-el-wrap control-group umb-control-group">
+    <div>
+        <label for="enable" class="control-label">
+            <localize key="Shield.EnvironmentProperties_ContinueProcessingLabel">Continue Processing</localize>
+            <small>
+                <localize key="Shield.EnvironmentProperties_ContinueProcessingDescription">Whether or not to continue processing when an environment has been found by Shield's HttpModule (recommended is false)</localize>
+            </small>
+        </label>
+        <div class="controls">
+            <input type="checkbox" id="enable" ng-model="vm.environment.continueProcessing" />
+        </div>
+    </div>
+</div>
+
+<div class="umb-el-wrap control-group umb-control-group">
+    <div>
+        <label for="enable" class="control-label">
+            <localize key="Shield.EnvironmentProperties_DomainsLabel">Domains</localize>
+            <small>
+                <localize key="Shield.EnvironmentProperties_DomainsDescription">The domains that are associated to this environment</localize>
+            </small>
+        </label>
+        <div class="controls">
+            <div class="umb-editor">
+                <table class="domains-container">
+                    <thead>
+                        <tr>
+                            <th><localize key="Shield.EnvironmentProperties.Table_DomainsHeader">Domain</localize></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="domain in vm.environment.domains track by $index">
+                            <td>
+                                <input type="text" id="domain{{$index}}" name="domain{{$index}}" ng-model="domain.name" required shield-add-to-form="shieldForm" ng-trim="false" ng-pattern="/^(http(s)?:\/\/)(([\w-_]+((\.[\w-_]+)+)?)+)(\.[\w]+)?(:[0-9]+)?$/i" />
+                                <span class="help-inline" val-msg-for="domain{{$index}}" val-toggle-msg="required">
+                                    <localize key="Shield.EnvironmentProperties.ErrorMessages_DomainRequired">Domain is required</localize>
+                                </span>
+                                <span class="help-inline" val-msg-for="domain{{$index}}" val-toggle-msg="pattern">
+                                    <localize key="Shield.EnvironmentProperties.ErrorMessages_DomainInvalid">Invalid Domain</localize>
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="btn btn-danger" ng-click="vm.environment.domains.splice($index, 1)" ng-if="vm.environment.domains.length > 1">
+                                    <localize key="Shield.General_Remove">Remove</localize>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <td></td>
+
+                            <td>
+                                <span class="btn btn-success" ng-click="vm.environment.domains.push({id: 0, name: '', umbracoDomainId: null})">
+                                    <localize key="general_add">Add</localize>
+                                </span>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-﻿<div class="umb-el-wrap control-group umb-control-group" ng-controller="Shield.Properties.IpAddress as vm" ng-init="vm.init()">
+﻿<div class="umb-el-wrap control-group umb-control-group" ng-controller="Shield.Properties.IpAddress as vm">
     <label class="control-label">
         <localize key="Shield.BackofficeAccess.Properties_AllowedIpsLabel">White-listed IP address(es)</localize>
         <small>
@@ -8,11 +8,11 @@
 
     <div class="controls">
         <div class="umb-editor">
-            <table class="domains-container">
+            <table class="ipaddress-container">
                 <thead>
                     <tr>
-                        <th><localize key="Shield.BackofficeAccess.Properties_AllowedIpsIpAddressHeader">IP Address</localize></th>
-                        <th><localize key="Shield.BackofficeAccess.Properties_AllowedIpsDescriptionHeader">Description</localize></th>
+                        <th><localize key="Shield.BackofficeAccess.Table_IpAddressHeader">IP Address</localize></th>
+                        <th><localize key="Shield.BackofficeAccess.Table_DescriptionHeader">Description</localize></th>
                         <th></th>
                     </tr>
                 </thead>

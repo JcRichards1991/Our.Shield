@@ -1,2 +1,26 @@
 shield-app .umb-property .alert.alert-error.property-error {
   display: none !important; }
+
+table.ipaddress-container {
+  width: 75%; }
+  table.ipaddress-container thead tr, table.ipaddress-container tbody tr, table.ipaddress-container tfoot tr {
+    height: 72px; }
+    table.ipaddress-container thead tr td, table.ipaddress-container thead tr th, table.ipaddress-container tbody tr td, table.ipaddress-container tbody tr th, table.ipaddress-container tfoot tr td, table.ipaddress-container tfoot tr th {
+      max-width: 300px; }
+      table.ipaddress-container thead tr td:last-child, table.ipaddress-container thead tr th:last-child, table.ipaddress-container tbody tr td:last-child, table.ipaddress-container tbody tr th:last-child, table.ipaddress-container tfoot tr td:last-child, table.ipaddress-container tfoot tr th:last-child {
+        text-align: right;
+        min-width: 160px;
+        max-width: 160px; }
+    table.ipaddress-container thead tr td input, table.ipaddress-container tbody tr td input, table.ipaddress-container tfoot tr td input {
+      display: block; }
+    table.ipaddress-container thead tr td span.help-inline, table.ipaddress-container tbody tr td span.help-inline, table.ipaddress-container tfoot tr td span.help-inline {
+      position: absolute;
+      color: #9d261d; }
+    table.ipaddress-container thead tr td:last-child span.btn:last-child, table.ipaddress-container tbody tr td:last-child span.btn:last-child, table.ipaddress-container tfoot tr td:last-child span.btn:last-child {
+      margin-left: 4px; }
+    table.ipaddress-container thead tr th, table.ipaddress-container tbody tr th, table.ipaddress-container tfoot tr th {
+      text-align: left; }
+  table.ipaddress-container tbody tr {
+    border-top: 1px solid #000; }
+    table.ipaddress-container tbody tr:last-child {
+      border-bottom: 1px solid #000; }

@@ -32,8 +32,7 @@
             </div>
 
             <umb-editor-container>
-
-                <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.editingEnvironment" ng-include="'/App_Plugins/Shield/Backoffice/Shield/DomainListing.html?version=1.0.2'"></div>
+                <div class="form-horizontal" ng-if="vm.editingEnvironment" ng-include="'/App_Plugins/Shield/Backoffice/Views/EditEnvironment.html?version=1.0.2'"></div>
 
                 <umb-tabs-content class="form-horizontal" view="true" ng-if="!vm.editingEnvironment">
                     <umb-tab id="tab0" rel="0">
@@ -83,8 +82,10 @@
                                         </div>
 
                                         <div class="umb-table-cell">
-                                            <ul ng-repeat="domain in environment.domains track by $index">
-                                                <li>{{domain.name}}</li>
+                                            <ul>
+                                                <li ng-repeat="domain in environment.domains track by $index">
+                                                    {{domain.name}}
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -176,7 +177,7 @@
                     </umb-tab>
 
                     <umb-tab id="tab1" rel="1" ng-if="vm.type == 1 && vm.id != '1'">
-                        <div class="umb-el-wrap control-group umb-control-group" ng-include="'/App_Plugins/Shield/Backoffice/Shield/DomainListing.html?version=1.0.2'"></div>
+                        <div ng-include="'/App_Plugins/Shield/Backoffice/Views/EditEnvironment.html?version=1.0.2'"></div>
                     </umb-tab>
 
                     <umb-tab id="tab2" rel="2">

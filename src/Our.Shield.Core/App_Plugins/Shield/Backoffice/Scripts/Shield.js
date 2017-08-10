@@ -31,12 +31,12 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                 {
                     id:'0',
                     label: 'Environments',
-                    active: true,
+                    active: true
                 },
                 {
                     id: '1',
-                    label: 'Domains',
-                    active: true,
+                    label: 'Settings',
+                    active: false
                 },
                 {
                     id:'2',
@@ -69,11 +69,11 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                     icon: 'icon-firewall red',
                                     domains: [],
                                     continueProcessing: false,
-                                    enabled: true,
+                                    enable: true,
                                     sortOrder: vm.environments.length
                                 };
                                 vm.button.labelKey = 'general_create';
-                                localizationService.localize('general_create').then(function (value) {
+                                localizationService.localize(vm.button.labelKey).then(function (value) {
                                     vm.button.label = value;
                                     vm.loading = false;
                                 });
@@ -93,6 +93,18 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
 
                             if (vm.id === '1') {
                                 vm.tabs.splice(1, 1);
+
+                                if (vm.editingEnvironment) {
+                                    vm.cancelEditing();
+                                }
+                            }
+
+                            if (vm.environment.domains.length === 0) {
+                                vm.environment.domains.push({
+                                    id: 0,
+                                    name: '',
+                                    umbracoDomainId: null
+                                });
                             }
 
                             break;
@@ -552,11 +564,10 @@ angular.module('umbraco.directives').directive('shieldAddToForm', function () {
 
             $form.$removeControl(ctrl);
             ctrl.$name = $attr.name;
-            $scope.backofficeAccessForm.$addControl(ctrl);
+            $form.$addControl(ctrl);
         }
     }
 });
-
 /**
     * @ngdoc resource
     * @name UmbracoAccessResource

@@ -63,14 +63,6 @@ angular.module('umbraco').controller('Shield.Properties.IpAddress',
 
         angular.extend(vm, {
             configuration: $scope.configuration,
-            init: function () {
-                if (vm.configuration.ipAddresses.length === 0) {
-                    vm.configuration.ipAddresses.push({
-                        ipAddress: '',
-                        description: ''
-                    });
-                }
-            },
             add: function () {
                 vm.configuration.ipAddresses.push({
                     ipAddress: '',
@@ -78,10 +70,15 @@ angular.module('umbraco').controller('Shield.Properties.IpAddress',
                 });
             },
             remove: function ($index) {
-                var ip = vm.configuration.ipAddresses[$index];
+                var ip = vm.configuration.ipAddresses[$index],
+                    msg = ip.ipAddress;
+
+                if (ip.description !== undefined && ip.description !== 'undefined' && ip.description !== '') {
+                    msg += ' - ' + ip.description;
+                }
 
                 localizationService.localize('Shield.BackofficeAccess.AlertMessages_ConfirmRemoveIp').then(function (warningMsg) {
-                    if (confirm(warningMsg + ip.ipAddress + ' - ' + ip.description)) {
+                    if (confirm(warningMsg + msg)) {
                         vm.configuration.ipAddresses.splice($index, 1);
                     }
                 });

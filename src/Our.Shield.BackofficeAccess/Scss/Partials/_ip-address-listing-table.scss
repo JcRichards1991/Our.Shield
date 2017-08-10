@@ -1,4 +1,4 @@
-﻿table.domains-container {
+﻿table.ipaddress-container {
     width: 75%;
 
     thead, tbody, tfoot {
@@ -7,10 +7,12 @@
             height:72px;
 
             td, th {
-                max-width: 100%;
+                max-width: 300px;
 
                 &:last-child {
                     text-align: right;
+                    min-width: 160px;
+                    max-width: 160px;
                 }
             }
 
@@ -18,7 +20,6 @@
 
                 input {
                     display: block;
-                    width: 85%;
                 }
 
                 span.help-inline {
