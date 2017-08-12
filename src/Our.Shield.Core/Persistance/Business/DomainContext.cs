@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Our.Shield.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Core.Logging;
+using Umbraco.Core.Persistence;
 
 namespace Our.Shield.Core.Persistance.Business
 {
@@ -13,24 +15,25 @@ namespace Our.Shield.Core.Persistance.Business
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="enviromentId"></param>
+        /// <param name="environmentId"></param>
         /// <returns></returns>
-        public IEnumerable<Data.Dto.Domain> List(int? enviromentId = null)
+        public IEnumerable<Data.Dto.Domain> List(int? environmentId = null)
         {
             try
             {
-                IEnumerable<Data.Dto.Domain> domains = null;
-                if (enviromentId == null)
+                if (environmentId == null)
                 {
-                    domains = Database.FetchAll<Data.Dto.Domain>();
+                    return MapUmbracoDomains(Database.FetchAll<Data.Dto.Domain>());
                 }
-                return MapUmbracoDomains(Database.Fetch<Data.Dto.Domain>("WHERE environmentId = @0", enviromentId));
+
+                return MapUmbracoDomains(Database.Fetch<Data.Dto.Domain>("WHERE " + nameof(Data.Dto.Domain.EnvironmentId) + " = @0", environmentId));
             }
             catch(Exception ex)
             {
                 LogHelper.Error(typeof(DomainContext), $"Error listing domains", ex);
-                return Enumerable.Empty<Data.Dto.Domain>();
             }
+
+            return Enumerable.Empty<Data.Dto.Domain>();
         }
 
         /// <summary>
@@ -47,8 +50,9 @@ namespace Our.Shield.Core.Persistance.Business
             catch(Exception ex)
             {
                 LogHelper.Error(typeof(DomainContext), $"Error reading domain with id: {id}", ex);
-                return null;
             }
+
+            return null;
         }
 
         /// <summary>
@@ -56,17 +60,25 @@ namespace Our.Shield.Core.Persistance.Business
         /// </summary>
         /// <param name="domain"></param>
         /// <returns></returns>
-        public bool Write(Data.Dto.Domain domain)
+        public bool Write(IDomain domain)
         {
             try
             {
+                var dto = new Data.Dto.Domain
+                {
+                    Id = domain.Id,
+                    EnvironmentId = domain.EnvironmentId,
+                    Name = domain.Name,
+                    UmbracoDomainId = domain.UmbracoDomainId
+                };
+
                 if (domain.Id != 0 && Database.Exists<Data.Dto.Domain>(domain.Id))
                 {
-                    Database.Update(domain);
+                    Database.Update(dto);
                 }
                 else
                 {
-                    domain.Id = (int)((decimal)Database.Insert(domain));
+                    ((Domain)domain).Id = (int)((decimal)Database.Insert(dto));
                 }
 
                 return true;
@@ -75,24 +87,7 @@ namespace Our.Shield.Core.Persistance.Business
             {
                 LogHelper.Error(typeof(DomainContext), $"Error writing domain with id: {domain.Id}", ex);
             }
-            return false;
-        }
 
-        public bool Write(IEnumerable<Data.Dto.Domain> domains)
-        {
-            try
-            {
-                foreach (var domain in domains)
-                {
-                    Write(domain);
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error(typeof(DomainContext), $"Error writing domains", ex);
-            }
             return false;
         }
 
@@ -101,20 +96,27 @@ namespace Our.Shield.Core.Persistance.Business
         /// </summary>
         /// <param name="domain"></param>
         /// <returns></returns>
-        public bool Delete(Data.Dto.Domain domain)
+        public bool Delete(int environmentId, IEnumerable<int> domainIds)
         {
             try
             {
-                if (domain.Id != 0 && Database.Exists<Data.Dto.Domain>(domain.Id))
+                var sql = new Sql();
+                sql.Where(nameof(Data.Dto.Domain.EnvironmentId) + " = @0", environmentId);
+                
+                foreach(var id in domainIds)
                 {
-                    Database.Delete<Data.Dto.Domain>(domain.Id);
-                    return true;
+                    sql.Where(nameof(Data.Dto.Domain.Id) + " != @0", id);
                 }
+
+                Database.Delete<Data.Dto.Domain>(sql);
+
+                return true;
             }
             catch(Exception ex)
             {
-                LogHelper.Error(typeof(DomainContext), $"Error deleting domain with id: {domain.Id}", ex);
+                LogHelper.Error(typeof(DomainContext), $"Error deleting domains for environment with id: {environmentId}", ex);
             }
+
             return false;
         }
     }

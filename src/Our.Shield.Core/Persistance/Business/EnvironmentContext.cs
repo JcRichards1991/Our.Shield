@@ -90,18 +90,12 @@ namespace Our.Shield.Core.Persistance.Business
                     ((Models.Environment)environment).Id = (int)((decimal)Database.Insert(dto));
                 }
 
-                foreach (var item in environment.Domains)
+                foreach (var domain in environment.Domains)
                 {
-                    var domain = new Data.Dto.Domain
-                    {
-                        Id = item.Id,
-                        EnvironmentId = environment.Id,
-                        Name = item.Name,
-                        UmbracoDomainId = item.UmbracoDomainId
-                    };
-
                     Instance.Domain.Write(domain);
                 }
+
+                Instance.Domain.Delete(environment.Id, environment.Domains.Select(x => x.Id));
 
                 return true;
             }

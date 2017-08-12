@@ -21,5 +21,11 @@ namespace Our.Shield.Core.Models
         /// </summary>
         [JsonProperty("umbracoDomainId")]
         int? UmbracoDomainId { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("environmentId")]
+        int EnvironmentId { get; }
     }
 }

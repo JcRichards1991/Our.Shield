@@ -102,21 +102,11 @@ namespace Our.Shield.Core.UI
                             environment.Key.Name,
                             ((Environment) environment.Key).Icon,
                             environment.Value.Any());
-
-                        //var publish = false;
-                        //foreach (var job in environment.Value)
-                        //{
-                        //    if (job.ReadConfiguration().Enable)
-                        //    {
-                        //        publish = true;
-                        //        break;
-                        //    }
-                        //}
-
-                        //if (!publish)
-                        //{
-                        //    node.SetNotPublishedStyle();
-                        //}
+                        
+                        if (!environment.Key.Enable)
+                        {
+                            node.SetNotPublishedStyle();
+                        }
 
                         treeNodeCollection.Add(node);
                     }
@@ -139,7 +129,7 @@ namespace Our.Shield.Core.UI
                             job.App.Icon,
                             false);
 
-                        if (!job.ReadConfiguration().Enable)
+                        if (!job.ReadConfiguration().Enable || !environment.Key.Enable)
                         {
                             node.SetNotPublishedStyle();
                         }

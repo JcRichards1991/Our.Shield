@@ -25,16 +25,27 @@ namespace Our.Shield.Core.Models
         [JsonProperty("umbracoDomainId")]
         public int? UmbracoDomainId { get; set; }
 
-        internal Domain() { }
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("environmentId")]
+        public int EnvironmentId { get; set; }
 
         /// <summary>
         /// Default constructor
         /// </summary>
+        internal Domain() { }
+
+        /// <summary>
+        /// Constructor for turning a Domain DTO to this Domain object
+        /// </summary>
         /// <param name="data">The DTO object from the database</param>
         internal Domain(Persistance.Data.Dto.Domain data)
         {
+            Id = data.Id;
             Name = data.Name;
             UmbracoDomainId = data.UmbracoDomainId;
+            EnvironmentId = data.EnvironmentId;
         }
 
         /// <summary>

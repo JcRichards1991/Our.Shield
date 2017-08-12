@@ -277,8 +277,7 @@
     <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal101.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal102.cs" />
     <Compile Include="Persistance\Data\Migrations\MigrationExtensions.cs" />
-    <Compile Include="Persistance\Data\Migrations\Versions\Migration100.cs" />
-    <Compile Include="Persistance\Data\Migrations\Versions\Migration101.cs" />
+    <Compile Include="Persistance\Data\Migrations\Versions\Migration102Create.cs" />
     <Compile Include="Persistance\Data\Migrations\Versions\Migration102.cs" />
     <Compile Include="UI\AppAssest.cs" />
     <Compile Include="UI\Constants.cs" />

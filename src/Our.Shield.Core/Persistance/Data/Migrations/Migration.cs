@@ -1,10 +1,8 @@
 ﻿using Semver;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
-using Umbraco.Core.Models;
 using Umbraco.Core.Persistence.Migrations;
 using Umbraco.Core.Persistence.SqlSyntax;
 using Umbraco.Core.Services;
@@ -18,10 +16,6 @@ namespace Our.Shield.Core.Persistance.Data.Migrations
     {
         public static readonly SemVersion TargetVersion = new SemVersion(1, 0, 2);
 
-        public static SemVersion CurrentVersion = new SemVersion(0, 0, 0);
-
-        public static IEnumerable<IMigrationEntry> Migrations;
-
         /// <summary>
         /// 
         /// </summary>
@@ -32,22 +26,29 @@ namespace Our.Shield.Core.Persistance.Data.Migrations
         {
             const string productName = nameof(Shield);
 
-            Migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName).OrderByDescending(x => x.CreateDate);
-            var latestMigration = Migrations.FirstOrDefault();
+            var currentVersion = new SemVersion(0, 0, 0);
+            var migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName).OrderByDescending(x => x.CreateDate);
+            var latestMigration = migrations.FirstOrDefault();
 
             if (latestMigration != null)
-                CurrentVersion = latestMigration.Version;
+                currentVersion = latestMigration.Version;
             
-            if (TargetVersion == CurrentVersion)
+            if (TargetVersion == currentVersion)
                 return;
 
-            var scriptsForMigration = new IMigration[]
+            IMigration[] scriptsForMigration = new IMigration[]
             {
-                new Versions.Migration102(sqlSyntax, logger)
+                new Versions.Migration102Create(sqlSyntax, logger)
+                //  new versions.Migrations103 etc.
             };
 
-            MigrationRunner migrationsRunner = new MigrationRunner(migrationEntryService, logger, CurrentVersion, TargetVersion, 
-                productName, scriptsForMigration);
+            if (currentVersion == new SemVersion(1, 0, 1))
+            {
+                scriptsForMigration[0] = new Versions.Migration102(sqlSyntax, logger);
+            }
+
+            MigrationRunner migrationsRunner = new MigrationRunner(migrationEntryService, logger, currentVersion, TargetVersion, 
+            productName, scriptsForMigration);
 
             try
             {

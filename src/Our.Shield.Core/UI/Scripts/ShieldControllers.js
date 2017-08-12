@@ -87,22 +87,19 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             vm.tabs[0].label = 'Apps';
                             vm.journalListing.columns.splice(1, 1);
                             vm.path = ['-1', '0' , vm.id];
-                            vm.ancestors = [{ id: 0, name: 'Environments' }, { id: vm.id, name: vm.name }]
+                            vm.ancestors = [{ id: 0, name: 'Environments' }, { id: vm.id, name: vm.name }];
                             vm.appListing.apps = response.data.apps;
 
-                            if (vm.id === '1') {
-                                vm.tabs.splice(1, 1);
-
-                                if (vm.editingEnvironment) {
-                                    vm.cancelEditing();
-                                }
+                            if (vm.id === '1' && vm.editingEnvironment) {
+                                vm.cancelEditing();
                             }
 
                             if (vm.environment.domains.length === 0) {
                                 vm.environment.domains.push({
                                     id: 0,
                                     name: '',
-                                    umbracoDomainId: null
+                                    umbracoDomainId: null,
+                                    environmentId: vm.environment.id
                                 });
                             }
 
@@ -116,9 +113,9 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             vm.tabs[0].label = 'Configuration';
                             vm.tabs.splice(1, 1);
                             vm.journalListing.columns.splice(1, 2);
-                            vm.journalListing.columns[1].cssClass = 'shield-table__name-large'
+                            vm.journalListing.columns[1].cssClass = 'shield-table__name-large';
                             vm.path = ['-1', '0', vm.environment.id, vm.id];
-                            vm.ancestors = [{ id: 0, name: 'Environments' }, { id: vm.environment.id, name: vm.environment.name }, { id: vm.id, name: vm.name }]
+                            vm.ancestors = [{ id: 0, name: 'Environments' }, { id: vm.environment.id, name: vm.environment.name }, { id: vm.id, name: vm.name }];
 
                             angular.forEach(response.data.appAssests.stylesheets, function (item, index) {
                                 assetsService.loadCss(item);
@@ -194,18 +191,16 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                     notificationsService.success(value);
                                 });
 
-                                if (vm.id === '0') {
-                                    var path = vm.path;
-                                    //add dummy id to path so that it reloads the parent
-                                    path.push('-20');
-
-                                    navigationService.syncTree({ tree: "shield", path: path, forceReload: true, activate: true }).then(function (syncArgs) {
+                                navigationService.syncTree({ tree: "shield", path: vm.path, forceReload: true, activate: true }).then(function (syncArgs) {
+                                    if (vm.id === '0') {
                                         var node = syncArgs.node.children[(syncArgs.node.children.length - 1)];
                                         vm.editItem(node);
-                                    });
-                                } else {
-                                    vm.cancelEditing();
-                                }
+                                        vm.editEnvironment();
+                                    } else {
+                                        vm.button.state = 'init';
+                                        $route.reload();
+                                    }
+                                });
                             } else {
                                 var errorMsgDictionaryItem = 'SaveEnvironmentError';
 
@@ -227,6 +222,8 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                 localizationService.localize('Shield.General_SaveConfigurationSuccess').then(function (value) {
                                     notificationsService.success(value);
                                 });
+
+                                navigationService.syncTree({ tree: "shield", path: vm.path, forceReload: true, activate: true });
                                 $route.reload();
                             } else {
                                 localizationService.localize('Shield.General_SaveConfigurationError').then(function (value) {
@@ -243,13 +240,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     orderBy: 'name',
                     orderDirection: 'desc'
                 },
-                apps: null,
-                enable: function (item) {
-                    if (item.enable)
-                        item.enable = false;
-                    else
-                        item.enable = true;
-                }
+                apps: null
             },
             journalListing: {
                 options: {

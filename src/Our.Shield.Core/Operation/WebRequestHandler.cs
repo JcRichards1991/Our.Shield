@@ -310,7 +310,7 @@ restart:
 
                         if (environment != null && environment.Id != watch.environment.Id)
                         {
-                            return;
+                            continue;
                         }
 
                         string filePath = null;
@@ -327,7 +327,7 @@ restart:
                             var domain = watch.domains.FirstOrDefault(x => uri.StartsWith(x, StringComparison.InvariantCultureIgnoreCase));
                             if (domain != null)
                             {
-                                filePath = uri.Substring(domain.Length + 1);
+                                filePath = uri.Substring(domain.Length - 1);
                             }
                             else
                             {
