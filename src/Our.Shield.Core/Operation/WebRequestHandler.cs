@@ -303,11 +303,6 @@ restart:
 
                     foreach (var watch in watchers)
                     {
-                        if (!watch.environment.Enable)
-                        {
-                            continue;
-                        }
-
                         if (environment != null && environment.Id != watch.environment.Id)
                         {
                             continue;

@@ -36,7 +36,7 @@
   <area alias="Shield.EnvironmentProperties">
     <key alias="EnableDescription">Is this Environment active</key>
     <key alias="ContinueProcessingLabel">Continue Processing</key>
-    <key alias="ContinueProcessingDescription">Whether or not to continue processing when an environment has been found by Shield's HttpModule (recommended is false)</key>
+    <key alias="ContinueProcessingDescription">When this environment matches active security requests, do you allow later environments to process requests too (False is recommended, otherwise you can have multiple actions on a single request)</key>
     <key alias="DomainsLabel">Domains</key>
     <key alias="DomainsDescription">The domains that are associated to this environment</key>
   </area>

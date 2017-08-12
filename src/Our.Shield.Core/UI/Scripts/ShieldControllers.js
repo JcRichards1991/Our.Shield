@@ -113,7 +113,6 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             vm.tabs[0].label = 'Configuration';
                             vm.tabs.splice(1, 1);
                             vm.journalListing.columns.splice(1, 2);
-                            vm.journalListing.columns[1].cssClass = 'shield-table__name-large';
                             vm.path = ['-1', '0', vm.environment.id, vm.id];
                             vm.ancestors = [{ id: 0, name: 'Environments' }, { id: vm.environment.id, name: vm.environment.name }, { id: vm.id, name: vm.name }];
 
