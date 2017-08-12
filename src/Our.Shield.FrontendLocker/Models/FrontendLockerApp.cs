@@ -68,7 +68,7 @@ namespace Our.Shield.FrontendLocker.Models
 
             var config = c as FrontendLockerConfiguration;
             var hardUmbracoLocation = ApplicationSettings.UmbracoPath;
-            var regex = new Regex("^($|(/(?!(umbraco|" + config.UnauthorisedUrl.Trim('/') + "|" + hardUmbracoLocation.Trim('/') + "))([\\w-/_]+)?)$)", RegexOptions.IgnoreCase);
+            var regex = new Regex("^($|(/(?!(" + config.UnauthorisedUrl.Trim('/') + "|" + hardUmbracoLocation.Trim('/') + "))([\\w-/_]+)?)$)", RegexOptions.IgnoreCase);
 
             job.WatchWebRequests(regex, 75, (count, httpApp) =>
             {
@@ -91,8 +91,8 @@ namespace Our.Shield.FrontendLocker.Models
 
                     if (config.UnauthorisedAction == Enums.UnauthorisedAction.Rewrite)
                     {
-                        httpApp.Context.RewritePath(config.UnauthorisedUrl);
-                        return WatchCycle.Restart;
+                        httpApp.Context.Server.TransferRequest(config.UnauthorisedUrl + httpApp.Request.Url.Query, true);
+                        return WatchCycle.Stop;
                     }
 
                     httpApp.Context.Response.Redirect(config.UnauthorisedUrl, true);

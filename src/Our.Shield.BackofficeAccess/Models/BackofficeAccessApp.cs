@@ -248,11 +248,27 @@ namespace Our.Shield.BackofficeAccess.Models
                 //even though it shouldn't
                 if (!hardLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    SoftWatcher(job,
-                        new Regex("^(" + umbracoLocation.TrimEnd('/') + "(/)?)$|^(" + umbracoLocation + "[\\w-/_]+\\.[\\w.]{2,5})$", RegexOptions.IgnoreCase),
-                        10,
-                        hardLocation,
-                        softLocation);
+                    job.WatchWebRequests(new Regex("^(" + umbracoLocation.TrimEnd('/') + "(/)?)$|^(" + umbracoLocation + "[\\w-/_]+\\.[\\w.]{2,5})$", RegexOptions.IgnoreCase), 20, (count, httpApp) =>
+                    {
+                        //If the requests has an authenticated umbraco user,
+                        //we need to redirect the request back to the
+                        //hard location - This is most likely due to
+                        //clicking a link (i.e. content breadcrumb)
+                        //which isn't handle by the angular single page app
+                        if (IsRequestAuthenticated(httpApp))
+                        {
+                            //request has a authenticated user, we want to
+                            //redirect the user back to the soft location
+                            var rewritePath = httpApp.Request.Url.AbsolutePath.Length > umbracoLocation.Length
+                                ? hardLocation + httpApp.Request.Url.AbsolutePath.Substring(umbracoLocation.Length)
+                                : hardLocation;
+
+                            httpApp.Context.Response.Redirect(rewritePath, true);
+                            return WatchCycle.Stop;
+                        }
+
+                        return WatchCycle.Continue;
+                    });
                 }
 
                 return;
