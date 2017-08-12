@@ -1,4 +1,4 @@
-﻿using Our.Shield.BackofficeAccess.Models;
+﻿using Our.Shield.Core;
 using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
@@ -8,22 +8,21 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Umbraco.Core;
 using Umbraco.Core.Security;
-using Umbraco.Web;
 
 namespace Our.Shield.FrontendLocker.Models
 {
     [AppEditor("/App_Plugins/Shield.FrontendLocker/Views/FrontendLocker.html?version=1.0.2")]
-    public class EnvironmentLockerApp : App<EnvironmentLockerConfiguration>
+    public class FrontendLockerApp : App<FrontendLockerConfiguration>
     {
         /// <summary>
         /// 
         /// </summary>
-        public override string Description => "Stops your content editors from linking to dangerous domains";
+        public override string Description => "Locks down the frontend to be viewed only by users that have authenticated as an Umbraco User";
 
         /// <summary>
         /// 
         /// </summary>
-        public override string Icon => "";
+        public override string Icon => "icon-combination-lock red";
 
         /// <summary>
         /// 
@@ -33,29 +32,24 @@ namespace Our.Shield.FrontendLocker.Models
         /// <summary>
         /// 
         /// </summary>
-        public override string Name => "Environment Locker";
+        public override string Name => "Frontend Locker";
 
         /// <summary>
         /// 
         /// </summary>
-        public override IConfiguration DefaultConfiguration => new EnvironmentLockerConfiguration();
+        public override IConfiguration DefaultConfiguration
+        {
+            get
+            {
+                return new FrontendLockerConfiguration
+                {
+                    UnauthorisedAction = Enums.UnauthorisedAction.Redirect,
+                    UnauthorisedUrl = "/403"
+                };
+            }
+        }
 
         private readonly string allowKey = Guid.NewGuid().ToString();
-        private readonly TimeSpan CacheLength = new TimeSpan(TimeSpan.TicksPerDay);        //   Once per day
-
-        private string UnauthorisedUrl(IJob job, EnvironmentLockerConfiguration config)
-        {
-            return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(allowKey, () =>
-            {
-                if (string.IsNullOrEmpty(config.UnauthorisedUrl))
-                {
-                    job.WriteJournal(new JournalMessage("Error: No Unauthorized URL set in configuration"));
-                    return null;
-                }
-
-                return config.UnauthorisedUrl;
-            }, CacheLength) as string;
-        }
 
         /// <summary>
         /// 
@@ -72,10 +66,17 @@ namespace Our.Shield.FrontendLocker.Models
                 return true;
             }
 
-            var config = c as EnvironmentLockerConfiguration;
-            var backofficeAccessConfig = job.ReadConfiguration(1, nameof(BackofficeAccess)) as BackofficeAccessConfiguration;
+            var config = c as FrontendLockerConfiguration;
+            var hardUmbracoLocation = ApplicationSettings.UmbracoPath;
+            var regex = new Regex("^($|(/(?!(umbraco|" + config.UnauthorisedUrl.Trim('/') + "|" + hardUmbracoLocation.Trim('/') + "))([\\w-/_]+)?)$)", RegexOptions.IgnoreCase);
 
-            job.WatchWebRequests(new Regex("^/(?!(umbraco|" + backofficeAccessConfig.BackendAccessUrl.Trim('/') + "))[\\w-_/]+)$"), 75, (count, httpApp) => {
+            job.WatchWebRequests(regex, 75, (count, httpApp) =>
+            {
+                if ((bool?)httpApp.Context.Items[allowKey] == true)
+                {
+                    return WatchCycle.Continue;
+                }
+
                 var httpContext = new HttpContextWrapper(httpApp.Context);
                 var umbAuthTicket = httpContext.GetUmbracoAuthTicket();
 
@@ -83,13 +84,22 @@ namespace Our.Shield.FrontendLocker.Models
                 {
                     httpApp.Context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
-                    if (UnauthorisedUrl(job, config) == null)
+                    if (config.UnauthorisedUrl == null)
                     {
                         return WatchCycle.Stop;
                     }
 
+                    if (config.UnauthorisedAction == Enums.UnauthorisedAction.Rewrite)
+                    {
+                        httpApp.Context.RewritePath(config.UnauthorisedUrl);
+                        return WatchCycle.Restart;
+                    }
+
+                    httpApp.Context.Response.Redirect(config.UnauthorisedUrl, true);
                     return WatchCycle.Stop;
                 }
+
+                httpApp.Context.Items.Add(allowKey, true);
 
                 return WatchCycle.Continue;
             });

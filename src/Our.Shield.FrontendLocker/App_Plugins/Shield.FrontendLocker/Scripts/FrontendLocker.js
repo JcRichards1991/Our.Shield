@@ -15,6 +15,7 @@
 
             angular.extend(vm, {
                 loading: true,
+                configuration: $scope.$parent.configuration,
                 init: function () {
                     vm.loading = false;
                 }

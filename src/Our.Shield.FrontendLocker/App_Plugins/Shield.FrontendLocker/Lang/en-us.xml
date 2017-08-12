@@ -7,4 +7,13 @@
   <area alias="Shield.FrontendLocker.General">
     <key alias="AreaName">Frontend Locker</key>
   </area>
+
+  <area alias="Shield.FrontendLocker.Properties">
+    <key alias="UnauthorisedActionLabel">Unauthorised Action</key>
+    <key alias="UnauthorisedActionDescription">Whether to redirect the user or to rewrite the request to another location when the user is not authenticated as an Umbraco User.</key>
+
+    <key alias="UnauthorisedUrlLabel">Unauthorised Url</key>
+    <key alias="UnauthorisedUrlDescription">The Url to redirect/rewrite the request to, when the user is not authenticated as an Umbraco User</key>
+  </area>
+  
 </language>

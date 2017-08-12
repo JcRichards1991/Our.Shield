@@ -4,7 +4,7 @@ using Our.Shield.Core.Models;
 
 namespace Our.Shield.FrontendLocker.Models
 {
-    public class EnvironmentLockerConfiguration : Configuration
+    public class FrontendLockerConfiguration : Configuration
     {
         /// <summary>
         /// Gets or sets the Status Code.

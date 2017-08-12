@@ -134,12 +134,12 @@ namespace Our.Shield.BackofficeAccess.Models
 
         private static int ResetterLock = 0;
 
-        private int SoftWatcher(IJob job, Regex regex, int priority, string hardLocation, string softLocation, bool rewrite = true)
+        private int SoftWatcher(IJob job, Regex regex, int priority, string hardLocation, string softLocation, bool rewrite = false, bool addHardReseterFile = false)
         {
             //Add watch on the soft location
             return job.WatchWebRequests(regex, priority, (count, httpApp) =>
             {
-                if (Interlocked.CompareExchange(ref ResetterLock, 0, 1) == 0)
+                if (addHardReseterFile && Interlocked.CompareExchange(ref ResetterLock, 0, 1) == 0)
                 {
                     var resetter = new HardResetFileHandler();
                     resetter.Delete();
@@ -230,29 +230,44 @@ namespace Our.Shield.BackofficeAccess.Models
             if (!softLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase) && !hardLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase))
             {
                 SoftWatcher(job,
-                    new Regex("^(" + umbracoLocation.TrimEnd('/') + "(?!_client)[\\w-/.]+)$", RegexOptions.IgnoreCase),
+                    new Regex("^(" + umbracoLocation + "backoffice([\\w-/._]+))$", RegexOptions.IgnoreCase),
                     15,
                     hardLocation,
-                    umbracoLocation,
-                    false);
+                    umbracoLocation);
             }
 
             //if the softLocation and the hardLocation
             //are the same we don't need to add any watches
-            //we can exit the function
+            //we can stop adding soft watches
             if (softLocation.Equals(hardLocation, StringComparison.InvariantCultureIgnoreCase))
             {
+                //if the hardlocation doesn't equals /umbraco/
+                //we need to add a watch on umbraco in case 
+                //another backoffice access app is disabled
+                //which will cause /umbraco/ to be accessible
+                //even though it shouldn't
+                if (!hardLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    SoftWatcher(job,
+                        new Regex("^(" + umbracoLocation.TrimEnd('/') + "(/)?)$|^(" + umbracoLocation + "[\\w-/_]+\\.[\\w.]{2,5})$", RegexOptions.IgnoreCase),
+                        10,
+                        hardLocation,
+                        softLocation);
+                }
+
                 return;
             }
 
-            //A hard save has occurred so we need
-            //to make sure backoffice is accessible
+            //A hard save is needed, so we need to hook up
+            //the watches to route everything correctly
+
+            //add watch on the soft location
             SoftWatcher(job,
-                new Regex("^(" + softLocation.TrimEnd('/') + "(/)?)$|^(" + softLocation + "[\\w-/]+\\.[\\w.]{2,5})$", RegexOptions.IgnoreCase),
+                new Regex("^(" + softLocation.TrimEnd('/') + "(/)?)$|^(" + softLocation + "[\\w-/_]+\\.[\\w.]{2,5})$", RegexOptions.IgnoreCase),
                 10,
                 hardLocation,
                 softLocation,
-                true);
+                config.UnauthorisedAction.Equals(Enums.UnauthorisedAction.Rewrite), true);
 
             var hardLocationRegex = new Regex("^(" + hardLocation.TrimEnd('/') + "(/)?)$|^(" + hardLocation + "[\\w-/]+\\.[\\w.]{2,5})$", RegexOptions.IgnoreCase);
 

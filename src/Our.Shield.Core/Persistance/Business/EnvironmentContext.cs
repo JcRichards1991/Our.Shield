@@ -118,6 +118,7 @@ namespace Our.Shield.Core.Persistance.Business
                 if (id != 0 && Database.Exists<Data.Dto.Environment>(id))
                 {
                     Database.Delete<Data.Dto.Environment>(id);
+                    Instance.Domain.Delete(id, null);
                     return true;
                 }
             }

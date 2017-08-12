@@ -13,7 +13,7 @@
     <key alias="BackendAccessUrlDescription">The URL used to access the CMS.</key>
     
     <key alias="UnauthorisedActionLabel">Unauthorised Action</key>
-    <key alias="UnauthorisedActionDescription">Whether or not to redirect the user or to rewrite the request to another location when from a non white listed IP address.</key>
+    <key alias="UnauthorisedActionDescription">Whether to redirect the user or to rewrite the request to another location when from a non white listed IP address.</key>
     
     <key alias="UnauthorisedUrlTypeLabel">Unauthorised Url Type</key>
     <key alias="UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</key>

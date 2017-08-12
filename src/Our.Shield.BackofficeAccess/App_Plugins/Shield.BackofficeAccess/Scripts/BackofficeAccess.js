@@ -15,7 +15,7 @@ angular.module('umbraco').controller('Shield.Editors.BackofficeAccess.Edit',
 
         angular.extend(vm, {
             loading: true,
-            configuration: $scope.configuration,
+            configuration: $scope.$parent.configuration,
             contentPickerProperty: {
                 label: localizationService.localize('Shield.BackofficeAccess.Properties_UnauthorisedUrlLabel'),
                 description: localizationService.localize('Shield.BackofficeAccess.Properties_UnauthorisedUrlContentPickerDescription'),

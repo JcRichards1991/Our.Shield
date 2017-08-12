@@ -75,15 +75,6 @@ namespace Our.Shield.Core.Models
             JobService.Instance.ReadConfiguration(this);
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="environmentId"></param>
-        /// <param name="appId"></param>
-        /// <returns></returns>
-        public IConfiguration ReadConfiguration(int environmentId, string appId) =>
-            JobService.Instance.ReadConfiguration(environmentId, appId);
-
-        /// <summary>
         /// Reads a list of Journals from the database
         /// </summary>
         /// <typeparam name="T">The Type of Journal to return</typeparam>

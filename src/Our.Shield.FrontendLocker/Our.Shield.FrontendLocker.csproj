@@ -263,10 +263,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Our.Shield.BackofficeAccess\Our.Shield.BackofficeAccess.csproj">
-      <Project>{58fdce32-1389-4768-882e-281ceec508cd}</Project>
-      <Name>Our.Shield.BackofficeAccess</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Our.Shield.Core\Our.Shield.Core.csproj">
       <Project>{69737067-ab31-4c68-9c69-5e6ce00d1ab3}</Project>
       <Name>Our.Shield.Core</Name>

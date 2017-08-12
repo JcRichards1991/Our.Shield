@@ -1,3 +1,40 @@
 ﻿<div ng-controller="Shield.Editors.FrontendLocker.Edit as vm" ng-init="vm.init()">
+    <ng-form name="frontendLocker">
 
+        <div class="umb-el-wrap control-group umb-control-group">
+            <label for="unauthorisedAction" class="control-label">
+                <localize key="Shield.FrontendLocker.Properties_UnauthorisedActionLabel">Unauthorised Action</localize>
+                <small>
+                    <localize key="Shield.FrontendLocker.Properties_UnauthorisedActionDescription">Whether or not to redirect the user or to rewrite the request to another location when from a non white listed IP address.</localize>
+                </small>
+            </label>
+
+            <div class="controls">
+                <select id="unauthorisedAction" name="unauthorisedAction" ng-model="vm.configuration.unauthorisedAction" required shield-convert-to-number>
+                    <option value="0">Redirect</option>
+                    <option value="1">Rewrite</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="umb-el-wrap control-group umb-control-group">
+            <label for="unauthorisedUrl" class="control-label">
+                <localize key="Shield.FrontendLocker.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
+                <small>
+                    <localize key="Shield.FrontendLocker.Properties_UnauthorisedUrlDescription">The Url to redirect/rewrite the request to when from a non white listed IP Address.</localize>
+                </small>
+            </label>
+
+            <div class="controls">
+                <input type="text" id="unauthorisedUrl" name="unauthorisedUrl" ng-model="vm.configuration.unauthorisedUrl" required ng-trim="false" ng-pattern="/^\/(([\w-]+(\/)?)+([\w-]+\.[\w-]+)?(\/)?(\?[\w-]+(=[\w-]+)?((&[\w-]+(=[\w-]+)?)+)?)?(#[\w-]+)?)?$/i" />
+                <span class="help-inline" val-msg-for="unauthorisedUrl" val-toggle-msg="required">
+                    <localize key="Shield.FrontendLocker.ErrorMessages_Required">Required</localize>
+                </span>
+                <span class="help-inline" val-msg-for="unauthorisedUrl" val-toggle-msg="pattern">
+                    <localize key="Shield.FrontendLocker.ErrorMessages_InvalidUnauthorisedUrl">Invalid Url. Please provide a valid relative Url. i.e. /404</localize>
+                </span>
+            </div>
+        </div>
+
+    </ng-form>
 </div>

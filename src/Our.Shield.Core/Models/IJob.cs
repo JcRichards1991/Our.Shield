@@ -47,14 +47,6 @@ namespace Our.Shield.Core.Models
         IConfiguration ReadConfiguration();
 
         /// <summary>
-        /// Reads the configuration from the database
-        /// </summary>
-        /// <param name="environmentId">The id of the environment</param>
-        /// <param name="appId">The id of the app</param>
-        /// <returns>The configuration for the App</returns>
-        IConfiguration ReadConfiguration(int environmentId, string appId);
-
-        /// <summary>
         /// Reads a list of Journals fro the database
         /// </summary>
         /// <typeparam name="T">The Type of Journal to return</typeparam>

@@ -263,7 +263,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\ApplicationSettings.cs" />
     <Compile Include="Models\BackofficeAccessConfiguration.cs" />
     <Compile Include="Models\BackofficeAccessApp.cs" />
     <Compile Include="Models\HardReset.cs" />

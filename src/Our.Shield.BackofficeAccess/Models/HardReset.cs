@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Our.Shield.Core.Models;
+using System;
+using System.Configuration;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -42,7 +44,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 var webConfig = new WebConfigFileHandler();
 
                 webConfig.UmbracoPath = "~/" + Path.GetFileName(resetter.SoftLocation);
-                ApplicationSettings.SetUmbracoPath(webConfig.UmbracoPath);
+                ConfigurationManager.AppSettings.Set("umbracoPath", webConfig.UmbracoPath);
 
                 var paths = webConfig.UmbracoReservedPaths;
 
@@ -57,10 +59,11 @@ namespace Our.Shield.BackofficeAccess.Models
                 }
 
                 webConfig.UmbracoReservedPaths = paths;
-                ApplicationSettings.SetUmbracoReservedPaths(string.Join(",", paths));
+                ConfigurationManager.AppSettings.Set("umbracoReservedPaths", string.Join(",", paths));
 
                 webConfig.SetLocationPath(Path.GetFileName(resetter.HardLocation).Trim('/'), webConfig.UmbracoPath.TrimStart('~', '/').TrimEnd('/'));
 
+                Directory.Move(resetter.HardLocation, resetter.SoftLocation);
                 try
                 {
                     webConfig.Save();
@@ -69,13 +72,13 @@ namespace Our.Shield.BackofficeAccess.Models
                 {
                     throw saveEx;
                 }
-
-                Directory.Move(resetter.HardLocation, resetter.SoftLocation);
+                
                 resetter.Delete();
             }
             catch (Exception ex)
             {
                 LogHelper.Error<HardReset>($"Unexpected error occurred renaming folder {Path.GetFileName(resetter.HardLocation)} to {Path.GetFileName(resetter.SoftLocation)} OR error setting correct app key values in web.config for umbracoPath / umbracoReservedPaths", ex);
+                throw ex;
             }
         }
 

@@ -14,7 +14,7 @@ namespace Our.Shield.SafeBrowsing.Models
         /// <summary>
         /// 
         /// </summary>
-        public override string Icon => "";
+        public override string Icon => "icon-alert red";
 
         /// <summary>
         /// 

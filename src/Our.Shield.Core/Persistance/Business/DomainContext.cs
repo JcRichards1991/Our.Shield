@@ -92,20 +92,24 @@ namespace Our.Shield.Core.Persistance.Business
         }
 
         /// <summary>
-        /// 
+        /// Removes domains from the database
         /// </summary>
-        /// <param name="domain"></param>
+        /// <param name="environmentId">The environemnt id of the domains to remove</param>
+        /// <param name="domainIds">Collection of domain Id(s) to keep for the environment</param>
         /// <returns></returns>
-        public bool Delete(int environmentId, IEnumerable<int> domainIds)
+        public bool Delete(int environmentId, IEnumerable<int> domainIds = null)
         {
             try
             {
                 var sql = new Sql();
                 sql.Where(nameof(Data.Dto.Domain.EnvironmentId) + " = @0", environmentId);
-                
-                foreach(var id in domainIds)
+
+                if (domainIds != null && domainIds.Any())
                 {
-                    sql.Where(nameof(Data.Dto.Domain.Id) + " != @0", id);
+                    foreach (var id in domainIds)
+                    {
+                        sql.Where(nameof(Data.Dto.Domain.Id) + " != @0", id);
+                    }
                 }
 
                 Database.Delete<Data.Dto.Domain>(sql);
