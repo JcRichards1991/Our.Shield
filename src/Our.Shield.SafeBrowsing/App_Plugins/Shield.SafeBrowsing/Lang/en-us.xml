@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language alias="en" intName="English (US)" localName="English (US)" lcid="" culture="en-US">
+  <creator>
+    <name>Joshua Richards</name>
+  </creator>
+
+  <area alias="Shield.SafeBrowsing.General">
+    <key alias="AreaName">Safe Browsing</key>
+  </area>
+</language>

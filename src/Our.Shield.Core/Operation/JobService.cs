@@ -381,6 +381,17 @@ namespace Our.Shield.Core.Operation
                 defaultConfiguration ?? App<IConfiguration>.Create(job.App.Id).DefaultConfiguration);
         }
 
+        public IConfiguration ReadConfiguration(int environmentId, string appId, IConfiguration defaultConfiguration = null)
+        {
+            if (defaultConfiguration == null)
+            {
+                defaultConfiguration = App<IConfiguration>.Create(appId).DefaultConfiguration;
+            }
+
+            return DbContext.Instance.Configuration.Read(environmentId, appId, defaultConfiguration.GetType(),
+                defaultConfiguration);
+        }
+
         /// <summary>
         /// Gets a collection of journals from the database
         /// </summary>

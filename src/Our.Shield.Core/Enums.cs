@@ -1,4 +1,4 @@
-﻿namespace Our.Shield.BackofficeAccess.Models
+﻿namespace Our.Shield.Core
 {
     /// <summary>
     /// 

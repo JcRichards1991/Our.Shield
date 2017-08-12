@@ -12,12 +12,13 @@
     <description>$description$</description>
     <releaseNotes>$version$ release</releaseNotes>
     <copyright>Copyright 2017</copyright>
-    <tags>Umbraco UmbracoCms Security MediaProtection Media Protection</tags>
+    <tags>Umbraco UmbracoCms Security Locker Frontendblocker Frontend blocker</tags>
     <dependencies>
       <dependency id="Our.Shield.Core" version="1.0.2" />
+      <dependency id="Our.Shield.BackofficeAccess" version="1.0.2" />
     </dependencies>
   </metadata>
   <files>
-    <file src="App_Plugins\Shield.MediaProtection\package.manifest" target="Content\App_Plugins\Shield.MediaProtection" />
+    <file src="App_Plugins\Shield.SafeBrowsing\package.manifest" target="Content\App_Plugins\Shield.SafeBrowsing" />
   </files>
 </package>

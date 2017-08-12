@@ -265,6 +265,7 @@
   <ItemGroup>
     <Compile Include="Attributes\AppMigrationAttribute.cs" />
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="Models\JournalMessage.cs" />
     <Compile Include="Operation\EnvironmentService.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration100.cs" />

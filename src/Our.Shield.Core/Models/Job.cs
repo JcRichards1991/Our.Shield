@@ -57,7 +57,7 @@ namespace Our.Shield.Core.Models
         /// <param name="config">The configuration to write</param>
         /// <returns>True, if successfully written the config to the database; Otherwise, False</returns>
         public bool WriteConfiguration(IConfiguration config) =>
-            Operation.JobService.Instance.WriteConfiguration(this, config);
+            JobService.Instance.WriteConfiguration(this, config);
 
         /// <summary>
         /// Writes a journal to the database
@@ -65,14 +65,23 @@ namespace Our.Shield.Core.Models
         /// <param name="journal">The journal to write</param>
         /// <returns>True, if successfully written the journal to the database; Otherwise, False</returns>
         public bool WriteJournal(IJournal journal) =>
-            Operation.JobService.Instance.WriteJournal(this, journal);
+            JobService.Instance.WriteJournal(this, journal);
 
         /// <summary>
         /// Reads the configuration from the database
         /// </summary>
         /// <returns>The configuration for the App</returns>
         public IConfiguration ReadConfiguration() =>
-            Operation.JobService.Instance.ReadConfiguration(this);
+            JobService.Instance.ReadConfiguration(this);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="environmentId"></param>
+        /// <param name="appId"></param>
+        /// <returns></returns>
+        public IConfiguration ReadConfiguration(int environmentId, string appId) =>
+            JobService.Instance.ReadConfiguration(environmentId, appId);
 
         /// <summary>
         /// Reads a list of Journals from the database
@@ -82,7 +91,7 @@ namespace Our.Shield.Core.Models
         /// <param name="itemsPerPage">The number of items to return per page</param>
         /// <returns>Collection of Journals of the desired type</returns>
         public IEnumerable<T> ListJournals<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal =>
-            Operation.JobService.Instance.ListJournals<T>(this, page, itemsPerPage, out totalPages);
+            JobService.Instance.ListJournals<T>(this, page, itemsPerPage, out totalPages);
 
         /// <summary>
         /// Adds a Web Request to WebRequestsHandler collection
@@ -96,7 +105,7 @@ namespace Our.Shield.Core.Models
         public int WatchWebRequests(Regex regex, 
             int beginRequestPriority, Func<int, HttpApplication, WatchCycle> beginRequest, 
             int endRequestPriority, Func<int, HttpApplication, WatchCycle> endRequest) =>
-            Operation.WebRequestHandler.Watch(this, regex, beginRequestPriority, beginRequest, endRequestPriority, endRequest);
+            WebRequestHandler.Watch(this, regex, beginRequestPriority, beginRequest, endRequestPriority, endRequest);
 
         /// <summary>
         /// Adds a Web Requests to the WebRequestsHandler collection
@@ -107,7 +116,7 @@ namespace Our.Shield.Core.Models
         /// <returns></returns>
         public int WatchWebRequests(Regex regex, 
             int beginRequestPriority, Func<int, HttpApplication, WatchCycle> beginRequest) => 
-            Operation.WebRequestHandler.Watch(this, regex, beginRequestPriority, beginRequest, 0, null);
+            WebRequestHandler.Watch(this, regex, beginRequestPriority, beginRequest, 0, null);
 
         /// <summary>
         /// Removes a Web Requests from the WebRequestHandler collection
@@ -115,14 +124,14 @@ namespace Our.Shield.Core.Models
         /// <param name="regex">The regex of the corresponding Web Request to remove</param>
         /// <returns></returns>
         public int UnwatchWebRequests(Regex regex) =>
-            Operation.WebRequestHandler.Unwatch(this, regex);
+            WebRequestHandler.Unwatch(this, regex);
 
         /// <summary>
         /// Removes all Web Requests from the WebRequestHandler collection created by this job 
         /// </summary>
         /// <returns></returns>
         public int UnwatchWebRequests() =>
-            Operation.WebRequestHandler.Unwatch(this);
+            WebRequestHandler.Unwatch(this);
 
         /// <summary>
         /// Removes all Web Requests from the WebRequestsHandler collection for the given App
@@ -130,6 +139,6 @@ namespace Our.Shield.Core.Models
         /// <param name="app">The App of the corresponding Web Requests to remove</param>
         /// <returns></returns>
         public int UnwatchWebRequests(IApp app) =>
-            Operation.WebRequestHandler.Unwatch(app.Id);
+            WebRequestHandler.Unwatch(app.Id);
     }
 }

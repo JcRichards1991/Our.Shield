@@ -1,4 +1,5 @@
-﻿using Our.Shield.Core.Attributes;
+﻿using Our.Shield.Core;
+using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using System;

@@ -1,23 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Our.Shield.Core;
-using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
 
-namespace Our.Shield.BackofficeAccess.Models
+namespace Our.Shield.EnvironmentLocker.Models
 {
-    /// <summary>
-    /// The Backofffice Access Configuration
-    /// </summary>
-    [JsonObject(MemberSerialization.OptIn)]
-    public class BackofficeAccessConfiguration : Configuration
+    public class EnvironmentLockerConfiguration : Configuration
     {
-        /// <summary>
-        /// Gets or sets the Backend Access URL.
-        /// </summary>
-        [JsonProperty("backendAccessUrl")]
-        [SingleEnvironment]
-        public string BackendAccessUrl { get; set; }
-
         /// <summary>
         /// Gets or sets the Status Code.
         /// </summary>
@@ -25,22 +13,16 @@ namespace Our.Shield.BackofficeAccess.Models
         public Enums.UnauthorisedAction UnauthorisedAction { get; set; }
 
         /// <summary>
-        /// Gets or set the Ip Addresses.
+        /// 
         /// </summary>
-        [JsonProperty("ipAddresses")]
-        public IpEntry[] IpEntries { get; set; }
+        [JsonProperty("unauthorisedUrlType")]
+        public Enums.UnautorisedUrlType UnauthorisedUrlType { get; set; }
 
         /// <summary>
         /// Gets or sets the Unauthorised URL by XPath.
         /// </summary>
         [JsonProperty("unauthorisedUrlXPath")]
         public string UnauthorisedUrlXPath { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Unauthorised URL Type.
-        /// </summary>
-        [JsonProperty("unauthorisedUrlType")]
-        public Enums.UnautorisedUrlType UnauthorisedUrlType { get; set; }
 
         /// <summary>
         /// Gets or sets the Unauthorised URL by Content Picker.
