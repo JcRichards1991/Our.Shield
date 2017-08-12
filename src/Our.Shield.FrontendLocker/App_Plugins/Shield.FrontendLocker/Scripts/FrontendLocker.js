@@ -7,7 +7,7 @@
     * @description
     * Edit Controller for the Safe Browsing Edit view
     */
-    angular.module('umbraco').controller('Shield.Editors.EnvironmentLocker.Edit',
+    angular.module('umbraco').controller('Shield.Editors.FrontendLocker.Edit',
         ['$scope', 'localizationService',
         function ($scope, localizationService) {
 

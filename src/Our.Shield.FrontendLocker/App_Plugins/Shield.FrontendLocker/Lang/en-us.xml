@@ -4,7 +4,7 @@
     <name>Joshua Richards</name>
   </creator>
 
-  <area alias="Shield.EnvironmentLocker.General">
-    <key alias="AreaName">Environment Locker</key>
+  <area alias="Shield.FrontendLocker.General">
+    <key alias="AreaName">Frontend Locker</key>
   </area>
 </language>

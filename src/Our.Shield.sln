@@ -34,7 +34,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.Migrations", "Ou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.SafeBrowsing", "Our.Shield.SafeBrowsing\Our.Shield.SafeBrowsing.csproj", "{CDE13F56-EFF2-4AA3-A843-65C085DD4F5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.EnvironmentLocker", "Our.Shield.EnvironmentLocker\Our.Shield.EnvironmentLocker.csproj", "{CE78DDD4-F1C4-429C-9D76-2060EEEC2042}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.FrontendLocker", "Our.Shield.FrontendLocker\Our.Shield.FrontendLocker.csproj", "{CE78DDD4-F1C4-429C-9D76-2060EEEC2042}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
