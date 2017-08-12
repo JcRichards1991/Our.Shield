@@ -1,13 +1,13 @@
 (function(root){
     /**
     * @ngdoc controller
-    * @name Shield.Editors.SafeBrowsing.Edit
+    * @name Shield.Editors.SafeLinking.Edit
     * @function
     *
     * @description
     * Edit Controller for the Safe Browsing Edit view
     */
-    angular.module('umbraco').controller('Shield.Editors.SafeBrowsing.Edit',
+    angular.module('umbraco').controller('Shield.Editors.SafeLinking.Edit',
         ['$scope', 'localizationService',
         function ($scope, localizationService) {
 

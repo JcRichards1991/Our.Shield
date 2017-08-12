@@ -6,7 +6,6 @@ using System;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
-using Umbraco.Core;
 using Umbraco.Core.Security;
 
 namespace Our.Shield.FrontendLocker.Models

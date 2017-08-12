@@ -7,8 +7,8 @@
     <ProjectGuid>{CDE13F56-EFF2-4AA3-A843-65C085DD4F5E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Our.Shield.SafeBrowsing</RootNamespace>
-    <AssemblyName>Our.Shield.SafeBrowsing</AssemblyName>
+    <RootNamespace>Our.Shield.SafeLinking</RootNamespace>
+    <AssemblyName>Our.Shield.SafeLinking</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -258,8 +258,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\SafeBrowsingApp.cs" />
-    <Compile Include="Models\SafeBrowsingConfiguration.cs" />
+    <Compile Include="Models\SafeLinkingApp.cs" />
+    <Compile Include="Models\SafeLinkingConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -269,14 +269,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\Shield.SafeBrowsing\Lang\en-us.xml" />
-    <Content Include="App_Plugins\Shield.SafeBrowsing\Scripts\SafeBrowsing.js" />
-    <Content Include="App_Plugins\Shield.SafeBrowsing\Views\SafeBrowsing.html" />
+    <Content Include="App_Plugins\Shield.SafeLinking\Lang\en-us.xml" />
+    <Content Include="App_Plugins\Shield.SafeLinking\Scripts\SafeLinking.js" />
+    <Content Include="App_Plugins\Shield.SafeLinking\Views\SafeLinking.html" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="App_Plugins\Shield.SafeBrowsing\package.manifest" />
-    <None Include="Our.Shield.SafeBrowsing.nuspec" />
+    <None Include="App_Plugins\Shield.SafeLinking\package.manifest" />
+    <None Include="Our.Shield.SafeLinking.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Our.Shield.SafeBrowsing")]
+[assembly: AssemblyTitle("Our.Shield.SafeLinking")]
 [assembly: AssemblyDescription("An app plugin to Our.Shield.Core Umbraco Cms package to stop content editors from linking to dangerous domains")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Our.Shield.SafeBrowsing")]
+[assembly: AssemblyProduct("Our.Shield.SafeLinking")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

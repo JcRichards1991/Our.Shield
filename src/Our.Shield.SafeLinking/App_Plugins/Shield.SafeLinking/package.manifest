@@ -1,0 +1,5 @@
+﻿{
+  "javascript": [
+    "~/App_Plugins/Shield.SafeLinking/Scripts/SafeLinking.js?version=1.0.2"
+  ]
+}
