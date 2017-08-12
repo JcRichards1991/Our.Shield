@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>$version$ release</releaseNotes>
+    <releaseNotes>Updates to allow to work with multiple environments</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security BackofficeAccess Access Backoffice</tags>
     <dependencies>
