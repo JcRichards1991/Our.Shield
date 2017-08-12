@@ -310,7 +310,7 @@ namespace Our.Shield.Core.UI
                 return false;
             }
 
-            var environments = json.Select(x => x.ToObject<Models.Environment>());
+            var environments = json.Select(x => JsonConvert.DeserializeObject<Models.Environment>(x.ToString(), new DomainConverter()));
             var oldEnvironments = Operation.JobService.Instance.Environments;
 
             foreach (var environment in environments)

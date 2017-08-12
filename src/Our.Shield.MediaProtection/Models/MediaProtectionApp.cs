@@ -95,11 +95,26 @@ namespace Our.Shield.MediaProtection.Models
 
             if (config.EnableHotLinkingProtection)
             {
+                var domains = new List<string>();
+                foreach (var domain in job.Environment.Domains)
+                {
+                    try
+                    {
+                        var uriBuilder = new UriBuilder(domain.Name);
+                        domains.Add(uriBuilder.Host);
+                    }
+                    catch (Exception)
+                    {
+                        // Swallow
+                    }
+                }
+
                 job.WatchWebRequests(new Regex(mediaFolder, RegexOptions.IgnoreCase), 50, (count, httpApp) =>
                 {
                     var referrer = httpApp.Request.UrlReferrer;
                     if (referrer == null || String.IsNullOrWhiteSpace(referrer.Host) ||
-                        referrer.Host.Equals(httpApp.Request.Url.Host, StringComparison.InvariantCultureIgnoreCase))
+                        referrer.Host.Equals(httpApp.Request.Url.Host, StringComparison.InvariantCultureIgnoreCase) ||
+                        domains.Any(x => x.Equals(referrer.Host, StringComparison.InvariantCultureIgnoreCase)))
                     {
                         //  This media is being accessed directly, 
                         //  or from a browser that doesn't pass referrer info,

@@ -123,7 +123,9 @@ namespace Our.Shield.EnvironmentLocker.Models
         /// <returns></returns>
         public override bool Execute(IJob job, IConfiguration c)
         {
-            if(!c.Enable)
+            job.UnwatchWebRequests();
+
+            if (!c.Enable || !job.Environment.Enable)
             {
                 return true;
             }
