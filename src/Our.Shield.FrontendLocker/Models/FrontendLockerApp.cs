@@ -50,6 +50,20 @@ namespace Our.Shield.FrontendLocker.Models
 
         private readonly string allowKey = Guid.NewGuid().ToString();
 
+        private IPAddress ConvertToIpv4(string ip)
+        {
+            if (ip.Equals("::1"))
+                ip = "127.0.0.1";
+
+            IPAddress typedIp;
+            if (IPAddress.TryParse(ip, out typedIp))
+            {
+                return typedIp.MapToIPv4();
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -81,6 +95,9 @@ namespace Our.Shield.FrontendLocker.Models
 
                 if(!httpContext.AuthenticateCurrentRequest(umbAuthTicket, true))
                 {
+                    var userIp = ConvertToIpv4(httpApp.Context.Request.UserHostAddress);
+                    job.WriteJournal(new JournalMessage($"Unauthenticated user tried to access page: {httpApp.Context.Request.Url.AbsolutePath}; From IP Address: {userIp}; Access was denied"));
+
                     httpApp.Context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
                     if (config.UnauthorisedUrl == null)

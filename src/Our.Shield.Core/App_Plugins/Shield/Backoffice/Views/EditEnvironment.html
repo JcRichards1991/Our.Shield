@@ -11,24 +11,45 @@
         </div>
     </div>
 </div>
+
+<div class="umb-el-wrap control-group umb-control-group">
+    <div>
+        <label for="colorIndicator" class="control-label">
+            <localize key="Shield.EnvironmentProperties_ColorIndicatorLabel">Color Indicator</localize>
+            <small>
+                <localize key="Shield.EnvironmentProperties_ColorIndicatorDescription">Change the color of Umbraco favicon and navigation to easily determine the environment your on</localize>
+            </small>
+        </label>
+        <div class="controls">
+            <input type="text" id="colorIndicator" name="colorIndicator" ng-model="vm.environment.colorIndicator" required ng-trim="false" ng-pattern="/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i"/>
+            <span class="help-inline" val-msg-for="colorIndicator" val-toggle-msg="required">
+                <localize key="Shield.EnvironmentProperties.ErrorMessages_ColorIndicatorRequired">Color Indicator is required</localize>
+            </span>
+            <span class="help-inline" val-msg-for="colorIndicator" val-toggle-msg="pattern">
+                <localize key="Shield.EnvironmentProperties.ErrorMessages_ColorIndicatorInvalid">Invalid hexedecimal color</localize>
+            </span>
+        </div>
+    </div>
+</div>
+
 <div ng-if="vm.id !== '1'">
     <div class="umb-el-wrap control-group umb-control-group">
         <div>
-            <label for="enable" class="control-label">
+            <label for="continueProcessing" class="control-label">
                 <localize key="Shield.EnvironmentProperties_ContinueProcessingLabel">Continue Processing</localize>
                 <small>
                     <localize key="Shield.EnvironmentProperties_ContinueProcessingDescription">Whether or not to continue processing when an environment has been found by Shield's HttpModule (recommended is false)</localize>
                 </small>
             </label>
             <div class="controls">
-                <input type="checkbox" id="enable" ng-model="vm.environment.continueProcessing" />
+                <input type="checkbox" id="continueProcessing" ng-model="vm.environment.continueProcessing" />
             </div>
         </div>
     </div>
 
     <div class="umb-el-wrap control-group umb-control-group">
         <div>
-            <label for="enable" class="control-label">
+            <label for="domain0" class="control-label">
                 <localize key="Shield.EnvironmentProperties_DomainsLabel">Domains</localize>
                 <small>
                     <localize key="Shield.EnvironmentProperties_DomainsDescription">The domains that are associated to this environment</localize>

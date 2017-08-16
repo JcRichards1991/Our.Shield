@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<language alias="ru" intName="Russian" localName="русский" lcid="" culture="ru-RU">
+  <creator>
+    <name>The Umbraco community</name>
+    <link>http://our.umbraco.org/documentation/Extending-Umbraco/Language-Files</link>
+  </creator>
+  <area alias="labels">
+    <key alias="version">Версия</key>
+  </area>
+</language>

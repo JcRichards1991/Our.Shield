@@ -7,8 +7,8 @@
     * Handles the main view for Shield
 */
 angular.module('umbraco').controller('Shield.Editors.Edit', 
-    ['$scope', '$routeParams', '$location', '$timeout', '$route', 'notificationsService', 'localizationService', 'listViewHelper', 'navigationService', 'assetsService', 'treeService', 'shieldResource',
-    function ($scope, $routeParams, $location, $timeout, $route, notificationsService, localizationService, listViewHelper, navigationService, assetsService, treeService, shieldResource) {
+    ['$scope', '$routeParams', '$location', '$timeout', '$route', '$window', 'notificationsService', 'localizationService', 'listViewHelper', 'navigationService', 'assetsService', 'treeService', 'shieldResource',
+    function ($scope, $routeParams, $location, $timeout, $route, $window, notificationsService, localizationService, listViewHelper, navigationService, assetsService, treeService, shieldResource) {
 
         var vm = this;
 
@@ -66,7 +66,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                 vm.environment = {
                                     name: '',
                                     icon: 'icon-firewall red',
-                                    domains: [],
+                                    domains: [{ id: 0, name: '', umbracoDomainId: null}],
                                     continueProcessing: false,
                                     enable: true,
                                     sortOrder: vm.environments.length
@@ -172,7 +172,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     vm.button.state = 'error';
                     return;
                 }
-
+                var colorIndicatorChanged = vm.type === 1 && $scope.shieldForm.colorIndicator.$dirty;
                 $scope.shieldForm.$setPristine();
 
                 switch (vm.type) {
@@ -190,16 +190,29 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                     notificationsService.success(value);
                                 });
 
-                                navigationService.syncTree({ tree: "shield", path: vm.path, forceReload: true, activate: true }).then(function (syncArgs) {
-                                    if (vm.id === '0') {
-                                        var node = syncArgs.node.children[(syncArgs.node.children.length - 1)];
-                                        vm.editItem(node);
-                                        vm.editEnvironment();
+                                if (vm.id === '0') {
+                                    var path = vm.path;
+                                    path.push('-20');
+
+                                    navigationService.syncTree({ tree: "shield", path: path, forceReload: true, activate: true }).then(function (syncArgs) {
+                                        vm.editItem(syncArgs.node);
+                                    });
+
+                                    vm.cancelEditing();
+
+                                    if (colorIndicatorChanged && (vm.environment.domains.filter((x) => x.name === $window.location.origin)[0] !== null || vm.environment.domains.filter((x) => x.name === $window.location.origin)[0] !== undefined)) {
+                                        $window.location.reload()
                                     } else {
-                                        vm.button.state = 'init';
                                         $route.reload();
                                     }
-                                });
+                                } else {
+                                    if (colorIndicatorChanged && (vm.environment.domains.filter((x) => x.name === $window.location.origin)[0] !== null || vm.environment.domains.filter((x) => x.name === $window.location.origin)[0] !== undefined)) {
+                                        $window.location.reload()
+                                    } else {
+                                        $route.reload();
+                                    }
+                                }
+
                             } else {
                                 var errorMsgDictionaryItem = 'SaveEnvironmentError';
 
@@ -222,6 +235,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                     notificationsService.success(value);
                                 });
 
+                                $scope.shieldForm.$setPristine();
                                 navigationService.syncTree({ tree: "shield", path: vm.path, forceReload: true, activate: true });
                                 $route.reload();
                             } else {

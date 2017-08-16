@@ -54,5 +54,12 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Environment
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
         public bool ContinueProcessing { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Length(7)]
+        [NullSetting(NullSetting = NullSettings.NotNull)]
+        public string ColorIndicator { get; set; }
     }
 }

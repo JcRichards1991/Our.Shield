@@ -50,5 +50,11 @@ namespace Our.Shield.Core.Models
         /// </summary>
         [JsonProperty("continueProcessing")]
         bool ContinueProcessing { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty("colorIndicator")]
+        string ColorIndicator { get; }
     }
 }

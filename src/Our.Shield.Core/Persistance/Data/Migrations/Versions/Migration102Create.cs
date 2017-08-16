@@ -40,6 +40,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                 Alter.Table<Dto.Environment.Environment102>().AddColumn(nameof(Dto.Environment.Environment102.SortOrder)).AsInt32().NotNullable().WithDefaultValue(0);
                 Alter.Table<Dto.Environment.Environment102>().AddColumn(nameof(Dto.Environment.Environment102.Enable)).AsBoolean().NotNullable().WithDefaultValue(true);
                 Alter.Table<Dto.Environment.Environment102>().AddColumn(nameof(Dto.Environment.Environment102.ContinueProcessing)).AsBoolean().NotNullable().WithDefaultValue(true);
+                Alter.Table<Dto.Environment.Environment102>().AddColumn(nameof(Dto.Environment.Environment102.ColorIndicator)).AsString(7).NotNullable().WithDefaultValue("#df7f48");
             }
             else
             {
@@ -50,7 +51,8 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                     Icon = "icon-firewall red",
                     Enable = true,
                     ContinueProcessing = true,
-                    SortOrder = 0
+                    SortOrder = 0,
+                    ColorIndicator = "#df7f48"
                 });
             }
 
@@ -88,6 +90,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
             Delete.Column(nameof(Dto.Environment.Environment102.SortOrder)).FromTable<Dto.Environment.Environment102>();
             Delete.Column(nameof(Dto.Environment.Environment102.Enable)).FromTable<Dto.Environment.Environment102>();
             Delete.Column(nameof(Dto.Environment.Environment102.ContinueProcessing)).FromTable<Dto.Environment.Environment102>();
+            Delete.Column(nameof(Dto.Environment.Environment102.ColorIndicator)).FromTable<Dto.Environment.Environment102>();
 
             //  Journal
             Delete.Index("IX_" + nameof(Shield) + "_" + nameof(Dto.Journal.Journal100.Datestamp)).OnTable<Dto.Journal.Journal100>();

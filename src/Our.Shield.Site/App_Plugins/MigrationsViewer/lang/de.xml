@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<language alias="de" intName="German" localName="Deutsch" lcid="7" culture="de-DE">
+  <creator>
+    <name>The Umbraco community</name>
+    <link>http://our.umbraco.org/documentation/Extending-Umbraco/Language-Files</link>
+  </creator>
+  <area alias="labels">
+    <key alias="version">Version</key>
+  </area>
+</language>

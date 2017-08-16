@@ -76,7 +76,7 @@ namespace Our.Shield.Core.Persistance.Business
                 Enable = environment.Enable,
                 ContinueProcessing = environment.ContinueProcessing,
                 SortOrder = environment.SortOrder,
-                Domains = Enumerable.Empty<Data.Dto.Domain>()
+                ColorIndicator = environment.ColorIndicator
             };
 
             try
@@ -92,6 +92,7 @@ namespace Our.Shield.Core.Persistance.Business
 
                 foreach (var domain in environment.Domains)
                 {
+                    ((Domain)domain).EnvironmentId = environment.Id;
                     Instance.Domain.Write(domain);
                 }
 
@@ -117,8 +118,10 @@ namespace Our.Shield.Core.Persistance.Business
             {
                 if (id != 0 && Database.Exists<Data.Dto.Environment>(id))
                 {
-                    Database.Delete<Data.Dto.Environment>(id);
+                    Instance.Journal.Delete(id);
+                    Instance.Configuration.Delete(id);
                     Instance.Domain.Delete(id, null);
+                    Database.Delete<Data.Dto.Environment>(id);
                     return true;
                 }
             }

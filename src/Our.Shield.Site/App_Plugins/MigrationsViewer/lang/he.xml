@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language alias="he" intName="Hebrew (Israel)" localName="Hebrew" lcid="" culture="he-IL">
+  <creator>
+    <name>The Umbraco community</name>
+    <link>http://our.umbraco.org/documentation/Extending-Umbraco/Language-Files</link>
+  </creator>
+  <area alias="labels">
+    <key alias="version">גִרְסָה </key>
+  </area>
+</language>

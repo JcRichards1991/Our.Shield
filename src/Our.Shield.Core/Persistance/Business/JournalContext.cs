@@ -192,5 +192,28 @@ namespace Our.Shield.Core.Persistance.Business
             }
             return false;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="environmentId"></param>
+        /// <returns></returns>
+        public bool Delete(int environmentId)
+        {
+            try
+            {
+                var sql = new Sql();
+
+                sql.Where(nameof(Data.Dto.Journal.EnvironmentId) + " = @0", environmentId);
+                Database.Delete<Data.Dto.Journal>(sql);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error(typeof(JournalContext), $"Error deleting journals for environment with Id: {environmentId}", ex);
+            }
+            return false;
+        }
     }
 }

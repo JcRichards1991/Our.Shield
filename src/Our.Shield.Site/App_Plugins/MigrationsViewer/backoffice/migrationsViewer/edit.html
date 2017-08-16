@@ -1,0 +1,73 @@
+﻿<div ng-controller="Our.Umbraco.MigrationsViewer.Controller">
+    <div class="umb-panel-header">
+        <div class="row-fluid">
+            <span class="span8">
+                <h1 class="headline">Migrations</h1>
+            </span>
+            <span class="span4">
+                <div class="btn-toolbar umb-btn-toolbar">
+                    <div class="btn-group"><a class="btn btn-primary" data-hotkey="ctrl+r" ng-click="refreshData()" preventDefault><localize key="general_update"></localize></a></div>
+                </div>
+            </span>
+
+            <ul class="nav nav-tabs umb-nav-tabs span12">
+                <li class="active"><a href="#tab01" data-toggle="tab">{{product}}</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="umb-panel-body umb-scrollable row-fluid">
+        <div class="tab-content form-horizontal">
+            <div class="umb-tab-pane tab-pane active" id="tab01" rel="01">
+                <div class="umb-tab-pane-inner">
+                    <div class="umb-pane">
+                        <div class="umb-property" property="property">
+                            <div class="control-group umb-control-group hidelabel">
+                                <div class="umb-el-wrap">
+                                    <div class="controls controls-row">
+                                        <div class="umb-editor umb-listview">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th><localize key="labels_version"></localize></th>
+                                                        <th><localize key="content_createDate"></localize></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="item in items">
+                                                        <td>{{item.Version}}</td>
+                                                        <td>{{item.CreateDate}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <!--<div class="umb-panel-body umb-scrollable row-fluid">
+                                    <div class="tab-content form-horizontal umb-tab-content">
+                                        <div class="umb-tab-pane tab-pane form-horizontal active tab01" id="tab01">
+                                            <div class="umb-tab-pane-inner">
+                                                <div class="umb-pane ">
+                                                    <div class="umb-panel-body umb-scrollable row-fluid">-->
+    <!--</div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    -->
+</div>

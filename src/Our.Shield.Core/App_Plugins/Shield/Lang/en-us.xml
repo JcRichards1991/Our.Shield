@@ -39,6 +39,8 @@
     <key alias="ContinueProcessingDescription">When this environment matches active security requests, do you allow later environments to process requests too (False is recommended, otherwise you can have multiple actions on a single request)</key>
     <key alias="DomainsLabel">Domains</key>
     <key alias="DomainsDescription">The domains that are associated to this environment</key>
+    <key alias="ColorIndicatorLabel">Color Indicator</key>
+    <key alias="ColorIndicatorDescription">Change the color of Umbraco favicon and navigation to easily determine the environment your on</key>
   </area>
   
   <area alias="Shield.EnvironmentProperties.Table">
@@ -48,5 +50,7 @@
   <area alias="Shield.EnvironmentProperties.ErrorMessages">
     <key alias="DomainRequired">Domain is required</key>
     <key alias="DomainInvalid">Domain is invalid</key>
+    <key alias="ColorIndicatorRequired">Color Indicator is required</key>
+    <key alias="ColorIndicatorInvalid">Invalid hexedecimal color</key>
   </area>
 </language>

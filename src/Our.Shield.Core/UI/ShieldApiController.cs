@@ -340,15 +340,7 @@ namespace Our.Shield.Core.UI
         [HttpGet]
         public IEnumerable<string> AppIds()
         {
-            var appIds = new List<string>();
-            var env = Operation.JobService.Instance.Environments.FirstOrDefault();
-
-            foreach (var job in env.Value)
-            {
-                appIds.Add(job.App.Id);
-            }
-
-            return appIds;
+            return App<IConfiguration>.Register.Select(x => x.Key);
         }
     }
 }

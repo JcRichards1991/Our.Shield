@@ -42,6 +42,9 @@ namespace Our.Shield.Core.Models
         [JsonProperty("continueProcessing")]
         public bool ContinueProcessing { get; set; }
 
+        [JsonProperty("colorIndicator")]
+        public string ColorIndicator { get; set; }
+
         /// <summary>
         /// Checks whether or not two Environments are the same
         /// </summary>
@@ -93,6 +96,7 @@ namespace Our.Shield.Core.Models
             SortOrder = data.SortOrder;
             Enable = data.Enable;
             ContinueProcessing = data.ContinueProcessing;
+            ColorIndicator = data.ColorIndicator;
         }
     }
 }
