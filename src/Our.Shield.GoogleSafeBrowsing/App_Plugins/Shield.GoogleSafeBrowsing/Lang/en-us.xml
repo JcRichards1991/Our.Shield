@@ -4,7 +4,7 @@
     <name>Joshua Richards</name>
   </creator>
 
-  <area alias="Shield.SafeLinking.General">
-    <key alias="AreaName">Safe Browsing</key>
+  <area alias="Shield.GoogleSafeBrowsing.General">
+    <key alias="AreaName">Google Safe Browsing</key>
   </area>
 </language>

@@ -32,7 +32,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.UmbracoPackageSi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.Migrations", "Our.Shield.Migrations\Our.Shield.Migrations.csproj", "{7559DA72-19C3-4A0D-96EC-86E5E6AC5783}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.SafeLinking", "Our.Shield.SafeLinking\Our.Shield.SafeLinking.csproj", "{CDE13F56-EFF2-4AA3-A843-65C085DD4F5E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.GoogleSafeBrowsing", "Our.Shield.GoogleSafeBrowsing\Our.Shield.GoogleSafeBrowsing.csproj", "{CDE13F56-EFF2-4AA3-A843-65C085DD4F5E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.FrontendLocker", "Our.Shield.FrontendLocker\Our.Shield.FrontendLocker.csproj", "{CE78DDD4-F1C4-429C-9D76-2060EEEC2042}"
 EndProject

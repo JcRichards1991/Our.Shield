@@ -5,10 +5,10 @@ using Umbraco.Core.Models;
 using Umbraco.Core.Publishing;
 using Umbraco.Core.Services;
 
-namespace Our.Shield.SafeLinking.Models
+namespace Our.Shield.GoogleSafeBrowsing.Models
 {
-    [AppEditor("/App_Plugins/Shield.SafeLinking/Views/SafeLinking.html?version=1.0.2")]
-    public class SafeLinkingApp : App<SafeLinkingConfiguration>
+    [AppEditor("/App_Plugins/Shield.GoogleSafeBrowsing/Views/GoogleSafeBrowsing.html?version=1.0.2")]
+    public class GoogleSafeBrowsingApp : App<GoogleSafeBrowsingConfiguration>
     {
         /// <summary>
         /// 
@@ -23,12 +23,12 @@ namespace Our.Shield.SafeLinking.Models
         /// <summary>
         /// 
         /// </summary>
-        public override string Id => nameof(SafeLinking);
+        public override string Id => nameof(GoogleSafeBrowsingApp);
 
         /// <summary>
         /// 
         /// </summary>
-        public override string Name => "Safe Linking";
+        public override string Name => "Google Safe Browsing";
 
         /// <summary>
         /// 
@@ -37,7 +37,7 @@ namespace Our.Shield.SafeLinking.Models
         {
             get
             {
-                return new SafeLinkingConfiguration();
+                return new GoogleSafeBrowsingConfiguration();
             }
         }
 
@@ -49,15 +49,17 @@ namespace Our.Shield.SafeLinking.Models
         /// <returns></returns>
         public override bool Execute(IJob job, IConfiguration c)
         {
+            ContentService.Saving -= ContentService_Saving;
+            ContentService.Publishing -= ContentService_Publishing;
+
             if (!c.Enable)
             {
-                ContentService.Saving -= ContentService_Saving;
-                ContentService.Publishing -= ContentService_Publishing;
                 return true;
             }
 
             ContentService.Saving += ContentService_Saving;
             ContentService.Publishing += ContentService_Publishing;
+
             return true;
         }
 

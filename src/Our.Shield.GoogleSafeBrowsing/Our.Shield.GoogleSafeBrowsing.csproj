@@ -7,8 +7,8 @@
     <ProjectGuid>{CDE13F56-EFF2-4AA3-A843-65C085DD4F5E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Our.Shield.SafeLinking</RootNamespace>
-    <AssemblyName>Our.Shield.SafeLinking</AssemblyName>
+    <RootNamespace>Our.Shield.GoogleSafeBrowsing</RootNamespace>
+    <AssemblyName>Our.Shield.GoogleSafeBrowsing</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -258,8 +258,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\SafeLinkingApp.cs" />
-    <Compile Include="Models\SafeLinkingConfiguration.cs" />
+    <Compile Include="Models\GoogleSafeBrowsingApp.cs" />
+    <Compile Include="Models\GoogleSafeBrowsingConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -269,14 +269,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\Shield.SafeLinking\Lang\en-us.xml" />
-    <Content Include="App_Plugins\Shield.SafeLinking\Scripts\SafeLinking.js" />
-    <Content Include="App_Plugins\Shield.SafeLinking\Views\SafeLinking.html" />
+    <Content Include="App_Plugins\Shield.GoogleSafeBrowsing\Lang\en-us.xml" />
+    <Content Include="App_Plugins\Shield.GoogleSafeBrowsing\Scripts\GoogleSafeBrowsing.js" />
+    <Content Include="App_Plugins\Shield.GoogleSafeBrowsing\Views\GoogleSafeBrowsing.html" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="App_Plugins\Shield.SafeLinking\package.manifest" />
-    <None Include="Our.Shield.SafeLinking.nuspec" />
+    <None Include="App_Plugins\Shield.GoogleSafeBrowsing\package.manifest" />
+    <None Include="Our.Shield.GoogleSafeBrowsing.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

@@ -12,12 +12,12 @@
     <description>$description$</description>
     <releaseNotes>$version$ release</releaseNotes>
     <copyright>Copyright 2017</copyright>
-    <tags>Umbraco UmbracoCms Security SafeLinking Safe Linking</tags>
+    <tags>Umbraco UmbracoCms Security GoogleSafeBrowsing Google Safe Browsing SafeBrowsing SafeLinking Linking</tags>
     <dependencies>
       <dependency id="Our.Shield.Core" version="1.0.2" />
     </dependencies>
   </metadata>
   <files>
-    <file src="App_Plugins\Shield.SafeLinking\package.manifest" target="Content\App_Plugins\Shield.SafeLinking" />
+    <file src="App_Plugins\Shield.GoogleSafeBrowsing\package.manifest" target="Content\App_Plugins\Shield.GoogleSafeBrowsing" />
   </files>
 </package>
