@@ -53,5 +53,11 @@ namespace Our.Shield.BackofficeAccess.Models
         /// </summary>
         [JsonProperty("unauthorisedUrl")]
         public string UnauthorisedUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Unauthorised URL.
+        /// </summary>
+        [JsonProperty("ipAddressesRestricted")]
+        public Enums.IpAddressesRestricted IpAddressesRestricted { get; set; }
     }
 }
