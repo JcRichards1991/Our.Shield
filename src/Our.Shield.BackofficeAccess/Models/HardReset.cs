@@ -61,6 +61,8 @@ namespace Our.Shield.BackofficeAccess.Models
 
                 webConfig.SetLocationPath(Path.GetFileName(resetter.HardLocation).Trim('/'), webConfig.UmbracoPath.TrimStart('~', '/').TrimEnd('/'));
 
+                Directory.Move(resetter.HardLocation, resetter.SoftLocation);
+                resetter.Delete();
                 try
                 {
                     webConfig.Save();
@@ -69,9 +71,6 @@ namespace Our.Shield.BackofficeAccess.Models
                 {
                     throw saveEx;
                 }
-
-                Directory.Move(resetter.HardLocation, resetter.SoftLocation);
-                resetter.Delete();
             }
             catch (Exception ex)
             {

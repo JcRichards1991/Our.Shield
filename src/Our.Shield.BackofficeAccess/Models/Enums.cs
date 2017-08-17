@@ -23,5 +23,11 @@
             XPath,
             ContentPicker
         }
+
+        public enum IpAddressesRestricted
+        {
+            Unrestricted,
+            Restricted
+        }
     }
 }

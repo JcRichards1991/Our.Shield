@@ -231,7 +231,7 @@
 
             try
             {
-                System.Diagnostics.Debug.WriteLine("START running poll with " + ranTick.ToString());
+                //System.Diagnostics.Debug.WriteLine("START running poll with " + ranTick.ToString());
                 ranTick = ranNow;
                 if (jobLock.TryEnterUpgradeableReadLock(taskLockTimeout))
                 {
@@ -270,7 +270,7 @@
                 {
                     ranTick = DateTime.UtcNow.AddSeconds(poll).Ticks;
                 }
-                System.Diagnostics.Debug.WriteLine("END running poll with " + ranTick.ToString());
+                //System.Diagnostics.Debug.WriteLine("END running poll with " + ranTick.ToString());
             }
             finally
             {

@@ -30,6 +30,12 @@
     <key alias="AllowedIpsDescription">The allowed IP address(es) that can access the Backend Office Access Url.</key>
     <key alias="AllowedIpsIpAddressHeader">IP Address</key>
     <key alias="AllowedIpsDescriptionHeader">Description</key>
+
+
+    <key alias="IpRestrictedLabel">IP Addresses Restricted Access</key>
+    <key alias="IpRestrictedDescription">Whether to restrict the backoffice to specific IP Addresses, or open to all IP Addresses</key>
+    <key alias="IpRestrictedOptionAll">Open to all IP addresses</key>
+    <key alias="IpRestrictedOptionSpecific">Open to specific IP Addresses</key>
   </area>
 
   <area alias="Shield.BackofficeAccess.AlertMessages">

@@ -92,7 +92,37 @@
             <umb-editor model="vm.contentPickerProperty"></umb-editor>
         </umb-property>
 
-        <div ng-include="'/App_Plugins/Shield.BackofficeAccess/Views/IpAddressPropertyEditor.html?version=1.0.0'"></div>
+        <div class="umb-el-wrap control-group umb-control-group">
+            <label class="control-label">
+                <localize key="Shield.BackofficeAccess.Properties_IpRestrictedLabel">IP Addresses Restricted Access</localize>
+                <small>
+                    <localize key="Shield.BackofficeAccess.Properties_IpRestrictedDescription">Whether to restrict the backoffice to specific IP Addresses, or open to all IP Addresses</localize>
+                </small>
+            </label>
+
+            <div class="controls">
+                <div class="umb-editor umb-radiobuttons">
+                    <ul class="unstyled">
+                        <li>
+                            <label class="radio">
+                                <input type="radio" name="ipRestricted" value="0" ng-model="vm.configuration.ipAddressesRestricted" shield-convert-to-number />
+
+                                <localize key="Shield.BackofficeAccess.Properties_IpRestrictedOptionAll">Open to all IP addresses</localize>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="radio">
+                                <input type="radio" name="ipRestricted" value="1" ng-model="vm.configuration.ipAddressesRestricted" shield-convert-to-number />
+
+                                <localize key="Shield.BackofficeAccess.Properties_IpRestrictedOptionSpecific">Open to specific IP Address(es)</localize>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div ng-if="vm.configuration.ipAddressesRestricted === 1" ng-include="'/App_Plugins/Shield.BackofficeAccess/Views/IpAddressPropertyEditor.html?version=1.0.2'"></div>
 
     </ng-form>
 </div>

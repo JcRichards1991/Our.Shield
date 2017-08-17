@@ -10,11 +10,11 @@
     <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>$version$ release</releaseNotes>
+    <releaseNotes>Added new setting to configuration to allow the ability to turn on/off the IP Address restrictions</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security BackofficeAccess Access Backoffice</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="1.0.0" />
+      <dependency id="Our.Shield.Core" version="1.0.2" />
     </dependencies>
   </metadata>
   <files>
