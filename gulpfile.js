@@ -25,6 +25,12 @@ var jsFiles = [
         output: src + '.BackofficeAccess' + jsOutput + '.BackofficeAccess/Scripts',
         name: 'BackofficeAccess.js',
         nameMin: 'BackofficeAccess.min.js'
+    },
+    {
+        subFiles: src + '.MediaProtection/UI/Scripts/*.js',
+        output: src + '.MediaProtection' + jsOutput + '.MediaProtection/Scripts',
+        name: 'MediaProtection.js',
+        nameMin: 'MediaProtection.min.js'
     }
 ];
 

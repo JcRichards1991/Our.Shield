@@ -1,4 +1,4 @@
-﻿<div class="umb-el-wrap control-group umb-control-group" ng-controller="Shield.Properties.IpAddress as vm">
+﻿<div class="umb-el-wrap control-group umb-control-group" ng-controller="Shield.Properties.IpAddress as vm" ng-init="vm.init()">
     <label class="control-label">
         <localize key="Shield.BackofficeAccess.Properties_AllowedIpsLabel">White-listed IP address(es)</localize>
         <small>
@@ -37,7 +37,7 @@
                         </td>
 
                         <td>
-                            <span class="btn btn-danger" ng-click="vm.remove($index)">
+                            <span class="btn btn-danger" ng-click="vm.remove($index)" ng-if="vm.configuration.ipAddresses.length > 1">
                                 <localize key="Shield.General_Remove">Remove</localize>
                             </span>
                         </td>

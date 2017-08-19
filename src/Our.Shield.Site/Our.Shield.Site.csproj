@@ -686,6 +686,10 @@
       <Project>{cde13f56-eff2-4aa3-a843-65c085dd4f5e}</Project>
       <Name>Our.Shield.GoogleSafeBrowsing</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Our.Shield.ScraperDefense\Our.Shield.ScraperDefense.csproj">
+      <Project>{29e5f2a8-4855-4a3c-96c6-510bc582af6a}</Project>
+      <Name>Our.Shield.ScraperDefense</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -733,7 +737,8 @@
 xcopy "$(solutiondir)Our.Shield.BackofficeAccess\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
 xcopy "$(solutiondir)Our.Shield.MediaProtection\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
 xcopy "$(solutiondir)Our.Shield.FrontendLocker\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
-xcopy "$(solutiondir)Our.Shield.GoogleSafeBrowsing\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e</PostBuildEvent>
+xcopy "$(solutiondir)Our.Shield.GoogleSafeBrowsing\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
+xcopy "$(solutiondir)Our.Shield.ScraperDefense\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\uSync.3.3.4.740\build\uSync.targets" Condition="Exists('..\packages\uSync.3.3.4.740\build\uSync.targets')" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />

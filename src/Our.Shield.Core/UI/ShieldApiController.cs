@@ -33,27 +33,11 @@ namespace Our.Shield.Core.UI
 
             if (id == Constants.Tree.EnvironmentsRootId)
             {
-                var journals = Persistance.Business.DbContext.Instance.Journal.Read<JournalMessage>(1, 200, out totalPages);
-                var apps = environments.First().Value.Select(x => x.App).OrderBy(x => x.Name);
-
-                //  Is the environments node
+                //  The environments Dashboard
                 return new TreeView
                 {
-                    Type = TreeView.TreeViewType.Environments,
-                    Name = "Environments",
                     Description = "List of the different environments your Umbraco instance operates under",
-                    Environments = environments.Keys,
-                    JournalListing = new JournalListing
-                    {
-                        Journals = journals.Select(x => new JournalListingItem
-                        {
-                            Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                            App = apps.FirstOrDefault(a => a.Id == x.AppId).Name,
-                            Environment = environments.FirstOrDefault(e => e.Key.Id == x.EnvironmentId).Key.Name,
-                            Message = x.Message
-                        }),
-                        TotalPages = totalPages
-                    }
+                    Environments = environments.Keys
                 };
             }
 
@@ -77,16 +61,16 @@ namespace Our.Shield.Core.UI
                         Type = TreeView.TreeViewType.Environment,
                         Name = environment.Key.Name,
                         Description = $"View apps for the {environment.Key.Name} environment",
-                        Environments = environments.Keys,
                         Environment = environment.Key,
+                        Environments = environments.Keys,
                         Apps = apps.OrderBy(x => x.Name),
                         JournalListing = new JournalListing
                         {
                             Journals = journals.Select(x => new JournalListingItem
                             {
                                 Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                                App = apps.FirstOrDefault(a => a.AppId == x.AppId).Name,
-                                Environment = environment.Key.Name,
+                                App = apps.FirstOrDefault(a => a.AppId == x.AppId),
+                                Environment = environment.Key,
                                 Message = x.Message
                             }),
                             TotalPages = totalPages
@@ -128,8 +112,8 @@ namespace Our.Shield.Core.UI
                                 Journals = journals.Select(x => new JournalListingItem
                                 {
                                     Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                                    App = job.App.Name,
-                                    Environment = environment.Key.Name,
+                                    App = new AppListingItem(job),
+                                    Environment = environment.Key,
                                     Message = x.Message
                                 }),
                                 TotalPages = totalPages,
@@ -181,7 +165,7 @@ namespace Our.Shield.Core.UI
         /// <param name="page"></param>
         /// <returns></returns>
         [HttpGet]
-        public JournalListing Journals(int id, int page)
+        public JournalListing Journals(int id, int page, string orderBy, string orderByDirection)
         {
             var environments = Operation.JobService.Instance.Environments;
             var apps = environments.First().Value.Select(x => x.App);
@@ -191,12 +175,16 @@ namespace Our.Shield.Core.UI
             {
                 return new JournalListing
                 {
-                    Journals = Persistance.Business.DbContext.Instance.Journal.Read<JournalMessage>(page, 200, out totalPages).Select(x => new JournalListingItem
+                    Journals = Persistance.Business.DbContext.Instance.Journal.Read<JournalMessage>(page, 200, out totalPages).Select(x =>
                     {
-                        Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                        App = apps.FirstOrDefault(a => a.Id == x.AppId).Name,
-                        Environment = environments.FirstOrDefault(e => e.Key.Id == x.EnvironmentId).Key.Name,
-                        Message = x.Message
+                        var environment = environments.FirstOrDefault(e => e.Key.Id == x.EnvironmentId);
+                        return new JournalListingItem
+                        {
+                            Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+                            App = new AppListingItem(environment.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
+                            Environment = environment.Key,
+                            Message = x.Message
+                        };
                     }),
                     TotalPages = totalPages
                 };
@@ -212,8 +200,8 @@ namespace Our.Shield.Core.UI
                             Journals = Operation.EnvironmentService.Instance.JournalListing<JournalMessage>(id, page, 100, out totalPages).Select(x => new JournalListingItem
                             {
                                 Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                                App = apps.FirstOrDefault(a => a.Id == x.AppId).Name,
-                                Environment = environment.Key.Name,
+                                App = new AppListingItem(environment.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
+                                Environment = environment.Key,
                                 Message = x.Message
                             }),
                             TotalPages = totalPages
@@ -229,8 +217,8 @@ namespace Our.Shield.Core.UI
                                 Journals = job.ListJournals<JournalMessage>(page, 50, out totalPages).Select(x => new JournalListingItem
                                 {
                                     Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                                    App = job.App.Name,
-                                    Environment = environment.Key.Name,
+                                    App = new AppListingItem(job),
+                                    Environment = environment.Key,
                                     Message = x.Message
                                 }),
                                 TotalPages = totalPages
@@ -311,11 +299,11 @@ namespace Our.Shield.Core.UI
             }
 
             var environments = json.Select(x => JsonConvert.DeserializeObject<Models.Environment>(x.ToString(), new DomainConverter()));
-            var oldEnvironments = Operation.JobService.Instance.Environments;
+            var oldEnvironments = Operation.JobService.Instance.Environments.Keys;
 
             foreach (var environment in environments)
             {
-                if (oldEnvironments.Any(x => x.Key.Id.Equals(environment.Id) && !x.Key.SortOrder.Equals(environment.SortOrder)))
+                if (oldEnvironments.Any(x => x.Id.Equals(environment.Id) && !x.SortOrder.Equals(environment.SortOrder)))
                 {
                     if (!Operation.EnvironmentService.Instance.Write(environment))
                     {
@@ -331,16 +319,6 @@ namespace Our.Shield.Core.UI
                 }
             }
             return true;
-        }
-
-        /// <summary>
-        /// Gets a collection of the Shield App Ids that are installed
-        /// </summary>
-        /// <returns>Collection of the Shield App ids</returns>
-        [HttpGet]
-        public IEnumerable<string> AppIds()
-        {
-            return App<IConfiguration>.Register.Select(x => x.Key);
         }
     }
 }

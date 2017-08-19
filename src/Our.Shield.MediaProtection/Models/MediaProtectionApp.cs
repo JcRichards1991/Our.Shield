@@ -17,7 +17,7 @@ namespace Our.Shield.MediaProtection.Models
     /// <summary>
     /// 
     /// </summary>
-    [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?version=1.0.2")]
+    [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?version=1.0.3")]
     [AppMigration(typeof(MediaProtectionMigration))]
     public class MediaProtectionApp : App<MediaProtectionConfiguration>
     {
@@ -66,7 +66,8 @@ namespace Our.Shield.MediaProtection.Models
                 return new MediaProtectionConfiguration
                 {
                     EnableHotLinkingProtection = true,
-                    EnableMembersOnlyMedia = true
+                    EnableMembersOnlyMedia = true,
+                    HotLinkingProtectedDirectories = new string[0]
                 };
             }
         }
@@ -91,8 +92,6 @@ namespace Our.Shield.MediaProtection.Models
                 return true;
             }
 
-            var mediaFolder = VirtualPathUtility.ToAbsolute(new Uri(Umbraco.Core.IO.SystemDirectories.Media, UriKind.Relative).ToString()) + "/";
-
             if (config.EnableHotLinkingProtection)
             {
                 var domains = new List<string>();
@@ -109,32 +108,35 @@ namespace Our.Shield.MediaProtection.Models
                     }
                 }
 
-                job.WatchWebRequests(new Regex(mediaFolder, RegexOptions.IgnoreCase), 50, (count, httpApp) =>
+                foreach (var directory in config.HotLinkingProtectedDirectories)
                 {
-                    var referrer = httpApp.Request.UrlReferrer;
-                    if (referrer == null || String.IsNullOrWhiteSpace(referrer.Host) ||
-                        referrer.Host.Equals(httpApp.Request.Url.Host, StringComparison.InvariantCultureIgnoreCase) ||
-                        domains.Any(x => x.Equals(referrer.Host, StringComparison.InvariantCultureIgnoreCase)))
+                    job.WatchWebRequests(new Regex(directory, RegexOptions.IgnoreCase), 50, (count, httpApp) =>
                     {
-                        //  This media is being accessed directly, 
-                        //  or from a browser that doesn't pass referrer info,
-                        //  or from our own domain
-                        //  so allow access
-                        return WatchCycle.Continue;
-                    }
+                        var referrer = httpApp.Request.UrlReferrer;
+                        if (referrer == null || String.IsNullOrWhiteSpace(referrer.Host) ||
+                            referrer.Host.Equals(httpApp.Request.Url.Host, StringComparison.InvariantCultureIgnoreCase) ||
+                            domains.Any(x => x.Equals(referrer.Host, StringComparison.InvariantCultureIgnoreCase)))
+                        {
+                            //  This media is being accessed directly, 
+                            //  or from a browser that doesn't pass referrer info,
+                            //  or from our own domain
+                            //  so allow access
+                            return WatchCycle.Continue;
+                        }
 
-                    job.WriteJournal(new JournalMessage($"Access was denied, {referrer.Host} is trying to hotlink your media assets"));
+                        job.WriteJournal(new JournalMessage($"Access was denied, {referrer.Host} is trying to hotlink your media assets"));
 
-                    //  Someone is trying to hotlink our media
-                    httpApp.Response.StatusCode = (int) HttpStatusCode.Forbidden;
-                    httpApp.Response.End();
-                    return WatchCycle.Stop;
-                });
-
+                        //  Someone is trying to hotlink our media
+                        httpApp.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        httpApp.Response.End();
+                        return WatchCycle.Stop;
+                    });
+                }
             }
 
             if (config.EnableMembersOnlyMedia)
             {
+                var mediaFolder = VirtualPathUtility.ToAbsolute(new Uri(Umbraco.Core.IO.SystemDirectories.Media, UriKind.Relative).ToString()) + "/";
                 job.WatchWebRequests(new Regex(mediaFolder, RegexOptions.IgnoreCase), 100, (count, httpApp) =>
                 {
                     var httpContext = new HttpContextWrapper(httpApp.Context);

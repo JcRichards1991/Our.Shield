@@ -10,7 +10,7 @@ using Umbraco.Core.Security;
 
 namespace Our.Shield.FrontendLocker.Models
 {
-    [AppEditor("/App_Plugins/Shield.FrontendLocker/Views/FrontendLocker.html?version=1.0.2")]
+    [AppEditor("/App_Plugins/Shield.FrontendLocker/Views/FrontendLocker.html?version=1.0.3")]
     public class FrontendLockerApp : App<FrontendLockerConfiguration>
     {
         /// <summary>

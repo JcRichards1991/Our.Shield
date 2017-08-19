@@ -2,14 +2,14 @@
 using Umbraco.Core.Persistence;
 using Umbraco.Core.Persistence.DatabaseAnnotations;
 
-namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Configuration
+namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Journal
 {
     /// <summary>
-    /// Defines the Configuration table
+    /// Defines the Journal database table
     /// </summary>
-    [TableName(nameof(Shield) + nameof(Data.Dto.Configuration))]
+    [TableName(nameof(Shield) + nameof(Data.Dto.Journal))]
     [PrimaryKey("Id", autoIncrement = true)]
-    internal class Configuration102
+    internal class Journal103
     {
         /// <summary>
         /// Gets or sets the Id
@@ -27,29 +27,24 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Configuration
         public string AppId { get; set; }
 
         /// <summary>
-        /// Gets or sets the Environment Id
+        /// Gets or sets the Domain Id
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        [ForeignKey(typeof(Dto.Environment.Environment102), Name = "FK_" + nameof(Shield) + "_" + nameof(Configuration) + "_" + nameof(Data.Dto.Environment))]
+        [ForeignKey(typeof(Dto.Environment.Environment103), Name = "FK_" + nameof(Shield) + "_" + nameof(Data.Dto.Journal) + "_" + nameof(Environment))]
         [Index(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(EnvironmentId))]
         public int EnvironmentId { get; set; }
-
+        
         /// <summary>
-        /// Gets or sets the Environment Id
+        /// The Date stamp of the journal
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        public bool Enable { get; set; }
+        [Index(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(Datestamp))]
+        public DateTime Datestamp { get; set; }
 
         /// <summary>
-        /// Gets or sets the Environment Id
+        /// Gets or sets the Value (Should be json)
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        public DateTime LastModified { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Value (should be json)
-        /// </summary>
-        [NullSetting(NullSetting = NullSettings.Null)]
         [Length(4000)]
         public string Value { get; set; }
     }

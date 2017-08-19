@@ -14,7 +14,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations
     /// </summary>
     internal class Migration
     {
-        public static readonly SemVersion TargetVersion = new SemVersion(1, 0, 2);
+        public static readonly SemVersion TargetVersion = new SemVersion(1, 0, 3);
 
         /// <summary>
         /// 
@@ -38,13 +38,13 @@ namespace Our.Shield.Core.Persistance.Data.Migrations
 
             IMigration[] scriptsForMigration = new IMigration[]
             {
-                new Versions.Migration102Create(sqlSyntax, logger)
+                new Versions.Migration103Create(sqlSyntax, logger)
                 //  new versions.Migrations103 etc.
             };
 
             if (currentVersion == new SemVersion(1, 0, 1))
             {
-                scriptsForMigration[0] = new Versions.Migration102(sqlSyntax, logger);
+                scriptsForMigration[0] = new Versions.Migration103(sqlSyntax, logger);
             }
 
             MigrationRunner migrationsRunner = new MigrationRunner(migrationEntryService, logger, currentVersion, TargetVersion, 

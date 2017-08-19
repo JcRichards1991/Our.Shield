@@ -16,6 +16,12 @@ namespace Our.Shield.MediaProtection.Models
         public bool EnableHotLinkingProtection { get; set; }
 
         /// <summary>
+        /// Directories that Hot Linking Protection is active on
+        /// </summary>
+        [JsonProperty("hotLinkingProtectedDirectories")]
+        public string[] HotLinkingProtectedDirectories { get; set; }
+
+        /// <summary>
         /// Member Only media
         /// </summary>
         [JsonProperty("enableMemberOnlyMedia")]

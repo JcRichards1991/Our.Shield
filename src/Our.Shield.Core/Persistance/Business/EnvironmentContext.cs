@@ -87,6 +87,17 @@ namespace Our.Shield.Core.Persistance.Business
                 }
                 else
                 {
+                    var records = Database.Fetch<Data.Dto.Environment>("Where SortOrder >= @0", dto.SortOrder);
+
+                    if (records.Any())
+                    {
+                        for (var i = 0; i < records.Count(); i++)
+                        {
+                            records[i].SortOrder = dto.SortOrder + 1 + i;
+                            Database.Update(records[i]);
+                        }
+                    }
+
                     ((Models.Environment)environment).Id = (int)((decimal)Database.Insert(dto));
                 }
 
@@ -122,6 +133,17 @@ namespace Our.Shield.Core.Persistance.Business
                     Instance.Configuration.Delete(id);
                     Instance.Domain.Delete(id, null);
                     Database.Delete<Data.Dto.Environment>(id);
+
+                    //reset sortOrder for environments
+                    var records = Database.FetchAll<Data.Dto.Environment>().OrderBy(x => x.SortOrder).ToArray();
+
+                    for (var i = 0; i < records.Count(); i++)
+                    {
+                        records[i].SortOrder = i;
+
+                        Database.Update(records[i]);
+                    }
+
                     return true;
                 }
             }

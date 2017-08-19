@@ -41,6 +41,18 @@ namespace Our.Shield.Core.Operation
             {
                 //created new environment, we need to register it
                 JobService.Instance.Register(environment, Umbraco.Core.ApplicationContext.Current);
+
+                var environments = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
+                var oldEnvironments = JobService.Instance.Environments.Keys;
+
+                foreach (var newEnv in environments)
+                {
+                    if (oldEnvironments.Any(x => x.Id.Equals(newEnv.Id) && !x.SortOrder.Equals(newEnv.SortOrder)))
+                    {
+                        JobService.Instance.Unregister(newEnv);
+                        JobService.Instance.Register(newEnv);
+                    }
+                }
             }
             else
             {
@@ -68,6 +80,18 @@ namespace Our.Shield.Core.Operation
             if (!JobService.Instance.Unregister(environment) || !DbContext.Instance.Environment.Delete(environment.Id))
             {
                 return false;
+            }
+
+            var environments = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
+            var oldEnvironments = JobService.Instance.Environments.Keys;
+
+            foreach (var newEnv in environments)
+            {
+                if (oldEnvironments.Any(x => x.Id.Equals(newEnv.Id) && !x.SortOrder.Equals(newEnv.SortOrder)))
+                {
+                    JobService.Instance.Unregister(newEnv);
+                    JobService.Instance.Register(newEnv);
+                }
             }
 
             JobService.Instance.Poll(true);

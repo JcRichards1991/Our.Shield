@@ -271,16 +271,16 @@
     <Compile Include="Operation\EnvironmentService.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration100.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration101.cs" />
-    <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration102.cs" />
+    <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration103.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Domain\Domain100.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Environment\Environment100.cs" />
-    <Compile Include="Persistance\Data\Migrations\Dto\Environment\Environment102.cs" />
+    <Compile Include="Persistance\Data\Migrations\Dto\Environment\Environment103.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal100.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal101.cs" />
-    <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal102.cs" />
+    <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal103.cs" />
     <Compile Include="Persistance\Data\Migrations\MigrationExtensions.cs" />
-    <Compile Include="Persistance\Data\Migrations\Versions\Migration102Create.cs" />
-    <Compile Include="Persistance\Data\Migrations\Versions\Migration102.cs" />
+    <Compile Include="Persistance\Data\Migrations\Versions\Migration103Create.cs" />
+    <Compile Include="Persistance\Data\Migrations\Versions\Migration103.cs" />
     <Compile Include="UI\AppAssest.cs" />
     <Compile Include="UI\Constants.cs" />
     <Compile Include="Models\Configuration.cs" />
@@ -337,7 +337,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield\Backoffice\Css\Shield.css" />
-    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Overview.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Journals.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Environments.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Scripts\Shield.js" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Create.html" />
@@ -345,13 +346,14 @@
     <Content Include="App_Plugins\Shield\Backoffice\Views\EditEnvironment.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Sort.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Views\JournalTable.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="UI\Scripts\ColorIndicator.js" />
-    <Content Include="UI\Scripts\ShieldControllers.js" />
-    <Content Include="UI\Scripts\ShieldDirectives.js" />
-    <Content Include="UI\Scripts\ShieldResources.js" />
+    <Content Include="UI\Scripts\Controllers.js" />
+    <Content Include="UI\Scripts\Directives.js" />
+    <Content Include="UI\Scripts\Resources.js" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

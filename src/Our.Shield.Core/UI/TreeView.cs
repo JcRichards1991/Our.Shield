@@ -14,13 +14,7 @@ namespace Our.Shield.Core.UI
         /// </summary>
         public enum TreeViewType
         {
-            [JsonProperty("environments")]
-            Environments,
-
-            [JsonProperty("environment")]
             Environment,
-
-            [JsonProperty("app")]
             App
         }
 
@@ -100,13 +94,13 @@ namespace Our.Shield.Core.UI
         /// 
         /// </summary>
         [JsonProperty("environment")]
-        public string Environment { get; set; }
+        public IEnvironment Environment { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [JsonProperty("app")]
-        public string App { get; set; }
+        public AppListingItem App { get; set; }
 
         /// <summary>
         /// 
@@ -173,5 +167,17 @@ namespace Our.Shield.Core.UI
         /// </summary>
         [JsonProperty("enable")]
         public bool Enable { get; set; }
+
+        public AppListingItem() { }
+
+        public AppListingItem(IJob job)
+        {
+            Id = job.Id;
+            AppId = job.App.Id;
+            Name = job.App.Name;
+            Description = job.App.Description;
+            Icon = job.App.Icon;
+            Enable = job.ReadConfiguration().Enable;
+        }
     }
 }

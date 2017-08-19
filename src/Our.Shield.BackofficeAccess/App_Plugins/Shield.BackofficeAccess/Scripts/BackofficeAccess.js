@@ -63,6 +63,11 @@ angular.module('umbraco').controller('Shield.Properties.IpAddress',
 
         angular.extend(vm, {
             configuration: $scope.configuration,
+            init: function () {
+                if (vm.configuration.ipAddresses.length === 0) {
+                    vm.add();
+                }
+            },
             add: function () {
                 vm.configuration.ipAddresses.push({
                     ipAddress: '',

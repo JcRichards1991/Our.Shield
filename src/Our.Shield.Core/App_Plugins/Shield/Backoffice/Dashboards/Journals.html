@@ -1,0 +1,18 @@
+﻿<div ng-controller="Shield.Dashboards.Journals as vm" ng-init="vm.init()">
+
+    <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
+
+    <umb-editor-view>
+        <umb-editor-container>
+            <div class="form-horizontal">
+                <div class="umb-el-wrap control-group umb-control-group">
+                    <div>
+                        <h4 ng-bind-html="vm.description"></h4>
+                    </div>
+                </div>
+
+                <div ng-include="'/App_Plugins/Shield/Backoffice/Views/JournalTable.html?version=1.0.3'"></div>
+            </div>
+        </umb-editor-container>
+    </umb-editor-view>
+</div>

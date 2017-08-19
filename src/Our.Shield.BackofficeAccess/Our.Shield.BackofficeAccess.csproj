@@ -265,6 +265,7 @@
   <ItemGroup>
     <Compile Include="Models\BackofficeAccessConfiguration.cs" />
     <Compile Include="Models\BackofficeAccessApp.cs" />
+    <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\HardReset.cs" />
     <Compile Include="Models\HardResetFileHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -291,7 +292,6 @@
     <Content Include="App_Plugins\Shield.BackofficeAccess\Views\IpAddressPropertyEditor.html" />
     <Content Include="App_Plugins\Shield.BackofficeAccess\Views\BackofficeAccess.html" />
     <Content Include="App_Plugins\Shield.BackofficeAccess\Lang\en-us.xml" />
-    <Content Include="App_Plugins\Shield.BackofficeAccess\Views\Overview.html" />
     <Content Include="Scripts\Controllers.js" />
     <Content Include="Scripts\Directives.js" />
   </ItemGroup>

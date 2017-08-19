@@ -10,8 +10,8 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
     /// <summary>
     /// Handles Creating/Editing the Configuration table
     /// </summary>
-    [Migration("1.0.2", 1, nameof(Shield))]
-    internal class Migration102Create : MigrationBase
+    [Migration("1.0.3", 1, nameof(Shield))]
+    internal class Migration103Create : MigrationBase
     {
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
         private readonly DatabaseSchemaHelper _schemaHelper;
@@ -21,7 +21,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
         /// </summary>
         /// <param name="sqlSyntax">The SQL Syntax</param>
         /// <param name="logger">The Logger</param>
-        public Migration102Create(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
+        public Migration103Create(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
         {
             _schemaHelper = new DatabaseSchemaHelper(_database, logger, sqlSyntax);
         }
@@ -37,15 +37,15 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                 var sql = new Sql().Where("id != 1");
                 _database.Delete<Dto.Environment.Environment100>(sql);
 
-                Alter.Table<Dto.Environment.Environment102>().AddColumn(nameof(Dto.Environment.Environment102.SortOrder)).AsInt32().NotNullable().WithDefaultValue(0);
-                Alter.Table<Dto.Environment.Environment102>().AddColumn(nameof(Dto.Environment.Environment102.Enable)).AsBoolean().NotNullable().WithDefaultValue(true);
-                Alter.Table<Dto.Environment.Environment102>().AddColumn(nameof(Dto.Environment.Environment102.ContinueProcessing)).AsBoolean().NotNullable().WithDefaultValue(true);
-                Alter.Table<Dto.Environment.Environment102>().AddColumn(nameof(Dto.Environment.Environment102.ColorIndicator)).AsString(7).NotNullable().WithDefaultValue("#df7f48");
+                Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.SortOrder)).AsInt32().NotNullable().WithDefaultValue(0);
+                Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.Enable)).AsBoolean().NotNullable().WithDefaultValue(true);
+                Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.ContinueProcessing)).AsBoolean().NotNullable().WithDefaultValue(true);
+                Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.ColorIndicator)).AsString(7).NotNullable().WithDefaultValue("#df7f48");
             }
             else
             {
-                _schemaHelper.CreateTable<Dto.Environment.Environment102>();
-                Context.Database.Insert(new Dto.Environment.Environment102
+                _schemaHelper.CreateTable<Dto.Environment.Environment103>();
+                Context.Database.Insert(new Dto.Environment.Environment103
                 {
                     Name = "Default",
                     Icon = "icon-firewall red",
@@ -65,19 +65,19 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
             //  Configuration
             if (!_schemaHelper.TableExist<Dto.Configuration.Configuration100>())
             {
-                _schemaHelper.CreateTable<Dto.Configuration.Configuration102>();
+                _schemaHelper.CreateTable<Dto.Configuration.Configuration103>();
             }
 
             //  Journal
             if (_schemaHelper.TableExist<Dto.Journal.Journal100>())
             {
                 Delete.Index("IX_" + nameof(Shield) + "_" + nameof(Dto.Journal.Journal100.Datestamp)).OnTable<Dto.Journal.Journal100>();
-                Create.Index("IX_" + nameof(Shield) + "_" + nameof(Dto.Journal.Journal102.Datestamp)).OnTable<Dto.Journal.Journal102>()
-                    .OnColumn(nameof(Dto.Journal.Journal102.Datestamp)).Ascending().WithOptions().NonClustered();
+                Create.Index("IX_" + nameof(Shield) + "_" + nameof(Dto.Journal.Journal103.Datestamp)).OnTable<Dto.Journal.Journal103>()
+                    .OnColumn(nameof(Dto.Journal.Journal103.Datestamp)).Ascending().WithOptions().NonClustered();
             }
             else
             {
-                _schemaHelper.CreateTable<Dto.Journal.Journal102>();
+                _schemaHelper.CreateTable<Dto.Journal.Journal103>();
             }
         }
 
@@ -87,10 +87,10 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
         public override void Down()
         {
             //  Environment
-            Delete.Column(nameof(Dto.Environment.Environment102.SortOrder)).FromTable<Dto.Environment.Environment102>();
-            Delete.Column(nameof(Dto.Environment.Environment102.Enable)).FromTable<Dto.Environment.Environment102>();
-            Delete.Column(nameof(Dto.Environment.Environment102.ContinueProcessing)).FromTable<Dto.Environment.Environment102>();
-            Delete.Column(nameof(Dto.Environment.Environment102.ColorIndicator)).FromTable<Dto.Environment.Environment102>();
+            Delete.Column(nameof(Dto.Environment.Environment103.SortOrder)).FromTable<Dto.Environment.Environment103>();
+            Delete.Column(nameof(Dto.Environment.Environment103.Enable)).FromTable<Dto.Environment.Environment103>();
+            Delete.Column(nameof(Dto.Environment.Environment103.ContinueProcessing)).FromTable<Dto.Environment.Environment103>();
+            Delete.Column(nameof(Dto.Environment.Environment103.ColorIndicator)).FromTable<Dto.Environment.Environment103>();
 
             //  Journal
             Delete.Index("IX_" + nameof(Shield) + "_" + nameof(Dto.Journal.Journal100.Datestamp)).OnTable<Dto.Journal.Journal100>();
@@ -99,7 +99,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                 .ToTable<Dto.Journal.Journal101>().PrimaryColumn(nameof(Dto.Journal.Journal101.AppId)).OnDeleteOrUpdate(Rule.None);
 
             //  Configuration
-            Delete.Index("IX_" + nameof(Shield) + "_" + nameof(Dto.Configuration.Configuration102.AppId)).OnTable<Dto.Configuration.Configuration102>();
+            Delete.Index("IX_" + nameof(Shield) + "_" + nameof(Dto.Configuration.Configuration103.AppId)).OnTable<Dto.Configuration.Configuration103>();
             Create.Index("IX_" + nameof(Shield) + "_" + nameof(Dto.Configuration.Configuration101.AppId)).OnTable<Dto.Configuration.Configuration101>()
                 .OnColumn(nameof(Dto.Configuration.Configuration101.AppId)).Ascending().WithOptions().Unique();
         }

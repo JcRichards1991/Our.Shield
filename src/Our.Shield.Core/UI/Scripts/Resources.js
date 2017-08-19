@@ -1,10 +1,10 @@
 ﻿/**
     * @ngdoc resource
-    * @name UmbracoAccessResource
+    * @name shieldResource
     * @function
     *
     * @description
-    * Api resource for the Umbraco Access area
+    * Api resource for the Shield Framework
 */
 angular.module('umbraco.resources').factory('shieldResource', ['$http', function ($http) {
 
@@ -60,11 +60,8 @@ angular.module('umbraco.resources').factory('shieldResource', ['$http', function
                 }
             });
         },
-        getJournals: function (id, page) {
-            return $http.get(apiRoot + 'Journals?id=' + id + '&page=' + page);
-        },
-        getAppIds: function () {
-            return $http.get(apiRoot + 'AppIds');
+        getJournals: function (id, page, orderBy, orderByDirection) {
+            return $http.get(apiRoot + 'Journals?id=' + id + '&page=' + page + "&orderBy=" + orderBy + "&orderByDirection=" + orderByDirection);
         }
     };
 }]);

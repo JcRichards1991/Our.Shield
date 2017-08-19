@@ -22,7 +22,7 @@ namespace Our.Shield.BackofficeAccess.Models
         /// Gets or sets the Status Code.
         /// </summary>
         [JsonProperty("unauthorisedAction")]
-        public Enums.UnauthorisedAction UnauthorisedAction { get; set; }
+        public Core.Enums.UnauthorisedAction UnauthorisedAction { get; set; }
 
         /// <summary>
         /// Gets or set the Ip Addresses.

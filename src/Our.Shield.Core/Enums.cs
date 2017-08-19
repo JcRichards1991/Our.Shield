@@ -13,15 +13,5 @@
             Redirect,
             Rewrite
         }
-
-        /// <summary>
-        /// The selector for getting the unauthorised Url
-        /// </summary>
-        public enum UnautorisedUrlType
-        {
-            Url,
-            XPath,
-            ContentPicker
-        }
     }
 }

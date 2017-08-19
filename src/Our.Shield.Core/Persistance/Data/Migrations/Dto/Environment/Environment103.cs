@@ -9,7 +9,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Environment
     /// </summary>
     [TableName(nameof(Shield) + nameof(Environment))]
     [PrimaryKey("Id", autoIncrement = true)]
-    public class Environment102
+    public class Environment103
     {
         /// <summary>
         /// Gets or sets the Id

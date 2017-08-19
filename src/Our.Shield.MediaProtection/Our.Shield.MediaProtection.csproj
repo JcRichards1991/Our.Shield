@@ -264,12 +264,14 @@
     <Compile Include="Models\MediaProtectionApp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\MediaProtectionConfiguration.cs" />
+    <Compile Include="UI\MediaProtectionApiController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield.MediaProtection\Scripts\MediaProtection.js" />
     <Content Include="App_Plugins\Shield.MediaProtection\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.MediaProtection\Views\MediaProtection.html" />
-    <Content Include="App_Plugins\Shield.MediaProtection\Views\Overview.html" />
+    <Content Include="UI\Scripts\Resources.js" />
+    <Content Include="UI\Scripts\Controllers.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

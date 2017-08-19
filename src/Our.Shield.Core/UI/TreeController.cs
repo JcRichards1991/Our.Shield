@@ -1,9 +1,12 @@
-﻿using Our.Shield.Core.Models;
-using System.Linq;
+﻿using System.Linq;
 using System.Net.Http.Formatting;
 using umbraco.BusinessLogic.Actions;
 using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Mvc;
+using Umbraco.Web.Trees;
+using System;
+using System.Collections.Generic;
+using Umbraco.Web.Models.ContentEditing;
 
 namespace Our.Shield.Core.UI
 {
@@ -12,7 +15,7 @@ namespace Our.Shield.Core.UI
     /// </summary>
     [PluginController(Constants.App.Name)]
     [Umbraco.Web.Trees.Tree(Constants.App.Alias, Constants.App.Alias, Constants.App.Name)]
-    public class TreeController : Umbraco.Web.Trees.TreeController
+    public class TreeController : Umbraco.Web.Trees.TreeController, ISearchableTree
     {
         /// <summary>
         /// Gets the menu for a node by it's Id
@@ -25,12 +28,7 @@ namespace Our.Shield.Core.UI
             var menu = new MenuItemCollection();
             int id = int.Parse(idText);
 
-            if(id == global::Umbraco.Core.Constants.System.Root)
-            {
-                return menu;
-            }
-
-            if (id == Constants.Tree.EnvironmentsRootId)
+            if (id == global::Umbraco.Core.Constants.System.Root)
             {
                 menu.Items.Add<ActionNew>("Create Environment");
                 menu.Items.Add<ActionRefresh>("Reload Environments");
@@ -48,7 +46,7 @@ namespace Our.Shield.Core.UI
 
             var environments = Operation.JobService.Instance.Environments;
             
-            foreach(var environment in environments)
+            foreach (var environment in environments)
             {
                 if (environment.Key.Id.Equals(id))
                 {
@@ -76,33 +74,19 @@ namespace Our.Shield.Core.UI
             
             if (id == global::Umbraco.Core.Constants.System.Root)
             {
-                treeNodeCollection.Add(
-                    CreateTreeNode(
-                        Constants.Tree.EnvironmentsRootId.ToString(),
-                        global::Umbraco.Core.Constants.System.Root.ToString(),
-                        queryStrings,
-                        "Environments",
-                        "icon-folder",
-                        environments.Any()));
-
-                return treeNodeCollection;
-            }
-
-            if (id == Constants.Tree.EnvironmentsRootId)
-            {
-                if(environments != null && environments.Any())
+                if (environments != null && environments.Any())
                 {
-                    foreach(var environment in environments)
+                    foreach (var environment in environments)
                     {
                         var environmentId = environment.Key.Id.ToString();
                         var node = CreateTreeNode(
                             environmentId,
-                            Constants.Tree.EnvironmentsRootId.ToString(),
+                            global::Umbraco.Core.Constants.System.Root.ToString(),
                             queryStrings,
                             environment.Key.Name,
-                            ((Environment) environment.Key).Icon,
+                            ((Models.Environment)environment.Key).Icon,
                             environment.Value.Any());
-                        
+
                         if (!environment.Key.Enable)
                         {
                             node.SetNotPublishedStyle();
@@ -139,6 +123,16 @@ namespace Our.Shield.Core.UI
                 }
             }
             return treeNodeCollection;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchText"></param>
+        /// <returns></returns>
+        public IEnumerable<SearchResultItem> Search(string searchText)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -7,7 +7,7 @@ using Umbraco.Core.Services;
 
 namespace Our.Shield.GoogleSafeBrowsing.Models
 {
-    [AppEditor("/App_Plugins/Shield.GoogleSafeBrowsing/Views/GoogleSafeBrowsing.html?version=1.0.2")]
+    [AppEditor("/App_Plugins/Shield.GoogleSafeBrowsing/Views/GoogleSafeBrowsing.html?version=1.0.3")]
     public class GoogleSafeBrowsingApp : App<GoogleSafeBrowsingConfiguration>
     {
         /// <summary>
@@ -23,7 +23,7 @@ namespace Our.Shield.GoogleSafeBrowsing.Models
         /// <summary>
         /// 
         /// </summary>
-        public override string Id => nameof(GoogleSafeBrowsingApp);
+        public override string Id => nameof(GoogleSafeBrowsing);
 
         /// <summary>
         /// 

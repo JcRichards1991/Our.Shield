@@ -56,6 +56,8 @@ namespace Our.Shield.Core.Persistance.Business
         public IConfiguration Read(int environmentId, string appId, Type type, IConfiguration defaultConfiguration)
         {
             var config = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(defaultConfiguration), type) as Configuration;
+            SetDefaultConfigurationSingleEnvironmentValues(config, appId);
+
             config.LastModified = null;
             config.Enable = false;
 
@@ -100,7 +102,28 @@ namespace Our.Shield.Core.Persistance.Business
             return (T)Read(environmentId, appId, typeof(T), defaultConfiguration);
         }
 
-        private void SetSingleEnvironmentValues(IConfiguration configuration, int environmentId, string appId)
+        private void SetDefaultConfigurationSingleEnvironmentValues(IConfiguration configuration, string appId)
+        {
+            var configurationType = configuration.GetType();
+            var properties = configurationType.GetProperties().Where(x => x.GetCustomAttribute<Attributes.SingleEnvironmentAttribute>() != null);
+
+            if (properties.Any())
+            {
+                var record = Database.SingleOrDefault<Data.Dto.Configuration>(
+                    "WHERE " + nameof(Data.Dto.Configuration.EnvironmentId) + " = @0 AND " +
+                    nameof(Data.Dto.Configuration.AppId) + " = @1",
+                    "1", appId);
+
+                var config = JsonConvert.DeserializeObject(record.Value, configurationType) as Configuration;
+
+                foreach (var property in properties)
+                {
+                    property.SetValue(configuration, property.GetValue(config));
+                }
+            }
+        }
+
+        private void SetDatabaseSingleEnvironmentValues(IConfiguration configuration, int environmentId, string appId)
         {
             var configurationType = configuration.GetType();
             var properties = configurationType.GetProperties().Where(x => x.GetCustomAttribute<Attributes.SingleEnvironmentAttribute>() != null);
@@ -141,7 +164,7 @@ namespace Our.Shield.Core.Persistance.Business
         {
             try
             {
-                SetSingleEnvironmentValues(config, environmentId, appId);
+                SetDatabaseSingleEnvironmentValues(config, environmentId, appId);
 
                 var record = Database.SingleOrDefault<Data.Dto.Configuration>(
                     "WHERE " + 
