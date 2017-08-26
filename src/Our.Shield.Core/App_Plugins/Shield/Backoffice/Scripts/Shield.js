@@ -64,9 +64,9 @@ var shield = {
     }
 };
 
-app.run(['shieldResource', function (shieldResource) {
-    shield.colorIndicator.run(shieldResource);
-}]);
+//app.run(['shieldResource', function (shieldResource) {
+//    shield.colorIndicator.run(shieldResource);
+//}]);
 /**
     * @ngdoc resource
     * @name Shield.Editors.Edit
@@ -871,6 +871,23 @@ angular.module('umbraco.directives').directive('shieldUrlType', function () {
             $scope.$watch('contentPickerProperty.value', function (newVal, oldVal) {
                 $scope.contentPickerUrl = newVal;
             });
+
+            //  Begin terrible hack
+            $scope.vm = {};
+
+            angular.extend($scope.vm, {
+                strUrl: $scope.strUrl,
+                xpathUrl: $scope.xpathUrl,
+            });
+
+            $scope.$watch('vm.strUrl', function (newVal, oldVal) {
+                $scope.strUrl = newVal;
+            });
+
+            $scope.$watch('vm.xpathUrl', function (newVal, oldVal) {
+                $scope.xpathUrl = newVal;
+            });
+            //  End terrible hack
         }]
     };
 });

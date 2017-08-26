@@ -2,7 +2,7 @@
     <label for="urlType" class="control-label">
         <localize key="Shield.Properties_UrlTypeLabel">Unauthorised Url</localize>
         <small>
-            <localize key="Shield.Properties_UrlTypeDescription">The page to redirect / rewrite the user to, when from a disallowed IP Address</localize>
+            <localize key="Shield.Properties_UrlTypeDescription">The page to redirect / rewrite the user to, when access is being denied</localize>
         </small>
     </label>
 
@@ -15,7 +15,7 @@
             </select>
 
             <div ng-if="urlType === 0" class="shield-url-type-option">
-                <input type="text" id="strUrl" name="strUrl" ng-model="strUrl" required ng-trim="false" ng-pattern="/^\/(([\w-]+(\/)?)+([\w-]+\.[\w-]+)?(\/)?(\?[\w-]+(=[\w-]+)?((&[\w-]+(=[\w-]+)?)+)?)?(#[\w-]+)?)?$/i" />
+                <input type="text" id="strUrl" name="strUrl" ng-model="vm.strUrl" required ng-trim="false" ng-pattern="/^\/(([\w-]+(\/)?)+([\w-]+\.[\w-]+)?(\/)?(\?[\w-]+(=[\w-]+)?((&[\w-]+(=[\w-]+)?)+)?)?(#[\w-]+)?)?$/i" />
                 <span class="help-inline" val-msg-for="strUrl" val-toggle-msg="required">
                     <localize key="Shield.Properties.Validation_Required">Required</localize>
                 </span>
@@ -25,13 +25,15 @@
             </div>
 
             <div ng-if="urlType === 1" class="shield-url-type-option">
-                <input type="text" id="xpathUrl" name="xpathUrl" ng-model="xpathUrl" required />
+                <input type="text" id="xpathUrl" name="xpathUrl" ng-model="vm.xpathUrl" required />
                 <span class="help-inline" val-msg-for="xpathUrl" val-toggle-msg="required">
                     <localize key="Shield.Properties.Validation_Required">Required</localize>
                 </span>
             </div>
 
-            <umb-editor model="contentPickerProperty" ng-if="urlType === 2" class="shield-url-type-option left"></umb-editor>
+            <div ng-if="urlType === 2" class="shield-url-type-option left">
+                <umb-editor model="vm.contentPickerProperty"></umb-editor>
+            </div>
         </div>
     </div>
 </div>

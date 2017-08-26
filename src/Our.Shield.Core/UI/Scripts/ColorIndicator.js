@@ -63,6 +63,6 @@
     }
 };
 
-app.run(['shieldResource', function (shieldResource) {
-    shield.colorIndicator.run(shieldResource);
-}]);
+//app.run(['shieldResource', function (shieldResource) {
+//    shield.colorIndicator.run(shieldResource);
+//}]);

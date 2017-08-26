@@ -51,7 +51,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 return new BackofficeAccessConfiguration
                 {
                     BackendAccessUrl = "umbraco",
-                    IpAddressesAccess = Core.Enums.IpAddressesAccess.Unrestricted,
+                    IpAddressesAccess = Enums.IpAddressesAccess.Unrestricted,
                     IpEntries = new IpEntry[0],
                     UnauthorisedAction = Enums.UnauthorisedAction.Redirect,
                     UnauthorisedUrlType = Enums.UrlType.Url
@@ -85,7 +85,7 @@ namespace Our.Shield.BackofficeAccess.Models
                     case Enums.UrlType.XPath:
                         var xpathNode = umbContext.ContentCache.GetSingleByXPath(config.UnauthorisedUrlXPath);
 
-                        if(xpathNode != null)
+                        if (xpathNode != null)
                         {
                             url = xpathNode.Url;
                             break;
@@ -97,7 +97,7 @@ namespace Our.Shield.BackofficeAccess.Models
                     case Enums.UrlType.ContentPicker:
                         int id;
 
-                        if(int.TryParse(config.UnauthorisedUrlContentPicker, out id))
+                        if (int.TryParse(config.UnauthorisedUrlContentPicker, out id))
                         {
                             var contentPickerNode = umbContext.ContentCache.GetById(id);
 
@@ -121,7 +121,7 @@ namespace Our.Shield.BackofficeAccess.Models
 
                 if (url == null)
                 {
-                    if(!string.IsNullOrEmpty(journalMessage.Message))
+                    if (!string.IsNullOrEmpty(journalMessage.Message))
                     {
                         job.WriteJournal(journalMessage);
                     }
@@ -277,84 +277,82 @@ namespace Our.Shield.BackofficeAccess.Models
 
             //add watch on the soft location
             SoftWatcher(job,
-            new Regex("^((" + softLocation.TrimEnd('/') + "(/)?)|(" + softLocation + "[\\w-/_]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase),
-            10,
-            hardLocation,
-            softLocation,
-            config.UnauthorisedAction.Equals(Core.Enums.UnauthorisedAction.Rewrite),
-            true);
+                new Regex("^((" + softLocation.TrimEnd('/') + "(/)?)|(" + softLocation + "[\\w-/_]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase),
+                10,
+                hardLocation,
+                softLocation,
+                config.UnauthorisedAction.Equals(Enums.UnauthorisedAction.Rewrite),
+                true);
 
             //Add watch on the hard location
-            job.WatchWebRequests(new Regex("^((" + hardLocation.TrimEnd('/') + "(/)?)|(" + hardLocation + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase),
-                20,
-                (count, httpApp) =>
+            job.WatchWebRequests(new Regex("^((" + hardLocation.TrimEnd('/') + "(/)?)|(" + hardLocation + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase), 20, (count, httpApp) =>
+            {
+                //Check if request has our access token, if so, we're
+                //rewriting the user to the hard location, so let 
+                //the request continue
+                if ((bool?)httpApp.Context.Items[allowKey] == true)
                 {
-                    //Check if request has our access token, if so, we're
-                    //rewriting the user to the hard location, so let 
-                    //the request continue
-                    if ((bool?)httpApp.Context.Items[allowKey] == true)
-                    {
-                        return WatchCycle.Continue;
-                    }
+                    return WatchCycle.Continue;
+                }
 
-                    //Check if requesting a physical file, as the user may have
-                    //logged into umbraco on the custom configured url and is
-                    //now requesting the assets (i.e. *.css, *.js) or is running
-                    //some action (i.e. /umbraco/dialogs/republish.aspx) which
-                    //wouldn't have our access token! Our user IP checking Watch will
-                    //handle if the request can gain access to what is being requested
-                    if (!string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension))
-                    {
-                        return WatchCycle.Continue;
-                    }
+                //Check if requesting a physical file, as the user may have
+                //logged into umbraco on the custom configured url and is
+                //now requesting the assets (i.e. *.css, *.js) or is running
+                //some action (i.e. /umbraco/dialogs/republish.aspx) which
+                //wouldn't have our access token! Our user IP checking Watch will
+                //handle if the request can gain access to what is being requested
+                if (!string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension))
+                {
+                    return WatchCycle.Continue;
+                }
 
-                    //If the requests has an authenticated umbraco user,
-                    //we need to redirect the request back to the
-                    //softLocation - This is most likely due to
-                    //clicking a link (i.e. content breadcrumb)
-                    //which isn't handle by the angular single page app
-                    if (IsRequestAuthenticated(httpApp))
-                    {
-                        //request has a authenticated user, we want to
-                        //redirect the user back to the soft location
-                        var rewritePath = httpApp.Context.Request.Url.AbsolutePath.Length > hardLocation.Length
-                            ? softLocation + httpApp.Context.Request.Url.AbsolutePath.Substring(hardLocation.Length)
-                            : softLocation;
+                //If the requests has an authenticated umbraco user,
+                //we need to redirect the request back to the
+                //softLocation - This is most likely due to
+                //clicking a link (i.e. content breadcrumb)
+                //which isn't handle by the angular single page app
+                if (IsRequestAuthenticated(httpApp))
+                {
+                    //request has a authenticated user, we want to
+                    //redirect the user back to the soft location
+                    var rewritePath = httpApp.Context.Request.Url.AbsolutePath.Length > hardLocation.Length
+                        ? softLocation + httpApp.Context.Request.Url.AbsolutePath.Substring(hardLocation.Length)
+                        : softLocation;
 
-                        httpApp.Context.Response.Redirect(rewritePath, true);
-                        return WatchCycle.Stop;
-                    }
+                    httpApp.Context.Response.Redirect(rewritePath, true);
+                    return WatchCycle.Stop;
+                }
 
-                    //if we're disabled, then we just want
-                    //to change the status code to 404
-                    if (!config.Enable || !job.Environment.Enable)
-                    {
-                        httpApp.Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                        return WatchCycle.Stop;
-                    }
+                //if we're disabled, then we just want
+                //to change the status code to 404
+                if (!config.Enable || !job.Environment.Enable)
+                {
+                    httpApp.Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    return WatchCycle.Stop;
+                }
 
-                    //We're Enabled, so we need to get the unauthorised Url
-                    var url = UnauthorisedUrl(job, config);
+                //We're Enabled, so we need to get the unauthorised Url
+                var url = UnauthorisedUrl(job, config);
 
-                    //Confirm if url is not null, if it is null, we're going to stop
-                    //the request, as they don't have our access token anyway
-                    if (url == null)
-                    {
-                        httpApp.Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                        return WatchCycle.Stop;
-                    }
+                //Confirm if url is not null, if it is null, we're going to stop
+                //the request, as they don't have our access token anyway
+                if (url == null)
+                {
+                    httpApp.Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    return WatchCycle.Stop;
+                }
 
-                    //We have a url, so we need to redirect/rewrite the request
-                    //dependant on what is configured
-                    if (config.UnauthorisedAction == Core.Enums.UnauthorisedAction.Redirect)
-                    {
-                        httpApp.Context.Response.Redirect(url, true);
-                        return WatchCycle.Stop;
-                    }
+                //We have a url, so we need to redirect/rewrite the request
+                //dependant on what is configured
+                if (config.UnauthorisedAction == Core.Enums.UnauthorisedAction.Redirect)
+                {
+                    httpApp.Context.Response.Redirect(url, true);
+                    return WatchCycle.Stop;
+                }
 
-                    httpApp.Context.RewritePath(url, string.Empty, string.Empty);
-                    return WatchCycle.Restart;
-                });
+                httpApp.Context.RewritePath(url, string.Empty, string.Empty);
+                return WatchCycle.Restart;
+            });
         }
 
         private IPAddress ConvertToIpv6(string ip)
@@ -363,7 +361,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 ip = "::1";
 
             IPAddress typedIp;
-            if(IPAddress.TryParse(ip, out typedIp))
+            if (IPAddress.TryParse(ip, out typedIp))
             {
                 return typedIp.MapToIPv6();
             }
@@ -481,7 +479,7 @@ namespace Our.Shield.BackofficeAccess.Models
             AddSoftWatches(job, config);
 
             //if we're enabled, we need to add our IP checking watch
-            if (config.Enable && job.Environment.Enable && config.IpAddressesAccess == Core.Enums.IpAddressesAccess.Restricted)
+            if (config.Enable && job.Environment.Enable && config.IpAddressesAccess == Enums.IpAddressesAccess.Restricted)
             {
                 //Add our Hard Watch to
                 //do the security checking
