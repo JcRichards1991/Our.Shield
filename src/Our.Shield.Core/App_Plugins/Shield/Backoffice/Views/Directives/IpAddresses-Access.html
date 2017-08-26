@@ -1,0 +1,81 @@
+﻿<div class="umb-el-wrap control-group umb-control-group">
+    <label class="control-label">
+        <localize key="Shield.Properties_IpAddressAccessLabel">IP Addresses Access</localize>
+        <small>
+            <localize key="Shield.Properties_IpAddressAccessDescription">Whether or not to add IP Address restrictions</localize>
+        </small>
+    </label>
+
+    <div class="controls">
+        <div class="umb-editor umb-radiobuttons">
+            <ul class="unstyled">
+                <li>
+                    <label class="radio">
+                        <input type="radio" name="ipRestricted" value="0" ng-model="ipAddressesAccess" shield-convert-to-number />
+
+                        <localize key="Shield.Properties.IpAddessAccess.Options_Unrestricted">Open to all IP addresses</localize>
+                    </label>
+                </li>
+                <li>
+                    <label class="radio">
+                        <input type="radio" name="ipRestricted" value="1" ng-model="ipAddressesAccess" shield-convert-to-number />
+
+                        <localize key="Shield.Properties.IpAddessAccess.Options_Restricted">Open to specific IP Address(es)</localize>
+                    </label>
+
+                    <table class="ipaddress-container" ng-if="ipAddressesAccess === 1">
+                        <thead>
+                            <tr>
+                                <th><localize key="Shield.Properties.IpAddressAccess.Table_IpAddressHeader">IP Address</localize></th>
+                                <th><localize key="Shield.Properties.IpAddressAccess.Table_DescriptionHeader">Description</localize></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr ng-repeat="ip in ipAddresses track by $index">
+                                <td>
+                                    <input type="text" id="ipAddress{{$index}}" name="ipAddress{{$index}}" ng-model="ip.ipAddress" required shield-ipaddressvalid shield-ipaddressduplicate="{{ipAddresses}}" shield-add-to-form="" />
+                                    <span class="help-inline" val-msg-for="ipAddress{{$index}}" val-toggle-msg="required">
+                                        <localize key="Shield.Properties.Validation_Required">Required</localize>
+                                    </span>
+                                    <span class="help-inline" val-msg-for="ipAddress{{$index}}" val-toggle-msg="shieldIpaddressduplicate">
+                                        <localize key="Shield.Properties.IpAddressAccess.Validation_IpDuplicate">IP Address has already been added</localize>
+                                    </span>
+                                    <span class="help-inline" val-msg-for="ipAddress{{$index}}" val-toggle-msg="shieldIpaddressvalid">
+                                        <localize key="Shield.Properties.IpAddressAccess.Validation_IpInvalid">Invalid IP Address. Please enter a valid IPv4 or IPv6 address</localize>
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <input type="text" ng-model="ip.description" />
+                                </td>
+
+                                <td>
+                                    <span class="btn btn-danger" ng-click="remove($index)" ng-if="ipAddresses.length > 1">
+                                        <localize key="Shield.General_Remove">Remove</localize>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td></td>
+
+                                <td>
+                                    <span class="btn btn-success" ng-click="ipAddresses.push({ipAddress: '', description: ''})">
+                                        <localize key="general_add">Add</localize>
+                                    </span>
+                                </td>
+
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -114,11 +114,14 @@ namespace Our.Shield.Core.Persistance.Business
                     nameof(Data.Dto.Configuration.AppId) + " = @1",
                     "1", appId);
 
-                var config = JsonConvert.DeserializeObject(record.Value, configurationType) as Configuration;
-
-                foreach (var property in properties)
+                if(record != null)
                 {
-                    property.SetValue(configuration, property.GetValue(config));
+                    var config = JsonConvert.DeserializeObject(record.Value, configurationType) as Configuration;
+
+                    foreach (var property in properties)
+                    {
+                        property.SetValue(configuration, property.GetValue(config));
+                    }
                 }
             }
         }

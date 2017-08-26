@@ -1,9 +1,9 @@
 ﻿<div class="umb-el-wrap control-group umb-control-group">
     <div>
         <label for="enable" class="control-label">
-            <localize key="Shield.General.Properties_EnableLabel">Enable</localize>
+            <localize key="Shield.Properties_EnableLabel">Enable</localize>
             <small>
-                <localize key="Shield.EnvironmentProperties_EnableDescription">Is this Environment active</localize>
+                <localize key="Shield.Environment.Properties_EnableDescription">Is this Environment active</localize>
             </small>
         </label>
         <div class="controls">
@@ -15,18 +15,18 @@
 <div class="umb-el-wrap control-group umb-control-group">
     <div>
         <label for="colorIndicator" class="control-label">
-            <localize key="Shield.EnvironmentProperties_ColorIndicatorLabel">Color Indicator</localize>
+            <localize key="Shield.Environment.Properties_ColorIndicatorLabel">Color Indicator</localize>
             <small>
-                <localize key="Shield.EnvironmentProperties_ColorIndicatorDescription">Change the color of Umbraco favicon and navigation to easily determine the environment your on</localize>
+                <localize key="Shield.Environment.Properties_ColorIndicatorDescription">Change the color of Umbraco favicon and navigation to easily determine the environment your on</localize>
             </small>
         </label>
         <div class="controls">
             <input type="text" id="colorIndicator" name="colorIndicator" ng-model="vm.environment.colorIndicator" required ng-trim="false" ng-pattern="/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i"/>
             <span class="help-inline" val-msg-for="colorIndicator" val-toggle-msg="required">
-                <localize key="Shield.EnvironmentProperties.ErrorMessages_ColorIndicatorRequired">Color Indicator is required</localize>
+                <localize key="Shield.Properties.Validation_Required">Required</localize>
             </span>
             <span class="help-inline" val-msg-for="colorIndicator" val-toggle-msg="pattern">
-                <localize key="Shield.EnvironmentProperties.ErrorMessages_ColorIndicatorInvalid">Invalid hexedecimal color</localize>
+                <localize key="Shield.Environment.Properties.Validation_ColorIndicatorInvalid">Invalid hexedecimal color</localize>
             </span>
         </div>
     </div>
@@ -36,9 +36,9 @@
     <div class="umb-el-wrap control-group umb-control-group">
         <div>
             <label for="continueProcessing" class="control-label">
-                <localize key="Shield.EnvironmentProperties_ContinueProcessingLabel">Continue Processing</localize>
+                <localize key="Shield.Environment.Properties_ContinueProcessingLabel">Continue Processing</localize>
                 <small>
-                    <localize key="Shield.EnvironmentProperties_ContinueProcessingDescription">Whether or not to continue processing when an environment has been found by Shield's HttpModule (recommended is false)</localize>
+                    <localize key="Shield.Environment.Properties_ContinueProcessingDescription">Whether or not to continue processing when an environment has been found by Shield's HttpModule (recommended is false)</localize>
                 </small>
             </label>
             <div class="controls">
@@ -50,9 +50,9 @@
     <div class="umb-el-wrap control-group umb-control-group">
         <div>
             <label for="domain0" class="control-label">
-                <localize key="Shield.EnvironmentProperties_DomainsLabel">Domains</localize>
+                <localize key="Shield.Environment.Properties_DomainsLabel">Domains</localize>
                 <small>
-                    <localize key="Shield.EnvironmentProperties_DomainsDescription">The domains that are associated to this environment</localize>
+                    <localize key="Shield.Environment.Properties_DomainsDescription">The domains that are associated to this environment</localize>
                 </small>
             </label>
             <div class="controls">
@@ -60,7 +60,7 @@
                     <table class="domains-container">
                         <thead>
                             <tr>
-                                <th><localize key="Shield.EnvironmentProperties.Table_DomainsHeader">Domain</localize></th>
+                                <th><localize key="Shield.Environment.Properties.Domains.Table_DomainHeader">Domain</localize></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -70,10 +70,10 @@
                                 <td>
                                     <input type="text" id="domain{{$index}}" name="domain{{$index}}" ng-model="domain.name" required shield-add-to-form="shieldForm" ng-trim="false" ng-pattern="/^(http(s)?:\/\/)(([\w-_]+((\.[\w-_]+)+)?)+)(\.[\w]+)?(:[0-9]+)?([\w-_\/]+)?$/i" />
                                     <span class="help-inline" val-msg-for="domain{{$index}}" val-toggle-msg="required">
-                                        <localize key="Shield.EnvironmentProperties.ErrorMessages_DomainRequired">Domain is required</localize>
+                                        <localize key="Shield.Properties.Validation_Required">Required</localize>
                                     </span>
                                     <span class="help-inline" val-msg-for="domain{{$index}}" val-toggle-msg="pattern">
-                                        <localize key="Shield.EnvironmentProperties.ErrorMessages_DomainInvalid">Invalid Domain</localize>
+                                        <localize key="Shield.Environment.Properties.Validation_DomainInvalid">Invalid Domain</localize>
                                     </span>
                                 </td>
 

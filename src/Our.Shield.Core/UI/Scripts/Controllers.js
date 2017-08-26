@@ -147,14 +147,14 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     switch (vm.type) {
                         case 0:     //  Environment
                             if (vm.id === 0) {
-                                errorMsgDictionaryItem = 'InvalidCreateEnvironmentError';
+                                errorMsgDictionaryItem = 'CreateEnvironmentInvalid';
                             } else {
-                                errorMsgDictionaryItem = 'InvalidSaveEnvironmentError';
+                                errorMsgDictionaryItem = 'SaveEnvironmentInvalid';
                             }
                             break;
 
                         case 1:     //  App
-                            errorMsgDictionaryItem = 'InvalidSaveConfigurationError';
+                            errorMsgDictionaryItem = 'SaveConfigurationInvalid';
                             break;
                     }
 

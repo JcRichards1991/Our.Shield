@@ -1,43 +1,47 @@
 ﻿table.ipaddress-container {
     width: 75%;
+    margin: 10px 0 0 20px;
 
-    thead, tbody, tfoot {
+    tbody, tfoot {
 
         tr {
             height:72px;
+        }
+    }
 
-            td, th {
-                max-width: 300px;
+    thead, tbody, tfoot {
 
-                &:last-child {
-                    text-align: right;
-                    min-width: 160px;
-                    max-width: 160px;
-                }
+        td, th {
+            max-width: 300px;
+
+            &:last-child {
+                text-align: right;
+                min-width: 160px;
+                max-width: 160px;
+            }
+        }
+
+        td {
+
+            input {
+                display: block;
             }
 
-            td {
-
-                input {
-                    display: block;
-                }
-
-                span.help-inline {
-                    position: absolute;
-                    color: #9d261d;
-                }
-
-                &:last-child {
-
-                    span.btn:last-child{
-                        margin-left: 4px;
-                    }
-                }
+            span.help-inline {
+                position: absolute;
+                color: #9d261d;
             }
 
-            th {
-                text-align: left;
+            &:last-child {
+
+                span.btn:last-child{
+                    margin-left: 4px;
+                }
             }
+        }
+
+        th {
+            text-align: left;
         }
     }
 

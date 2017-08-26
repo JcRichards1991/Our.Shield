@@ -5,3 +5,15 @@
 @import "partials/shield-domain-listing-table";
 
 @import "partials/shield-Sort-Panel-Overview";
+
+.shield-editor {
+    .shield-url-type {
+        .shield-url-type-option {
+            margin-top: 15px;
+
+            &.left {
+                margin-left: -10px;
+            }
+        }
+    }
+}

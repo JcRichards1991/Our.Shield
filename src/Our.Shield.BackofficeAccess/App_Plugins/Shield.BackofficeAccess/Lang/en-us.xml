@@ -10,48 +10,14 @@
 
   <area alias="Shield.BackofficeAccess.Properties">
     <key alias="BackendAccessUrlLabel">Backend Office Access URL</key>
-    <key alias="BackendAccessUrlDescription">The URL used to access the CMS.</key>
-    
+    <key alias="BackendAccessUrlDescription">The URL used to access the CMS</key>
+
     <key alias="UnauthorisedActionLabel">Unauthorised Action</key>
-    <key alias="UnauthorisedActionDescription">Whether to redirect the user or to rewrite the request to another location when from a non white listed IP address.</key>
-    
-    <key alias="UnauthorisedUrlTypeLabel">Unauthorised Url Type</key>
-    <key alias="UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</key>
-    <key alias="UnauthorisedUrlTypeUrlOption">Url</key>
-    <key alias="UnauthorisedUrlTypeXPathOption">XPath</key>
-    <key alias="UnauthorisedUrlTypeContentPickerOption">Content Picker</key>
-
-    <key alias="UnauthorisedUrlLabel">Unauthorised Url</key>
-    <key alias="UnauthorisedUrlDescription">The Url to redirect/rewrite the request to when from a non white listed IP Address.</key>
-    <key alias="UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a non white listed IP Address.</key>
-    <key alias="UnauthorisedUrlContentPickerDescription">Select the content node to redirect/rewrite the user to when from a white listed IP Address.</key>
-
-    <key alias="AllowedIpsLabel">White-listed IP address(es)</key>
-    <key alias="AllowedIpsDescription">The allowed IP address(es) that can access the Backend Office Access Url.</key>
-    <key alias="AllowedIpsIpAddressHeader">IP Address</key>
-    <key alias="AllowedIpsDescriptionHeader">Description</key>
-    
-    <key alias="IpRestrictedLabel">IP Addresses Restricted Access</key>
-    <key alias="IpRestrictedDescription">Whether to restrict the backoffice to specific IP Addresses, or open to all IP Addresses</key>
-    <key alias="IpRestrictedOptionAll">Open to all IP addresses</key>
-    <key alias="IpRestrictedOptionSpecific">Open to specific IP Addresses</key>
-  </area>
-    
-  <area alias="Shield.BackofficeAccess.Table">
-    <key alias="IpAddressHeader">IP Address</key>
-    <key alias="DescriptionHeader">Description</key>
-  </area>
-
-  <area alias="Shield.BackofficeAccess.AlertMessages">
-    <key alias="ConfirmRemoveIp">Are you sure you want to remove IP Address: </key>
+    <key alias="UnauthorisedActionDescription">Whether to redirect the user or to rewrite the request to another location, when from a disallowed IP Address</key>
   </area>
 
   <area alias="Shield.BackofficeAccess.ErrorMessages">
-    <key alias="IpRequired">IP Address is required</key>
-    <key alias="IpInvalid">Invalid IP Address. Please enter a valid IPv4 or IPv6 address</key>
-    <key alias="IpDuplicate">IP Address has already been added</key>
-    <key alias="Required">Required</key>
     <key alias="InvalidBackendAccessUrl">This can be any valid combination of letters and/or numbers, non-case sensitive. You cannot use white space, symbols or special characters</key>
-    <key alias="InvalidUnauthorisedUrl">Invalid Url. Please provide a valid relative Url. i.e. /404</key>
+    <key alias="InvalidUnauthorisedUrl">Invalid Url, please provide a valid relative Url i.e. /404</key>
   </area>
 </language>

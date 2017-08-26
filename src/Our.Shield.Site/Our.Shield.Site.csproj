@@ -670,9 +670,9 @@
       <Project>{69737067-ab31-4c68-9c69-5e6ce00d1ab3}</Project>
       <Name>Our.Shield.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Our.Shield.FrontendLocker\Our.Shield.FrontendLocker.csproj">
+    <ProjectReference Include="..\Our.Shield.FrontendAccess\Our.Shield.FrontendAccess.csproj">
       <Project>{ce78ddd4-f1c4-429c-9d76-2060eeec2042}</Project>
-      <Name>Our.Shield.FrontendLocker</Name>
+      <Name>Our.Shield.FrontendAccess</Name>
     </ProjectReference>
     <ProjectReference Include="..\Our.Shield.MediaProtection\Our.Shield.MediaProtection.csproj">
       <Project>{3c5eda13-8468-4386-8f74-3d5678695abe}</Project>
@@ -736,7 +736,7 @@
     <PostBuildEvent>xcopy "$(solutiondir)Our.Shield.Core\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
 xcopy "$(solutiondir)Our.Shield.BackofficeAccess\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
 xcopy "$(solutiondir)Our.Shield.MediaProtection\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
-xcopy "$(solutiondir)Our.Shield.FrontendLocker\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
+xcopy "$(solutiondir)Our.Shield.FrontendAccess\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
 xcopy "$(solutiondir)Our.Shield.GoogleSafeBrowsing\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
 xcopy "$(solutiondir)Our.Shield.ScraperDefense\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e</PostBuildEvent>
   </PropertyGroup>

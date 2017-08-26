@@ -1,0 +1,37 @@
+﻿<div class="umb-el-wrap control-group umb-control-group shield-url-type">
+    <label for="urlType" class="control-label">
+        <localize key="Shield.Properties_UrlTypeLabel">Unauthorised Url</localize>
+        <small>
+            <localize key="Shield.Properties_UrlTypeDescription">The page to redirect / rewrite the user to, when from a disallowed IP Address</localize>
+        </small>
+    </label>
+
+    <div class="controls">
+        <div class="umb-editor">
+            <select id="urlType" name="urlType" ng-model="urlType" required shield-convert-to-number>
+                <option value="0">Url</option>
+                <option value="1">XPath</option>
+                <option value="2">Content Picker</option>
+            </select>
+
+            <div ng-if="urlType === 0" class="shield-url-type-option">
+                <input type="text" id="strUrl" name="strUrl" ng-model="strUrl" required ng-trim="false" ng-pattern="/^\/(([\w-]+(\/)?)+([\w-]+\.[\w-]+)?(\/)?(\?[\w-]+(=[\w-]+)?((&[\w-]+(=[\w-]+)?)+)?)?(#[\w-]+)?)?$/i" />
+                <span class="help-inline" val-msg-for="strUrl" val-toggle-msg="required">
+                    <localize key="Shield.Properties.Validation_Required">Required</localize>
+                </span>
+                <span class="help-inline" val-msg-for="strUrl" val-toggle-msg="pattern">
+                    <localize key="Shield.Properties.UrlType.Validation_InvalidStrUrl">Invalid Url, please provide a valid relative Url i.e. /404</localize>
+                </span>
+            </div>
+
+            <div ng-if="urlType === 1" class="shield-url-type-option">
+                <input type="text" id="xpathUrl" name="xpathUrl" ng-model="xpathUrl" required />
+                <span class="help-inline" val-msg-for="xpathUrl" val-toggle-msg="required">
+                    <localize key="Shield.Properties.Validation_Required">Required</localize>
+                </span>
+            </div>
+
+            <umb-editor model="contentPickerProperty" ng-if="urlType === 2" class="shield-url-type-option left"></umb-editor>
+        </div>
+    </div>
+</div>

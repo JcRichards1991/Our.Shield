@@ -267,6 +267,7 @@
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Models\ApplicationSettings.cs" />
+    <Compile Include="Models\IpEntry.cs" />
     <Compile Include="Models\JournalMessage.cs" />
     <Compile Include="Operation\EnvironmentService.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration100.cs" />
@@ -343,6 +344,8 @@
     <Content Include="App_Plugins\Shield\Backoffice\Scripts\Shield.js" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Create.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Delete.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\IpAddresses-Access.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\Url-Type.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Views\EditEnvironment.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Sort.html" />

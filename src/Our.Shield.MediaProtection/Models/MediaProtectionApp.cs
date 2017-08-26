@@ -108,30 +108,29 @@ namespace Our.Shield.MediaProtection.Models
                     }
                 }
 
-                foreach (var directory in config.HotLinkingProtectedDirectories)
+                var regex = new Regex("^(" + string.Join("|", config.HotLinkingProtectedDirectories) + ")", RegexOptions.IgnoreCase);
+
+                job.WatchWebRequests(regex, 50, (count, httpApp) =>
                 {
-                    job.WatchWebRequests(new Regex(directory, RegexOptions.IgnoreCase), 50, (count, httpApp) =>
+                    var referrer = httpApp.Request.UrlReferrer;
+                    if (referrer == null || String.IsNullOrWhiteSpace(referrer.Host) ||
+                        referrer.Host.Equals(httpApp.Request.Url.Host, StringComparison.InvariantCultureIgnoreCase) ||
+                        domains.Any(x => x.Equals(referrer.Host, StringComparison.InvariantCultureIgnoreCase)))
                     {
-                        var referrer = httpApp.Request.UrlReferrer;
-                        if (referrer == null || String.IsNullOrWhiteSpace(referrer.Host) ||
-                            referrer.Host.Equals(httpApp.Request.Url.Host, StringComparison.InvariantCultureIgnoreCase) ||
-                            domains.Any(x => x.Equals(referrer.Host, StringComparison.InvariantCultureIgnoreCase)))
-                        {
-                            //  This media is being accessed directly, 
-                            //  or from a browser that doesn't pass referrer info,
-                            //  or from our own domain
-                            //  so allow access
-                            return WatchCycle.Continue;
-                        }
+                        //  This media is being accessed directly, 
+                        //  or from a browser that doesn't pass referrer info,
+                        //  or from our own domain
+                        //  so allow access
+                        return WatchCycle.Continue;
+                    }
 
-                        job.WriteJournal(new JournalMessage($"Access was denied, {referrer.Host} is trying to hotlink your media assets"));
+                    job.WriteJournal(new JournalMessage($"Access was denied, {referrer.Host} is trying to hotlink your media assets"));
 
-                        //  Someone is trying to hotlink our media
-                        httpApp.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        httpApp.Response.End();
-                        return WatchCycle.Stop;
-                    });
-                }
+                    //  Someone is trying to hotlink our media
+                    httpApp.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    httpApp.Response.End();
+                    return WatchCycle.Stop;
+                });
             }
 
             if (config.EnableMembersOnlyMedia)

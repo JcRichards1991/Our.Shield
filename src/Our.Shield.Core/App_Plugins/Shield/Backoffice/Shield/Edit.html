@@ -109,13 +109,15 @@
                             <div class="umb-el-wrap control-group umb-control-group">
                                 <div>
                                     <label for="enable" class="control-label">
-                                        <localize key="Shield.General.Properties_EnableLabel">Enable</localize>
+                                        <localize key="Shield.Properties_EnableLabel">Enable</localize>
                                         <small>
-                                            <localize key="Shield.General.Properties_EnableDescription">Is this App active</localize>
+                                            <localize key="Shield.Properties_EnableDescription">Is this App active</localize>
                                         </small>
                                     </label>
                                     <div class="controls">
-                                        <input type="checkbox" id="enable" ng-model="vm.configuration.enable" />
+                                        <div class="umb-editor umb-checkbox">
+                                            <input type="checkbox" id="enable" ng-model="vm.configuration.enable" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>

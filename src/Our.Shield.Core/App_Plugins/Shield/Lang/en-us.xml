@@ -10,47 +10,88 @@
 
   <area alias="Shield.General">
     <key alias="Name">Shield</key>
-    <key alias="Add">Add</key>
-    <key alias="Edit">Edit</key>
-    <key alias="Update">Update</key>
     <key alias="Remove">Remove</key>
+
     <key alias="SaveConfigurationSuccess">Have successfully updated the App</key>
-    <key alias="SaveEnvironmentSuccess">Have successfully updated the environment</key>
     <key alias="SaveConfigurationError">Unable to update configuration</key>
+    <key alias="SaveConfigurationInvalid">Unable to update app, there are validation errors</key>
+
+    <key alias="SaveEnvironmentSuccess">Have successfully updated the environment</key>
     <key alias="SaveEnvironmentError">Unable to update environment</key>
+    <key alias="SaveEnvironmentInvalid">Unable to update environment, there are validation errors</key>
+
     <key alias="DeleteEnvironmentSuccess">Successfully deleted environment</key>
     <key alias="DeleteEnvironmentError">Unable to delete environment</key>
+
     <key alias="CreateEnvironmentSuccess">Successfully created new environment</key>
     <key alias="CreateEnvironmentError">Unable to create environment</key>
+    <key alias="CreateEnvironmentInvalid">Unable to create environment, there are validation errors</key>
+
     <key alias="SortEnvironmentError">Unable to re-order the environments, there was an error</key>
-    <key alias="InvalidSaveConfigurationError">Unable to update app, there are validation errors</key>
-    <key alias="InvalidSaveEnvironmentError">Unable to update environment, there are validation errors</key>
-    <key alias="InvalidCreateEnvironmentError">Unable to create environment, there are validation errors</key>
   </area>
 
-  <area alias="Shield.General.Properties">
+  <area alias="Shield.Properties">
     <key alias="EnableLabel">Enable</key>
     <key alias="EnableDescription">Is this App active</key>
+
+    <key alias="IpAddressAccessLabel">IP Addresses Access</key>
+    <key alias="IpAddressAccessDescription">Whether or not to add IP Address restrictions</key>
+
+    <key alias="UrlTypeLabel">Unauthorised Url</key>
+    <key alias="UrlTypeDescription">The page to redirect / rewrite the user to, when from a disallowed IP Address</key>
   </area>
 
-  <area alias="Shield.EnvironmentProperties">
+  <area alias="Shield.Properties.Validation">
+    <key alias="Required">Required</key>
+  </area>
+
+  <area alias="Shield.Properties.IpAddessAccess.Options">
+    <key alias="Unrestricted">Open to all IP addresses</key>
+    <key alias="Restricted">Open to specific IP Address(es)</key>
+  </area>
+
+  <area alias="Shield.Properties.IpAddressAccess.Table">
+    <key alias="IpAddressHeader">IP Address</key>
+    <key alias="DescriptionHeader">Description</key>
+  </area>
+
+  <area alias="Shield.Properties.IpAddressAccess.Validation">
+    <key alias="IpDuplicate">IP Address has already been added</key>
+    <key alias="IpInvalid">Invalid IP Address. Please enter a valid IPv4 or IPv6 address</key>
+  </area>
+
+  <area alias="Shield.Properties.IpAddressAccess.Messages">
+    <key alias="ConfirmRemoveIp">Are you sure you want to remove IP Address: </key>
+  </area>
+
+  <area alias="Shield.Properties.UrlType.Validation">
+    <key alias="InvalidStrUrl">Invalid Url, please provide a valid relative Url i.e. /404</key>
+  </area>
+
+  <area alias="Shield.Environment.Properties">
     <key alias="EnableDescription">Is this Environment active</key>
+
     <key alias="ContinueProcessingLabel">Continue Processing</key>
     <key alias="ContinueProcessingDescription">When this environment matches active security requests, do you allow later environments to process requests too (False is recommended, otherwise you can have multiple actions on a single request)</key>
+
     <key alias="DomainsLabel">Domains</key>
     <key alias="DomainsDescription">The domains that are associated to this environment</key>
+
     <key alias="ColorIndicatorLabel">Color Indicator</key>
     <key alias="ColorIndicatorDescription">Change the color of Umbraco favicon and navigation to easily determine the environment your on</key>
   </area>
-  
-  <area alias="Shield.EnvironmentProperties.Table">
-    <key alias="DomainsHeader">Domain</key>
+
+  <area alias="Shield.Environment.Properties.Domains.Table">
+    <key alias="DomainHeader">Domain</key>
   </area>
 
-  <area alias="Shield.EnvironmentProperties.ErrorMessages">
-    <key alias="DomainRequired">Domain is required</key>
+  <area alias="Shield.Environment.Properties.Validation">
     <key alias="DomainInvalid">Domain is invalid</key>
-    <key alias="ColorIndicatorRequired">Color Indicator is required</key>
     <key alias="ColorIndicatorInvalid">Invalid hexedecimal color</key>
+  </area>
+
+  <area alias="Shield.Dashboard.Environment.Table">
+    <key alias="NameHeader">Name</key>
+    <key alias="DomainsHeader">Domains</key>
   </area>
 </language>

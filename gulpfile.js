@@ -21,12 +21,6 @@ var jsFiles = [
         nameMin: 'Shield.min.js'
     },
     {
-        subFiles: src + '.BackofficeAccess/Scripts/*.js',
-        output: src + '.BackofficeAccess' + jsOutput + '.BackofficeAccess/Scripts',
-        name: 'BackofficeAccess.js',
-        nameMin: 'BackofficeAccess.min.js'
-    },
-    {
         subFiles: src + '.MediaProtection/UI/Scripts/*.js',
         output: src + '.MediaProtection' + jsOutput + '.MediaProtection/Scripts',
         name: 'MediaProtection.js',

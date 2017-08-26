@@ -146,7 +146,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
 
                     switch (vm.type = response.data.type) {
                         case 0:     //  Environment
-                            vm.path = ['-1' , vm.id];
+                            vm.path = ['-1' , '' + vm.id];
                             vm.ancestors = [{ id: vm.id, name: vm.name }];
 
                             vm.appListing.apps = response.data.apps;
@@ -167,7 +167,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             break;
 
                         case 1:     //  App
-                            vm.path = ['-1', vm.environment.id, vm.id];
+                            vm.path = ['-1', '' + vm.environment.id, '' + vm.id];
                             vm.ancestors = [{ id: vm.environment.id, name: vm.environment.name }, { id: vm.id, name: vm.name }];
 
                             vm.app = response.data.app;
@@ -189,7 +189,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     }
 
                     $timeout(function () {
-                        navigationService.syncTree({ tree: 'Shield', path: vm.path, forceReload: false, activate: true });
+                        navigationService.syncTree({ tree: 'shield', path: vm.path, forceReload: false, activate: true });
                         vm.loading = false;
                     });
                 });
@@ -216,14 +216,14 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     switch (vm.type) {
                         case 0:     //  Environment
                             if (vm.id === 0) {
-                                errorMsgDictionaryItem = 'InvalidCreateEnvironmentError';
+                                errorMsgDictionaryItem = 'CreateEnvironmentInvalid';
                             } else {
-                                errorMsgDictionaryItem = 'InvalidSaveEnvironmentError';
+                                errorMsgDictionaryItem = 'SaveEnvironmentInvalid';
                             }
                             break;
 
                         case 1:     //  App
-                            errorMsgDictionaryItem = 'InvalidSaveConfigurationError';
+                            errorMsgDictionaryItem = 'SaveConfigurationInvalid';
                             break;
                     }
 
@@ -708,15 +708,171 @@ angular.module('umbraco.directives').directive('shieldConvertToNumber',
 angular.module('umbraco.directives').directive('shieldAddToForm', function () {
     return {
         restrict: 'A',
-        require: 'ngModel',
-        link: function ($scope, $element, $attr, ctrl) {
-            var $form = $scope[$attr.shieldAddToForm];
+        require: ['ngModel', '^form'],
+        link: function ($scope, $element, $attr, controllers) {
+            var ngModel = controllers[0],
+                $form = controllers[1];
 
-            $form.$removeControl(ctrl);
-            ctrl.$name = $attr.name;
-            $form.$addControl(ctrl);
+            $form.$removeControl(ngModel);
+            ngModel.$name = $attr.name;
+            $form.$addControl(ngModel);
         }
     }
+});
+
+/**
+   * @ngdoc directive
+   * @name shield-ipaddressvalid
+   * @function
+   *
+   * @description
+   * Custom angular directive for validating an IP Address
+   * as IPv4 or IPv6 with optional cidr
+*/
+angular.module('umbraco.directives').directive('shieldIpaddressvalid', function () {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, elm, attr, ctrl) {
+            ctrl.$parsers.push(function (modelValue) {
+                if (modelValue === '' || modelValue === undefined) {
+                    ctrl.$setValidity('shieldIpaddressvalid', true);
+                    return modelValue;
+                }
+
+                //Check if IPv4 & IPv6
+                var pattern = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$|^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
+
+                ctrl.$setValidity('shieldIpaddressvalid', pattern.test(modelValue));
+
+                return modelValue
+            });
+        }
+    };
+});
+
+/**
+   * @ngdoc directive
+   * @name shield-ipaddressduplicate
+   * @function
+   *
+   * @description
+   * Checks to make sure an IP address isn't being added more than
+   * once to the IP address White-List
+*/
+angular.module('umbraco.directives').directive('shieldIpaddressduplicate', function () {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, elm, attr, ctrl) {
+            ctrl.$parsers.push(function (modelValue) {
+                if (modelValue === '' || modelValue === undefined) {
+                    ctrl.$setValidity('shieldIpaddressduplicate', true);
+                    return modelValue;
+                }
+
+                var ipAddresses = angular.fromJson(attr.shieldIpaddressduplicate);
+
+                if (ipAddresses.filter((x) => x.ipAddress === modelValue)[0] !== undefined) {
+                    ctrl.$setValidity('shieldIpaddressduplicate', false);
+                    return modelValue;
+                }
+
+                ctrl.$setValidity('shieldIpaddressduplicate', true);
+                return modelValue
+            })
+        }
+    };
+});
+
+/**
+   * @ngdoc directive
+   * @name shield-ip-addresses-access
+   * @function
+   *
+   * @description
+   * Custom directive for handling whether or not to add Ip Address restrictions
+*/
+angular.module('umbraco.directives').directive('shieldIpAddressesAccess', function () {
+    return {
+        restrict: 'E',
+        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/IpAddresses-Access.html',
+        scope: {
+            ipAddressesAccess: '=',
+            ipAddresses: '=',
+        },
+        controller: ['$scope', 'localizationService', function ($scope, localizationService) {
+            $scope.remove = function ($index) {
+                var ip = $scope.ipAddresses[$index],
+                    msg = ip.ipAddress;
+
+                if (ip.ipAddress !== '') {
+                    if (ip.description !== '') {
+                        msg += ' - ' + ip.description;
+                    }
+
+                    localizationService.localize('Shield.Properties.IpAddressAccess.Messages_ConfirmRemoveIp').then(function (warningMsg) {
+                        if (confirm(warningMsg + msg)) {
+                            $scope.ipAddresses.splice($index, 1);
+                        }
+                    });
+                } else {
+                    $scope.ipAddresses.splice($index, 1);
+                }
+            };
+
+            if ($scope.ipAddresses.length === 0) {
+                $scope.ipAddresses.push({
+                    ipAddress: '',
+                    description: ''
+                });
+            }
+        }]
+    };
+});
+
+/**
+   * @ngdoc directive
+   * @name shield-url-type
+   * @function
+   *
+   * @description
+   * Custom directive for handling the selected Url type
+*/
+angular.module('umbraco.directives').directive('shieldUrlType', function () {
+    return {
+        restrict: 'E',
+        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/Url-Type.html',
+        scope: {
+            urlType: '=',
+            strUrl: '=',
+            xpathUrl: '=',
+            contentPickerUrl: '=',
+        },
+        controller: ['$scope', function ($scope) {
+            $scope.contentPickerProperty = {
+                view: 'contentpicker',
+                alias: 'contentPicker',
+                config: {
+                    multiPicker: "0",
+                    entityType: "Document",
+                    startNode: {
+                        query: "",
+                        type: "content",
+                        id: -1
+                    },
+                    filter: "",
+                    minNumber: 1,
+                    maxNumber: 1
+                },
+                value: $scope.contentPickerUrl
+            };
+
+            $scope.$watch('contentPickerProperty.value', function (newVal, oldVal) {
+                $scope.contentPickerUrl = newVal;
+            });
+        }]
+    };
 });
 /**
     * @ngdoc resource

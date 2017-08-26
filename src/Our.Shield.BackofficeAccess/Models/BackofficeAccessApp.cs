@@ -34,7 +34,7 @@ namespace Our.Shield.BackofficeAccess.Models
         /// <summary>
         /// 
         /// </summary>
-        public override string Description => "Change the backoffice access URL and/or secure your backoffice URL via IP restrictions";
+        public override string Description => "Change the backoffice access URL and/or secure your backoffice access URL via IP restrictions";
 
         /// <summary>
         /// 
@@ -51,10 +51,10 @@ namespace Our.Shield.BackofficeAccess.Models
                 return new BackofficeAccessConfiguration
                 {
                     BackendAccessUrl = "umbraco",
+                    IpAddressesAccess = Core.Enums.IpAddressesAccess.Unrestricted,
                     IpEntries = new IpEntry[0],
-                    UnauthorisedAction = Core.Enums.UnauthorisedAction.Redirect,
-                    UnauthorisedUrlType = Enums.UnautorisedUrlType.Url,
-                    IpAddressesRestricted = Enums.IpAddressesRestricted.Unrestricted
+                    UnauthorisedAction = Enums.UnauthorisedAction.Redirect,
+                    UnauthorisedUrlType = Enums.UrlType.Url
                 };
             }
         }
@@ -72,7 +72,7 @@ namespace Our.Shield.BackofficeAccess.Models
 
                 switch (config.UnauthorisedUrlType)
                 {
-                    case Enums.UnautorisedUrlType.Url:
+                    case Enums.UrlType.Url:
                         if (!string.IsNullOrEmpty(config.UnauthorisedUrl))
                         {
                             url = config.UnauthorisedUrl;
@@ -82,7 +82,7 @@ namespace Our.Shield.BackofficeAccess.Models
                         journalMessage.Message = "Error: No Unauthorized URL set in configuration";
                         break;
 
-                    case Enums.UnautorisedUrlType.XPath:
+                    case Enums.UrlType.XPath:
                         var xpathNode = umbContext.ContentCache.GetSingleByXPath(config.UnauthorisedUrlXPath);
 
                         if(xpathNode != null)
@@ -94,7 +94,7 @@ namespace Our.Shield.BackofficeAccess.Models
                         journalMessage.Message = "Error: Unable to get the unauthorized URL from the specified XPath expression";
                         break;
 
-                    case Enums.UnautorisedUrlType.ContentPicker:
+                    case Enums.UrlType.ContentPicker:
                         int id;
 
                         if(int.TryParse(config.UnauthorisedUrlContentPicker, out id))
@@ -107,11 +107,11 @@ namespace Our.Shield.BackofficeAccess.Models
                                 break;
                             }
 
-                            journalMessage.Message = "Error: Unable to get the unauthorized URL from the unauthorized URL content picker. Please ensure the selected page is published and not deleted";
+                            journalMessage.Message = "Error: Unable to get the unauthorized URL from the unauthorized URL content picker. Please ensure the selected page is published and hasn't been deleted";
                             break;
                         }
 
-                        journalMessage.Message = "Error: Unable to parse the selected unauthorized URL content picker content. Please ensure a valid content node is selected";
+                        journalMessage.Message = "Error: Unable to parse the selected unauthorized URL content picker item. Please ensure a valid content node is selected";
                         break;
 
                     default:
@@ -481,7 +481,7 @@ namespace Our.Shield.BackofficeAccess.Models
             AddSoftWatches(job, config);
 
             //if we're enabled, we need to add our IP checking watch
-            if (config.Enable && job.Environment.Enable && config.IpAddressesRestricted == Enums.IpAddressesRestricted.Restricted)
+            if (config.Enable && job.Environment.Enable && config.IpAddressesAccess == Core.Enums.IpAddressesAccess.Restricted)
             {
                 //Add our Hard Watch to
                 //do the security checking

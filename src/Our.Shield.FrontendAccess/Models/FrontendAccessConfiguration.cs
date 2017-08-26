@@ -1,25 +1,19 @@
 ﻿using Newtonsoft.Json;
 using Our.Shield.Core;
-using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
 
-namespace Our.Shield.BackofficeAccess.Models
+namespace Our.Shield.FrontendAccess.Models
 {
-    /// <summary>
-    /// The Backofffice Access Configuration
-    /// </summary>
-    [JsonObject(MemberSerialization.OptIn)]
-    public class BackofficeAccessConfiguration : Configuration
+    public class FrontendAccessConfiguration : Configuration
     {
         /// <summary>
-        /// The desired backoffice access url
+        /// Whether or not the Frontend can be accessed when the request is coming from an authenticated umbraco user
         /// </summary>
-        [JsonProperty("backendAccessUrl")]
-        [SingleEnvironment]
-        public string BackendAccessUrl { get; set; }
+        [JsonProperty("umbracoUserEnable")]
+        public bool UmbracoUserEnable { get; set; }
 
         /// <summary>
-        /// Whether the backoffice access Url is open to all IP addresses, or restricted to a white-list of IP addresses
+        /// Whether the Frontend is open to all IP addresses, or restricted to a white-list of IP addresses
         /// </summary>
         [JsonProperty("ipAddressesAccess")]
         public Enums.IpAddressesAccess IpAddressesAccess { get; set; }
@@ -31,7 +25,7 @@ namespace Our.Shield.BackofficeAccess.Models
         public IpEntry[] IpEntries { get; set; }
 
         /// <summary>
-        /// Whether the request should be redirected or rewritten to another location
+        /// Whether to redirect or rewrite the request to another location when frontend access is denied
         /// </summary>
         [JsonProperty("unauthorisedAction")]
         public Enums.UnauthorisedAction UnauthorisedAction { get; set; }

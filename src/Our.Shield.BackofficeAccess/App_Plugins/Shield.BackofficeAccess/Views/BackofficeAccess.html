@@ -1,5 +1,5 @@
 ﻿<div ng-controller="Shield.Editors.BackofficeAccess.Edit as vm" ng-init="vm.init()">
-    <ng-form name="backofficeAccessForm">
+    <ng-form name="BackofficeAccessForm">
 
         <div class="umb-el-wrap control-group umb-control-group">
             <label for="backendAccessUrl" class="control-label">
@@ -10,119 +10,46 @@
             </label>
 
             <div class="controls">
-                <input type="text" id="backendAccessUrl" name="backendAccessUrl" ng-model="vm.configuration.backendAccessUrl" required ng-trim="false" ng-pattern="/^(?:[a-zA-Z0-9]+)?$/" />
-                <span class="help-inline" val-msg-for="backendAccessUrl" val-toggle-msg="required">
-                    <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
-                </span>
-                <span class="help-inline" val-msg-for="backendAccessUrl" val-toggle-msg="pattern">
-                    <localize key="Shield.BackofficeAccess.ErrorMessages_InvalidBackendAccessUrl">This can be any valid combination of letters and/or numbers, non-case sensitive. You cannot use white space, symbols or special characters</localize>
-                </span>
-            </div>
-        </div>
-
-        <div class="umb-el-wrap control-group umb-control-group">
-            <label for="unauthorisedAction" class="control-label">
-                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedActionLabel">Unauthorised Action</localize>
-                <small>
-                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedActionDescription">Whether or not to redirect the user or to rewrite the request to another location when from a non white listed IP address.</localize>
-                </small>
-            </label>
-
-            <div class="controls">
-                <select id="unauthorisedAction" name="unauthorisedAction" ng-model="vm.configuration.unauthorisedAction" required shield-convert-to-number>
-                    <option value="0">Redirect</option>
-                    <option value="1">Rewrite</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="umb-el-wrap control-group umb-control-group">
-            <label for="unauthorisedUrlType" class="control-label">
-                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlTypeLabel">Unauthorised Url Type</localize>
-                <small>
-                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlTypeDescription">The type of selector for the Unauthorised Url.</localize>
-                </small>
-            </label>
-
-            <div class="controls">
-                <select id="unauthorisedUrlType" name="unauthorisedUrlType" ng-model="vm.configuration.unauthorisedUrlType" required shield-convert-to-number>
-                    <option value="0">Url</option>
-                    <option value="1">XPath</option>
-                    <option value="2">Content Picker</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 0">
-            <label for="unauthorisedUrl" class="control-label">
-                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
-                <small>
-                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlDescription">The Url to redirect/rewrite the request to when from a non white listed IP Address.</localize>
-                </small>
-            </label>
-
-            <div class="controls">
-                <input type="text" id="unauthorisedUrl" name="unauthorisedUrl" ng-model="vm.configuration.unauthorisedUrl" required ng-trim="false" ng-pattern="/^\/(([\w-]+(\/)?)+([\w-]+\.[\w-]+)?(\/)?(\?[\w-]+(=[\w-]+)?((&[\w-]+(=[\w-]+)?)+)?)?(#[\w-]+)?)?$/i" />
-                <span class="help-inline" val-msg-for="unauthorisedUrl" val-toggle-msg="required">
-                    <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
-                </span>
-                <span class="help-inline" val-msg-for="unauthorisedUrl" val-toggle-msg="pattern">
-                    <localize key="Shield.BackofficeAccess.ErrorMessages_InvalidUnauthorisedUrl">Invalid Url. Please provide a valid relative Url. i.e. /404</localize>
-                </span>
-            </div>
-        </div>
-
-        <div class="umb-el-wrap control-group umb-control-group" ng-if="vm.configuration.unauthorisedUrlType === 1">
-            <label for="unauthorisedUrlXPath" class="control-label">
-                <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlLabel">Unautorised Url</localize>
-                <small>
-                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedUrlXPathDescription">The XPath to the content node to redirect/rewrite the user to when from a disallowed IP Address.</localize>
-                </small>
-            </label>
-
-            <div class="controls">
-                <input type="text" id="unauthorisedUrlXPath" name="unauthorisedUrlXPath" ng-model="vm.configuration.unauthorisedUrlXPath" required />
-                <span class="help-inline" val-msg-for="unauthorisedUrlXPath" val-toggle-msg="required">
-                    <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
-                </span>
-            </div>
-        </div>
-
-        <umb-property property="vm.contentPickerProperty" ng-if="vm.configuration.unauthorisedUrlType === 2">
-            <umb-editor model="vm.contentPickerProperty"></umb-editor>
-        </umb-property>
-
-        <div class="umb-el-wrap control-group umb-control-group">
-            <label class="control-label">
-                <localize key="Shield.BackofficeAccess.Properties_IpRestrictedLabel">IP Addresses Restricted Access</localize>
-                <small>
-                    <localize key="Shield.BackofficeAccess.Properties_IpRestrictedDescription">Whether to restrict the backoffice to specific IP Addresses, or open to all IP Addresses</localize>
-                </small>
-            </label>
-
-            <div class="controls">
-                <div class="umb-editor umb-radiobuttons">
-                    <ul class="unstyled">
-                        <li>
-                            <label class="radio">
-                                <input type="radio" name="ipRestricted" value="0" ng-model="vm.configuration.ipAddressesRestricted" shield-convert-to-number />
-
-                                <localize key="Shield.BackofficeAccess.Properties_IpRestrictedOptionAll">Open to all IP addresses</localize>
-                            </label>
-                        </li>
-                        <li>
-                            <label class="radio">
-                                <input type="radio" name="ipRestricted" value="1" ng-model="vm.configuration.ipAddressesRestricted" shield-convert-to-number />
-
-                                <localize key="Shield.BackofficeAccess.Properties_IpRestrictedOptionSpecific">Open to specific IP Address(es)</localize>
-                            </label>
-                        </li>
-                    </ul>
+                <div class="umb-editor">
+                    <input type="text" id="backendAccessUrl" name="backendAccessUrl" ng-model="vm.configuration.backendAccessUrl" required ng-trim="false" ng-pattern="/^(?:[a-zA-Z0-9]+)?$/" />
+                    <span class="help-inline" val-msg-for="backendAccessUrl" val-toggle-msg="required">
+                        <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
+                    </span>
+                    <span class="help-inline" val-msg-for="backendAccessUrl" val-toggle-msg="pattern">
+                        <localize key="Shield.BackofficeAccess.ErrorMessages_InvalidBackendAccessUrl">This can be any valid combination of letters and/or numbers, non-case sensitive. You cannot use white space, symbols or special characters</localize>
+                    </span>
                 </div>
             </div>
         </div>
 
-        <div ng-if="vm.configuration.ipAddressesRestricted === 1" ng-include="'/App_Plugins/Shield.BackofficeAccess/Views/IpAddressPropertyEditor.html?version=1.0.3'"></div>
+        <shield-ip-addresses-access ip-addresses-access="vm.configuration.ipAddressesAccess" ip-addresses="vm.configuration.ipAddresses"></shield-ip-addresses-access>
 
+        <div ng-if="vm.configuration.ipAddressesAccess === 1">
+
+            <div class="umb-el-wrap control-group umb-control-group">
+                <label for="unauthorisedAction" class="control-label">
+                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedActionLabel">Unauthorised Action</localize>
+                    <small>
+                        <localize key="Shield.BackofficeAccess.Properties_UnauthorisedActionDescription">Whether to redirect the user or to rewrite the request to another location, when from a disallowed IP Address</localize>
+                    </small>
+                </label>
+
+                <div class="controls">
+                    <div class="umb-editor">
+                        <select id="unauthorisedAction" name="unauthorisedAction" ng-model="vm.configuration.unauthorisedAction" required shield-convert-to-number>
+                            <option value="0">Redirect</option>
+                            <option value="1">Rewrite</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <shield-url-type url-type="vm.configuration.unauthorisedUrlType"
+                             str-url="vm.configuration.unauthorisedUrl"
+                             xpath-url="vm.configuration.unauthorisedUrlXPath"
+                             content-picker-url="vm.configuration.unauthorisedUrlContentPicker">
+            </shield-url-type>
+
+        </div>
     </ng-form>
 </div>
