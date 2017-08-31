@@ -682,14 +682,6 @@
       <Project>{58fdce32-1389-4768-882e-281ceec508cd}</Project>
       <Name>Our.Shield.BackofficeAccess</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Our.Shield.GoogleSafeBrowsing\Our.Shield.GoogleSafeBrowsing.csproj">
-      <Project>{cde13f56-eff2-4aa3-a843-65c085dd4f5e}</Project>
-      <Name>Our.Shield.GoogleSafeBrowsing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Our.Shield.ScraperDefense\Our.Shield.ScraperDefense.csproj">
-      <Project>{29e5f2a8-4855-4a3c-96c6-510bc582af6a}</Project>
-      <Name>Our.Shield.ScraperDefense</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

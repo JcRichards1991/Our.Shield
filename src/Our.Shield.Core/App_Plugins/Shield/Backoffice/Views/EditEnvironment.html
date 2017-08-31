@@ -58,17 +58,10 @@
             <div class="controls">
                 <div class="umb-editor">
                     <table class="domains-container">
-                        <thead>
-                            <tr>
-                                <th><localize key="Shield.Environment.Properties.Domains.Table_DomainHeader">Domain</localize></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-
                         <tbody>
                             <tr ng-repeat="domain in vm.environment.domains track by $index">
                                 <td>
-                                    <input type="text" id="domain{{$index}}" name="domain{{$index}}" ng-model="domain.name" required shield-add-to-form="shieldForm" ng-trim="false" ng-pattern="/^(http(s)?:\/\/)(([\w-_]+((\.[\w-_]+)+)?)+)(\.[\w]+)?(:[0-9]+)?([\w-_\/]+)?$/i" />
+                                    <input type="text" id="domain{{$index}}" name="domain{{$index}}" ng-model="domain.name" required shield-add-to-form="" ng-trim="false" ng-pattern="/^(http(s)?:\/\/)(([\w-_]+((\.[\w-_]+)+)?)+)(\.[\w]+)?(:[0-9]+)?([\w-_\/]+)?$/i" />
                                     <span class="help-inline" val-msg-for="domain{{$index}}" val-toggle-msg="required">
                                         <localize key="Shield.Properties.Validation_Required">Required</localize>
                                     </span>

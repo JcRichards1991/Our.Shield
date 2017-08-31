@@ -42,10 +42,10 @@
 
     tbody {
 
-        tr {
+        tr:not(:first-child) {
             border-top: 1px solid #000;
 
-            &:last-child{
+            &:last-child {
                 border-bottom: 1px solid #000;
             }
         }

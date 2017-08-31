@@ -53,9 +53,9 @@ table.domains-container {
       margin-left: 4px; }
     table.domains-container thead tr th, table.domains-container tbody tr th, table.domains-container tfoot tr th {
       text-align: left; }
-  table.domains-container tbody tr {
+  table.domains-container tbody tr:not(:first-child) {
     border-top: 1px solid #000; }
-    table.domains-container tbody tr:last-child {
+    table.domains-container tbody tr:not(:first-child):last-child {
       border-bottom: 1px solid #000; }
 
 .umb-dialog-body.shield-sort .sortableFrame {
