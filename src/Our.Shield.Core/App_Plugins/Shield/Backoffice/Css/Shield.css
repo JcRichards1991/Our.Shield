@@ -4,33 +4,33 @@
   top: 24px;
   right: 0px; }
 
-.shield-editor .umb-table .umb-table-body .umb-table-cell.shield-table__name, .shield-editor .umb-table .umb-table-body .umb-table-cell.shield-table__name-large {
+.shield-editor .umb-table .umb-table-body .umb-table-cell.shield-table__name, .shield-editor .umb-table .umb-table-body .umb-table-cell.shield-table__name-large, .shield-dashboard .umb-table .umb-table-body .umb-table-cell.shield-table__name, .shield-dashboard .umb-table .umb-table-body .umb-table-cell.shield-table__name-large {
   font-size: 14px;
   font-weight: bold;
   color: #000; }
 
-.shield-editor .umb-table .umb-table-body .umb-table-cell ul {
+.shield-editor .umb-table .umb-table-body .umb-table-cell ul, .shield-dashboard .umb-table .umb-table-body .umb-table-cell ul {
   margin: 0; }
 
-.shield-editor .umb-table .umb-table-row.-selected .umb-table-cell.app-icon-cell .umb-table-body__fileicon {
+.shield-editor .umb-table .umb-table-row.-selected .umb-table-cell.app-icon-cell .umb-table-body__fileicon, .shield-dashboard .umb-table .umb-table-row.-selected .umb-table-cell.app-icon-cell .umb-table-body__fileicon {
   display: block; }
 
-.shield-editor .umb-table .umb-table-row .umb-table-cell.app-icon-cell {
+.shield-editor .umb-table .umb-table-row .umb-table-cell.app-icon-cell, .shield-dashboard .umb-table .umb-table-row .umb-table-cell.app-icon-cell {
   padding: 15px 0;
   margin: 0 0 0 15px;
   -ms-flex: 0 0 25px;
   flex: 0 0 25px; }
 
-.shield-editor .umb-table .umb-table-row .umb-table-cell.shield-table__name {
+.shield-editor .umb-table .umb-table-row .umb-table-cell.shield-table__name, .shield-dashboard .umb-table .umb-table-row .umb-table-cell.shield-table__name {
   max-width: 17%; }
 
-.shield-editor .umb-table .umb-table-row .umb-table-cell.shield-table__name-enable {
+.shield-editor .umb-table .umb-table-row .umb-table-cell.shield-table__name-enable, .shield-dashboard .umb-table .umb-table-row .umb-table-cell.shield-table__name-enable {
   max-width: 5%; }
 
-.shield-editor .umb-table .umb-table-row .umb-table-cell.shield-table__name-large {
+.shield-editor .umb-table .umb-table-row .umb-table-cell.shield-table__name-large, .shield-dashboard .umb-table .umb-table-row .umb-table-cell.shield-table__name-large {
   width: 100%; }
 
-.shield-editor .umb-table .umb-table-row .umb-table-cell.shield-table__name-small {
+.shield-editor .umb-table .umb-table-row .umb-table-cell.shield-table__name-small, .shield-dashboard .umb-table .umb-table-row .umb-table-cell.shield-table__name-small {
   max-width: 14%;
   -ms-flex: 1 1 14%;
   flex: 1 1 14%; }

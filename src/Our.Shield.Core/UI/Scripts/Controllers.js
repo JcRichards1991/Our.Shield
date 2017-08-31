@@ -26,6 +26,9 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
             configuration: null,
             path: [],
             ancestors: null,
+            apps: [],
+            journals: [],
+            journalsTotalPages: 1,
             tabs: [
                 {
                     id:'0',
@@ -74,14 +77,15 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     vm.description = response.data.description;
                     vm.environment = response.data.environment;
 
-                    angular.extend(vm.journalListing, response.data.journalListing);
+                    vm.journals = response.data.journalListing.items;
+                    vm.journalsTotalPages = response.data.journalListing.totalPages;
 
                     switch (vm.type = response.data.type) {
                         case 0:     //  Environment
                             vm.path = ['-1', vm.id];
                             vm.ancestors = [{ id: vm.id, name: vm.name }];
 
-                            vm.appListing.apps = response.data.apps;
+                            vm.apps = response.data.apps;
 
                             if (vm.id === '1' && vm.editingEnvironment) {
                                 vm.cancelEditing();
@@ -134,6 +138,10 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
             },
             cancelEditing: function () {
                 $location.search('edit', 'false');
+
+                if (vm.id === '0') {
+                    $location.path('/shield')
+                }
             },
             save: function () {
                 vm.button.state = 'busy';
@@ -230,78 +238,6 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             }
                         });
                         break;
-                }
-            },
-            appListing: {
-                options: {
-                    orderBy: 'name',
-                    orderDirection: 'desc'
-                },
-                apps: null
-            },
-            journalListing: {
-                items: [],
-                totalPages: 1,
-                pageNumber: 1,
-                options: {
-                    orderBy: 'datestamp',
-                    orderDirection: 'desc'
-                },
-                columns: [
-                    {
-                        id: 0,
-                        name: 'Date',
-                        alias: 'datestamp',
-                        allowSorting: true,
-                        show: true
-                    },
-                    {
-                        id: 1,
-                        name: 'App',
-                        alias: 'app',
-                        allowSorting: false,
-                        show: true
-                    },
-                    {
-                        id: 2,
-                        name: 'Message',
-                        alias: 'message',
-                        allowSorting: false,
-                        show: true
-                    },
-                ],
-                nextPage: function (page) {
-                    vm.journalListing.pageNumber = page;
-                    vm.journalListing.getJournalListing();
-                },
-                previousPage: function (page) {
-                    vm.journalListing.pageNumber = page;
-                    vm.journalListing.getJournalListing();
-                },
-                gotoPage: function (page) {
-                    vm.journalListing.pageNumber = page;
-                    vm.journalListing.getJournalListing();
-                },
-                isSortDirection: function (col, direction) {
-                    return false;
-                    //return listViewHelper.setSortingDirection(col, direction, vm.journalListing.options);
-                },
-                sort: function (field, allow) {
-                    if(allow) {
-                        vm.journalListing.options.orderBySystemField = false;
-                        listViewHelper.setSorting(field, allow, vm.journalListing.options);
-                        //vm.journalListing.getJournalListing();
-                    }
-                },
-                getJournalListing: function () {
-                    vm.loading = true;
-
-                    shieldResource.getJournals(vm.id, vm.journalListing.pageNumber, vm.journalListing.options.orderBy, vm.journalListing.options.orderDirection).then(function (response) {
-                        vm.journalListing.items = response.data.items;
-                        vm.journalListing.totalPages = response.data.totalPages;
-
-                        vm.loading = false;
-                    });
                 }
             }
         });
@@ -482,88 +418,14 @@ angular.module('umbraco').controller('Shield.Dashboards.Journals',
         angular.extend(vm, {
             id: '0',
             loading: true,
+            items: [],
+            totalPages: 1,
             init: function () {
-                shieldResource.getJournals(vm.id, vm.journalListing.pageNumber, vm.journalListing.options.orderBy, vm.journalListing.options.orderDirection).then(function (response) {
-                    vm.journalListing.items = response.data.items;
-                    vm.journalListing.totalPages = response.data.totalPages;
-
+                shieldResource.getJournals(vm.id, 1, 'datestamp', 'desc').then(function (response) {
+                    vm.items = response.data.items;
+                    vm.totalPages = response.data.totalPages;
                     vm.loading = false;
                 });
-            },
-            editItem: function (item) {
-                $location.path('/shield/shield/edit/' + item.id);
-            },
-            journalListing: {
-                items: [],
-                totalPages: 1,
-                pageNumber: 1,
-                options: {
-                    orderBy: 'datestamp',
-                    orderDirection: 'desc'
-                },
-                columns: [
-                    {
-                        id: 0,
-                        name: 'Date',
-                        alias: 'datestamp',
-                        allowSorting: true,
-                        show: true
-                    },
-                    {
-                        id: 1,
-                        name: 'Environment',
-                        alias: 'environment',
-                        allowSorting: true,
-                        show: true
-                    },
-                    {
-                        id: 2,
-                        name: 'App',
-                        alias: 'app',
-                        allowSorting: false,
-                        show: true
-                    },
-                    {
-                        id: 3,
-                        name: 'Message',
-                        alias: 'message',
-                        allowSorting: false,
-                        show: true
-                    },
-                ],
-                nextPage: function (page) {
-                    vm.journalListing.pageNumber = page;
-                    vm.journalListing.getJournalListing();
-                },
-                previousPage: function (page) {
-                    vm.journalListing.pageNumber = page;
-                    vm.journalListing.getJournalListing();
-                },
-                gotoPage: function (page) {
-                    vm.journalListing.pageNumber = page;
-                    vm.journalListing.getJournalListing();
-                },
-                isSortDirection: function (col, direction) {
-                    return false;
-                    //return listViewHelper.setSortingDirection(col, direction, vm.journalListing.options);
-                },
-                sort: function (field, allow) {
-                    if (allow) {
-                        vm.journalListing.options.orderBySystemField = false;
-                        listViewHelper.setSorting(field, allow, vm.journalListing.options);
-                        vm.journalListing.getJournalListing();
-                    }
-                },
-                getJournalListing: function () {
-                    vm.loading = true;
-
-                    shieldResource.getJournals(vm.id, vm.journalListing.pageNumber, vm.journalListing.options.orderBy, vm.journalListing.options.orderDirection).then(function (response) {
-                        vm.journalListing.items = response.data.items;
-                        vm.journalListing.totalPages = response.data.totalPages;
-
-                        vm.loading = false;
-                    });
-                }
             }
         });
     }]

@@ -1,4 +1,4 @@
-﻿<div ng-controller="Shield.Dashboards.Journals as vm" ng-init="vm.init()">
+﻿<div class="shield-dashboard" ng-controller="Shield.Dashboards.Journals as vm" ng-init="vm.init()">
 
     <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
 
@@ -11,7 +11,7 @@
                     </div>
                 </div>
 
-                <div ng-include="'/App_Plugins/Shield/Backoffice/Views/JournalTable.html?version=1.0.3'"></div>
+                <shield-journal-listing items="vm.items" total-pages="vm.totalPages" view-id="'0'" type=""></shield-journal-listing>
             </div>
         </umb-editor-container>
     </umb-editor-view>

@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Serialization;
 using Our.Shield.Core.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Umbraco.Core.Logging;
@@ -45,6 +44,30 @@ namespace Our.Shield.Core.Persistance.Business
             }
         }
 
+        private void SetDefaultConfigurationSingleEnvironmentValues(string appId, IConfiguration configuration)
+        {
+            var configurationType = configuration.GetType();
+            var properties = configurationType.GetProperties().Where(x => x.GetCustomAttribute<Attributes.SingleEnvironmentAttribute>() != null);
+
+            if (properties.Any())
+            {
+                var records = Database.Fetch<Data.Dto.Configuration>(
+                    "WHERE " + nameof(Data.Dto.Configuration.AppId) + " = @0",
+                    appId);
+
+                if (records.Any())
+                {
+                    var record = records.FirstOrDefault();
+                    var config = JsonConvert.DeserializeObject(record.Value, configurationType) as Configuration;
+
+                    foreach (var property in properties)
+                    {
+                        property.SetValue(configuration, property.GetValue(config));
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -56,7 +79,7 @@ namespace Our.Shield.Core.Persistance.Business
         public IConfiguration Read(int environmentId, string appId, Type type, IConfiguration defaultConfiguration)
         {
             var config = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(defaultConfiguration), type) as Configuration;
-            SetDefaultConfigurationSingleEnvironmentValues(config, appId);
+            SetDefaultConfigurationSingleEnvironmentValues(appId, config);
 
             config.LastModified = null;
             config.Enable = false;
@@ -102,31 +125,7 @@ namespace Our.Shield.Core.Persistance.Business
             return (T)Read(environmentId, appId, typeof(T), defaultConfiguration);
         }
 
-        private void SetDefaultConfigurationSingleEnvironmentValues(IConfiguration configuration, string appId)
-        {
-            var configurationType = configuration.GetType();
-            var properties = configurationType.GetProperties().Where(x => x.GetCustomAttribute<Attributes.SingleEnvironmentAttribute>() != null);
-
-            if (properties.Any())
-            {
-                var record = Database.SingleOrDefault<Data.Dto.Configuration>(
-                    "WHERE " + nameof(Data.Dto.Configuration.EnvironmentId) + " = @0 AND " +
-                    nameof(Data.Dto.Configuration.AppId) + " = @1",
-                    "1", appId);
-
-                if(record != null)
-                {
-                    var config = JsonConvert.DeserializeObject(record.Value, configurationType) as Configuration;
-
-                    foreach (var property in properties)
-                    {
-                        property.SetValue(configuration, property.GetValue(config));
-                    }
-                }
-            }
-        }
-
-        private void SetDatabaseSingleEnvironmentValues(IConfiguration configuration, int environmentId, string appId)
+        private void SetSingleEnvironmentValues(IConfiguration configuration, int environmentId, string appId)
         {
             var configurationType = configuration.GetType();
             var properties = configurationType.GetProperties().Where(x => x.GetCustomAttribute<Attributes.SingleEnvironmentAttribute>() != null);
@@ -167,7 +166,7 @@ namespace Our.Shield.Core.Persistance.Business
         {
             try
             {
-                SetDatabaseSingleEnvironmentValues(config, environmentId, appId);
+                SetSingleEnvironmentValues(config, environmentId, appId);
 
                 var record = Database.SingleOrDefault<Data.Dto.Configuration>(
                     "WHERE " + 

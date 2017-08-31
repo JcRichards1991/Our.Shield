@@ -115,6 +115,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
             Delete.Column(nameof(Dto.Environment.Environment103.SortOrder)).FromTable<Dto.Environment.Environment103>();
             Delete.Column(nameof(Dto.Environment.Environment103.Enable)).FromTable<Dto.Environment.Environment103>();
             Delete.Column(nameof(Dto.Environment.Environment103.ContinueProcessing)).FromTable<Dto.Environment.Environment103>();
+            Delete.Column(nameof(Dto.Environment.Environment103.ColorIndicator)).FromTable<Dto.Environment.Environment103>();
 
             //  Journal
             Delete.Index("IX_" + nameof(Shield) + "_" + nameof(Dto.Journal.Journal100.Datestamp)).OnTable<Dto.Journal.Journal100>();

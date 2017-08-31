@@ -53,11 +53,9 @@
                                         </div>
 
                                         <div class="umb-table-cell shield-table__name">
-                                            <a class="umb-table-head__link sortable" href="#"
-                                               ng-click="vm.appListing.sort('name', 'true')" prevent-default>
+                                            <a class="umb-table-head__link" href="#" prevent-default>
                                                 <span>Name</span>
-                                                <i class="umb-table-head__icon icon"
-                                                   ng-class="{'icon-navigation-up': vm.appListing.isSortDirection('name', 'asc'), 'icon-navigation-down': vm.appListing.isSortDirection('name', 'desc')}"></i>
+                                                <i class="umb-table-head__icon icon"></i>
                                             </a>
                                         </div>
 
@@ -79,8 +77,8 @@
 
                                 <div class="umb-table-body">
                                     <div class="umb-table-row"
-                                         ng-repeat="app in vm.appListing.apps track by $index"
-                                         ng-class="{'-selected':app.enable}">
+                                         ng-repeat="app in vm.apps track by $index"
+                                         ng-class="{'-selected': app.enable}">
 
                                         <div class="umb-table-cell app-icon-cell">
                                             <i class="umb-table-body__icon umb-table-body__fileicon">
@@ -132,7 +130,7 @@
                     </umb-tab>
 
                     <umb-tab id="tab2" rel="2">
-                        <div ng-include="'/App_Plugins/Shield/Backoffice/Views/JournalTable.html?version=1.0.3'"></div>
+                        <shield-journal-listing items="vm.journals" total-pages="vm.journalsTotalPages" view-id="vm.id" type="vm.type"></shield-journal-listing>
                     </umb-tab>
                 </umb-tabs-content>
             </umb-editor-container>

@@ -353,7 +353,7 @@
     <Content Include="App_Plugins\Shield\Backoffice\Views\EditEnvironment.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Sort.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Views\JournalTable.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\Journal-Listing.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml">
       <SubType>Designer</SubType>
     </Content>

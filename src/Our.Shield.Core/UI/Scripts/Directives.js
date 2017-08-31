@@ -164,24 +164,26 @@ angular.module('umbraco.directives').directive('shieldIpAddressesAccess', functi
             ipAddresses: '=',
         },
         controller: ['$scope', 'localizationService', function ($scope, localizationService) {
-            $scope.remove = function ($index) {
-                var ip = $scope.ipAddresses[$index],
-                    msg = ip.ipAddress;
+            angular.extend($scope, {
+                remove: function ($index) {
+                    var ip = $scope.ipAddresses[$index],
+                        msg = ip.ipAddress;
 
-                if (ip.ipAddress !== '') {
-                    if (ip.description !== '') {
-                        msg += ' - ' + ip.description;
-                    }
-
-                    localizationService.localize('Shield.Properties.IpAddressAccess.Messages_ConfirmRemoveIp').then(function (warningMsg) {
-                        if (confirm(warningMsg + msg)) {
-                            $scope.ipAddresses.splice($index, 1);
+                    if (ip.ipAddress !== '') {
+                        if (ip.description !== '') {
+                            msg += ' - ' + ip.description;
                         }
-                    });
-                } else {
-                    $scope.ipAddresses.splice($index, 1);
+
+                        localizationService.localize('Shield.Properties.IpAddressAccess.Messages_ConfirmRemoveIp').then(function (warningMsg) {
+                            if (confirm(warningMsg + msg)) {
+                                $scope.ipAddresses.splice($index, 1);
+                            }
+                        });
+                    } else {
+                        $scope.ipAddresses.splice($index, 1);
+                    }
                 }
-            };
+            });
 
             if ($scope.ipAddresses.length === 0) {
                 $scope.ipAddresses.push({
@@ -209,36 +211,121 @@ angular.module('umbraco.directives').directive('shieldUrlType', function () {
             model: '='
         },
         link: function (scope, elm, attr) {
-            if (scope.model === null) {
-                scope.model = {
-                    urlSelector: 0,
-                    strUrl: '',
-                    xpathUrl: '',
-                    contentPickerUrl: ''
-                }
-            }
-
-            scope.model.contentPickerProperty = {
-                view: 'contentpicker',
-                alias: 'contentPicker',
-                config: {
-                    multiPicker: '0',
-                    entityType: 'Document',
-                    startNode: {
-                        query: '',
-                        type: 'content',
-                        id: -1
+            angular.extend(scope.model, {
+                contentPickerProperty: {
+                    view: 'contentpicker',
+                    alias: 'contentPicker',
+                    config: {
+                        multiPicker: '0',
+                        entityType: 'Document',
+                        startNode: {
+                            query: '',
+                            type: 'content',
+                            id: -1
+                        },
+                        filter: '',
+                        minNumber: 1,
+                        maxNumber: 1
                     },
-                    filter: '',
-                    minNumber: 1,
-                    maxNumber: 1
-                },
-                value: scope.model.contentPickerUrl
-            };
+                    value: scope.model.contentPickerUrl
+                }
+            });
 
             scope.$watch('model.contentPickerProperty.value', function (newVal, oldVal) {
                 scope.model.contentPickerUrl = newVal;
             });
         }
+    };
+});
+
+/**
+   * @ngdoc directive
+   * @name shield-journal-listing
+   * @function
+   *
+   * @description
+   * Custom directive for handling the selected Url type
+*/
+angular.module('umbraco.directives').directive('shieldJournalListing', function () {
+    return {
+        restrict: 'E',
+        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/Journal-Listing.html',
+        scope: {
+            items: '=',
+            totalPages: '=',
+            viewId: '=',
+            type: '='
+        },
+        controller: ['$scope', '$location', 'shieldResource', function ($scope, shieldResource, $location) {
+            angular.extend($scope, {
+                pageNumber: 1,
+                options: {
+                    orderBy: 'datestamp',
+                    orderDirection: 'desc'
+                },
+                columns: [
+                    {
+                        id: 0,
+                        name: 'Date',
+                        alias: 'datestamp',
+                        allowSorting: true,
+                        show: true
+                    },
+                    {
+                        id: 1,
+                        name: 'Environment',
+                        alias: 'environment',
+                        allowSorting: true,
+                        show: true
+                    },
+                    {
+                        id: 2,
+                        name: 'App',
+                        alias: 'app',
+                        allowSorting: false,
+                        show: true
+                    },
+                    {
+                        id: 3,
+                        name: 'Message',
+                        alias: 'message',
+                        allowSorting: false,
+                        show: true
+                    },
+                ],
+                editItem: function (item) {
+                    $location.path('/shield/shield/edit/' + item.id);
+                },
+                nextPage: function (page) {
+                    $scope.pageNumber = page;
+                    $scope.getListing();
+                },
+                previousPage: function (page) {
+                    $scope.pageNumber = page;
+                    $scope.getListing();
+                },
+                gotoPage: function (page) {
+                    $scope.pageNumber = page;
+                    $scope.getListing();
+                },
+                isSortDirection: function (col, direction) {
+                    return false;
+                    //return listViewHelper.setSortingDirection(col, direction, $scope.options);
+                },
+                sort: function (field, allow) {
+                    if (allow) {
+                        $scope.options.orderBySystemField = false;
+                        listViewHelper.setSorting(field, allow, $scope.options);
+                        $scope.getListing();
+                    }
+                },
+                getListing: function () {
+                    shieldResource.getJournals($scope.viewId, $scope.pageNumber, $scope.options.orderBy, $scope.options.orderDirection).then(function (response) {
+                        $scope.items = response.data.items;
+                        $scope.totalPages = response.data.totalPages;
+                    });
+                }
+            });
+        }]
     };
 });

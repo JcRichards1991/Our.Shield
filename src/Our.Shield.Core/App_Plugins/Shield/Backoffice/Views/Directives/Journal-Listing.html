@@ -8,23 +8,23 @@
 
             <div class="umb-table-cell shield-table__name-small">
                 <a class="umb-table-head__link" href="#"
-                   ng-click="vm.journalListing.sort('datestamp', false)"
+                   ng-click="sort('datestamp', false)"
                    ng-class="{'sortable':false}" prevent-default>
                     <localize key="Shield.Dashboard.Journals.Table_DateHeader">Date</localize>
                     <i class="umb-table-head__icon icon"
-                       ng-class="{'icon-navigation-up': vm.appListing.isSortDirection('datestamp', 'asc'), 'icon-navigation-down': vm.appListing.isSortDirection('datestamp', 'desc')}">
+                       ng-class="{'icon-navigation-up':isSortDirection('datestamp', 'asc'), 'icon-navigation-down': isSortDirection('datestamp', 'desc')}">
                     </i>
                 </a>
             </div>
 
-            <div class="umb-table-cell shield-table__name" ng-if="vm.id === '0'">
+            <div class="umb-table-cell shield-table__name" ng-if="viewId === '0'">
                 <a class="umb-table-head__link" href="#" prevent-default>
                     <localize key="Shield.Dashboard.Journals.Table_EnvironmentHeader">Environment</localize>
                     <i class="umb-table-head__icon icon"></i>
                 </a>
             </div>
 
-            <div class="umb-table-cell shield-table__name" ng-if="vm.type == 0 || vm.id === '0'">
+            <div class="umb-table-cell shield-table__name" ng-if="type === 0 || viewId === '0'">
                 <a class="umb-table-head__link" href="#" prevent-default>
                     <localize key="Shield.Dashboard.Journals.Table_AppHeader">App</localize>
                     <i class="umb-table-head__icon icon"></i>
@@ -41,7 +41,7 @@
     </div>
 
     <div class="umb-table-body">
-        <div class="umb-table-row" ng-repeat="item in vm.journalListing.items track by $index">
+        <div class="umb-table-row" ng-repeat="item in items track by $index">
 
             <div class="umb-table-cell">
                 &nbsp;
@@ -51,11 +51,11 @@
                 <span>{{item.datestamp}}</span>
             </div>
 
-            <div class="umb-table-cell shield-table__name" ng-if="vm.id === '0'" ng-click="vm.editItem(item.environment)">
+            <div class="umb-table-cell shield-table__name" ng-if="viewId === '0'" ng-click="editItem(item.environment)">
                 <span>{{item.environment.name}}</span>
             </div>
 
-            <div class="umb-table-cell shield-table__name" ng-if="vm.type == 0 || vm.id === '0'" ng-click="vm.editItem(item.app)">
+            <div class="umb-table-cell shield-table__name" ng-if="type === 0 || viewId === '0'" ng-click="editItem(item.app)">
                 <span>{{item.app.name}}</span>
             </div>
 
@@ -67,11 +67,11 @@
 </div>
 
 <div class="flex justify-center">
-    <umb-pagination ng-if="vm.journalListing.totalPages"
-                    page-number="vm.journalListing.pageNumber"
-                    total-pages="vm.journalListing.totalPages"
-                    on-next="vm.journalListing.nextPage"
-                    on-prev="vm.journalListing.previousPage"
-                    on-go-to-page="vm.journalListing.gotoPage">
+    <umb-pagination ng-if="totalPages > 1"
+                    page-number="pageNumber"
+                    total-pages="totalPages"
+                    on-next="nextPage"
+                    on-prev="previousPage"
+                    on-go-to-page="gotoPage">
     </umb-pagination>
 </div>
