@@ -757,7 +757,7 @@ angular.module('umbraco.directives').directive('shieldJournalListing', function 
             viewId: '=',
             type: '='
         },
-        controller: ['$scope', '$location', 'shieldResource', function ($scope, shieldResource, $location) {
+        controller: ['$scope', '$location', 'shieldResource', function ($scope, $location, shieldResource) {
             angular.extend($scope, {
                 pageNumber: 1,
                 options: {
