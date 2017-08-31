@@ -269,7 +269,9 @@
     <Compile Include="Models\ApplicationSettings.cs" />
     <Compile Include="Models\IpEntry.cs" />
     <Compile Include="Models\JournalMessage.cs" />
+    <Compile Include="Models\UrlType.cs" />
     <Compile Include="Operation\EnvironmentService.cs" />
+    <Compile Include="Helpers\AccessHelper.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration100.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration101.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration103.cs" />
@@ -330,10 +332,12 @@
     <None Include="Our.Shield.Core.nuspec">
       <SubType>Designer</SubType>
     </None>
+    <None Include="UI\Scss\Partials\shield-dashboards.scss" />
     <None Include="UI\Scss\Partials\_shield-domain-listing-table.scss" />
     <None Include="UI\Scss\Partials\_shield-editor-header.scss" />
     <None Include="UI\Scss\Partials\_shield-Sort-Panel-Overview.scss" />
     <None Include="UI\Scss\Partials\_shield-umb-table.scss" />
+    <None Include="UI\Scss\Partials\_shield-url-type.scss" />
     <None Include="UI\Scss\Styles.scss" />
   </ItemGroup>
   <ItemGroup>

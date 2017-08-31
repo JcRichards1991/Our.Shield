@@ -42,7 +42,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations
                 //  new versions.Migrations103 etc.
             };
 
-            if (currentVersion == new SemVersion(1, 0, 1))
+            if (currentVersion != new SemVersion(0, 0, 0))
             {
                 scriptsForMigration[0] = new Versions.Migration103(sqlSyntax, logger);
             }

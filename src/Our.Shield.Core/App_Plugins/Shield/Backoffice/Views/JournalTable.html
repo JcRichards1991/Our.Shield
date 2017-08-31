@@ -10,7 +10,7 @@
                 <a class="umb-table-head__link" href="#"
                    ng-click="vm.journalListing.sort('datestamp', false)"
                    ng-class="{'sortable':false}" prevent-default>
-                    <span>Date</span>
+                    <localize key="Shield.Dashboard.Journals.Table_DateHeader">Date</localize>
                     <i class="umb-table-head__icon icon"
                        ng-class="{'icon-navigation-up': vm.appListing.isSortDirection('datestamp', 'asc'), 'icon-navigation-down': vm.appListing.isSortDirection('datestamp', 'desc')}">
                     </i>
@@ -19,21 +19,21 @@
 
             <div class="umb-table-cell shield-table__name" ng-if="vm.id === '0'">
                 <a class="umb-table-head__link" href="#" prevent-default>
-                    <span>Environment</span>
+                    <localize key="Shield.Dashboard.Journals.Table_EnvironmentHeader">Environment</localize>
                     <i class="umb-table-head__icon icon"></i>
                 </a>
             </div>
 
             <div class="umb-table-cell shield-table__name" ng-if="vm.type == 0 || vm.id === '0'">
                 <a class="umb-table-head__link" href="#" prevent-default>
-                    <span>App</span>
+                    <localize key="Shield.Dashboard.Journals.Table_AppHeader">App</localize>
                     <i class="umb-table-head__icon icon"></i>
                 </a>
             </div>
 
             <div class="umb-table-cell shield-table__name">
                 <a class="umb-table-head__link" href="#" prevent-default>
-                    <span>Message</span>
+                    <localize key="Shield.Dashboard.Journals.Table_MessageHeader">Message</localize>
                     <i class="umb-table-head__icon icon"></i>
                 </a>
             </div>

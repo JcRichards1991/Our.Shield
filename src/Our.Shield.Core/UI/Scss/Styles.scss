@@ -6,14 +6,6 @@
 
 @import "partials/shield-Sort-Panel-Overview";
 
-.shield-editor {
-    .shield-url-type {
-        .shield-url-type-option {
-            margin-top: 15px;
+@import "partials/shield-url-type";
 
-            &.left {
-                margin-left: -10px;
-            }
-        }
-    }
-}
+@import "partials/shield-dashboards";

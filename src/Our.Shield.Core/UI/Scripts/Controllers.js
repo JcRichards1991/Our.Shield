@@ -69,6 +69,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                         });
                         return;
                     }
+
                     vm.name = response.data.name;
                     vm.description = response.data.description;
                     vm.environment = response.data.environment;
@@ -77,7 +78,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
 
                     switch (vm.type = response.data.type) {
                         case 0:     //  Environment
-                            vm.path = ['-1' , '' + vm.id];
+                            vm.path = ['-1', vm.id];
                             vm.ancestors = [{ id: vm.id, name: vm.name }];
 
                             vm.appListing.apps = response.data.apps;
@@ -98,7 +99,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             break;
 
                         case 1:     //  App
-                            vm.path = ['-1', '' + vm.environment.id, '' + vm.id];
+                            vm.path = ['-1', '' + vm.environment.id, vm.id];
                             vm.ancestors = [{ id: vm.environment.id, name: vm.environment.name }, { id: vm.id, name: vm.name }];
 
                             vm.app = response.data.app;
@@ -120,7 +121,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     }
 
                     $timeout(function () {
-                        navigationService.syncTree({ tree: 'shield', path: vm.path, forceReload: false, activate: true });
+                        navigationService.syncTree({ tree: 'shield', path: vm.path, forceReload: true, activate: true });
                         vm.loading = false;
                     });
                 });

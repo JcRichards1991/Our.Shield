@@ -1,4 +1,4 @@
-﻿<div ng-controller="Shield.Dashboards.Environments as vm" ng-init="vm.init()">
+﻿<div class="shield-dashboard" ng-controller="Shield.Dashboards.Environments as vm" ng-init="vm.init()">
 
     <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
 
@@ -21,14 +21,14 @@
 
                             <div class="umb-table-cell umb-table__name">
                                 <a class="umb-table-head__link" href="#" prevent-default>
-                                    <localize key="Shield.EnvironmentDashboard.Table_NameHeader">Name</localize>
+                                    <localize key="Shield.Dashboard.Environment.Table_NameHeader">Name</localize>
                                     <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
                                 </a>
                             </div>
 
                             <div class="umb-table-cell">
                                 <a class="umb-table-head__link" href="#" prevent-default>
-                                    <localize key="Shield.EnvironmentDashboard.Table_DomainsHeader">Domains</localize>
+                                    <localize key="Shield.Dashboard.Environment.Table_DomainsHeader">Domains</localize>
                                     <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
                                 </a>
                             </div>
@@ -48,7 +48,7 @@
                                 <span ng-bind-html="environment.name"></span>
                             </div>
 
-                            <div class="umb-table-cell">
+                            <div class="umb-table-cell shield-domain-listing">
                                 <ul>
                                     <li ng-repeat="domain in environment.domains track by $index">
                                         {{domain.name}}

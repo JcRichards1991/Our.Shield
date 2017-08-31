@@ -1,4 +1,10 @@
-﻿using System.Data;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Our.Shield.Core.Models;
+using System;
+using System.Data;
+using System.Linq;
+using System.Reflection;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence;
@@ -15,6 +21,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
     {
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
         private readonly DatabaseSchemaHelper _schemaHelper;
+        private ISqlSyntaxProvider _sqlSyntax;
 
         /// <summary>
         /// Default constructor for the Configuration Migration.
@@ -23,7 +30,8 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
         /// <param name="logger">The Logger</param>
         public Migration103(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
         {
-            _schemaHelper = new DatabaseSchemaHelper(_database, logger, sqlSyntax);
+            _sqlSyntax = sqlSyntax;
+            _schemaHelper = new DatabaseSchemaHelper(_database, logger, _sqlSyntax);
         }
 
         /// <summary>
@@ -46,6 +54,56 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
             Delete.Index("IX_" + nameof(Shield) + "_" + nameof(Dto.Configuration.Configuration101.AppId)).OnTable<Dto.Configuration.Configuration101>();
             Create.Index("IX_" + nameof(Shield) + "_" + nameof(Dto.Configuration.Configuration103.AppId)).OnTable<Dto.Configuration.Configuration103>()
                 .OnColumn(nameof(Dto.Configuration.Configuration103.AppId)).Ascending().WithOptions().NonClustered();
+
+            //  Check if Backoffice Access has been installed, as we may
+            //  need to update the configuration to match the new class
+            var sql = new Sql();
+            sql.Where<Data.Dto.Configuration>(x => x.AppId == "BackofficeAccess", _sqlSyntax);
+
+            var configs = _database.Fetch<Data.Dto.Configuration>(sql);
+
+            if (configs.Any())
+            {
+                var definition = new
+                {
+                    backendAccessUrl = "",
+                    ipAddressesAccess = Enums.IpAddressesAccess.Unrestricted,
+                    ipAddresses = new IpEntry[0],
+                    unauthorisedAction = Enums.UnauthorisedAction.Redirect,
+                    unauthorisedUrlType = Enums.UrlType.Url,
+                    unauthorisedUrl = "",
+                    unauthorisedUrlXPath = "",
+                    unauthorisedUrlContentPicker = ""
+                };
+
+                foreach (var config in configs)
+                {
+                    //  Deserialize the current config to an anonymous object
+                    var oldData = JsonConvert.DeserializeAnonymousType(config.Value, definition);
+
+                    //  Copy the configuration to the new anonymous object
+                    var newData = new
+                    {
+                        backendAccessUrl = oldData.backendAccessUrl,
+                        ipAddressesAccess = oldData.ipAddressesAccess,
+                        ipAddresses = oldData.ipAddresses,
+                        unauthorisedAction = oldData.unauthorisedAction,
+                        urlType = new UrlType
+                        {
+                            UrlSelector = oldData.unauthorisedUrlType,
+                            StrUrl = oldData.unauthorisedUrl,
+                            XpathUrl = oldData.unauthorisedUrlXPath,
+                            ContentPickerUrl = oldData.unauthorisedUrlContentPicker
+                        }
+                    };
+
+                    //  serialize the new configuration to the db entry's value
+                    config.Value = JsonConvert.SerializeObject(newData, Formatting.None);
+
+                    //  Update the entry within the DB.
+                    _database.Update(config);
+                }
+            }
         }
 
         /// <summary>

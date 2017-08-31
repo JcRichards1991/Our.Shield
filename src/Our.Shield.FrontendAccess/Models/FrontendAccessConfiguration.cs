@@ -31,27 +31,9 @@ namespace Our.Shield.FrontendAccess.Models
         public Enums.UnauthorisedAction UnauthorisedAction { get; set; }
 
         /// <summary>
-        /// The selector for the unauthorised url.
+        /// The Url Type Selector and the url
         /// </summary>
-        [JsonProperty("unauthorisedUrlType")]
-        public Enums.UrlType UnauthorisedUrlType { get; set; }
-
-        /// <summary>
-        /// The Url for the unauthorised access Url
-        /// </summary>
-        [JsonProperty("unauthorisedUrl")]
-        public string UnauthorisedUrl { get; set; }
-
-        /// <summary>
-        /// The XPath to the content node for the unauthorised access Url
-        /// </summary>
-        [JsonProperty("unauthorisedUrlXPath")]
-        public string UnauthorisedUrlXPath { get; set; }
-
-        /// <summary>
-        /// The Id/UID to the content node for the unauthorised access Url
-        /// </summary>
-        [JsonProperty("unauthorisedUrlContentPicker")]
-        public string UnauthorisedUrlContentPicker { get; set; }
+        [JsonProperty("urlType")]
+        public UrlType UrlType { get; set; }
     }
 }

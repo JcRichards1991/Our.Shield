@@ -1,5 +1,6 @@
 ﻿using Our.Shield.Core;
 using Our.Shield.Core.Attributes;
+using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using System;
@@ -10,8 +11,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using Umbraco.Core;
-using Umbraco.Core.Security;
-using Umbraco.Web;
 
 namespace Our.Shield.BackofficeAccess.Models
 {
@@ -54,84 +53,16 @@ namespace Our.Shield.BackofficeAccess.Models
                     IpAddressesAccess = Enums.IpAddressesAccess.Unrestricted,
                     IpEntries = new IpEntry[0],
                     UnauthorisedAction = Enums.UnauthorisedAction.Redirect,
-                    UnauthorisedUrlType = Enums.UrlType.Url
+                    UrlType = new UrlType
+                    {
+                        UrlSelector = Enums.UrlType.Url
+                    }
                 };
             }
         }
 
-        private readonly string allowKey = Guid.NewGuid().ToString();
+        private readonly string AllowKey = Guid.NewGuid().ToString();
         private readonly TimeSpan CacheLength = new TimeSpan(TimeSpan.TicksPerDay);        //   Once per day
-
-        private string UnauthorisedUrl(IJob job, BackofficeAccessConfiguration config)
-        {
-            return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(allowKey, () =>
-            {
-                string url = null;
-                var journalMessage = new JournalMessage();
-                var umbContext = UmbracoContext.Current;
-
-                switch (config.UnauthorisedUrlType)
-                {
-                    case Enums.UrlType.Url:
-                        if (!string.IsNullOrEmpty(config.UnauthorisedUrl))
-                        {
-                            url = config.UnauthorisedUrl;
-                            break;
-                        }
-
-                        journalMessage.Message = "Error: No Unauthorized URL set in configuration";
-                        break;
-
-                    case Enums.UrlType.XPath:
-                        var xpathNode = umbContext.ContentCache.GetSingleByXPath(config.UnauthorisedUrlXPath);
-
-                        if (xpathNode != null)
-                        {
-                            url = xpathNode.Url;
-                            break;
-                        }
-
-                        journalMessage.Message = "Error: Unable to get the unauthorized URL from the specified XPath expression";
-                        break;
-
-                    case Enums.UrlType.ContentPicker:
-                        int id;
-
-                        if (int.TryParse(config.UnauthorisedUrlContentPicker, out id))
-                        {
-                            var contentPickerNode = umbContext.ContentCache.GetById(id);
-
-                            if (contentPickerNode != null)
-                            {
-                                url = contentPickerNode.Url;
-                                break;
-                            }
-
-                            journalMessage.Message = "Error: Unable to get the unauthorized URL from the unauthorized URL content picker. Please ensure the selected page is published and hasn't been deleted";
-                            break;
-                        }
-
-                        journalMessage.Message = "Error: Unable to parse the selected unauthorized URL content picker item. Please ensure a valid content node is selected";
-                        break;
-
-                    default:
-                        journalMessage.Message = "Error: Unable to determine which method to use to get the unauthorized URL. Please ensure URL, XPath or Content Picker is selected";
-                        break;
-                }
-
-                if (url == null)
-                {
-                    if (!string.IsNullOrEmpty(journalMessage.Message))
-                    {
-                        job.WriteJournal(journalMessage);
-                    }
-
-                    return null;
-                }
-
-                return url;
-            }, CacheLength) as string;
-        }
 
         private static int ResetterLock = 0;
 
@@ -199,7 +130,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 //rewrite the path to the hard location. we need to add the
                 //access token to context so we can allow the request to pass
                 //through on the watch for the hard location
-                httpApp.Context.Items.Add(allowKey, true);
+                httpApp.Context.Items.Add(AllowKey, true);
 
                 if (rewrite || regex.IsMatch(softLocation))
                 {
@@ -209,14 +140,6 @@ namespace Our.Shield.BackofficeAccess.Models
                 httpApp.Context.Response.Redirect(rewritePath);
                 return WatchCycle.Stop;
             });
-        }
-
-        private bool IsRequestAuthenticated(HttpApplication httpApp)
-        {
-            var httpContext = new HttpContextWrapper(httpApp.Context);
-            var umbAuthTicket = httpContext.GetUmbracoAuthTicket();
-
-            return httpContext.AuthenticateCurrentRequest(umbAuthTicket, true);
         }
 
         private void AddSoftWatches(IJob job, BackofficeAccessConfiguration config)
@@ -253,7 +176,7 @@ namespace Our.Shield.BackofficeAccess.Models
                         //hard location - This is most likely due to
                         //clicking a link (i.e. content breadcrumb)
                         //which isn't handle by the angular single page app
-                        if (IsRequestAuthenticated(httpApp))
+                        if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
                         {
                             //request has a authenticated user, we want to
                             //redirect the user back to the soft location
@@ -290,7 +213,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 //Check if request has our access token, if so, we're
                 //rewriting the user to the hard location, so let 
                 //the request continue
-                if ((bool?)httpApp.Context.Items[allowKey] == true)
+                if ((bool?)httpApp.Context.Items[AllowKey] == true)
                 {
                     return WatchCycle.Continue;
                 }
@@ -311,7 +234,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 //softLocation - This is most likely due to
                 //clicking a link (i.e. content breadcrumb)
                 //which isn't handle by the angular single page app
-                if (IsRequestAuthenticated(httpApp))
+                if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
                 {
                     //request has a authenticated user, we want to
                     //redirect the user back to the soft location
@@ -332,7 +255,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 }
 
                 //We're Enabled, so we need to get the unauthorised Url
-                var url = UnauthorisedUrl(job, config);
+                var url = AccessHelper.UnauthorisedUrl(AllowKey, CacheLength, job, config.UrlType);
 
                 //Confirm if url is not null, if it is null, we're going to stop
                 //the request, as they don't have our access token anyway
@@ -344,7 +267,7 @@ namespace Our.Shield.BackofficeAccess.Models
 
                 //We have a url, so we need to redirect/rewrite the request
                 //dependant on what is configured
-                if (config.UnauthorisedAction == Core.Enums.UnauthorisedAction.Redirect)
+                if (config.UnauthorisedAction == Enums.UnauthorisedAction.Redirect)
                 {
                     httpApp.Context.Response.Redirect(url, true);
                     return WatchCycle.Stop;
@@ -355,20 +278,6 @@ namespace Our.Shield.BackofficeAccess.Models
             });
         }
 
-        private IPAddress ConvertToIpv6(string ip)
-        {
-            if (ip.Equals("127.0.0.1"))
-                ip = "::1";
-
-            IPAddress typedIp;
-            if (IPAddress.TryParse(ip, out typedIp))
-            {
-                return typedIp.MapToIPv6();
-            }
-
-            return null;
-        }
-
         private void AddHardWatch(IJob job, BackofficeAccessConfiguration config)
         {
             var whiteList = new List<IPAddress>();
@@ -377,7 +286,7 @@ namespace Our.Shield.BackofficeAccess.Models
             //Class, so we're working with something more standard
             foreach (var ipEntry in config.IpEntries)
             {
-                var ip = ConvertToIpv6(ipEntry.IpAddress);
+                var ip = AccessHelper.ConvertToIpv6(ipEntry.IpAddress);
                 if (ip == null)
                 {
                     job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {ipEntry.IpAddress}, unable to add to white-list"));
@@ -396,19 +305,19 @@ namespace Our.Shield.BackofficeAccess.Models
                 //we've already checked the user's IP
                 //address, and therefore we should just
                 //allow access without checking IP again
-                if (IsRequestAuthenticated(httpApp))
+                if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
                 {
                     return WatchCycle.Continue;
                 }
 
-                var userIp = ConvertToIpv6(httpApp.Context.Request.UserHostAddress);
+                var userIp = AccessHelper.ConvertToIpv6(httpApp.Context.Request.UserHostAddress);
 
                 //check if IP address is not within the white-list;
                 if (userIp == null || !whiteList.Any(x => x.Equals(userIp)))
                 {
                     //User is coming from a non white-listed IP Address,
                     //so we need to get the unauthorized access url
-                    var url = UnauthorisedUrl(job, config);
+                    var url = AccessHelper.UnauthorisedUrl(AllowKey, CacheLength, job, config.UrlType);
 
                     //Confirm if url is not null, if it is null, we're going to stop
                     //the request, as they're coming from a non white-listed IP Address anyway
@@ -467,7 +376,7 @@ namespace Our.Shield.BackofficeAccess.Models
         /// <returns></returns>
         public override bool Execute(IJob job, IConfiguration c)
         {
-            ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(allowKey);
+            ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(AllowKey);
             job.UnwatchWebRequests();
 
             ResetterLock = 0;

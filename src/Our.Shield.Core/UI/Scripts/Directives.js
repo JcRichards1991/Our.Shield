@@ -206,50 +206,39 @@ angular.module('umbraco.directives').directive('shieldUrlType', function () {
         restrict: 'E',
         templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/Url-Type.html',
         scope: {
-            urlType: '=',
-            strUrl: '=',
-            xpathUrl: '=',
-            contentPickerUrl: '=',
+            model: '='
         },
-        controller: ['$scope', function ($scope) {
-            $scope.contentPickerProperty = {
+        link: function (scope, elm, attr) {
+            if (scope.model === null) {
+                scope.model = {
+                    urlSelector: 0,
+                    strUrl: '',
+                    xpathUrl: '',
+                    contentPickerUrl: ''
+                }
+            }
+
+            scope.model.contentPickerProperty = {
                 view: 'contentpicker',
                 alias: 'contentPicker',
                 config: {
-                    multiPicker: "0",
-                    entityType: "Document",
+                    multiPicker: '0',
+                    entityType: 'Document',
                     startNode: {
-                        query: "",
-                        type: "content",
+                        query: '',
+                        type: 'content',
                         id: -1
                     },
-                    filter: "",
+                    filter: '',
                     minNumber: 1,
                     maxNumber: 1
                 },
-                value: $scope.contentPickerUrl
+                value: scope.model.contentPickerUrl
             };
 
-            $scope.$watch('contentPickerProperty.value', function (newVal, oldVal) {
-                $scope.contentPickerUrl = newVal;
+            scope.$watch('model.contentPickerProperty.value', function (newVal, oldVal) {
+                scope.model.contentPickerUrl = newVal;
             });
-
-            //  Begin terrible hack
-            $scope.vm = {};
-
-            angular.extend($scope.vm, {
-                strUrl: $scope.strUrl,
-                xpathUrl: $scope.xpathUrl,
-            });
-
-            $scope.$watch('vm.strUrl', function (newVal, oldVal) {
-                $scope.strUrl = newVal;
-            });
-
-            $scope.$watch('vm.xpathUrl', function (newVal, oldVal) {
-                $scope.xpathUrl = newVal;
-            });
-            //  End terrible hack
-        }]
+        }
     };
 });

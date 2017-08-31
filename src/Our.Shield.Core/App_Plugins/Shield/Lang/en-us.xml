@@ -94,4 +94,11 @@
     <key alias="NameHeader">Name</key>
     <key alias="DomainsHeader">Domains</key>
   </area>
+
+  <area alias="Shield.Dashboard.Journals.Table">
+    <key alias="DateHeader">Date</key>
+    <key alias="EnvironmentHeader">Environment</key>
+    <key alias="AppHeader">App</key>
+    <key alias="MessageHeader">Message</key>
+  </area>
 </language>

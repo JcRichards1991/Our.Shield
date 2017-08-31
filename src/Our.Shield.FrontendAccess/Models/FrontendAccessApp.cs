@@ -1,5 +1,6 @@
 ﻿using Our.Shield.Core;
 using Our.Shield.Core.Attributes;
+using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using System;
@@ -8,8 +9,6 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
 using Umbraco.Core;
-using Umbraco.Core.Security;
-using Umbraco.Web;
 
 namespace Our.Shield.FrontendAccess.Models
 {
@@ -48,103 +47,22 @@ namespace Our.Shield.FrontendAccess.Models
                     UmbracoUserEnable = true,
                     IpAddressesAccess = Enums.IpAddressesAccess.Unrestricted,
                     IpEntries = new IpEntry[0],
-                    UnauthorisedAction = Enums.UnauthorisedAction.Redirect
+                    UnauthorisedAction = Enums.UnauthorisedAction.Redirect,
+                    UrlType = new UrlType
+                    {
+                        UrlSelector = Enums.UrlType.Url
+                    }
                 };
             }
         }
 
-        private readonly string allowKey = Guid.NewGuid().ToString();
+        private readonly string AllowKey = Guid.NewGuid().ToString();
 
-        private IPAddress ConvertToIpv6(string ip)
-        {
-            if (ip.Equals("127.0.0.1"))
-                ip = "::1";
-
-            IPAddress typedIp;
-            if (IPAddress.TryParse(ip, out typedIp))
-            {
-                return typedIp.MapToIPv6();
-            }
-
-            return null;
-        }
-
-        private readonly TimeSpan CacheLength = new TimeSpan(TimeSpan.TicksPerDay); 
-
-        private string UnauthorisedUrl(IJob job, FrontendAccessConfiguration config)
-        {
-            return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(allowKey, () =>
-            {
-                string url = null;
-                var journalMessage = new JournalMessage();
-                var umbContext = UmbracoContext.Current;
-
-                switch (config.UnauthorisedUrlType)
-                {
-                    case Enums.UrlType.Url:
-                        if (!string.IsNullOrEmpty(config.UnauthorisedUrl))
-                        {
-                            url = config.UnauthorisedUrl;
-                            break;
-                        }
-
-                        journalMessage.Message = "Error: No Unauthorized URL set in configuration";
-                        break;
-
-                    case Enums.UrlType.XPath:
-                        var xpathNode = umbContext.ContentCache.GetSingleByXPath(config.UnauthorisedUrlXPath);
-
-                        if (xpathNode != null)
-                        {
-                            url = xpathNode.Url;
-                            break;
-                        }
-
-                        journalMessage.Message = "Error: Unable to get the unauthorized URL from the specified XPath expression";
-                        break;
-
-                    case Enums.UrlType.ContentPicker:
-                        int id;
-
-                        if (int.TryParse(config.UnauthorisedUrlContentPicker, out id))
-                        {
-                            var contentPickerNode = umbContext.ContentCache.GetById(id);
-
-                            if (contentPickerNode != null)
-                            {
-                                url = contentPickerNode.Url;
-                                break;
-                            }
-
-                            journalMessage.Message = "Error: Unable to get the unauthorized URL from the unauthorized URL content picker. Please ensure the selected page is published and hasn't been deleted";
-                            break;
-                        }
-
-                        journalMessage.Message = "Error: Unable to parse the selected unauthorized URL content picker item. Please ensure a valid content node is selected";
-                        break;
-
-                    default:
-                        journalMessage.Message = "Error: Unable to determine which method to use to get the unauthorized URL. Please ensure URL, XPath or Content Picker is selected";
-                        break;
-                }
-
-                if (url == null)
-                {
-                    if (!string.IsNullOrEmpty(journalMessage.Message))
-                    {
-                        job.WriteJournal(journalMessage);
-                    }
-
-                    return null;
-                }
-
-                return url;
-            }, CacheLength) as string;
-        }
+        private readonly TimeSpan CacheLength = new TimeSpan(TimeSpan.TicksPerDay);
 
         private bool IsRequestAllowed(HttpApplication httpApp, string url)
         {
-            if (httpApp.Context.Request.Url.AbsolutePath.Equals(url) || (bool?)httpApp.Context.Items[allowKey] == true)
+            if (httpApp.Context.Request.Url.AbsolutePath.Equals(url) || (bool?)httpApp.Context.Items[AllowKey] == true)
             {
                 return true;
             }
@@ -152,16 +70,13 @@ namespace Our.Shield.FrontendAccess.Models
             return false;
         }
 
-        private bool IsAuthenticatedUmbracoUser(HttpApplication httpApp)
+        private WatchCycle DenyAccess(IJob job, HttpApplication httpApp, string unauthorisedUrl, Enums.UnauthorisedAction action, IPAddress userIp = null)
         {
-            var httpContext = new HttpContextWrapper(httpApp.Context);
-            var umbAuthTicket = httpContext.GetUmbracoAuthTicket();
+            if (userIp == null)
+            {
+                userIp = AccessHelper.ConvertToIpv6(httpApp.Context.Request.UserHostAddress);
+            }
 
-            return httpContext.AuthenticateCurrentRequest(umbAuthTicket, true);
-        }
-
-        private WatchCycle DenyAccess(IJob job, HttpApplication httpApp, IPAddress userIp, string unauthorisedUrl, Enums.UnauthorisedAction action)
-        {
             job.WriteJournal(new JournalMessage($"Unauthenticated user tried to access page: {httpApp.Context.Request.Url.AbsolutePath}; From IP Address: {userIp}; Access was denied"));
 
             httpApp.Context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -183,7 +98,7 @@ namespace Our.Shield.FrontendAccess.Models
 
         private WatchCycle AllowAccess(HttpApplication httpApp)
         {
-            httpApp.Context.Items.Add(allowKey, true);
+            httpApp.Context.Items.Add(AllowKey, true);
             return WatchCycle.Continue;
         }
 
@@ -195,6 +110,7 @@ namespace Our.Shield.FrontendAccess.Models
         /// <returns></returns>
         public override bool Execute(IJob job, IConfiguration c)
         {
+            ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(AllowKey);
             job.UnwatchWebRequests();
 
             if (!c.Enable || !job.Environment.Enable)
@@ -208,51 +124,77 @@ namespace Our.Shield.FrontendAccess.Models
 
             var whiteList = new List<IPAddress>();
 
-            foreach (var ipEntry in config.IpEntries)
+            if (config.IpAddressesAccess == Enums.IpAddressesAccess.Restricted)
             {
-                var ip = ConvertToIpv6(ipEntry.IpAddress);
-                if (ip == null)
+                foreach (var ipEntry in config.IpEntries)
                 {
-                    job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {ipEntry.IpAddress}, unable to add to white-list"));
-                    continue;
-                }
+                    var ip = AccessHelper.ConvertToIpv6(ipEntry.IpAddress);
+                    if (ip == null)
+                    {
+                        job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {ipEntry.IpAddress}, unable to add to white-list"));
+                        continue;
+                    }
 
-                whiteList.Add(ip);
+                    whiteList.Add(ip);
+                }
             }
 
-            if (config.UmbracoUserEnable || config.IpAddressesAccess == Enums.IpAddressesAccess.Restricted)
+            if (config.UmbracoUserEnable && config.IpAddressesAccess == Enums.IpAddressesAccess.Unrestricted)
             {
                 job.WatchWebRequests(regex, 75, (count, httpApp) =>
                 {
-                    var unauthorisedUrl = UnauthorisedUrl(job, config);
+                    var unauthorisedUrl = AccessHelper.UnauthorisedUrl(AllowKey, CacheLength, job, config.UrlType);
 
                     if (IsRequestAllowed(httpApp, unauthorisedUrl))
                     {
                         return WatchCycle.Continue;
                     }
 
-                    var userIp = ConvertToIpv6(httpApp.Context.Request.UserHostAddress);
+                    if (!AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
+                    {
+                        return DenyAccess(job, httpApp, unauthorisedUrl, config.UnauthorisedAction);
+                    }
 
-                    if (config.UmbracoUserEnable && config.IpAddressesAccess == Enums.IpAddressesAccess.Unrestricted)
+                    return AllowAccess(httpApp);
+                });
+            }
+            else if (config.UmbracoUserEnable && config.IpAddressesAccess == Enums.IpAddressesAccess.Restricted)
+            {
+                job.WatchWebRequests(regex, 75, (count, httpApp) =>
+                {
+                    var unauthorisedUrl = AccessHelper.UnauthorisedUrl(AllowKey, CacheLength, job, config.UrlType);
+
+                    if (IsRequestAllowed(httpApp, unauthorisedUrl))
                     {
-                        if (!IsAuthenticatedUmbracoUser(httpApp))
-                        {
-                            return DenyAccess(job, httpApp, userIp, unauthorisedUrl, config.UnauthorisedAction);
-                        }
+                        return WatchCycle.Continue;
                     }
-                    else if (config.UmbracoUserEnable && config.IpAddressesAccess == Enums.IpAddressesAccess.Restricted)
+
+                    var userIp = AccessHelper.ConvertToIpv6(httpApp.Context.Request.UserHostAddress);
+
+                    if (!AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp) && !whiteList.Contains(userIp))
                     {
-                        if (!IsAuthenticatedUmbracoUser(httpApp) && !whiteList.Contains(userIp))
-                        {
-                            return DenyAccess(job, httpApp, userIp, unauthorisedUrl, config.UnauthorisedAction);
-                        }
+                        return DenyAccess(job, httpApp, unauthorisedUrl, config.UnauthorisedAction, userIp);
                     }
-                    else if (config.IpAddressesAccess == Enums.IpAddressesAccess.Restricted)
+
+                    return AllowAccess(httpApp);
+                });
+            }
+            else if (config.IpAddressesAccess == Enums.IpAddressesAccess.Restricted)
+            {
+                job.WatchWebRequests(regex, 75, (count, httpApp) =>
+                {
+                    var unauthorisedUrl = AccessHelper.UnauthorisedUrl(AllowKey, CacheLength, job, config.UrlType);
+
+                    if (IsRequestAllowed(httpApp, unauthorisedUrl))
                     {
-                        if (!whiteList.Contains(userIp))
-                        {
-                            return DenyAccess(job, httpApp, userIp, unauthorisedUrl, config.UnauthorisedAction);
-                        }
+                        return WatchCycle.Continue;
+                    }
+
+                    var userIp = AccessHelper.ConvertToIpv6(httpApp.Context.Request.UserHostAddress);
+
+                    if (!whiteList.Contains(userIp))
+                    {
+                        return DenyAccess(job, httpApp, unauthorisedUrl, config.UnauthorisedAction, userIp);
                     }
 
                     return AllowAccess(httpApp);

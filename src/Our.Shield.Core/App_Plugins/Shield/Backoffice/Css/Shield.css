@@ -90,3 +90,6 @@ table.domains-container {
   margin-top: 15px; }
   .shield-editor .shield-url-type .shield-url-type-option.left {
     margin-left: -10px; }
+
+.shield-dashboard div.umb-table div.umb-table-body div.shield-domain-listing ul {
+  margin-left: 0; }
