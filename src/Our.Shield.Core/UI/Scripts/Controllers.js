@@ -191,9 +191,9 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                     notificationsService.success(value);
                                 });
 
-                                if (colorIndicatorChanged && vm.environment.domains.filter((x) => x.name === $window.location.origin)[0] !== undefined) {
-                                    shield.colorIndicator.run(shieldResource);
-                                }
+                                //if (colorIndicatorChanged && vm.environment.domains.filter((x) => x.name === $window.location.origin)[0] !== undefined) {
+                                //    shield.colorIndicator.run(shieldResource);
+                                //}
 
                                 vm.cancelEditing();
 

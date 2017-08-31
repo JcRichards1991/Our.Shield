@@ -76,7 +76,7 @@ namespace Our.Shield.Core.Persistance.Business
                 Enable = environment.Enable,
                 ContinueProcessing = environment.ContinueProcessing,
                 SortOrder = environment.SortOrder,
-                ColorIndicator = environment.ColorIndicator
+                ColorIndicator = "#df7f48"
             };
 
             try
