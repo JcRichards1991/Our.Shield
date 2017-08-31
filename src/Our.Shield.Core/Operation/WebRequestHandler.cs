@@ -305,7 +305,7 @@ restart:
                     {
                         if (environment != null && environment.Id != watch.environment.Id)
                         {
-                            continue;
+                            return;
                         }
 
                         string filePath = null;
@@ -336,6 +336,7 @@ restart:
                             {
                                 environment = watch.environment;
                             }
+
                             switch (watch.request(count, application))
                             {
                                 case WatchCycle.Stop:

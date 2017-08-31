@@ -9,6 +9,8 @@ var shield = {
                 return;
             }
 
+            //  when not logged in, shieldResource.getEnvironments stops the user from logging in correctly,
+            //  need to create a new Api controller that doesn't require authentication or change how this is implemented
             shieldResource.getEnvironments().then(function (response) {
                 var environments = response.data || [],
                     indicatorColor = shield.colorIndicator.defaultIndicatorColor;
@@ -242,7 +244,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     vm.button.state = 'error';
                     return;
                 }
-                var colorIndicatorChanged = vm.type === 0 && $scope.shieldForm.colorIndicator.$dirty;
+
                 $scope.shieldForm.$setPristine();
 
                 switch (vm.type) {
@@ -259,10 +261,6 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                 localizationService.localize('Shield.General_' + saveMsgDictionaryItem).then(function (value) {
                                     notificationsService.success(value);
                                 });
-
-                                //if (colorIndicatorChanged && vm.environment.domains.filter((x) => x.name === $window.location.origin)[0] !== undefined) {
-                                //    shield.colorIndicator.run(shieldResource);
-                                //}
 
                                 vm.cancelEditing();
 

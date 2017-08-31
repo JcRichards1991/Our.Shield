@@ -173,7 +173,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                     vm.button.state = 'error';
                     return;
                 }
-                var colorIndicatorChanged = vm.type === 0 && $scope.shieldForm.colorIndicator.$dirty;
+
                 $scope.shieldForm.$setPristine();
 
                 switch (vm.type) {
@@ -190,10 +190,6 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                 localizationService.localize('Shield.General_' + saveMsgDictionaryItem).then(function (value) {
                                     notificationsService.success(value);
                                 });
-
-                                //if (colorIndicatorChanged && vm.environment.domains.filter((x) => x.name === $window.location.origin)[0] !== undefined) {
-                                //    shield.colorIndicator.run(shieldResource);
-                                //}
 
                                 vm.cancelEditing();
 

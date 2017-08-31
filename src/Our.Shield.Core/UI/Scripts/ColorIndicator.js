@@ -8,6 +8,8 @@
                 return;
             }
 
+            //  when not logged in, shieldResource.getEnvironments stops the user from logging in correctly,
+            //  need to create a new Api controller that doesn't require authentication or change how this is implemented
             shieldResource.getEnvironments().then(function (response) {
                 var environments = response.data || [],
                     indicatorColor = shield.colorIndicator.defaultIndicatorColor;
