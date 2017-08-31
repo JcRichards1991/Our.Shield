@@ -14,35 +14,31 @@
         </div>
     </div>
 
-    <div class="umb-el-wrap control-group umb-control-group">
+    <div class="umb-el-wrap control-group umb-control-group hot_linking-property">
         <label for="hotlinking" class="control-label">
             <localize key="Shield.MediaProtection_HotlinkingLabel">Hot Linking Protection</localize>
             <small>
-                <localize key="Shield.MediaProtection_HotlinkingDescription">Stop unauthorized users from accessing your media and/or assets from other websites</localize>
+                <localize key="Shield.MediaProtection_HotlinkingDescription">Stop unauthorized users from accessing your assets from other websites</localize>
             </small>
         </label>
         <div class="controls">
             <div class="umb-editor umb-checkbox">
                 <input type="checkbox" id="hotlinking" ng-model="vm.configuration.enableHotLinkingProtection" />
             </div>
-        </div>
-    </div>
 
-    <div class="umb-el-wrap control-group umb-control-group" ng-show="vm.configuration.enableHotLinkingProtection">
-        <label class="control-label">
-            <localize key="Shield.MediaProtection_HotlinkingDirectoriesLabel">Hot Linking Protected Directories</localize>
-            <small>
-                <localize key="Shield.MediaProtection_HotlinkingDirectoriesDescription">The folders of your website you wish to apply hot linking protection to. These should be folders containing your css, js, png files for example</localize>
-            </small>
-        </label>
-        <div class="controls">
-            <div class="umb-editor umb-checkboxes">
+            <div class="umb-editor umb-checkboxes" ng-show="vm.configuration.enableHotLinkingProtection">
+                <small>
+                    <localize key="Shield.MediaProtection_HotlinkingDirectoriesDescription">
+                        Select the folders of your website you wish to apply hot linking protection to. These should be folders containing .css, .js, .png, etc. files
+                    </localize>
+                </small>
+
                 <ul class="unstyled">
                     <li ng-repeat="directory in vm.directories track by $index">
-                        <label class="checkbox">
+                        <label>
                             <input type="checkbox" ng-model="directory"
                                    ng-checked="vm.configuration.hotLinkingProtectedDirectories.indexOf(directory) !== -1"
-                                   ng-click="vm.toggleSelectedDirectories(directory)"
+                                   ng-click="vm.toggleSelectedDirectory(directory)"
                                    ng-true-value="{{directory}}"
                                    ng-false-value="{{directory}}" />
 
@@ -51,11 +47,7 @@
                     </li>
                 </ul>
             </div>
-            <ul>
-                <li ng-repeat="directory in vm.configuration.hotLinkingProtectionDirectories">
-                    <input type="checkbox" id="hotlinkingDirectories{{$index}}" value="directory" />
-                </li>
-            </ul>
+
         </div>
     </div>
 

@@ -25,7 +25,7 @@ angular.module('umbraco').controller('Shield.Editors.MediaProtection.Edit',
                     vm.loading = false;
                 });
             },
-            toggleSelectedDirectories: function (directory) {
+            toggleSelectedDirectory: function (directory) {
                 var index = vm.configuration.hotLinkingProtectedDirectories.indexOf(directory);
 
                 if (index === -1) {

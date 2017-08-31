@@ -17,14 +17,12 @@ var jsFiles = [
     {
         subFiles: src + '.Core/UI/Scripts/*.js',
         output: src + '.Core' + jsOutput + '/Backoffice/Scripts',
-        name: 'Shield.js',
-        nameMin: 'Shield.min.js'
+        name: 'Shield.js'
     },
     {
         subFiles: src + '.MediaProtection/UI/Scripts/*.js',
         output: src + '.MediaProtection' + jsOutput + '.MediaProtection/Scripts',
-        name: 'MediaProtection.js',
-        nameMin: 'MediaProtection.min.js'
+        name: 'MediaProtection.js'
     }
 ];
 
@@ -33,14 +31,17 @@ var scssFiles = [
     {
         files: src + '.Core/UI/Scss/*.scss',
         output: src + '.Core' + cssOutput + '/Backoffice/Css',
-        name: 'Shield.css',
-        nameMin: 'Shield.min.css'
+        name: 'Shield.css'
     },
     {
-        files: src + '.BackofficeAccess/Scss/*.scss',
+        files: src + '.BackofficeAccess/UI/Scss/*.scss',
         output: src + '.BackofficeAccess' + cssOutput + '.BackofficeAccess/Css',
-        name: 'BackofficeAccess.css',
-        nameMin: 'BackofficeAccess.min.css'
+        name: 'BackofficeAccess.css'
+    },
+    {
+        files: src + '.MediaProtection/UI/Scss/*.scss',
+        output: src + '.MediaProtection' + cssOutput + '.MediaProtection/Css',
+        name: 'MediaProtection.css'
     }
 ];
 

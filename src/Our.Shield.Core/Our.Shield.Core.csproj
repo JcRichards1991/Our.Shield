@@ -332,7 +332,7 @@
     <None Include="Our.Shield.Core.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="UI\Scss\Partials\shield-dashboards.scss" />
+    <None Include="UI\Scss\Partials\_shield-dashboard.scss" />
     <None Include="UI\Scss\Partials\_shield-domain-listing-table.scss" />
     <None Include="UI\Scss\Partials\_shield-editor-header.scss" />
     <None Include="UI\Scss\Partials\_shield-Sort-Panel-Overview.scss" />

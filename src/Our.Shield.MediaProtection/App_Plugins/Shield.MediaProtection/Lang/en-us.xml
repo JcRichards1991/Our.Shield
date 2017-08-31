@@ -5,16 +5,12 @@
   </creator>
 
   <area alias="Shield.MediaProtection">
-    
     <key alias="HotlinkingLabel">Hot Linking Protection</key>
-    <key alias="HotlinkingDescription">Stop unauthorized users from accessing your media and/or assets from other websites</key>
-
-    <key alias="HotlinkingDirectoriesLabel">Hot Linking Protected Directories</key>
-    <key alias="HotlinkingDirectoriesDescription">The folders of your website you wish to apply hot linking protection to. These should be folders containing your css, js, png files for example</key>
+    <key alias="HotlinkingDescription">Stop unauthorized users from accessing your assets from other websites</key>
+    <key alias="HotlinkingDirectoriesDescription">Select the folders of your website you wish to apply hot linking protection to. These should be folders containing .css, .js, .png, etc. files</key>
 
     <key alias="MemberOnlyMediaLabel">Secure Media</key>
     <key alias="MemberOnlyMediaDescription">Enable media to be only accessible by logged in members</key>
-
   </area>
 
 </language>
