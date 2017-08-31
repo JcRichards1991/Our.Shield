@@ -1,10 +1,7 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Our.Shield.Core.Models;
-using System;
 using System.Data;
 using System.Linq;
-using System.Reflection;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence;
@@ -60,9 +57,9 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
             var sql = new Sql();
             sql.Where<Data.Dto.Configuration>(x => x.AppId == "BackofficeAccess", _sqlSyntax);
 
-            var configs = _database.Fetch<Data.Dto.Configuration>(sql);
+            var config = _database.FirstOrDefault<Data.Dto.Configuration>(sql);
 
-            if (configs.Any())
+            if (config != null)
             {
                 var definition = new
                 {
@@ -76,33 +73,30 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                     unauthorisedUrlContentPicker = ""
                 };
 
-                foreach (var config in configs)
+                //  Deserialize the current config to an anonymous object
+                var oldData = JsonConvert.DeserializeAnonymousType(config.Value, definition);
+
+                //  Copy the configuration to the new anonymous object
+                var newData = new
                 {
-                    //  Deserialize the current config to an anonymous object
-                    var oldData = JsonConvert.DeserializeAnonymousType(config.Value, definition);
-
-                    //  Copy the configuration to the new anonymous object
-                    var newData = new
+                    backendAccessUrl = oldData.backendAccessUrl,
+                    ipAddressesAccess = oldData.ipAddressesAccess,
+                    ipAddresses = oldData.ipAddresses,
+                    unauthorisedAction = oldData.unauthorisedAction,
+                    urlType = new UrlType
                     {
-                        backendAccessUrl = oldData.backendAccessUrl,
-                        ipAddressesAccess = oldData.ipAddressesAccess,
-                        ipAddresses = oldData.ipAddresses,
-                        unauthorisedAction = oldData.unauthorisedAction,
-                        urlType = new UrlType
-                        {
-                            UrlSelector = oldData.unauthorisedUrlType,
-                            StrUrl = oldData.unauthorisedUrl,
-                            XpathUrl = oldData.unauthorisedUrlXPath,
-                            ContentPickerUrl = oldData.unauthorisedUrlContentPicker
-                        }
-                    };
+                        UrlSelector = oldData.unauthorisedUrlType,
+                        StrUrl = oldData.unauthorisedUrl,
+                        XpathUrl = oldData.unauthorisedUrlXPath,
+                        ContentPickerUrl = oldData.unauthorisedUrlContentPicker
+                    }
+                };
 
-                    //  serialize the new configuration to the db entry's value
-                    config.Value = JsonConvert.SerializeObject(newData, Formatting.None);
+                //  serialize the new configuration to the db entry's value
+                config.Value = JsonConvert.SerializeObject(newData, Formatting.None);
 
-                    //  Update the entry within the DB.
-                    _database.Update(config);
-                }
+                //  Update the entry within the DB.
+                _database.Update(config);
             }
         }
 
