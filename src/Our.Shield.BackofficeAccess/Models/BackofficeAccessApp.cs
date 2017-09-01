@@ -280,8 +280,20 @@ namespace Our.Shield.BackofficeAccess.Models
 
         private void AddHardWatch(IJob job, BackofficeAccessConfiguration config)
         {
-            var whiteList = new List<IPAddress>();
+            var hardLocationRegex = new Regex("^((" + ApplicationSettings.UmbracoPath.TrimEnd('/') + "(/)?)|(" + ApplicationSettings.UmbracoPath + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase);
 
+            if (config.IpAddressesAccess == Enums.IpAddressesAccess.Unrestricted)
+            {
+                job.WatchWebRequests(hardLocationRegex, 1000, (count, httpApp) =>
+                {
+                    return WatchCycle.Continue;
+                });
+
+                return;
+            }
+
+            var whiteList = new List<IPAddress>();
+            
             //Convert our IP address(es) to the IpAddress
             //Class, so we're working with something more standard
             foreach (var ipEntry in config.IpEntries)
@@ -295,8 +307,6 @@ namespace Our.Shield.BackofficeAccess.Models
 
                 whiteList.Add(ip);
             }
-
-            var hardLocationRegex = new Regex("^((" + ApplicationSettings.UmbracoPath.TrimEnd('/') + "(/)?)|(" + ApplicationSettings.UmbracoPath + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase);
 
             //Add watch on the on-disk UmbracoPath location to do the security checking of the user's ip
             job.WatchWebRequests(hardLocationRegex, 1000, (count, httpApp) =>
@@ -388,7 +398,7 @@ namespace Our.Shield.BackofficeAccess.Models
             AddSoftWatches(job, config);
 
             //if we're enabled, we need to add our IP checking watch
-            if (config.Enable && job.Environment.Enable && config.IpAddressesAccess == Enums.IpAddressesAccess.Restricted)
+            if (config.Enable && job.Environment.Enable)
             {
                 //Add our Hard Watch to
                 //do the security checking
