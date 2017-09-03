@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Our.Shield.FrontendLocker")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("An app plugin to Our.Shield.Core Umbraco Cms package to handle restricting access to the frontend")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Our.Shield.FrontendLocker")]

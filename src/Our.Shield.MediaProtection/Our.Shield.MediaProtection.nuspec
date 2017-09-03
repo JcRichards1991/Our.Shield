@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Updates to allow to work with multiple domains specified for an environment</releaseNotes>
+    <releaseNotes>Updates to allow to work with multiple domains specified for an environment and updated to allow the user to select which folders they'd wish to add hot linking protection to</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security MediaProtection Media Protection</tags>
     <dependencies>
