@@ -45,6 +45,10 @@ After upgrading, you will need to re-save the configurations of the installed ap
 
 ### Log ###
 
+**1.0.2 - 17/08/2017**
+
+Adds new setting to configuration to allow the ability to turn on/off the IP Addresses restrictions for Our.Shield.BackofficeAccess
+
 **1.0.1 - 28/07/2017**
 
 Fixes Our.Shield.Core migration not creating the Journal table, and therefore, not adding an entry to the umbracoMigration table
