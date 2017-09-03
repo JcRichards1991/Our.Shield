@@ -26,7 +26,10 @@ PM> Install-Package Our.Shield.Core
 	```
 	PM> Install-Package Our.Shield.MediaProtection
 	```
-
+	* https://www.nuget.org/packages/Our.Shield.FrontendAccess/
+	```
+	PM> Install-Package Our.Shield.FrontendAccess
+	```
 ---
 
 ### Documentation ###
@@ -44,6 +47,10 @@ After upgrading, you will need to re-save the configurations of the installed ap
 ---
 
 ### Log ###
+
+**1.0.3 - 03/09/2017**
+Update Shield framework to include the abilty to create, edit, delete & sort environments.
+Release of Frontend Access Shield app
 
 **1.0.2 - 17/08/2017**
 
