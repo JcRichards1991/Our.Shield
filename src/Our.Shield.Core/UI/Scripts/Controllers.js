@@ -91,7 +91,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                 vm.cancelEditing();
                             }
 
-                            if (vm.environment.domains.length === 0) {
+                            if (vm.id !== '1' && vm.environment.domains.length === 0) {
                                 vm.environment.domains.push({
                                     id: 0,
                                     name: '',
