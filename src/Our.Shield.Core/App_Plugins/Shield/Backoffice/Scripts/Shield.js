@@ -134,7 +134,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                             domains: [{ id: 0, name: '', umbracoDomainId: null }],
                             continueProcessing: false,
                             enable: true,
-                            sortOrder: (vm.environments.filter((x) => x.id === 1)[0]).sortOrder
+                            sortOrder: vm.environments.length === 1 ? 0 : (vm.environments[vm.environments.length - 2].sortOrder + 1)
                         };
                         vm.button.labelKey = 'general_create';
                         localizationService.localize(vm.button.labelKey).then(function (value) {
@@ -367,10 +367,10 @@ angular.module('umbraco').controller('Shield.Editors.Overview.Delete',
                             vm.currentNode.loading = false;
                             treeService.removeNode(vm.currentNode);
 
-                            if ($routeParams.id !== '0') {
-                                $location.path("/shield/shield/edit/0");
-                            } else {
+                            if ($location.path() === '/shield') {
                                 $route.reload();
+                            } else {
+                                $location.path("/shield");
                             }
                         });
                         navigationService.hideMenu();
@@ -410,6 +410,7 @@ angular.module('umbraco').controller('Shield.Editors.Overview.Sort',
             init: function () {
                 shieldResource.getEnvironments().then(function (response) {
                     vm.environments = response.data;
+                    vm.environments.splice(vm.environments.length - 1, 1);
                     vm.loading = false;
                 });
             },

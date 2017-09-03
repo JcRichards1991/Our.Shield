@@ -37,7 +37,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
         public override void Up()
         {
             //  Environment
-            Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.SortOrder)).AsInt32().NotNullable().WithDefaultValue(0);
+            Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.SortOrder)).AsInt32().NotNullable().WithDefaultValue(999999);
             Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.Enable)).AsBoolean().NotNullable().WithDefaultValue(true);
             Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.ContinueProcessing)).AsBoolean().NotNullable().WithDefaultValue(true);
             Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.ColorIndicator)).AsString(7).NotNullable().WithDefaultValue("#df7f48");
