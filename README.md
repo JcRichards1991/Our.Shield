@@ -50,6 +50,7 @@ After upgrading, you will need to re-save the configurations of the installed ap
 
 **1.0.3 - 03/09/2017**
 Update Shield framework to include the abilty to create, edit, delete & sort environments.
+
 Release of Frontend Access Shield app
 
 **1.0.2 - 17/08/2017**
@@ -67,7 +68,6 @@ Our.Shield.Core, Our.Shield.BackofficeAccess & Our.Shield.MediaProtection releas
 ---
 
 ### Future Development / Roadmap ###
-* Multiple Environments - Configure different security for your dev, staging and live environment.
 * Scrapper Defense - Stop bots from stealing your content and resources
 * Geo Banning - Ban areas/countries/cloud services
 * Google Safe Browsing - Disable dangerous Urls
