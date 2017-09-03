@@ -1,4 +1,4 @@
-[
+﻿[
 	{
 	    "name": "Rich text editor",
 	    "alias": "rte",
@@ -135,7 +135,8 @@
 	    "render": "/App_Plugins/Grid/Editors/Render/quote_with_description.cshtml",
 	    "icon": "icon-quote",
 	    "config": {
-	        "style": "border-left: 3px solid #ccc; padding: 10px; color: #ccc; font-family: serif; font-variant: italic; font-size: 18px"
+	        "style": "border-left: 3px solid #ccc; padding: 10px; color: #ccc; font-family: serif; font-style: italic; font-size: 18px",
+	        "markup": "<blockquote>#value#</blockquote>"
 	    }
 	},
 	{
