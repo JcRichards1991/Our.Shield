@@ -51,7 +51,8 @@ namespace Our.Shield.Core.Helpers
                         break;
 
                     case Enums.UrlType.ContentPicker:
-                        //  TODO: Update to allow UID as well as int - need to upgrade to v7.6 first
+                        //  By default, Content Picker uses Id and not UID, though may change in future
+                        //  So, for now, let's leave this code as is :)
 
                         int id;
 
