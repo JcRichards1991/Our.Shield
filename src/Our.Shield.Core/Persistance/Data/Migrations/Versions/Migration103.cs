@@ -16,7 +16,22 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
     [Migration("1.0.3", 1, nameof(Shield))]
     internal class Migration103 : MigrationBase
     {
-        public class UrlType
+        public class IpEntry103
+        {
+            /// <summary>
+            /// Gets or set the IP Address
+            /// </summary>
+            [JsonProperty("ipAddress")]
+            public string IpAddress { get; set; }
+
+            /// <summary>
+            /// Gets or sets a description for this IP Address 
+            /// </summary>
+            [JsonProperty("description")]
+            public string Description { get; set; }
+        }
+
+        public class UrlType103
         {
             /// <summary>
             /// The selector for the url
@@ -91,8 +106,8 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                 var definition = new
                 {
                     backendAccessUrl = "",
-                    ipAddressesAccess = Enums.IpAddressesAccess.Unrestricted,
-                    ipAddresses = new IpEntry[0],
+                    ipAddressesAccess = 0,
+                    ipAddresses = new IpEntry103[0],
                     unauthorisedAction = TransferTypes.Redirect,
                     unauthorisedUrlType = UmbracoUrlTypes.Url,
                     unauthorisedUrl = "",
@@ -110,7 +125,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                     ipAddressesAccess = oldData.ipAddressesAccess,
                     ipAddresses = oldData.ipAddresses,
                     unauthorisedAction = oldData.unauthorisedAction,
-                    urlType = new UrlType
+                    urlType = new UrlType103
                     {
                         UrlSelector = oldData.unauthorisedUrlType,
                         StrUrl = oldData.unauthorisedUrl,

@@ -11,7 +11,7 @@ using Umbraco.Web.WebServices;
 
 namespace Our.Shield.Core.Operation
 {
-    public class UmbracoContentServiceBase
+    public class UmbracoServiceBase
     {
         private const long CacheLengthInTicks = TimeSpan.TicksPerDay;
         internal UmbracoContext _umbContext;
@@ -44,7 +44,7 @@ namespace Our.Shield.Core.Operation
         void SetRequestCacheKey<T>(string cacheKeyId, int id, T value) => 
             _umbContext.HttpContext.Items[CacheKeyId(cacheKeyId, id)] = value;
 
-        internal UmbracoContentServiceBase(UmbracoContext umbContext)
+        internal UmbracoServiceBase(UmbracoContext umbContext)
         {
             _umbContext = umbContext;
         }

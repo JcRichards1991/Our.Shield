@@ -1,0 +1,50 @@
+﻿<table class="ipaddress-container">
+    <thead>
+        <tr>
+            <th><localize key="Shield.Properties.IpAccessControl.Exceptions_IpAddressHeader">IP Address</localize></th>
+            <th><localize key="Shield.Properties.IpAccessControl.Exceptions_DescriptionHeader">Description</localize></th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr ng-repeat="ip in model track by $index">
+            <td>
+                <input type="text" id="ipAddress{{$index}}" name="ipAddress{{$index}}" ng-model="ip.value" required shield-ipaddressvalid shield-ipaddressduplicate="{{model}}" shield-add-to-form="" />
+                <span class="help-inline" val-msg-for="ipAddress{{$index}}" val-toggle-msg="required">
+                    <localize key="Shield.Properties.Validation_Required">Required</localize>
+                </span>
+                <span class="help-inline" val-msg-for="ipAddress{{$index}}" val-toggle-msg="shieldIpaddressduplicate">
+                    <localize key="Shield.Properties.IpAccessControl.Validation_IpDuplicate">IP Address has already been added</localize>
+                </span>
+                <span class="help-inline" val-msg-for="ipAddress{{$index}}" val-toggle-msg="shieldIpaddressvalid">
+                    <localize key="Shield.Properties.IpAccessControl.Validation_IpInvalid">Invalid IP Address. Please enter a valid IPv4 or IPv6 address</localize>
+                </span>
+            </td>
+
+            <td>
+                <input type="text" ng-model="ip.description" />
+            </td>
+
+            <td>
+                <span class="btn btn-danger" ng-click="remove($index)">
+                    <localize key="Shield.General_Remove">Remove</localize>
+                </span>
+            </td>
+        </tr>
+    </tbody>
+
+    <tfoot>
+        <tr>
+            <td></td>
+
+            <td>
+                <span class="btn btn-success" ng-click="model.push({value: '', description: ''})">
+                    <localize key="general_add">Add</localize>
+                </span>
+            </td>
+
+            <td></td>
+        </tr>
+    </tfoot>
+</table>

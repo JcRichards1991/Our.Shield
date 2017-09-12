@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Web;
+using static Our.Shield.Core.Operation.WebRequestHandler;
 
 namespace Our.Shield.Core.Models
 {
@@ -64,31 +65,22 @@ namespace Our.Shield.Core.Models
         /// <param name="endRequestPriority">The priority of the end request watch</param>
         /// <param name="endRequest">The function to call when the regex matches a request</param>
         /// <returns></returns>
-        int WatchWebRequests(Regex regex, 
-            int beginRequestPriority, Func<int, HttpApplication, WatchResponse> beginRequest, 
-            int endRequestPriority, Func<int, HttpApplication, WatchResponse> endRequest);
-
-        /// <summary>
-        /// Adds a Web Requests to the WebRequestsHandler collection
-        /// </summary>
-        /// <param name="regex">The Regex use to match for requests</param>
-        /// <param name="beginRequestPriority">The priority of the begin request watch</param>
-        /// <param name="beginRequest">The function to call when the Regex matches a request</param>
-        /// <returns></returns>
-        int WatchWebRequests(Regex regex, 
-            int beginRequestPriority, Func<int, HttpApplication, WatchResponse> beginRequest);
+        int WatchWebRequests(PipeLineStages stage, Regex regex, int priority, 
+            Func<int, HttpApplication, WatchResponse> request);
 
         /// <summary>
         /// Removes a Web Requests from the WebRequestHandler collection
         /// </summary>
         /// <param name="regex">The regex of the corresponding Web Request to remove</param>
         /// <returns></returns>
-        int UnwatchWebRequests(Regex regex);
+        int UnwatchWebRequests(PipeLineStages stage, Regex regex);
 
         /// <summary>
         /// Removes all Web Requests from the WebRequestHandler collection created by this job
         /// </summary>
         /// <returns></returns>
+        int UnwatchWebRequests(PipeLineStages stage);
+
         int UnwatchWebRequests();
 
         /// <summary>

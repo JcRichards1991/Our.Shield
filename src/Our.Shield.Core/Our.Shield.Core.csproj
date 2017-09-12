@@ -87,6 +87,10 @@
       <HintPath>..\packages\UmbracoCms.Core.7.6.5\lib\net45\interfaces.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="IPAddressRange, Version=2.0.0.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IPAddressRange.2.0.0.3\lib\net45\IPAddressRange.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.6.5\lib\net45\log4net.dll</HintPath>
       <Private>True</Private>
@@ -277,15 +281,15 @@
   <ItemGroup>
     <Compile Include="Attributes\AppMigrationAttribute.cs" />
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
-    <Compile Include="Enums.cs" />
+    <Compile Include="Models\IpAccessControl.cs" />
     <Compile Include="Models\ApplicationSettings.cs" />
-    <Compile Include="Models\IpEntry.cs" />
     <Compile Include="Models\JournalMessage.cs" />
     <Compile Include="Models\UmbracoUrl.cs" />
     <Compile Include="Models\TransferUrl.cs" />
+    <Compile Include="Operation\IpAccessControlService.cs" />
     <Compile Include="Operation\EnvironmentService.cs" />
     <Compile Include="Helpers\AccessHelper.cs" />
-    <Compile Include="Operation\UmbracoContentServiceBase.cs" />
+    <Compile Include="Operation\UmbracoServiceBase.cs" />
     <Compile Include="Operation\UmbracoMediaService.cs" />
     <Compile Include="Operation\UmbracoUrlService.cs" />
     <Compile Include="Operation\UmbracoContentService.cs" />
@@ -366,13 +370,14 @@
     <Content Include="App_Plugins\Shield\Backoffice\Scripts\Shield.js" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Create.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Delete.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\IpAddresses-Access.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\ActionUmbracoUrl.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\IpAccessControl.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\IpAccessControlRanges.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\TransferUrl.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\UmbracoUrl.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Views\EditEnvironment.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Sort.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\Journal-Listing.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\JournalListing.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml">
       <SubType>Designer</SubType>
     </Content>

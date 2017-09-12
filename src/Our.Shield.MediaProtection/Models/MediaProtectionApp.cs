@@ -29,7 +29,7 @@ namespace Our.Shield.MediaProtection.Models
         /// <summary>
         /// Media cache length
         /// </summary>
-        private readonly TimeSpan CacheLength = new TimeSpan(TimeSpan.TicksPerSecond * 60 * 15);        //   = 15 minutes
+        private readonly TimeSpan CacheLength = new TimeSpan(TimeSpan.TicksPerSecond * 30);
 
         /// <summary>
         /// Unique cache key
@@ -49,7 +49,7 @@ namespace Our.Shield.MediaProtection.Models
         /// <summary>
         /// 
         /// </summary>
-        public override string Description => "Secure your media by stopping unauthorised access";
+        public override string Description => "Secure your media by stopping unauthorized access";
 
         /// <summary>
         /// 
@@ -110,7 +110,7 @@ namespace Our.Shield.MediaProtection.Models
 
                 var regex = new Regex("^(" + string.Join("|", config.HotLinkingProtectedDirectories) + ")", RegexOptions.IgnoreCase);
 
-                job.WatchWebRequests(regex, 50, (count, httpApp) =>
+                job.WatchWebRequests(PipeLineStages.BeginRequest, regex, 30000, (count, httpApp) =>
                 {
                     var referrer = httpApp.Request.UrlReferrer;
                     if (referrer == null || String.IsNullOrWhiteSpace(referrer.Host) ||
@@ -136,7 +136,7 @@ namespace Our.Shield.MediaProtection.Models
             if (config.EnableMembersOnlyMedia)
             {
                 var mediaFolder = VirtualPathUtility.ToAbsolute(new Uri(Umbraco.Core.IO.SystemDirectories.Media, UriKind.Relative).ToString()) + "/";
-                job.WatchWebRequests(new Regex(mediaFolder, RegexOptions.IgnoreCase), 100, (count, httpApp) =>
+                job.WatchWebRequests(PipeLineStages.BeginRequest, new Regex(mediaFolder, RegexOptions.IgnoreCase), 30100, (count, httpApp) =>
                 {
                     var httpContext = new HttpContextWrapper(httpApp.Context);
                     var umbAuthTicket = httpContext.GetUmbracoAuthTicket();
@@ -263,11 +263,6 @@ namespace Our.Shield.MediaProtection.Models
             }
 
             return true;
-        }
-
-        private void MediaService_Saved(IMediaService sender, Umbraco.Core.Events.SaveEventArgs<IMedia> e)
-        {
-            throw new NotImplementedException();
         }
 
         private MediaType SecureImage()

@@ -32,9 +32,6 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
             _schemaHelper = new DatabaseSchemaHelper(_database, logger, _sqlSyntax);
         }
 
-
-
-
         /// <summary>
         /// Creates the Configuration table
         /// </summary>
@@ -43,10 +40,10 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
             ConfigMapper("BackofficeAccess", new
                 {
                     backendAccessUrl = "",
-                    ipAddressesAccess = Enums.IpAddressesAccess.Unrestricted,
-                    ipAddresses = new IpEntry[0],
+                    ipAddressesAccess = 0,
+                    ipAddresses = new Migration103.IpEntry103[0],
                     unauthorisedAction = TransferTypes.Redirect,
-                    urlType = new Migration103.UrlType
+                    urlType = new Migration103.UrlType103
                     {
                         UrlSelector = UmbracoUrlTypes.Url,
                         StrUrl = "",
@@ -57,8 +54,11 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                     return new
                     {
                         backendAccessUrl = oldData.backendAccessUrl,
-                        ipAddressesAccess = oldData.ipAddressesAccess,
-                        ipAddresses = oldData.ipAddresses,
+                        ipAccessRules = new IpAccessControl
+                        {
+                            AccessType = oldData.ipAddressesAccess == 0 ? IpAccessControl.AccessTypes.AllowAll : IpAccessControl.AccessTypes.AllowNone,
+                            Exceptions = ((Migration103.IpEntry103[])oldData.ipAddresses).Select(x => new IpAccessControl.Entry { Value = x.IpAddress, Description = x.Description })
+                        },
                         unauthorized = new TransferUrl
                         {
                             TransferType = oldData.unauthorisedAction,
@@ -77,10 +77,10 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
             ConfigMapper("FrontendAccess", new
                 {
                     umbracoUserEnable = true,
-                    ipAddressesAccess = Enums.IpAddressesAccess.Unrestricted,
-                    ipAddresses = new IpEntry[0],
+                    ipAddressesAccess = 0,
+                    ipAddresses = new Migration103.IpEntry103[0],
                     unauthorisedAction = TransferTypes.Redirect,
-                    urlType = new Migration103.UrlType
+                    urlType = new Migration103.UrlType103
                     {
                         UrlSelector = UmbracoUrlTypes.Url,
                         StrUrl = "",
@@ -91,8 +91,11 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                     return new
                     {
                         umbracoUserEnable = oldData.umbracoUserEnable,
-                        ipAddressesAccess = oldData.ipAddressesAccess,
-                        ipAddresses = oldData.ipAddresses,
+                        ipAccessRules = new IpAccessControl
+                        {
+                            AccessType = oldData.ipAddressesAccess == 0 ? IpAccessControl.AccessTypes.AllowAll : IpAccessControl.AccessTypes.AllowNone,
+                            Exceptions = ((Migration103.IpEntry103[])oldData.ipAddresses).Select(x => new IpAccessControl.Entry { Value = x.IpAddress, Description = x.Description })
+                        },
                         unauthorized = new TransferUrl
                         {
                             TransferType = oldData.unauthorisedAction,

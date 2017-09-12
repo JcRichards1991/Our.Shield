@@ -11,7 +11,7 @@ using Umbraco.Web.WebServices;
 
 namespace Our.Shield.Core.Operation
 {
-    public class UmbracoContentService : UmbracoContentServiceBase
+    public class UmbracoContentService : UmbracoServiceBase
     {
         private const string cacheKeyId = "1a10ed15-e2b2-4ecb-b204-77d541076af3";
         private const string cacheKeyXPath = "9a93f022-d393-44bc-8ef5-6a3bfcbf8c31";

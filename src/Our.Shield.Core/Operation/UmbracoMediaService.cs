@@ -13,7 +13,7 @@ using Umbraco.Web.WebServices;
 
 namespace Our.Shield.Core.Operation
 {
-    public class UmbracoMediaService : UmbracoContentServiceBase
+    public class UmbracoMediaService : UmbracoServiceBase
     {
         private const string cacheKeyId = "8bad404c-82bb-477a-89a7-37bac7e75319";
         private const string cacheKeyXPath = "84ada488-7e7c-4e32-b46b-6c5968e4c629";

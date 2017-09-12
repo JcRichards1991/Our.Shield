@@ -57,7 +57,7 @@ namespace Our.Shield.Core.Operation
             else
             {
                 //Environment has changed, we need to unregister it
-                //and then regester it with the new changes
+                //and then re-register it with the new changes
                 if (!JobService.Instance.Unregister(environment))
                 {
                     return false;

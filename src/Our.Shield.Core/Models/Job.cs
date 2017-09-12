@@ -93,36 +93,27 @@ namespace Our.Shield.Core.Models
         /// <param name="endRequestPriority">The priority of the end request watch</param>
         /// <param name="endRequest">The function to call when the regex matches a request</param>
         /// <returns></returns>
-        public int WatchWebRequests(Regex regex, 
-            int beginRequestPriority, Func<int, HttpApplication, WatchResponse> beginRequest, 
-            int endRequestPriority, Func<int, HttpApplication, WatchResponse> endRequest) =>
-            WebRequestHandler.Watch(this, regex, beginRequestPriority, beginRequest, endRequestPriority, endRequest);
-
-        /// <summary>
-        /// Adds a Web Requests to the WebRequestsHandler collection
-        /// </summary>
-        /// <param name="regex">The Regex use to match for requests</param>
-        /// <param name="beginRequestPriority">The priority of the begin request watch</param>
-        /// <param name="beginRequest">The function to call when the Regex matches a request</param>
-        /// <returns></returns>
-        public int WatchWebRequests(Regex regex, 
-            int beginRequestPriority, Func<int, HttpApplication, WatchResponse> beginRequest) => 
-            WebRequestHandler.Watch(this, regex, beginRequestPriority, beginRequest, 0, null);
+        public int WatchWebRequests(PipeLineStages stage, Regex regex, 
+            int priority, Func<int, HttpApplication, WatchResponse> request) =>
+            WebRequestHandler.Watch(this, stage, regex, priority, request);
 
         /// <summary>
         /// Removes a Web Requests from the WebRequestHandler collection
         /// </summary>
         /// <param name="regex">The regex of the corresponding Web Request to remove</param>
         /// <returns></returns>
-        public int UnwatchWebRequests(Regex regex) =>
-            WebRequestHandler.Unwatch(this, regex);
+        public int UnwatchWebRequests(PipeLineStages stage, Regex regex) =>
+            WebRequestHandler.Unwatch(this, stage, regex);
 
         /// <summary>
         /// Removes all Web Requests from the WebRequestHandler collection created by this job 
         /// </summary>
         /// <returns></returns>
+        public int UnwatchWebRequests(PipeLineStages stage) =>
+            WebRequestHandler.Unwatch(this, stage);
+
         public int UnwatchWebRequests() =>
-            WebRequestHandler.Unwatch(this);
+            WebRequestHandler.Unwatch(this.Environment.Id, this.App.Id);
 
         /// <summary>
         /// Removes all Web Requests from the WebRequestsHandler collection for the given App
