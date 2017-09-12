@@ -21,17 +21,24 @@
         <div ng-if="vm.configuration.umbracoUserEnable || vm.configuration.ipAddressesAccess === 1">
             <div class="umb-el-wrap control-group umb-control-group">
                 <label for="unauthorisedAction" class="control-label">
-                    <localize key="Shield.FrontendAccess.Properties_UnauthorizedLabel"></localize>
+                    <localize key="Shield.FrontendAccess.Properties_UnauthorisedActionLabel">Unauthorised Action</localize>
                     <small>
-                        <localize key="Shield.FrontendAccess.Properties_UnauthorizedDescription"></localize>
+                        <localize key="Shield.FrontendAccess.Properties_UnauthorisedActionDescription">Whether to redirect the user or to rewrite the request to another location, when from a disallowed IP address</localize>
                     </small>
                 </label>
+
                 <div class="controls">
                     <div class="umb-editor">
-                        <shield-action-umbraco-url model="vm.configuration.unauthorized"></shield-action-umbraco-url>
+                        <select id="unauthorisedAction" name="unauthorisedAction" ng-model="vm.configuration.unauthorisedAction" required shield-convert-to-number>
+                            <option value="0">Redirect</option>
+                            <option value="1">Rewrite</option>
+                        </select>
                     </div>
                 </div>
             </div>
+
+            <shield-url-type model="vm.configuration.urlType"></shield-url-type>
+
         </div>
     </ng-form>
 </div>

@@ -19,21 +19,15 @@ namespace Our.Shield.FrontendAccess.Models
         public Enums.IpAddressesAccess IpAddressesAccess { get; set; }
 
         /// <summary>
-        /// White-listed IP Addresses that can access the backoffice access Url
+        /// White-listed IP Addresses that can access the frontend
         /// </summary>
         [JsonProperty("ipAddresses")]
         public IpEntry[] IpEntries { get; set; }
 
         /// <summary>
-        /// Whether to redirect or rewrite the request to another location when frontend access is denied
+        /// Where to send unauthorized users too
         /// </summary>
-        [JsonProperty("unauthorisedAction")]
-        public Enums.UnauthorisedAction UnauthorisedAction { get; set; }
-
-        /// <summary>
-        /// The Url Type Selector and the url
-        /// </summary>
-        [JsonProperty("urlType")]
-        public UrlType UrlType { get; set; }
+        [JsonProperty("unauthorized")]
+        public TransferUrl Unauthorized { get; set; }
     }
 }

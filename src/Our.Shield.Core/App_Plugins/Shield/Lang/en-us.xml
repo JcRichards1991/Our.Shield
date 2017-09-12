@@ -37,8 +37,8 @@
     <key alias="IpAddressAccessLabel">IP Addresses Access</key>
     <key alias="IpAddressAccessDescription">Whether or not to add IP Address restrictions</key>
 
-    <key alias="UrlTypeLabel">Unauthorised Url</key>
-    <key alias="UrlTypeDescription">The page to redirect / rewrite the user to, when access is being denied</key>
+    <key alias="UnauthorizedLabel">Unauthorized</key>
+    <key alias="UnauthorizedDescription">The page to redirect / rewrite the user to, when access is being denied</key>
   </area>
 
   <area alias="Shield.Properties.Validation">

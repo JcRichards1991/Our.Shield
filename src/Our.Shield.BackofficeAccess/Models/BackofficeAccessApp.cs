@@ -52,10 +52,14 @@ namespace Our.Shield.BackofficeAccess.Models
                     BackendAccessUrl = "umbraco",
                     IpAddressesAccess = Enums.IpAddressesAccess.Unrestricted,
                     IpEntries = new IpEntry[0],
-                    UnauthorisedAction = Enums.UnauthorisedAction.Redirect,
-                    UrlType = new UrlType
+                    Unauthorized = new TransferUrl
                     {
-                        UrlSelector = Enums.UrlType.Url
+                        TransferType = TransferTypes.Redirect,
+                        Url = new UmbracoUrl
+                        {
+                            Type = UmbracoUrlTypes.Url,
+                            Value = string.Empty
+                        }
                     }
                 };
             }
@@ -109,7 +113,7 @@ namespace Our.Shield.BackofficeAccess.Models
                         //we can't do it on creating the variable as it
                         //causes issues with transmit file
                         httpApp.Context.Server.TransferRequest(rewritePath + httpApp.Request.Url.Query, true);
-                        return WatchCycle.Stop;
+                        return new WatchResponse(WatchResponse.Cycles.Stop);
                     }
 
                     //Request is for a css etc. file, transmit
@@ -119,7 +123,7 @@ namespace Our.Shield.BackofficeAccess.Models
                     httpApp.Context.Response.ContentType = mimeType;
                     httpApp.Context.Response.TransmitFile(httpApp.Context.Server.MapPath(rewritePath));
                     httpApp.Context.Response.End();
-                    return WatchCycle.Stop;
+                    return new WatchResponse(WatchResponse.Cycles.Stop);
                 }
 
                 //we can add querystring here as the request is not for
@@ -135,10 +139,10 @@ namespace Our.Shield.BackofficeAccess.Models
                 if (rewrite || regex.IsMatch(softLocation))
                 {
                     httpApp.Context.RewritePath(rewritePath);
-                    return WatchCycle.Restart;
+                    return new WatchResponse(WatchResponse.Cycles.Restart);
                 }
                 httpApp.Context.Response.Redirect(rewritePath);
-                return WatchCycle.Stop;
+                return new WatchResponse(WatchResponse.Cycles.Stop);
             });
         }
 
@@ -180,15 +184,20 @@ namespace Our.Shield.BackofficeAccess.Models
                         {
                             //request has a authenticated user, we want to
                             //redirect the user back to the soft location
-                            var rewritePath = httpApp.Request.Url.AbsolutePath.Length > umbracoLocation.Length
-                                ? hardLocation + httpApp.Request.Url.AbsolutePath.Substring(umbracoLocation.Length)
-                                : hardLocation;
-
-                            httpApp.Context.Response.Redirect(rewritePath, true);
-                            return WatchCycle.Stop;
+                            return new WatchResponse(new TransferUrl
+                            {
+                                TransferType = TransferTypes.Redirect,
+                                Url = new UmbracoUrl
+                                {
+                                    Type = UmbracoUrlTypes.Url,
+                                    Value = httpApp.Request.Url.AbsolutePath.Length > umbracoLocation.Length
+                                        ? hardLocation + httpApp.Request.Url.AbsolutePath.Substring(umbracoLocation.Length)
+                                        : hardLocation
+                                }
+                            });
                         }
 
-                        return WatchCycle.Continue;
+                        return new WatchResponse(WatchResponse.Cycles.Continue);
                     });
                 }
 
@@ -204,7 +213,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 10,
                 hardLocation,
                 softLocation,
-                config.UnauthorisedAction.Equals(Enums.UnauthorisedAction.Rewrite),
+                config.Unauthorized.TransferType.Equals(TransferTypes.Rewrite),
                 true);
 
             //Add watch on the hard location
@@ -215,7 +224,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 //the request continue
                 if ((bool?)httpApp.Context.Items[AllowKey] == true)
                 {
-                    return WatchCycle.Continue;
+                    return new WatchResponse(WatchResponse.Cycles.Continue);
                 }
 
                 //Check if requesting a physical file, as the user may have
@@ -226,7 +235,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 //handle if the request can gain access to what is being requested
                 if (!string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension))
                 {
-                    return WatchCycle.Continue;
+                    return new WatchResponse(WatchResponse.Cycles.Continue);
                 }
 
                 //If the requests has an authenticated umbraco user,
@@ -238,12 +247,17 @@ namespace Our.Shield.BackofficeAccess.Models
                 {
                     //request has a authenticated user, we want to
                     //redirect the user back to the soft location
-                    var rewritePath = httpApp.Context.Request.Url.AbsolutePath.Length > hardLocation.Length
-                        ? softLocation + httpApp.Context.Request.Url.AbsolutePath.Substring(hardLocation.Length)
-                        : softLocation;
-
-                    httpApp.Context.Response.Redirect(rewritePath, true);
-                    return WatchCycle.Stop;
+                    return new WatchResponse(new TransferUrl
+                    {
+                        TransferType = TransferTypes.Redirect,
+                        Url = new UmbracoUrl
+                        {
+                            Type = UmbracoUrlTypes.Url,
+                            Value = httpApp.Context.Request.Url.AbsolutePath.Length > hardLocation.Length
+                                ? softLocation + httpApp.Context.Request.Url.AbsolutePath.Substring(hardLocation.Length)
+                                : softLocation
+                        }
+                    });
                 }
 
                 //if we're disabled, then we just want
@@ -251,30 +265,11 @@ namespace Our.Shield.BackofficeAccess.Models
                 if (!config.Enable || !job.Environment.Enable)
                 {
                     httpApp.Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                    return WatchCycle.Stop;
+                    return new WatchResponse(WatchResponse.Cycles.Stop);
                 }
 
-                //We're Enabled, so we need to get the unauthorised Url
-                var url = AccessHelper.UnauthorisedUrl(AllowKey, CacheLength, job, config.UrlType);
-
-                //Confirm if url is not null, if it is null, we're going to stop
-                //the request, as they don't have our access token anyway
-                if (url == null)
-                {
-                    httpApp.Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                    return WatchCycle.Stop;
-                }
-
-                //We have a url, so we need to redirect/rewrite the request
-                //dependant on what is configured
-                if (config.UnauthorisedAction == Enums.UnauthorisedAction.Redirect)
-                {
-                    httpApp.Context.Response.Redirect(url, true);
-                    return WatchCycle.Stop;
-                }
-
-                httpApp.Context.RewritePath(url, string.Empty, string.Empty);
-                return WatchCycle.Restart;
+                //We're Enabled, so we need to transfer to the unauthorised Url
+                return new WatchResponse(config.Unauthorized);
             });
         }
 
@@ -286,7 +281,7 @@ namespace Our.Shield.BackofficeAccess.Models
             {
                 job.WatchWebRequests(hardLocationRegex, 1000, (count, httpApp) =>
                 {
-                    return WatchCycle.Continue;
+                    return new WatchResponse(WatchResponse.Cycles.Continue);
                 });
 
                 return;
@@ -317,7 +312,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 //allow access without checking IP again
                 if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
                 {
-                    return WatchCycle.Continue;
+                    return new WatchResponse(WatchResponse.Cycles.Continue);
                 }
 
                 var userIp = AccessHelper.ConvertToIpv6(httpApp.Context.Request.UserHostAddress);
@@ -327,13 +322,13 @@ namespace Our.Shield.BackofficeAccess.Models
                 {
                     //User is coming from a non white-listed IP Address,
                     //so we need to get the unauthorized access url
-                    var url = AccessHelper.UnauthorisedUrl(AllowKey, CacheLength, job, config.UrlType);
+                    var url = new UmbracoUrlService().Url(config.Unauthorized.Url);
 
                     //Confirm if url is not null, if it is null, we're going to stop
                     //the request, as they're coming from a non white-listed IP Address anyway
                     if (url == null)
                     {
-                        return WatchCycle.Stop;
+                        return new WatchResponse(WatchResponse.Cycles.Stop);
                     }
 
                     //Requesting a physical asset file, we're going to set the
@@ -354,7 +349,7 @@ namespace Our.Shield.BackofficeAccess.Models
                         || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".svg")))
                     {
                         httpApp.Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                        return WatchCycle.Stop;
+                        return new WatchResponse(WatchResponse.Cycles.Stop);
                     }
 
                     //lets log the fact that an unauthorised user tried
@@ -363,18 +358,11 @@ namespace Our.Shield.BackofficeAccess.Models
 
                     //request isn't for a physical asset file, so redirect/rewrite
                     //the request dependant on what is configured
-                    if (config.UnauthorisedAction == Core.Enums.UnauthorisedAction.Redirect)
-                    {
-                        httpApp.Context.Response.Redirect(url, true);
-                        return WatchCycle.Stop;
-                    }
-
-                    httpApp.Context.RewritePath(url);
-                    return WatchCycle.Restart;
+                    return new WatchResponse(config.Unauthorized);
                 }
 
                 //User's IP is white-listed, allow request to continue
-                return WatchCycle.Continue;
+                return new WatchResponse(WatchResponse.Cycles.Continue);
             });
         }
 

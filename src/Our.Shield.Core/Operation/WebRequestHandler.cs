@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
+using System.Net;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.Core.Operation.WebRequestHandler), nameof(Our.Shield.Core.Operation.WebRequestHandler.Register))]
 namespace Our.Shield.Core.Operation
@@ -34,7 +35,7 @@ namespace Our.Shield.Core.Operation
             public IList<string> domains;
             public string appId;
             public Regex regex;
-            public Func<int, HttpApplication, WatchCycle> request;
+            public Func<int, HttpApplication, WatchResponse> request;
         }
 
         private static ReaderWriterLockSlim beginWatchLock = new ReaderWriterLockSlim();
@@ -90,8 +91,8 @@ namespace Our.Shield.Core.Operation
         /// <param name="endRequest"></param>
         /// <returns></returns>
         public static int Watch(IJob job, Regex regex, 
-            int beginRequestPriority, Func<int, HttpApplication, WatchCycle> beginRequest, 
-            int endRequestPriority, Func<int, HttpApplication, WatchCycle> endRequest)
+            int beginRequestPriority, Func<int, HttpApplication, WatchResponse> beginRequest, 
+            int endRequestPriority, Func<int, HttpApplication, WatchResponse> endRequest)
         {
             var count = Interlocked.Increment(ref requestCount);
 
@@ -278,6 +279,37 @@ namespace Our.Shield.Core.Operation
             application.EndRequest += (new EventHandler(this.Application_EndRequest));
         }
 
+        private WatchResponse.Cycles ExecuteResponse(Watcher watch, WatchResponse response, HttpApplication application)
+        {
+            if (response.Transfer == null)
+            {
+                return response.Cycle;
+            }
+
+            if (response.Transfer.TransferType == TransferTypes.PlayDead)
+            {
+                application.Context.Response.Close();
+                return WatchResponse.Cycles.Stop;
+            }
+
+            var url = new UmbracoUrlService().Url(response.Transfer.Url);
+            if (!string.IsNullOrWhiteSpace(url))
+            {
+                switch (response.Transfer.TransferType)
+                {
+                    case TransferTypes.Redirect:
+                        application.Context.Response.Redirect(url, true);
+                        return WatchResponse.Cycles.Stop;
+
+                    case TransferTypes.Rewrite:
+                        application.Context.RewritePath(url, string.Empty, string.Empty);
+                        return WatchResponse.Cycles.Restart;
+                }
+            }
+
+            return WatchResponse.Cycles.Error;
+        }
+
         private void Request(ReaderWriterLockSlim locker, IEnumerable<Watcher> watchers, HttpApplication application)
         {
             if (locker.TryEnterReadLock(watchLockTimeout))
@@ -337,16 +369,16 @@ restart:
                                 environment = watch.environment;
                             }
 
-                            switch (watch.request(count, application))
+                            switch (ExecuteResponse(watch, watch.request(count, application), application))
                             {
-                                case WatchCycle.Stop:
+                                case WatchResponse.Cycles.Stop:
                                     return;
 
-                                case WatchCycle.Restart:
+                                case WatchResponse.Cycles.Restart:
                                     goto restart;
 
-                                case WatchCycle.Error:
-                                    application.Context.Response.StatusCode = 500;
+                                case WatchResponse.Cycles.Error:
+                                    application.Context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
                                     application.CompleteRequest();
                                     break;
 

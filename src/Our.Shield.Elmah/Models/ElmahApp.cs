@@ -10,15 +10,15 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Umbraco.Core;
 
-namespace Our.Shield.FrontendAccess.Models
+namespace Our.Shield.Elmah.Models
 {
     [AppEditor("/App_Plugins/Shield.FrontendAccess/Views/FrontendAccess.html?version=1.0.3")]
-    public class FrontendAccessApp : App<FrontendAccessConfiguration>
+    public class ElmahApp : App<ElmahConfiguration>
     {
         /// <summary>
         /// 
         /// </summary>
-        public override string Description => "Lock down the frontend to only be viewed by Umbraco Authenticated Users and/or secure the frontend via IP restrictions";
+        public override string Description => "Lock down access to Elmah reporting page to only be viewed by Authenticated Umbraco Users and/or secure via IP restrictions";
 
         /// <summary>
         /// 
@@ -28,12 +28,12 @@ namespace Our.Shield.FrontendAccess.Models
         /// <summary>
         /// 
         /// </summary>
-        public override string Id => nameof(FrontendAccess);
+        public override string Id => nameof(Elmah);
 
         /// <summary>
         /// 
         /// </summary>
-        public override string Name => "Frontend Access";
+        public override string Name => "Elmah";
 
         /// <summary>
         /// 
@@ -42,19 +42,16 @@ namespace Our.Shield.FrontendAccess.Models
         {
             get
             {
-                return new FrontendAccessConfiguration
+                return new ElmahConfiguration
                 {
                     UmbracoUserEnable = true,
                     IpAddressesAccess = Enums.IpAddressesAccess.Unrestricted,
                     IpEntries = new IpEntry[0],
-                    Unauthorized = new TransferUrl
+                    UnauthorisedAction = Enums.UnauthorisedAction.Redirect,
+                    UmbracoUrl = new ActionUmbracoUrl
                     {
-                        TransferType = TransferTypes.Redirect,
-                        Url = new UmbracoUrl
-                        {
-                            Type = UmbracoUrlTypes.Url,
-                            Value = string.Empty
-                        }
+                        Type = UmbracoUrlTypes.Url,
+                        Value = string.Empty
                     }
                 };
             }
@@ -74,7 +71,7 @@ namespace Our.Shield.FrontendAccess.Models
             return false;
         }
 
-        private WatchResponse DenyAccess(IJob job, HttpApplication httpApp, TransferUrl unauthorised, IPAddress userIp)
+        private WatchCycle DenyAccess(IJob job, HttpApplication httpApp, string unauthorisedUrl, Enums.UnauthorisedAction action, IPAddress userIp = null)
         {
             if (userIp == null)
             {
@@ -85,13 +82,25 @@ namespace Our.Shield.FrontendAccess.Models
 
             httpApp.Context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
-            return new WatchResponse(unauthorised);
+            if (unauthorisedUrl == null)
+            {
+                return WatchCycle.Stop;
+            }
+
+            if (action == Enums.UnauthorisedAction.Rewrite)
+            {
+                httpApp.Context.Server.TransferRequest(unauthorisedUrl + httpApp.Request.Url.Query, true);
+                return WatchCycle.Stop;
+            }
+
+            httpApp.Context.Response.Redirect(unauthorisedUrl, true);
+            return WatchCycle.Stop;
         }
 
-        private WatchResponse AllowAccess(HttpApplication httpApp)
+        private WatchCycle AllowAccess(HttpApplication httpApp)
         {
             httpApp.Context.Items.Add(AllowKey, true);
-            return new WatchResponse(WatchResponse.Cycles.Continue);
+            return WatchCycle.Continue;
         }
 
         /// <summary>
@@ -110,7 +119,7 @@ namespace Our.Shield.FrontendAccess.Models
                 return true;
             }
 
-            var config = c as FrontendAccessConfiguration;
+            var config = c as ElmahConfiguration;
             var hardUmbracoLocation = ApplicationSettings.UmbracoPath;
             var regex = new Regex("^/$|^(/(?!" + hardUmbracoLocation.Trim('/') + ")[\\w-/_]+?)$", RegexOptions.IgnoreCase);
 
@@ -135,14 +144,16 @@ namespace Our.Shield.FrontendAccess.Models
             {
                 job.WatchWebRequests(regex, 75, (count, httpApp) =>
                 {
-                    if (IsRequestAllowed(httpApp, new UmbracoUrlService().Url(config.Unauthorized.Url)))
+                    var unauthorisedUrl = job.Url(config.UmbracoUrl);
+
+                    if (IsRequestAllowed(httpApp, unauthorisedUrl))
                     {
-                        return new WatchResponse(WatchResponse.Cycles.Continue);
+                        return WatchCycle.Continue;
                     }
 
                     if (!AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
                     {
-                        return DenyAccess(job, httpApp, config.Unauthorized, AccessHelper.ConvertToIpv6(httpApp.Context.Request.UserHostAddress));
+                        return DenyAccess(job, httpApp, unauthorisedUrl, config.UnauthorisedAction);
                     }
 
                     return AllowAccess(httpApp);
@@ -152,16 +163,18 @@ namespace Our.Shield.FrontendAccess.Models
             {
                 job.WatchWebRequests(regex, 75, (count, httpApp) =>
                 {
-                    if (IsRequestAllowed(httpApp, new UmbracoUrlService().Url(config.Unauthorized.Url)))
+                    var unauthorisedUrl = job.Url(config.UmbracoUrl);
+
+                    if (IsRequestAllowed(httpApp, unauthorisedUrl))
                     {
-                        return new WatchResponse(WatchResponse.Cycles.Continue);
+                        return WatchCycle.Continue;
                     }
 
                     var userIp = AccessHelper.ConvertToIpv6(httpApp.Context.Request.UserHostAddress);
 
                     if (!AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp) && !whiteList.Contains(userIp))
                     {
-                        return DenyAccess(job, httpApp, config.Unauthorized, userIp);
+                        return DenyAccess(job, httpApp, unauthorisedUrl, config.UnauthorisedAction, userIp);
                     }
 
                     return AllowAccess(httpApp);
@@ -171,16 +184,18 @@ namespace Our.Shield.FrontendAccess.Models
             {
                 job.WatchWebRequests(regex, 75, (count, httpApp) =>
                 {
-                    if (IsRequestAllowed(httpApp, new UmbracoUrlService().Url(config.Unauthorized.Url)))
+                    var unauthorisedUrl = job.Url(config.UmbracoUrl);
+
+                    if (IsRequestAllowed(httpApp, unauthorisedUrl))
                     {
-                        return new WatchResponse(WatchResponse.Cycles.Continue);
+                        return WatchCycle.Continue;
                     }
 
                     var userIp = AccessHelper.ConvertToIpv6(httpApp.Context.Request.UserHostAddress);
 
                     if (!whiteList.Contains(userIp))
                     {
-                        return DenyAccess(job, httpApp, config.Unauthorized, userIp);
+                        return DenyAccess(job, httpApp, unauthorisedUrl, config.UnauthorisedAction, userIp);
                     }
 
                     return AllowAccess(httpApp);

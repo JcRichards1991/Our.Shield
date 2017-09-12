@@ -25,27 +25,19 @@
         <shield-ip-addresses-access ip-addresses-access="vm.configuration.ipAddressesAccess" ip-addresses="vm.configuration.ipAddresses"></shield-ip-addresses-access>
 
         <div ng-if="vm.configuration.ipAddressesAccess === 1">
-
             <div class="umb-el-wrap control-group umb-control-group">
                 <label for="unauthorisedAction" class="control-label">
-                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedActionLabel">Unauthorised Action</localize>
+                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedLabel"></localize>
                     <small>
-                        <localize key="Shield.BackofficeAccess.Properties_UnauthorisedActionDescription">Whether to redirect the user or to rewrite the request to another location, when from a disallowed IP Address</localize>
+                        <localize key="Shield.BackofficeAccess.Properties_UnauthorisedDescription"></localize>
                     </small>
                 </label>
-
                 <div class="controls">
                     <div class="umb-editor">
-                        <select id="unauthorisedAction" name="unauthorisedAction" ng-model="vm.configuration.unauthorisedAction" required shield-convert-to-number>
-                            <option value="0">Redirect</option>
-                            <option value="1">Rewrite</option>
-                        </select>
+                        <shield-action-umbraco-url model="vm.configuration.unauthorized"></shield-action-umbraco-url>
                     </div>
                 </div>
             </div>
-
-            <shield-url-type model="vm.configuration.urlType"></shield-url-type>
-
         </div>
     </ng-form>
 </div>

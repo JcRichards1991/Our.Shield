@@ -697,21 +697,22 @@ angular.module('umbraco.directives').directive('shieldIpAddressesAccess', functi
 
 /**
    * @ngdoc directive
-   * @name shield-url-type
+   * @name shield-umbraco-url
    * @function
    *
    * @description
    * Custom directive for handling the selected Url type
 */
-angular.module('umbraco.directives').directive('shieldUrlType', function () {
+angular.module('umbraco.directives').directive('shieldUmbracoUrl', function () {
     return {
         restrict: 'E',
-        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/Url-Type.html',
+        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/UmbracoUrl.html',
         scope: {
             model: '='
         },
         link: function (scope, elm, attr) {
             angular.extend(scope.model, {
+
                 contentPickerProperty: {
                     view: 'contentpicker',
                     alias: 'contentPicker',
@@ -732,7 +733,7 @@ angular.module('umbraco.directives').directive('shieldUrlType', function () {
             });
 
             scope.$watch('model.contentPickerProperty.value', function (newVal, oldVal) {
-                scope.model.contentPickerUrl = newVal;
+                scope.model.value = newVal;
             });
         }
     };

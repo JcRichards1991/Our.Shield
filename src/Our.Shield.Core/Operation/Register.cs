@@ -27,9 +27,14 @@ namespace Our.Shield.Core.Operation
                 applicationContext.Services.MigrationEntryService, applicationContext.ProfilingLogger.Logger);
 
             Operation.JobService.Instance.Init(umbracoApplication, applicationContext);
+
+            Umbraco.Core.Services.ContentService.Published += UmbracoContentService.ClearCache;
+            Umbraco.Core.Services.ContentService.UnPublished += UmbracoContentService.ClearCache;
+
+            Umbraco.Core.Services.MediaService.Saved += UmbracoMediaService.ClearCache;
+            Umbraco.Core.Services.MediaService.Deleted += UmbracoMediaService.ClearCache;
         }
     }
-
 
 
     // TEST CODE. 

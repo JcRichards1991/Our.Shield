@@ -16,6 +16,33 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
     [Migration("1.0.3", 1, nameof(Shield))]
     internal class Migration103 : MigrationBase
     {
+        public class UrlType
+        {
+            /// <summary>
+            /// The selector for the url
+            /// </summary>
+            [JsonProperty("urlSelector")]
+            public UmbracoUrlTypes UrlSelector { get; set; }
+
+            /// <summary>
+            /// The Url for the Url
+            /// </summary>
+            [JsonProperty("strUrl")]
+            public string StrUrl { get; set; }
+
+            /// <summary>
+            /// The XPath to the content node for the Url
+            /// </summary>
+            [JsonProperty("xpathUrl")]
+            public string XPathUrl { get; set; }
+
+            /// <summary>
+            /// The Id/UID to the content node for the Url
+            /// </summary>
+            [JsonProperty("contentPickerUrl")]
+            public string ContentPickerUrl { get; set; }
+        }
+
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
         private readonly DatabaseSchemaHelper _schemaHelper;
         private ISqlSyntaxProvider _sqlSyntax;
@@ -66,8 +93,8 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                     backendAccessUrl = "",
                     ipAddressesAccess = Enums.IpAddressesAccess.Unrestricted,
                     ipAddresses = new IpEntry[0],
-                    unauthorisedAction = Enums.UnauthorisedAction.Redirect,
-                    unauthorisedUrlType = Enums.UrlType.Url,
+                    unauthorisedAction = TransferTypes.Redirect,
+                    unauthorisedUrlType = UmbracoUrlTypes.Url,
                     unauthorisedUrl = "",
                     unauthorisedUrlXPath = "",
                     unauthorisedUrlContentPicker = ""
@@ -87,7 +114,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                     {
                         UrlSelector = oldData.unauthorisedUrlType,
                         StrUrl = oldData.unauthorisedUrl,
-                        XpathUrl = oldData.unauthorisedUrlXPath,
+                        XPathUrl = oldData.unauthorisedUrlXPath,
                         ContentPickerUrl = oldData.unauthorisedUrlContentPicker
                     }
                 };

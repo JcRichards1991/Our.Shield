@@ -65,8 +65,8 @@ namespace Our.Shield.Core.Models
         /// <param name="endRequest">The function to call when the regex matches a request</param>
         /// <returns></returns>
         int WatchWebRequests(Regex regex, 
-            int beginRequestPriority, Func<int, HttpApplication, WatchCycle> beginRequest, 
-            int endRequestPriority, Func<int, HttpApplication, WatchCycle> endRequest);
+            int beginRequestPriority, Func<int, HttpApplication, WatchResponse> beginRequest, 
+            int endRequestPriority, Func<int, HttpApplication, WatchResponse> endRequest);
 
         /// <summary>
         /// Adds a Web Requests to the WebRequestsHandler collection
@@ -76,7 +76,7 @@ namespace Our.Shield.Core.Models
         /// <param name="beginRequest">The function to call when the Regex matches a request</param>
         /// <returns></returns>
         int WatchWebRequests(Regex regex, 
-            int beginRequestPriority, Func<int, HttpApplication, WatchCycle> beginRequest);
+            int beginRequestPriority, Func<int, HttpApplication, WatchResponse> beginRequest);
 
         /// <summary>
         /// Removes a Web Requests from the WebRequestHandler collection

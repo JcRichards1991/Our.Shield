@@ -31,15 +31,9 @@ namespace Our.Shield.BackofficeAccess.Models
         public IpEntry[] IpEntries { get; set; }
 
         /// <summary>
-        /// Whether the request should be redirected or rewritten to another location
-        /// </summary>
-        [JsonProperty("unauthorisedAction")]
-        public Enums.UnauthorisedAction UnauthorisedAction { get; set; }
-
-        /// <summary>
         /// The Url Type Selector and the url
         /// </summary>
-        [JsonProperty("urlType")]
-        public UrlType UrlType { get; set; }
+        [JsonProperty("unauthorized")]
+        public TransferUrl Unauthorized { get; set; }
     }
 }

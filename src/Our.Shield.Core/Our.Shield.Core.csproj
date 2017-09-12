@@ -281,9 +281,15 @@
     <Compile Include="Models\ApplicationSettings.cs" />
     <Compile Include="Models\IpEntry.cs" />
     <Compile Include="Models\JournalMessage.cs" />
-    <Compile Include="Models\UrlType.cs" />
+    <Compile Include="Models\UmbracoUrl.cs" />
+    <Compile Include="Models\TransferUrl.cs" />
     <Compile Include="Operation\EnvironmentService.cs" />
     <Compile Include="Helpers\AccessHelper.cs" />
+    <Compile Include="Operation\UmbracoContentServiceBase.cs" />
+    <Compile Include="Operation\UmbracoMediaService.cs" />
+    <Compile Include="Operation\UmbracoUrlService.cs" />
+    <Compile Include="Operation\UmbracoContentService.cs" />
+    <Compile Include="Operation\WatchResponse.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration100.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration101.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration103.cs" />
@@ -294,6 +300,7 @@
     <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal101.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal103.cs" />
     <Compile Include="Persistance\Data\Migrations\MigrationExtensions.cs" />
+    <Compile Include="Persistance\Data\Migrations\Versions\Migration104.cs" />
     <Compile Include="Persistance\Data\Migrations\Versions\Migration103Create.cs" />
     <Compile Include="Persistance\Data\Migrations\Versions\Migration103.cs" />
     <Compile Include="UI\AppAssest.cs" />
@@ -309,7 +316,6 @@
     <Compile Include="Models\IFrisk.cs" />
     <Compile Include="Models\IJournal.cs" />
     <Compile Include="Models\Journal.cs" />
-    <Compile Include="Operation\WatchCycle.cs" />
     <Compile Include="Persistance\Business\DbContext.cs" />
     <Compile Include="Persistance\Business\EnvironmentContext.cs" />
     <Compile Include="Persistance\Business\DomainContext.cs" />
@@ -361,7 +367,8 @@
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Create.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Delete.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\IpAddresses-Access.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\Url-Type.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\ActionUmbracoUrl.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\UmbracoUrl.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Views\EditEnvironment.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Sort.html" />
@@ -378,7 +385,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>nuget pack $(ProjectPath) -Properties Configuration=$(ConfigurationName) -OutputDirectory C:\Projects\NugetPackages</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

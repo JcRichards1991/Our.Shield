@@ -1,0 +1,28 @@
+﻿<div>
+    <select id="urlType" name="urlType" ng-model="model.type" required shield-convert-to-number ng-change="model.value=''">
+        <option value="0">Url</option>
+        <option value="1">XPath</option>
+        <option value="2">Content Picker</option>
+    </select>
+
+    <div ng-if="model.urlSelector === 0" class="shield-url-type-option">
+        <input type="text" id="strUrl" name="strUrl" ng-model="model.value" required ng-trim="false" ng-pattern="/^\/(([\w-]+(\/)?)+([\w-]+\.[\w-]+)?(\/)?(\?[\w-]+(=[\w-]+)?((&[\w-]+(=[\w-]+)?)+)?)?(#[\w-]+)?)?$/i" />
+        <span class="help-inline" val-msg-for="strUrl" val-toggle-msg="required">
+            <localize key="Shield.Properties.Validation_Required">Required</localize>
+        </span>
+        <span class="help-inline" val-msg-for="strUrl" val-toggle-msg="pattern">
+            <localize key="Shield.Properties.UrlType.Validation_InvalidStrUrl">Invalid Url, please provide a valid relative Url i.e. /404</localize>
+        </span>
+    </div>
+
+    <div ng-if="model.urlSelector === 1" class="shield-url-type-option">
+        <input type="text" id="xpathUrl" name="xpathUrl" ng-model="model.value" required />
+        <span class="help-inline" val-msg-for="xpathUrl" val-toggle-msg="required">
+            <localize key="Shield.Properties.Validation_Required">Required</localize>
+        </span>
+    </div>
+
+    <div ng-if="model.urlSelector === 2" class="shield-url-type-option left">
+        <umb-editor model="model.contentPickerProperty"></umb-editor>
+    </div>
+</div>

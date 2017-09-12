@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Core;
 using Umbraco.Core.Persistence.Migrations;
+using Umbraco.Web;
 
 namespace Our.Shield.Core.Operation
 {
@@ -554,6 +555,5 @@ namespace Our.Shield.Core.Operation
         /// <param name="app">the app to remove</param>
         /// <returns>True if successfully removed; otherwise, False</returns>
         public bool Unregister(IApp app) => Unregister(app.Id);
-
     }
 }
