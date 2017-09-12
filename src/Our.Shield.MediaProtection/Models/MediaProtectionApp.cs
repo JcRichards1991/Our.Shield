@@ -17,7 +17,7 @@ namespace Our.Shield.MediaProtection.Models
     /// <summary>
     /// 
     /// </summary>
-    [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?version=1.0.3")]
+    [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?version=1.0.4")]
     [AppMigration(typeof(MediaProtectionMigration))]
     public class MediaProtectionApp : App<MediaProtectionConfiguration>
     {
@@ -124,7 +124,7 @@ namespace Our.Shield.MediaProtection.Models
                         return new WatchResponse(WatchResponse.Cycles.Continue);
                     }
 
-                    job.WriteJournal(new JournalMessage($"Access was denied, {referrer.Host} is trying to hotlink your media assets"));
+                    job.WriteJournal(new JournalMessage($"Access was denied, {httpApp.Context.Request.UserHostAddress} from {referrer.Host} was trying to hotlink your media assets"));
 
                     //  Someone is trying to hotlink our media
                     httpApp.Response.StatusCode = (int)HttpStatusCode.Forbidden;

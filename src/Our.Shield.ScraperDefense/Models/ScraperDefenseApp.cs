@@ -3,7 +3,7 @@ using Our.Shield.Core.Models;
 
 namespace Our.Shield.ScraperDefense.Models
 {
-    [AppEditor("/App_Plugins/Shield.ScraperDefense/Views/ScraperDefense.html?version=1.0.3")]
+    [AppEditor("/App_Plugins/Shield.ScraperDefense/Views/ScraperDefense.html?version=1.0.4")]
     public class ScraperDefenseApp : App<ScraperDefenseConfiguration>
     {
         public override string Description => "Protect your site from being scraped by 3rd party applications/websites";

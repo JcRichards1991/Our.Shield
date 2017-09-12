@@ -14,7 +14,7 @@
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security BackofficeAccess Access Backoffice</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="1.0.3" />
+      <dependency id="Our.Shield.Core" version="1.0.4" />
     </dependencies>
   </metadata>
   <files>

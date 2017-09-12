@@ -1,8 +1,8 @@
 ﻿{
   "javascript": [
-    "~/App_Plugins/Shield.BackofficeAccess/Scripts/BackofficeAccess.js?version=1.0.3"
+    "~/App_Plugins/Shield.BackofficeAccess/Scripts/BackofficeAccess.js?version=1.0.4"
   ],
   "css": [
-    "~/App_Plugins/Shield.BackofficeAccess/Css/BackofficeAccess.css?version=1.0.3"
+    "~/App_Plugins/Shield.BackofficeAccess/Css/BackofficeAccess.css?version=1.0.4"
   ]
 }

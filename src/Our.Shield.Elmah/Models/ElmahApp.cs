@@ -12,7 +12,7 @@ using Umbraco.Core;
 
 namespace Our.Shield.Elmah.Models
 {
-    [AppEditor("/App_Plugins/Shield.FrontendAccess/Views/FrontendAccess.html?version=1.0.3")]
+    [AppEditor("/App_Plugins/Shield.FrontendAccess/Views/FrontendAccess.html?version=1.0.4")]
     public class ElmahApp : App<ElmahConfiguration>
     {
         /// <summary>
