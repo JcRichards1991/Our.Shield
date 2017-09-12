@@ -1,0 +1,44 @@
+﻿<div ng-controller="Shield.Editors.FrontendAccess.Edit as vm" ng-init="vm.init()">
+    <ng-form name="FrontendAccessForm">
+
+        <div class="umb-el-wrap control-group umb-control-group">
+            <label for="unauthorisedAction" class="control-label">
+                <localize key="Shield.FrontendAccess.Properties_UmbracoUsersEnableLabel">Allow Authenticated Umbraco Users</localize>
+                <small>
+                    <localize key="Shield.FrontendAccess.Properties_UmbracoUsersEnableDescription">Whether or not the frontend is accessible by users who have authenticated as an Umbraco User</localize>
+                </small>
+            </label>
+
+            <div class="controls">
+                <div class="umb-editor umb-checkbox">
+                    <input type="checkbox" id="umbracoUsersEnabled" ng-model="vm.configuration.umbracoUserEnable" />
+                </div>
+            </div>
+        </div>
+
+        <shield-ip-addresses-access ip-addresses-access="vm.configuration.ipAddressesAccess" ip-addresses="vm.configuration.ipAddresses"></shield-ip-addresses-access>
+
+        <div ng-if="vm.configuration.umbracoUserEnable || vm.configuration.ipAddressesAccess === 1">
+            <div class="umb-el-wrap control-group umb-control-group">
+                <label for="unauthorisedAction" class="control-label">
+                    <localize key="Shield.FrontendAccess.Properties_UnauthorisedActionLabel">Unauthorised Action</localize>
+                    <small>
+                        <localize key="Shield.FrontendAccess.Properties_UnauthorisedActionDescription">Whether to redirect the user or to rewrite the request to another location, when from a disallowed IP address</localize>
+                    </small>
+                </label>
+
+                <div class="controls">
+                    <div class="umb-editor">
+                        <select id="unauthorisedAction" name="unauthorisedAction" ng-model="vm.configuration.unauthorisedAction" required shield-convert-to-number>
+                            <option value="0">Redirect</option>
+                            <option value="1">Rewrite</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <shield-url-type model="vm.configuration.urlType"></shield-url-type>
+
+        </div>
+    </ng-form>
+</div>

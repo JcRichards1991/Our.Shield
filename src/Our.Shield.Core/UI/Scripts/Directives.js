@@ -149,45 +149,44 @@ angular.module('umbraco.directives').directive('shieldIpaddressduplicate', funct
 
 /**
    * @ngdoc directive
-   * @name shield-ip-addresses-access
+   * @name shield-ip-access-control
    * @function
    *
    * @description
-   * Custom directive for handling whether or not to add Ip Address restrictions
+   * Custom directive for handling whether or not to add IP Address restrictions
 */
-angular.module('umbraco.directives').directive('shieldIpAddressesAccess', function () {
+angular.module('umbraco.directives').directive('shieldIpAccessControl', function () {
     return {
         restrict: 'E',
-        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/IpAddresses-Access.html',
+        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/IpAccessControl.html',
         scope: {
-            ipAddressesAccess: '=',
-            ipAddresses: '=',
+            model: '='
         },
         controller: ['$scope', 'localizationService', function ($scope, localizationService) {
             angular.extend($scope, {
                 remove: function ($index) {
-                    var ip = $scope.ipAddresses[$index],
-                        msg = ip.ipAddress;
+                    var ip = $scope.model.exceptions[$index],
+                        msg = ip.value;
 
-                    if (ip.ipAddress !== '') {
+                    if (ip.value !== '') {
                         if (ip.description !== '') {
                             msg += ' - ' + ip.description;
                         }
 
-                        localizationService.localize('Shield.Properties.IpAddressAccess.Messages_ConfirmRemoveIp').then(function (warningMsg) {
+                        localizationService.localize('Shield.Properties.IpAccessControl.Messages_ConfirmRemoveIp').then(function (warningMsg) {
                             if (confirm(warningMsg + msg)) {
-                                $scope.ipAddresses.splice($index, 1);
+                                $scope.model.exceptions.splice($index, 1);
                             }
                         });
                     } else {
-                        $scope.ipAddresses.splice($index, 1);
+                        $scope.model.exceptions.splice($index, 1);
                     }
                 }
             });
 
-            if ($scope.ipAddresses.length === 0) {
-                $scope.ipAddresses.push({
-                    ipAddress: '',
+            if ($scope.model.exceptions.length === 0) {
+                $scope.model.exceptions.push({
+                    value: '',
                     description: ''
                 });
             }
@@ -197,21 +196,40 @@ angular.module('umbraco.directives').directive('shieldIpAddressesAccess', functi
 
 /**
    * @ngdoc directive
-   * @name shield-url-type
+   * @name shield-ip-access-control-ranges
    * @function
    *
    * @description
    * Custom directive for handling the selected Url type
 */
-angular.module('umbraco.directives').directive('shieldUrlType', function () {
+angular.module('umbraco.directives').directive('shieldIpAccessControlRanges', function () {
     return {
         restrict: 'E',
-        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/Url-Type.html',
+        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/IpAccessControlRanges.html',
+        scope: {
+            model: '='
+        }
+    };
+});
+
+/**
+   * @ngdoc directive
+   * @name shield-umbraco-url
+   * @function
+   *
+   * @description
+   * Custom directive for handling the selected Url type
+*/
+angular.module('umbraco.directives').directive('shieldUmbracoUrl', function () {
+    return {
+        restrict: 'E',
+        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/UmbracoUrl.html',
         scope: {
             model: '='
         },
         link: function (scope, elm, attr) {
             angular.extend(scope.model, {
+
                 contentPickerProperty: {
                     view: 'contentpicker',
                     alias: 'contentPicker',
@@ -227,13 +245,31 @@ angular.module('umbraco.directives').directive('shieldUrlType', function () {
                         minNumber: 1,
                         maxNumber: 1
                     },
-                    value: scope.model.contentPickerUrl
+                    value: scope.model.value
                 }
             });
 
             scope.$watch('model.contentPickerProperty.value', function (newVal, oldVal) {
-                scope.model.contentPickerUrl = newVal;
+                scope.model.value = newVal;
             });
+        }
+    };
+});
+
+/**
+   * @ngdoc directive
+   * @name shield-transfer-url
+   * @function
+   *
+   * @description
+   * Custom directive for handling the selected Url type
+*/
+angular.module('umbraco.directives').directive('shieldTransferUrl', function () {
+    return {
+        restrict: 'E',
+        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/TransferUrl.html',
+        scope: {
+            model: '='
         }
     };
 });
@@ -249,7 +285,7 @@ angular.module('umbraco.directives').directive('shieldUrlType', function () {
 angular.module('umbraco.directives').directive('shieldJournalListing', function () {
     return {
         restrict: 'E',
-        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/Journal-Listing.html',
+        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/JournalListing.html',
         scope: {
             items: '=',
             totalPages: '=',

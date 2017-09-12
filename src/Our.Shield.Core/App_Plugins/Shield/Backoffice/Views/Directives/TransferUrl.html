@@ -1,0 +1,12 @@
+﻿<div>
+    <div>
+        <select id="unauthorizedAction" name="unauthorizedAction" ng-model="model.transferType" required shield-convert-to-number>
+            <option value="-1">Play Dead</option>
+            <option value="0">Redirect</option>
+            <option value="1">Rewrite</option>
+        </select>
+    </div>
+    <div ng-if="model.transferType >= 0">
+        <shield-umbraco-url model="model.url"></shield-umbraco-url>
+    </div>
+</div>

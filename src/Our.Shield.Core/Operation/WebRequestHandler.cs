@@ -5,16 +5,32 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
+using System.Net;
+using Umbraco.Core.Logging;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.Core.Operation.WebRequestHandler), nameof(Our.Shield.Core.Operation.WebRequestHandler.Register))]
 namespace Our.Shield.Core.Operation
 {
+    public enum PipeLineStages
+    {
+        BeginRequest = 0,
+        AuthenticateRequest = 1,
+        ResolveRequestCache = 2,
+        UpdateRequestCache = 3,
+        EndRequest = 4
+    }
+
     /// <summary>
     /// 
     /// </summary>
     internal class WebRequestHandler : IHttpModule
     {
+#if DEBUG
+        private const int watchLockTimeout = 1000000;
+#else
         private const int watchLockTimeout = 1000;
+#endif
+
         private const int requestRestartLimit = 100;
 
         /// <summary>
@@ -26,22 +42,44 @@ namespace Our.Shield.Core.Operation
             Microsoft.Web.Infrastructure.DynamicModuleHelper.DynamicModuleUtility.RegisterModule(typeof(WebRequestHandler));
         }
 
-        private class Watcher
+        private static readonly int PipeLineStagesLength = Enum.GetNames(typeof(PipeLineStages)).Length;
+
+        private class Environ
         {
-            public int id;
-            public int priority;
-            public IEnvironment environment;
-            public IList<string> domains;
-            public string appId;
-            public Regex regex;
-            public Func<int, HttpApplication, WatchCycle> request;
+            public int Id;
+            public int SortOrder;
+            public bool ContinueProcessing;
+            public List<string> Domains;
+            public ReaderWriterLockSlim[] WatchLocks;
+            public List<Watcher>[] Watchers;
+
+            public Environ(IEnvironment environment)
+            {
+                Id = environment.Id;
+                SortOrder = environment.SortOrder;
+                ContinueProcessing = environment.ContinueProcessing;
+                Domains = Domains(environment.Domains);
+                WatchLocks = new ReaderWriterLockSlim[PipeLineStagesLength];
+                Watchers = new List<Watcher>[PipeLineStagesLength];
+                for (var index = 0; index != PipeLineStagesLength; index++)
+                {
+                    WatchLocks[index] = new ReaderWriterLockSlim();
+                    Watchers[index] = new List<Watcher>();
+                }
+            }
         }
 
-        private static ReaderWriterLockSlim beginWatchLock = new ReaderWriterLockSlim();
-        private static ReaderWriterLockSlim endWatchLock = new ReaderWriterLockSlim();
+        private class Watcher
+        {
+            public int Id;
+            public int Priority;
+            public string AppId;
+            public Regex Regex;
+            public Func<int, HttpApplication, WatchResponse> Request;
+        }
 
-        private static List<Watcher> beginWatchers = new List<Watcher>();
-        private static List<Watcher> endWatchers = new List<Watcher>();
+        private static ReaderWriterLockSlim EnvironLock = new ReaderWriterLockSlim();
+        private static SortedDictionary<int, Environ> Environs = new SortedDictionary<int, Environ>();
 
         private static int requestCount = 0;
 
@@ -49,12 +87,11 @@ namespace Our.Shield.Core.Operation
         {
             public int Compare(Watcher a, Watcher b)
             {
-                var sortOrder = a.environment.SortOrder - b.environment.SortOrder;
-                return (sortOrder != 0) ? sortOrder : a.priority - b.priority;
+                return a.Priority - b.Priority;
             }
         }
 
-        private static IList<string> Domains(IEnumerable<IDomain> domains)
+        private static List<string> Domains(IEnumerable<IDomain> domains)
         {
             if (domains == null || !domains.Any())
             {
@@ -65,11 +102,19 @@ namespace Our.Shield.Core.Operation
 
             foreach (var domain in domains)
             {
-                var url = new UriBuilder(domain.Name);
+                UriBuilder url = null;
+                try
+                {
+                    url = new UriBuilder(domain.Name);
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.Error<WebRequestHandler>($"{domain.Name} is not a valid domain", ex);
+                    continue;
+                }
                 if (url.Scheme == null)
                 {
                     url.Scheme = Uri.UriSchemeHttp;
-
                     var urlHttps = new UriBuilder(domain.Name);
                     urlHttps.Scheme = Uri.UriSchemeHttps;
                     results.Add(urlHttps.ToString());
@@ -89,63 +134,54 @@ namespace Our.Shield.Core.Operation
         /// <param name="endRequestPriority"></param>
         /// <param name="endRequest"></param>
         /// <returns></returns>
-        public static int Watch(IJob job, Regex regex, 
-            int beginRequestPriority, Func<int, HttpApplication, WatchCycle> beginRequest, 
-            int endRequestPriority, Func<int, HttpApplication, WatchCycle> endRequest)
+        public static int Watch(IJob job, PipeLineStages stage, Regex regex, int priority, Func<int, HttpApplication, WatchResponse> request)
         {
             var count = Interlocked.Increment(ref requestCount);
 
-            if (beginRequest != null)
+            if (EnvironLock.TryEnterWriteLock(watchLockTimeout))
             {
-                if (beginWatchLock.TryEnterWriteLock(watchLockTimeout))
+                Environ environ;
+                try
                 {
-                    try
+                    if (!Environs.TryGetValue(job.Environment.SortOrder, out environ))
                     {
-                        beginWatchers.Add(new Watcher
-                        {
-                            id = count,
-                            priority = beginRequestPriority,
-                            environment = job.Environment,
-                            domains = Domains(job.Environment.Domains),
-                            appId = job.App.Id,
-                            regex = regex,
-                            request = beginRequest
-                        });
-
-                        beginWatchers.Sort(new WatchComparer());
+                        Environs.Add(job.Environment.SortOrder, environ = new Environ(job.Environment));
                     }
-                    finally
-                    {
-                        beginWatchLock.ExitWriteLock();
-                    }
-
                 }
-            }
+                finally
+                {
+                    EnvironLock.ExitWriteLock();
+                }
 
-            if (endRequest != null)
-            {
-                if (endWatchLock.TryEnterWriteLock(watchLockTimeout))
+                if (EnvironLock.TryEnterReadLock(watchLockTimeout))
                 {
                     try
                     {
-                        endWatchers.Add(new Watcher
+                        if (environ.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
                         {
-                            id = count,
-                            priority = endRequestPriority,
-                            environment = job.Environment,
-                            domains = Domains(job.Environment.Domains),
-                            appId = job.App.Id,
-                            regex = regex,
-                            request = endRequest
-                        });
-
-                        endWatchers.Sort(new WatchComparer());
+                            try
+                            {
+                                var watchList = environ.Watchers[(int) stage];
+                                watchList.Add(new Watcher
+                                {
+                                    Id = count,
+                                    Priority = priority,
+                                    AppId = job.App.Id,
+                                    Regex = regex,
+                                    Request = request
+                                });
+                                watchList.Sort(new WatchComparer());
+                            }
+                            finally
+                            {
+                                environ.WatchLocks[(int) stage].ExitWriteLock();
+                            }
+                        }
                     }
                     finally
                     {
-                        endWatchLock.ExitWriteLock();
+                        EnvironLock.ExitReadLock();
                     }
-
                 }
             }
 
@@ -158,40 +194,41 @@ namespace Our.Shield.Core.Operation
         /// <param name="job"></param>
         /// <param name="regex"></param>
         /// <returns></returns>
-        public static int Unwatch(IJob job, Regex regex)
+        public static int Unwatch(IJob job, PipeLineStages stage, Regex regex)
         {
             string regy = regex == null ? null : regex.ToString();
-            var count = 0;
 
-            if (beginWatchLock.TryEnterWriteLock(watchLockTimeout))
+            if (EnvironLock.TryEnterReadLock(watchLockTimeout))
             {
                 try
                 {
-                    count += beginWatchers.RemoveAll(x => x.environment.Id == job.Environment.Id &&
-                        x.appId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase) && 
-                        ((regy == null && x.regex == null) || (regy != null && x.regex != null && regy.Equals(x.regex.ToString(), StringComparison.InvariantCulture))));
+                    Environ environ;
+                    if (!Environs.TryGetValue(job.Environment.SortOrder, out environ))
+                    {
+                        return 0;
+                    }
+
+                    if (environ.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
+                    {
+                        try
+                        {
+                            return environ.Watchers[(int) stage].RemoveAll(x =>
+                                x.AppId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase) && 
+                                ((regy == null && x.Regex == null) || 
+                                (regy != null && x.Regex != null && regy.Equals(x.Regex.ToString(), StringComparison.InvariantCulture))));
+                        }
+                        finally
+                        {
+                            environ.WatchLocks[(int) stage].ExitWriteLock();
+                        }
+                    }
                 }
                 finally
                 {
-                    beginWatchLock.ExitWriteLock();
+                    EnvironLock.ExitReadLock();
                 }
             }
-
-            if (endWatchLock.TryEnterWriteLock(watchLockTimeout))
-            {
-                try
-                {
-                    count += endWatchers.RemoveAll(x => x.environment.Id == job.Environment.Id &&
-                        x.appId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase) && 
-                        ((regy == null && x.regex == null) || (regy != null && x.regex != null && regy.Equals(x.regex.ToString(), StringComparison.InvariantCulture))));
-                }
-                finally
-                {
-                    endWatchLock.ExitWriteLock();
-                }
-            }
-
-            return count;
+            return 0;
         }
 
         /// <summary>
@@ -199,69 +236,103 @@ namespace Our.Shield.Core.Operation
         /// </summary>
         /// <param name="job"></param>
         /// <returns></returns>
-        public static int Unwatch(IJob job)
+        public static int Unwatch(IJob job, PipeLineStages stage)
         {
-            var count = 0;
-
-            if (beginWatchLock.TryEnterWriteLock(watchLockTimeout))
+            if (EnvironLock.TryEnterReadLock(watchLockTimeout))
             {
                 try
                 {
-                    count += beginWatchers.RemoveAll(x => x.environment.Id == job.Environment.Id &&
-                        x.appId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase));
+                    Environ environ;
+                    if (!Environs.TryGetValue(job.Environment.SortOrder, out environ))
+                    {
+                        return 0;
+                    }
+
+                    if (environ.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
+                    {
+                        try
+                        {
+                            return environ.Watchers[(int) stage].RemoveAll(x =>
+                                x.AppId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase));
+                        }
+                        finally
+                        {
+                            environ.WatchLocks[(int) stage].ExitWriteLock();
+                        }
+                    }
                 }
                 finally
                 {
-                    beginWatchLock.ExitWriteLock();
+                    EnvironLock.ExitReadLock();
                 }
             }
-
-            if (endWatchLock.TryEnterWriteLock(watchLockTimeout))
-            {
-                try
-                {
-                    count += endWatchers.RemoveAll(x => x.environment.Id == job.Environment.Id &&
-                        x.appId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase));
-                }
-                finally
-                {
-                    endWatchLock.ExitWriteLock();
-                }
-            }
-
-            return count;
+            return 0;
         }
+
+        public static int Unwatch(string appId) => Unwatch(null, appId);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="appId"></param>
         /// <returns></returns>
-        public static int Unwatch(string appId)
+        public static int Unwatch(int? environmentId = null, string appId = null)
         {
             var count = 0;
+            var deleteEnvirons = new List<int>();
 
-            if (beginWatchLock.TryEnterWriteLock(watchLockTimeout))
+            if (EnvironLock.TryEnterReadLock(watchLockTimeout))
             {
                 try
                 {
-                    count += beginWatchers.RemoveAll(x => x.appId.Equals(appId, StringComparison.InvariantCultureIgnoreCase));
+                    foreach (var environ in Environs.Where(x => environmentId == null || x.Value.Id == environmentId))
+                    {
+                        int watchCount = 0;
+                        foreach (var stage in Enum.GetValues(typeof(PipeLineStages)))
+                        {
+                            if (environ.Value.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
+                            {
+                                try
+                                {
+                                    count += environ.Value.Watchers[(int) stage].RemoveAll(x =>
+                                        appId == null ||
+                                        x.AppId.Equals(appId, StringComparison.InvariantCultureIgnoreCase));
+                                    watchCount += environ.Value.Watchers[(int) stage].Count();
+                                }
+                                finally
+                                {
+                                    environ.Value.WatchLocks[(int) stage].ExitWriteLock();
+                                }
+                            }
+                        }
+
+                        if (watchCount == 0)
+                        {
+                            deleteEnvirons.Add(environ.Value.SortOrder);
+                        }
+                    }
                 }
                 finally
                 {
-                    beginWatchLock.ExitWriteLock();
+                    EnvironLock.ExitReadLock();
                 }
             }
 
-            if (endWatchLock.TryEnterWriteLock(watchLockTimeout))
+            if (deleteEnvirons.Any())
             {
-                try
+                if (EnvironLock.TryEnterWriteLock(watchLockTimeout))
                 {
-                    count += endWatchers.RemoveAll(x => x.appId.Equals(appId, StringComparison.InvariantCultureIgnoreCase));
-                }
-                finally
-                {
-                    endWatchLock.ExitWriteLock();
+                    try
+                    {
+                        foreach (var sortOrder in deleteEnvirons)
+                        {
+                            Environs.Remove(sortOrder);
+                        }
+                    }
+                    finally
+                    {
+                        EnvironLock.ExitWriteLock();
+                    }
                 }
             }
 
@@ -275,16 +346,78 @@ namespace Our.Shield.Core.Operation
         public void Init(HttpApplication application)
         {
             application.BeginRequest += (new EventHandler(this.Application_BeginRequest));
+            application.AuthenticateRequest += (new EventHandler(this.Application_AuthenticateRequest));
+            application.ResolveRequestCache += (new EventHandler(this.Application_ResolveRequestCache));
+            application.UpdateRequestCache += (new EventHandler(this.Application_UpdateRequestCache));
             application.EndRequest += (new EventHandler(this.Application_EndRequest));
         }
 
-        private void Request(ReaderWriterLockSlim locker, IEnumerable<Watcher> watchers, HttpApplication application)
+        private WatchResponse.Cycles ExecuteResponse(Watcher watch, WatchResponse response, HttpApplication application)
         {
-            if (locker.TryEnterReadLock(watchLockTimeout))
+            if (response.Transfer == null)
+            {
+                return response.Cycle;
+            }
+
+            if (response.Transfer.TransferType == TransferTypes.PlayDead)
+            {
+                application.Context.Response.Close();
+                return WatchResponse.Cycles.Stop;
+            }
+
+            var url = new UmbracoUrlService().Url(response.Transfer.Url);
+            if (!string.IsNullOrWhiteSpace(url))
+            {
+                string urlSlash = string.Copy(url);
+                if (urlSlash[urlSlash.Length - 1] != '/')
+                {
+                    urlSlash += "/";
+                }
+
+                var slash = string.Copy(application.Context.Request.Url.AbsoluteUri);
+                if (slash[slash.Length - 1] != '/')
+                {
+                    slash += "/";
+                }
+
+                if (slash.Equals(urlSlash))
+                {
+                    return WatchResponse.Cycles.Continue;
+                }
+
+                slash = string.Copy(application.Context.Request.Url.PathAndQuery);
+                if (slash[slash.Length - 1] != '/')
+                {
+                    slash += "/";
+                }
+
+                if (slash.Equals(urlSlash))
+                {
+                    return WatchResponse.Cycles.Continue;
+                }
+
+                switch (response.Transfer.TransferType)
+                {
+                    case TransferTypes.Redirect:
+                        application.Context.Response.Redirect(url, true);
+                        return WatchResponse.Cycles.Stop;
+
+                    case TransferTypes.Rewrite:
+                        application.Context.RewritePath(url, string.Empty, string.Empty);
+                        return WatchResponse.Cycles.Restart;
+                }
+            }
+
+            return WatchResponse.Cycles.Error;
+        }
+
+        private void Request(PipeLineStages stage, HttpApplication application)
+        {
+            if (EnvironLock.TryEnterReadLock(watchLockTimeout))
             {
                 try
                 {
-                    if (!watchers.Any())
+                    if (!Environs.Any())
                     {
                         return;
                     }
@@ -297,19 +430,13 @@ restart:
                         application.CompleteRequest();
                     }
 
-                    IEnvironment environment = null;
                     string uri = application.Context.Request.Url.AbsoluteUri;
                     string uriWithoutDomain = null;
 
-                    foreach (var watch in watchers)
+                    foreach (var environ in Environs)
                     {
-                        if (environment != null && environment.Id != watch.environment.Id)
-                        {
-                            return;
-                        }
-
                         string filePath = null;
-                        if (watch.domains == null)
+                        if (environ.Value.Domains == null)
                         {
                             if (uriWithoutDomain == null)
                             {
@@ -319,7 +446,7 @@ restart:
                         }
                         else
                         {
-                            var domain = watch.domains.FirstOrDefault(x => uri.StartsWith(x, StringComparison.InvariantCultureIgnoreCase));
+                            var domain = environ.Value.Domains.FirstOrDefault(x => uri.StartsWith(x, StringComparison.InvariantCultureIgnoreCase));
                             if (domain != null)
                             {
                                 filePath = uri.Substring(domain.Length - 1);
@@ -330,34 +457,47 @@ restart:
                             }
                         }
 
-                        if ((watch.regex == null || watch.regex.IsMatch(filePath)))
+                        if (environ.Value.WatchLocks[(int) stage].TryEnterReadLock(watchLockTimeout))
                         {
-                            if (!watch.environment.ContinueProcessing)
+                            try
                             {
-                                environment = watch.environment;
-                            }
+                                foreach (var watch in environ.Value.Watchers[(int) stage])
+                                {
+                                    if ((watch.Regex == null || watch.Regex.IsMatch(filePath)))
+                                    {
+                                        switch (ExecuteResponse(watch, watch.Request(count, application), application))
+                                        {
+                                            case WatchResponse.Cycles.Stop:
+                                                return;
 
-                            switch (watch.request(count, application))
+                                            case WatchResponse.Cycles.Restart:
+                                                goto restart;
+
+                                            case WatchResponse.Cycles.Error:
+                                                application.Context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                                                application.CompleteRequest();
+                                                break;
+
+                                            //  If WatchCycle.Continue we do nothing
+                                        }
+                                    }
+                                }
+                            }
+                            finally
                             {
-                                case WatchCycle.Stop:
-                                    return;
-
-                                case WatchCycle.Restart:
-                                    goto restart;
-
-                                case WatchCycle.Error:
-                                    application.Context.Response.StatusCode = 500;
-                                    application.CompleteRequest();
-                                    break;
-
-                                //  If WatchCycle.Continue we do nothing
+                                environ.Value.WatchLocks[(int) stage].ExitReadLock();
                             }
+                        }
+
+                        if (!environ.Value.ContinueProcessing)
+                        {
+                            break;
                         }
                     }
                 }
                 finally
                 {
-                    locker.ExitReadLock();
+                    EnvironLock.ExitReadLock();
                 }
             }
         }
@@ -365,12 +505,27 @@ restart:
         private void Application_BeginRequest(object source, EventArgs e)
         {
             JobService.Instance.Poll();
-            Request(beginWatchLock, beginWatchers, (HttpApplication)source);
+            Request(PipeLineStages.BeginRequest, (HttpApplication)source);
+        }
+
+        private void Application_AuthenticateRequest(Object source, EventArgs e)
+        {
+            Request(PipeLineStages.AuthenticateRequest, (HttpApplication)source);
+        }
+
+        private void Application_ResolveRequestCache(Object source, EventArgs e)
+        {
+            Request(PipeLineStages.ResolveRequestCache, (HttpApplication)source);
+        }
+
+        private void Application_UpdateRequestCache(Object source, EventArgs e)
+        {
+            Request(PipeLineStages.UpdateRequestCache, (HttpApplication)source);
         }
 
         private void Application_EndRequest(Object source, EventArgs e)
         {
-            Request(endWatchLock, endWatchers, (HttpApplication)source);
+            Request(PipeLineStages.EndRequest, (HttpApplication)source);
         }
 
         /// <summary>

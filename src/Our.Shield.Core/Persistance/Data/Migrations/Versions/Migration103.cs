@@ -16,6 +16,48 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
     [Migration("1.0.3", 1, nameof(Shield))]
     internal class Migration103 : MigrationBase
     {
+        public class IpEntry103
+        {
+            /// <summary>
+            /// Gets or set the IP Address
+            /// </summary>
+            [JsonProperty("ipAddress")]
+            public string IpAddress { get; set; }
+
+            /// <summary>
+            /// Gets or sets a description for this IP Address 
+            /// </summary>
+            [JsonProperty("description")]
+            public string Description { get; set; }
+        }
+
+        public class UrlType103
+        {
+            /// <summary>
+            /// The selector for the url
+            /// </summary>
+            [JsonProperty("urlSelector")]
+            public UmbracoUrlTypes UrlSelector { get; set; }
+
+            /// <summary>
+            /// The Url for the Url
+            /// </summary>
+            [JsonProperty("strUrl")]
+            public string StrUrl { get; set; }
+
+            /// <summary>
+            /// The XPath to the content node for the Url
+            /// </summary>
+            [JsonProperty("xpathUrl")]
+            public string XPathUrl { get; set; }
+
+            /// <summary>
+            /// The Id/UID to the content node for the Url
+            /// </summary>
+            [JsonProperty("contentPickerUrl")]
+            public string ContentPickerUrl { get; set; }
+        }
+
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
         private readonly DatabaseSchemaHelper _schemaHelper;
         private ISqlSyntaxProvider _sqlSyntax;
@@ -64,10 +106,10 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                 var definition = new
                 {
                     backendAccessUrl = "",
-                    ipAddressesAccess = Enums.IpAddressesAccess.Unrestricted,
-                    ipAddresses = new IpEntry[0],
-                    unauthorisedAction = Enums.UnauthorisedAction.Redirect,
-                    unauthorisedUrlType = Enums.UrlType.Url,
+                    ipAddressesAccess = 0,
+                    ipAddresses = new IpEntry103[0],
+                    unauthorisedAction = TransferTypes.Redirect,
+                    unauthorisedUrlType = UmbracoUrlTypes.Url,
                     unauthorisedUrl = "",
                     unauthorisedUrlXPath = "",
                     unauthorisedUrlContentPicker = ""
@@ -83,11 +125,11 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                     ipAddressesAccess = oldData.ipAddressesAccess,
                     ipAddresses = oldData.ipAddresses,
                     unauthorisedAction = oldData.unauthorisedAction,
-                    urlType = new UrlType
+                    urlType = new UrlType103
                     {
                         UrlSelector = oldData.unauthorisedUrlType,
                         StrUrl = oldData.unauthorisedUrl,
-                        XpathUrl = oldData.unauthorisedUrlXPath,
+                        XPathUrl = oldData.unauthorisedUrlXPath,
                         ContentPickerUrl = oldData.unauthorisedUrlContentPicker
                     }
                 };

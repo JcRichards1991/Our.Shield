@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Core;
 using Umbraco.Core.Persistence.Migrations;
+using Umbraco.Web;
 
 namespace Our.Shield.Core.Operation
 {
@@ -20,7 +21,7 @@ namespace Our.Shield.Core.Operation
         private const int taskLockTimeout = 1000;       //  in millisecs
 
 #if DEBUG
-        private const int poll = 60;                    //  in secs
+        private const int poll = 60000;                    //  in secs
 #else
         private const int poll = 60 * 10;               //in secs
 #endif
@@ -250,7 +251,7 @@ namespace Our.Shield.Core.Operation
             {
                 //System.Diagnostics.Debug.WriteLine("START running poll with " + ranTick.ToString());
                 ranTick = ranNow;
-                if (jobLock.TryEnterUpgradeableReadLock(taskLockTimeout))
+                if (jobLock.TryEnterWriteLock(taskLockTimeout))
                 {
                     try
                     {
@@ -259,30 +260,31 @@ namespace Our.Shield.Core.Operation
                             var ct = new CancellationTokenSource();
                             var task = new Task<bool>(() => Execute(reg.Value), ct.Token, TaskCreationOptions.PreferFairness);
 
-                            if (jobLock.TryEnterWriteLock(taskLockTimeout))
-                            {
-                                try
-                                {
-                                    reg.Value.CancelToken = ct;
-                                    reg.Value.Task = task;
-                                    task.Start();
-                                }
-                                finally
-                                {
-                                    jobLock.ExitWriteLock();
-                                }
-                            }
-                            else
-                            {
-                                task.Dispose();
-                            }
+                            reg.Value.CancelToken = ct;
+                            reg.Value.Task = task;
                         }
                     }
                     finally
                     {
-                        jobLock.ExitUpgradeableReadLock();
+                        jobLock.ExitWriteLock();
+                    }
+
+                    if (jobLock.TryEnterReadLock(taskLockTimeout))
+                    {
+                        try
+                        {
+                            foreach (var reg in jobs.Value)
+                            {
+                                reg.Value.Task.Start();
+                            }
+                        }
+                        finally
+                        {
+                            jobLock.ExitReadLock();
+                        }
                     }
                 }
+
                 if (Interlocked.CompareExchange(ref ranTick, ranRepeat, ranNow) != ranRepeat)
                 {
                     ranTick = DateTime.UtcNow.AddSeconds(poll).Ticks;
@@ -554,6 +556,5 @@ namespace Our.Shield.Core.Operation
         /// <param name="app">the app to remove</param>
         /// <returns>True if successfully removed; otherwise, False</returns>
         public bool Unregister(IApp app) => Unregister(app.Id);
-
     }
 }

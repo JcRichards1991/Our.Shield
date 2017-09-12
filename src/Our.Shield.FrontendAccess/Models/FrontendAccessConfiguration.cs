@@ -13,27 +13,15 @@ namespace Our.Shield.FrontendAccess.Models
         public bool UmbracoUserEnable { get; set; }
 
         /// <summary>
-        /// Whether the Frontend is open to all IP addresses, or restricted to a white-list of IP addresses
+        /// Client access
         /// </summary>
-        [JsonProperty("ipAddressesAccess")]
-        public Enums.IpAddressesAccess IpAddressesAccess { get; set; }
+        [JsonProperty("ipAccessRules")]
+        public IpAccessControl IpAccessRules { get; set; }
 
         /// <summary>
-        /// White-listed IP Addresses that can access the backoffice access Url
+        /// Where to send unauthorized users too
         /// </summary>
-        [JsonProperty("ipAddresses")]
-        public IpEntry[] IpEntries { get; set; }
-
-        /// <summary>
-        /// Whether to redirect or rewrite the request to another location when frontend access is denied
-        /// </summary>
-        [JsonProperty("unauthorisedAction")]
-        public Enums.UnauthorisedAction UnauthorisedAction { get; set; }
-
-        /// <summary>
-        /// The Url Type Selector and the url
-        /// </summary>
-        [JsonProperty("urlType")]
-        public UrlType UrlType { get; set; }
+        [JsonProperty("unauthorized")]
+        public TransferUrl Unauthorized { get; set; }
     }
 }

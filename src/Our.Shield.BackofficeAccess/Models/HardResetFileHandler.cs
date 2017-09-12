@@ -18,6 +18,8 @@ namespace Our.Shield.BackofficeAccess.Models
             }
         }
 
+        public string FilePath => DirectoryPath + File;
+
         private string hardLocation;
         public string HardLocation
         {
@@ -60,13 +62,13 @@ namespace Our.Shield.BackofficeAccess.Models
         {
             hasInit = true;
             
-            if(!System.IO.File.Exists(DirectoryPath + File))
+            if(!System.IO.File.Exists(FilePath))
             {
                 HardLocation = SoftLocation = null;
                 return;
             }
 
-            using (var txtFile = System.IO.File.OpenText(DirectoryPath + File))
+            using (var txtFile = System.IO.File.OpenText(FilePath))
             {
                 HardLocation = txtFile.ReadLine();
                 SoftLocation = txtFile.ReadLine();
@@ -77,7 +79,7 @@ namespace Our.Shield.BackofficeAccess.Models
         {
             System.IO.Directory.CreateDirectory(DirectoryPath);
 
-            using (var txtFile = System.IO.File.CreateText(DirectoryPath + File))
+            using (var txtFile = System.IO.File.CreateText(FilePath))
             {
                 txtFile.WriteLine(HardLocation);
                 txtFile.WriteLine(SoftLocation);
@@ -86,12 +88,12 @@ namespace Our.Shield.BackofficeAccess.Models
 
         public void Delete()
         {
-            if(!System.IO.File.Exists(DirectoryPath + File))
+            if(!System.IO.File.Exists(FilePath))
             {
                 return;
             }
 
-            System.IO.File.Delete(DirectoryPath + File);
+            System.IO.File.Delete(FilePath);
             HardLocation = SoftLocation = null;
         }
     }

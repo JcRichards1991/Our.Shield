@@ -34,37 +34,40 @@
     <key alias="EnableLabel">Enable</key>
     <key alias="EnableDescription">Is this App active</key>
 
-    <key alias="IpAddressAccessLabel">IP Addresses Access</key>
-    <key alias="IpAddressAccessDescription">Whether or not to add IP Address restrictions</key>
+    <key alias="IpAccessControlLabel">IP Addresses Access</key>
+    <key alias="IpAccessControlDescription">Whether or not to add IP Address restrictions</key>
 
-    <key alias="UrlTypeLabel">Unauthorised Url</key>
-    <key alias="UrlTypeDescription">The page to redirect / rewrite the user to, when access is being denied</key>
+    <key alias="UnauthorizedLabel">Unauthorized</key>
+    <key alias="UnauthorizedDescription">The page to redirect / rewrite the user to, when access is being denied</key>
   </area>
 
   <area alias="Shield.Properties.Validation">
     <key alias="Required">Required</key>
   </area>
 
-  <area alias="Shield.Properties.IpAddessAccess.Options">
-    <key alias="Unrestricted">Open to all IP addresses</key>
-    <key alias="Restricted">Open to specific IP Address(es)</key>
+  <area alias="Shield.Properties.IpAccessControl.Options">
+    <key alias="All">Open to all IP addresses</key>
+    <key alias="None">No access for any IP addresses</key>
   </area>
 
-  <area alias="Shield.Properties.IpAddressAccess.Table">
+  <area alias="Shield.Properties.IpAccessControl">
+    <key alias="ExceptionDescription">Except for these IP Addresses:-</key>
+  </area>
+  <area alias="Shield.Properties.IpAccessControl.Table">
     <key alias="IpAddressHeader">IP Address</key>
     <key alias="DescriptionHeader">Description</key>
   </area>
 
-  <area alias="Shield.Properties.IpAddressAccess.Validation">
+  <area alias="Shield.Properties.IpAccessControl.Validation">
     <key alias="IpDuplicate">IP Address has already been added</key>
     <key alias="IpInvalid">Invalid IP Address. Please enter a valid IPv4 or IPv6 address</key>
   </area>
 
-  <area alias="Shield.Properties.IpAddressAccess.Messages">
-    <key alias="ConfirmRemoveIp">Are you sure you want to remove IP Address: </key>
+  <area alias="Shield.Properties.IpAccessControl.Messages">
+    <key alias="ConfirmRemoveIp">Are you sure you want to remove this IP Address: </key>
   </area>
 
-  <area alias="Shield.Properties.UrlType.Validation">
+  <area alias="Shield.Properties.UmbracoUrl.Validation">
     <key alias="InvalidStrUrl">Invalid Url, please provide a valid relative Url i.e. /404</key>
   </area>
 

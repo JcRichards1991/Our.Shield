@@ -22,30 +22,30 @@
             </div>
         </div>
 
-        <shield-ip-addresses-access ip-addresses-access="vm.configuration.ipAddressesAccess" ip-addresses="vm.configuration.ipAddresses"></shield-ip-addresses-access>
+        <div class="umb-el-wrap control-group umb-control-group">
+            <label class="control-label">
+                <localize key="Shield.Properties_IpAccessControlLabel"></localize>
+                <small>
+                    <localize key="Shield.Properties_IpAccessControlDescription"></localize>
+                </small>
+            </label>
 
-        <div ng-if="vm.configuration.ipAddressesAccess === 1">
+            <shield-ip-access-control model="vm.configuration.ipAccessRules"></shield-ip-access-control>
+        </div>
 
-            <div class="umb-el-wrap control-group umb-control-group">
-                <label for="unauthorisedAction" class="control-label">
-                    <localize key="Shield.BackofficeAccess.Properties_UnauthorisedActionLabel">Unauthorised Action</localize>
-                    <small>
-                        <localize key="Shield.BackofficeAccess.Properties_UnauthorisedActionDescription">Whether to redirect the user or to rewrite the request to another location, when from a disallowed IP Address</localize>
-                    </small>
-                </label>
-
-                <div class="controls">
-                    <div class="umb-editor">
-                        <select id="unauthorisedAction" name="unauthorisedAction" ng-model="vm.configuration.unauthorisedAction" required shield-convert-to-number>
-                            <option value="0">Redirect</option>
-                            <option value="1">Rewrite</option>
-                        </select>
-                    </div>
+        
+        <div class="umb-el-wrap control-group umb-control-group">
+            <label for="unauthorizedAction" class="control-label">
+                <localize key="Shield.Properties_UnauthorizedLabel"></localize>
+                <small>
+                    <localize key="Shield.Properties_UnauthozisedDescription"></localize>
+                </small>
+            </label>
+            <div class="controls">
+                <div class="umb-editor">
+                    <shield-transfer-url model="vm.configuration.unauthorized"></shield-transfer-url>
                 </div>
             </div>
-
-            <shield-url-type model="vm.configuration.urlType"></shield-url-type>
-
         </div>
     </ng-form>
 </div>

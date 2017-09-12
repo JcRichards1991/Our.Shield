@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language alias="en" intName="English (US)" localName="English (US)" lcid="" culture="en-US">
+  <creator>
+    <name>Joshua Richards</name>
+  </creator>
+
+  <area alias="Shield.FrontendAccess.General">
+    <key alias="AreaName">Frontend Access</key>
+  </area>
+
+  <area alias="Shield.FrontendAccess.Properties">
+    <key alias="UmbracoUsersEnableLabel">Allow Authenticated Umbraco Users</key>
+    <key alias="UmbracoUsersEnableDescription">Whether or not the frontend is accessible by users who have authenticated as an Umbraco User</key>
+    
+    <key alias="UnauthorisedActionLabel">Unauthorised Action</key>
+    <key alias="UnauthorisedActionDescription">Whether to redirect the user or to rewrite the request to another location when the user is not authenticated as an Umbraco User</key>
+  </area>
+  
+</language>
