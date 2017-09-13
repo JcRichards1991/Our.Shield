@@ -66,6 +66,7 @@ namespace Our.Shield.Core.Operation
                     WatchLocks[index] = new ReaderWriterLockSlim();
                     Watchers[index] = new List<Watcher>();
                 }
+
             }
         }
 
@@ -78,8 +79,20 @@ namespace Our.Shield.Core.Operation
             public Func<int, HttpApplication, WatchResponse> Request;
         }
 
+        private class UrlException
+        {
+            public int Id;
+            public int EnvironmentId;
+            public string AppId;
+            public Regex Regex;
+			public UmbracoUrl Url;
+        }
+
         private static ReaderWriterLockSlim EnvironLock = new ReaderWriterLockSlim();
         private static SortedDictionary<int, Environ> Environs = new SortedDictionary<int, Environ>();
+
+        private static ReaderWriterLockSlim UrlExceptionLock = new ReaderWriterLockSlim();
+        private static List<UrlException> UrlExceptions = new List<UrlException>();
 
         private static int requestCount = 0;
 
@@ -136,56 +149,62 @@ namespace Our.Shield.Core.Operation
         /// <returns></returns>
         public static int Watch(IJob job, PipeLineStages stage, Regex regex, int priority, Func<int, HttpApplication, WatchResponse> request)
         {
-            var count = Interlocked.Increment(ref requestCount);
-
-            if (EnvironLock.TryEnterWriteLock(watchLockTimeout))
+            if (!EnvironLock.TryEnterWriteLock(watchLockTimeout))
             {
-                Environ environ;
+				LogHelper.Error<WebRequestHandler>("Unable to create Watch, can\'t get write lock", null);
+				return -1;
+			}
+
+            Environ environ;
+            try
+            {
+                if (!Environs.TryGetValue(job.Environment.SortOrder, out environ))
+                {
+                    Environs.Add(job.Environment.SortOrder, environ = new Environ(job.Environment));
+                }
+            }
+            finally
+            {
+                EnvironLock.ExitWriteLock();
+            }
+
+            if (!EnvironLock.TryEnterReadLock(watchLockTimeout))
+            {
+				LogHelper.Error<WebRequestHandler>("Unable to create Watch, can\'t get read lock", null);
+				return -1;
+			}
+            try
+            {
+                if (!environ.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
+                {
+					LogHelper.Error<WebRequestHandler>("Unable to create Watch, can\'t get write lock", null);
+					return -1;
+				}
                 try
                 {
-                    if (!Environs.TryGetValue(job.Environment.SortOrder, out environ))
+                    var watchList = environ.Watchers[(int) stage];
+					var count = Interlocked.Increment(ref requestCount);
+
+                    watchList.Add(new Watcher
                     {
-                        Environs.Add(job.Environment.SortOrder, environ = new Environ(job.Environment));
-                    }
+                        Id = count,
+                        Priority = priority,
+                        AppId = job.App.Id,
+                        Regex = regex,
+                        Request = request
+                    });
+                    watchList.Sort(new WatchComparer());
+					return count;
                 }
                 finally
                 {
-                    EnvironLock.ExitWriteLock();
-                }
-
-                if (EnvironLock.TryEnterReadLock(watchLockTimeout))
-                {
-                    try
-                    {
-                        if (environ.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
-                        {
-                            try
-                            {
-                                var watchList = environ.Watchers[(int) stage];
-                                watchList.Add(new Watcher
-                                {
-                                    Id = count,
-                                    Priority = priority,
-                                    AppId = job.App.Id,
-                                    Regex = regex,
-                                    Request = request
-                                });
-                                watchList.Sort(new WatchComparer());
-                            }
-                            finally
-                            {
-                                environ.WatchLocks[(int) stage].ExitWriteLock();
-                            }
-                        }
-                    }
-                    finally
-                    {
-                        EnvironLock.ExitReadLock();
-                    }
+                    environ.WatchLocks[(int) stage].ExitWriteLock();
                 }
             }
-
-            return count;
+            finally
+            {
+                EnvironLock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -194,79 +213,44 @@ namespace Our.Shield.Core.Operation
         /// <param name="job"></param>
         /// <param name="regex"></param>
         /// <returns></returns>
-        public static int Unwatch(IJob job, PipeLineStages stage, Regex regex)
-        {
-            string regy = regex == null ? null : regex.ToString();
-
-            if (EnvironLock.TryEnterReadLock(watchLockTimeout))
-            {
-                try
-                {
-                    Environ environ;
-                    if (!Environs.TryGetValue(job.Environment.SortOrder, out environ))
-                    {
-                        return 0;
-                    }
-
-                    if (environ.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
-                    {
-                        try
-                        {
-                            return environ.Watchers[(int) stage].RemoveAll(x =>
-                                x.AppId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase) && 
-                                ((regy == null && x.Regex == null) || 
-                                (regy != null && x.Regex != null && regy.Equals(x.Regex.ToString(), StringComparison.InvariantCulture))));
-                        }
-                        finally
-                        {
-                            environ.WatchLocks[(int) stage].ExitWriteLock();
-                        }
-                    }
-                }
-                finally
-                {
-                    EnvironLock.ExitReadLock();
-                }
-            }
-            return 0;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="job"></param>
-        /// <returns></returns>
-        public static int Unwatch(IJob job, PipeLineStages stage)
+        public static int Unwatch(IJob job, PipeLineStages stage, Regex regex = null)
         {
             if (EnvironLock.TryEnterReadLock(watchLockTimeout))
             {
+				LogHelper.Error<WebRequestHandler>("Unable to remove Watch, can\'t get read lock", null);
+				return -1;
+			}
+            try
+            {
+                Environ environ;
+                if (!Environs.TryGetValue(job.Environment.SortOrder, out environ))
+                {
+                    return 0;
+                }
+
+                if (!environ.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
+                {
+					LogHelper.Error<WebRequestHandler>("Unable to remove Watch, can\'t get write lock", null);
+					return -1;
+				}
+
                 try
                 {
-                    Environ environ;
-                    if (!Environs.TryGetValue(job.Environment.SortOrder, out environ))
-                    {
-                        return 0;
-                    }
-
-                    if (environ.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
-                    {
-                        try
-                        {
-                            return environ.Watchers[(int) stage].RemoveAll(x =>
-                                x.AppId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase));
-                        }
-                        finally
-                        {
-                            environ.WatchLocks[(int) stage].ExitWriteLock();
-                        }
-                    }
+			        string regy = regex == null ? null : regex.ToString();
+                    return environ.Watchers[(int) stage].RemoveAll(x =>
+                        x.AppId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase) && 
+                        ((regy == null && x.Regex == null) || 
+                        (regy != null && x.Regex != null && regy.Equals(x.Regex.ToString(), StringComparison.InvariantCulture))));
                 }
                 finally
                 {
-                    EnvironLock.ExitReadLock();
+                    environ.WatchLocks[(int) stage].ExitWriteLock();
                 }
             }
-            return 0;
+            finally
+            {
+                EnvironLock.ExitReadLock();
+            }
         }
 
         public static int Unwatch(string appId) => Unwatch(null, appId);
@@ -276,67 +260,84 @@ namespace Our.Shield.Core.Operation
         /// </summary>
         /// <param name="appId"></param>
         /// <returns></returns>
-        public static int Unwatch(int? environmentId = null, string appId = null)
+        public static int Unwatch(int? environmentId = null, string appId = null, PipeLineStages? stage = null, Regex regex = null)
         {
             var count = 0;
             var deleteEnvirons = new List<int>();
 
             if (EnvironLock.TryEnterReadLock(watchLockTimeout))
             {
-                try
-                {
-                    foreach (var environ in Environs.Where(x => environmentId == null || x.Value.Id == environmentId))
-                    {
-                        int watchCount = 0;
-                        foreach (var stage in Enum.GetValues(typeof(PipeLineStages)))
-                        {
-                            if (environ.Value.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
-                            {
-                                try
-                                {
-                                    count += environ.Value.Watchers[(int) stage].RemoveAll(x =>
-                                        appId == null ||
-                                        x.AppId.Equals(appId, StringComparison.InvariantCultureIgnoreCase));
-                                    watchCount += environ.Value.Watchers[(int) stage].Count();
-                                }
-                                finally
-                                {
-                                    environ.Value.WatchLocks[(int) stage].ExitWriteLock();
-                                }
-                            }
-                        }
+				LogHelper.Error<WebRequestHandler>("Unable to remove Watch, can\'t get read lock", null);
+				return 0;
+			}
 
-                        if (watchCount == 0)
-                        {
-                            deleteEnvirons.Add(environ.Value.SortOrder);
-                        }
-                    }
-                }
-                finally
-                {
-                    EnvironLock.ExitReadLock();
-                }
-            }
-
-            if (deleteEnvirons.Any())
+            try
             {
-                if (EnvironLock.TryEnterWriteLock(watchLockTimeout))
+				string regy = regex == null ? null : regex.ToString();
+                foreach (var environ in Environs.Where(x => environmentId == null || x.Value.Id == environmentId))
                 {
-                    try
+                    int watchCount = 0;
+                    foreach (var objectStage in Enum.GetValues(typeof(PipeLineStages)))
                     {
-                        foreach (var sortOrder in deleteEnvirons)
+						var currentStage = (PipeLineStages) objectStage; 
+						if (stage != null && currentStage != stage)
+						{
+							continue;
+						}
+                        if (environ.Value.WatchLocks[(int) currentStage].TryEnterWriteLock(watchLockTimeout))
                         {
-                            Environs.Remove(sortOrder);
+							LogHelper.Error<WebRequestHandler>("Unable to remove Watch, can\'t get write lock", null);
+							return 0;
+						}
+                        try
+                        {
+                            count += environ.Value.Watchers[(int) currentStage].RemoveAll(x =>
+                                (appId == null ||
+								x.AppId.Equals(appId, StringComparison.InvariantCultureIgnoreCase)) && 
+								((regy == null && x.Regex == null) || 
+								(regy != null && x.Regex != null && regy.Equals(x.Regex.ToString(), StringComparison.InvariantCulture))));
+                            watchCount += environ.Value.Watchers[(int) currentStage].Count();
+                        }
+                        finally
+                        {
+                            environ.Value.WatchLocks[(int) currentStage].ExitWriteLock();
                         }
                     }
-                    finally
+
+                    if (watchCount == 0)
                     {
-                        EnvironLock.ExitWriteLock();
+                        deleteEnvirons.Add(environ.Value.SortOrder);
                     }
                 }
             }
+            finally
+            {
+                EnvironLock.ExitReadLock();
+            }
 
-            return count;
+            if (!deleteEnvirons.Any())
+            {
+				return count;
+			}
+
+            if (!EnvironLock.TryEnterWriteLock(watchLockTimeout))
+            {
+				LogHelper.Error<WebRequestHandler>("Unable to remove Watch, can\'t get write lock", null);
+				return 0;
+			}
+
+            try
+            {
+                foreach (var sortOrder in deleteEnvirons)
+                {
+                    Environs.Remove(sortOrder);
+                }
+				return count;
+            }
+            finally
+            {
+                EnvironLock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -413,92 +414,97 @@ namespace Our.Shield.Core.Operation
 
         private void Request(PipeLineStages stage, HttpApplication application)
         {
-            if (EnvironLock.TryEnterReadLock(watchLockTimeout))
+            if (!EnvironLock.TryEnterReadLock(watchLockTimeout))
             {
-                try
+                //  Problem Houston
+                application.Context.Response.StatusCode = 500;
+                application.CompleteRequest();
+                return;
+            }
+
+            try
+            {
+                if (!Environs.Any())
                 {
-                    if (!Environs.Any())
-                    {
-                        return;
-                    }
+                    return;
+                }
 
-                    int count = 0;
+                int count = 0;
 restart:
-                    if (count++ > requestRestartLimit)
-                    {
-                        application.Context.Response.StatusCode = 500;
-                        application.CompleteRequest();
-                    }
+                if (count++ > requestRestartLimit)
+                {
+                    application.Context.Response.StatusCode = 500;
+                    application.CompleteRequest();
+                }
 
-                    string uri = application.Context.Request.Url.AbsoluteUri;
-                    string uriWithoutDomain = null;
+                string uri = application.Context.Request.Url.AbsoluteUri;
+                string uriWithoutDomain = null;
 
-                    foreach (var environ in Environs)
+                foreach (var environ in Environs)
+                {
+                    string filePath = null;
+                    if (environ.Value.Domains == null)
                     {
-                        string filePath = null;
-                        if (environ.Value.Domains == null)
+                        if (uriWithoutDomain == null)
                         {
-                            if (uriWithoutDomain == null)
-                            {
-                                uriWithoutDomain = application.Context.Request.Url.LocalPath;
-                            }
-                            filePath = uriWithoutDomain;
+                            uriWithoutDomain = application.Context.Request.Url.LocalPath;
+                        }
+                        filePath = uriWithoutDomain;
+                    }
+                    else
+                    {
+                        var domain = environ.Value.Domains.FirstOrDefault(x => uri.StartsWith(x, StringComparison.InvariantCultureIgnoreCase));
+                        if (domain != null)
+                        {
+                            filePath = uri.Substring(domain.Length - 1);
                         }
                         else
                         {
-                            var domain = environ.Value.Domains.FirstOrDefault(x => uri.StartsWith(x, StringComparison.InvariantCultureIgnoreCase));
-                            if (domain != null)
-                            {
-                                filePath = uri.Substring(domain.Length - 1);
-                            }
-                            else
-                            {
-                                continue;
-                            }
+                            continue;
                         }
+                    }
 
-                        if (environ.Value.WatchLocks[(int) stage].TryEnterReadLock(watchLockTimeout))
+                    if (environ.Value.WatchLocks[(int) stage].TryEnterReadLock(watchLockTimeout))
+                    {
+                        try
                         {
-                            try
+                            foreach (var watch in environ.Value.Watchers[(int) stage])
                             {
-                                foreach (var watch in environ.Value.Watchers[(int) stage])
+                                if ((watch.Regex == null || watch.Regex.IsMatch(filePath)))
                                 {
-                                    if ((watch.Regex == null || watch.Regex.IsMatch(filePath)))
+                                    switch (ExecuteResponse(watch, watch.Request(count, application), application))
                                     {
-                                        switch (ExecuteResponse(watch, watch.Request(count, application), application))
-                                        {
-                                            case WatchResponse.Cycles.Stop:
-                                                return;
+                                        case WatchResponse.Cycles.Stop:
+                                            return;
 
-                                            case WatchResponse.Cycles.Restart:
-                                                goto restart;
+                                        case WatchResponse.Cycles.Restart:
+                                            goto restart;
 
-                                            case WatchResponse.Cycles.Error:
-                                                application.Context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
-                                                application.CompleteRequest();
-                                                break;
+                                        case WatchResponse.Cycles.Error:
+                                            application.Context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                                            application.CompleteRequest();
+                                            break;
 
-                                            //  If WatchCycle.Continue we do nothing
-                                        }
+                                        //  If WatchCycle.Continue we do nothing
                                     }
                                 }
                             }
-                            finally
-                            {
-                                environ.Value.WatchLocks[(int) stage].ExitReadLock();
-                            }
                         }
-
-                        if (!environ.Value.ContinueProcessing)
+                        finally
                         {
-                            break;
+                            environ.Value.WatchLocks[(int) stage].ExitReadLock();
                         }
                     }
+
+                    if (!environ.Value.ContinueProcessing)
+                    {
+                        break;
+                    }
                 }
-                finally
-                {
-                    EnvironLock.ExitReadLock();
-                }
+            }
+            finally
+            {
+                EnvironLock.ExitReadLock();
             }
         }
 
@@ -532,5 +538,65 @@ restart:
         /// 
         /// </summary>
         public void Dispose() { }
+
+        /// <summary>
+        /// Create an exception Url, that won't be redirected. Usually a service or error page that you want displayed, regardless or what watches want
+        /// </summary>
+        /// <param name="job">The job that created this Exception</param>
+        /// <param name="regex">The url / url rule that can be shown, try and match with or without trailing slash</param>
+        /// <returns>A Unique id for this Exception, or -1 if we failed to create it</returns>
+        public static int Exception(IJob job, Regex regex = null, UmbracoUrl url = null)
+        {
+            if (!UrlExceptionLock.TryEnterWriteLock(watchLockTimeout))
+            {
+				LogHelper.Error<WebRequestHandler>("Unable to create UrlException, can\'t get write lock", null);
+				return -1;
+			}
+			try
+			{
+		        var count = Interlocked.Increment(ref requestCount);
+				UrlExceptions.Add(new UrlException
+				{
+					Id = count,
+					EnvironmentId = job.Environment.Id,
+					AppId = job.App.Id,
+					Regex = regex,
+					Url = url
+				});
+				return count;
+			}
+			finally
+			{
+				UrlExceptionLock.ExitWriteLock();
+			}
+		}
+
+		public static int Unexception(IJob job, Regex regex = null) => Unexception(job.Environment.Id, job.App.Id, regex);
+		public static int Unexception(IJob job, UmbracoUrl url = null) => Unexception(job.Environment.Id, job.App.Id, null, url);
+		public static int Unexception(IJob job) => Unexception(job.Environment.Id, job.App.Id, null);
+		public static int Unexception(string appId = null, Regex regex = null) => Unexception(null, appId, regex);
+
+		public static int Unexception(int? environmentId = null, string appId = null, Regex regex = null, UmbracoUrl url = null)
+		{
+            if (!UrlExceptionLock.TryEnterWriteLock(watchLockTimeout))
+            {
+				LogHelper.Error<WebRequestHandler>("Unable to create UrlException, can\'t get write lock", null);
+				return -1;
+			}
+			try
+			{
+	            string regy = regex == null ? null : regex.ToString();
+
+				return UrlExceptions.RemoveAll(x => 
+					(environmentId == null || x.EnvironmentId == environmentId) && 
+					(appId == null || x.AppId == appId) ||
+					(regex == null || x.Regex.ToString() == regy) ||
+					(url == null || x.Url.Equals(url)));			
+			}
+			finally
+			{
+				UrlExceptionLock.ExitWriteLock();
+			}
+		}
     }
 }

@@ -321,6 +321,7 @@ namespace Our.Shield.BackofficeAccess.Models
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(AllowKey);
             job.UnwatchWebRequests();
+			job.UnexceptionWebRequest();
 
             ResetterLock = 0;
 

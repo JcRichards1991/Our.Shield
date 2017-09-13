@@ -76,8 +76,8 @@ namespace Our.Shield.FrontendAccess.Models
         /// <returns></returns>
         public override bool Execute(IJob job, IConfiguration c)
         {
-            ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(AllowKey);
             job.UnwatchWebRequests();
+            job.UnexceptionWebRequest();
 
             if (!c.Enable || !job.Environment.Enable)
             {

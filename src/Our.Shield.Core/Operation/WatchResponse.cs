@@ -36,15 +36,17 @@ namespace Our.Shield.Core.Operation
 
         public Cycles Cycle;
         public TransferUrl Transfer;
+		public bool IsExceptionUrl;
 
         public WatchResponse(Cycles cycle)
         {
             Cycle = cycle;
         }
 
-        public WatchResponse(TransferUrl transfer)
+        public WatchResponse(TransferUrl transfer, bool isExceptionUrl = false)
         {
             Transfer = transfer;
+			IsExceptionUrl = isExceptionUrl;
         }
     }
 }
