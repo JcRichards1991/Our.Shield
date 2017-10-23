@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Our.Shield.Core.Models;
 
-namespace Our.Shield.Elmah.Models
+namespace Our.Shield.SiteMaintenance.Models
 {
-    public class ElmahConfiguration : Configuration
+    public class SiteMaintenanceConfiguration : Configuration
     {
         /// <summary>
-        /// Whether or not ELMAH reporting page can be accessed when the request is coming from an authenticated umbraco user and/or restrict via IP Address(es)
+        /// Whether or not the Frontend can be accessed when the request is coming from an authenticated umbraco user
         /// </summary>
         [JsonProperty("umbracoUserEnable")]
         public bool UmbracoUserEnable { get; set; }
@@ -18,7 +18,7 @@ namespace Our.Shield.Elmah.Models
         public IpAccessControl IpAccessRules { get; set; }
 
         /// <summary>
-        /// The Url Type Selector and the url
+        /// Where to send unauthorized users too
         /// </summary>
         [JsonProperty("unauthorized")]
         public TransferUrl Unauthorized { get; set; }

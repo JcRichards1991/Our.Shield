@@ -36,6 +36,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.ScraperDefense",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.Elmah", "Our.Shield.Elmah\Our.Shield.Elmah.csproj", "{3B3C3F82-64CE-4840-AAF5-A428B3A39CF9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.SiteMaintenance", "Our.Shield.SiteMaintenance\Our.Shield.SiteMaintenance.csproj", "{68BFA421-B070-43DC-98F6-DD0670AB21EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,10 @@ Global
 		{3B3C3F82-64CE-4840-AAF5-A428B3A39CF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B3C3F82-64CE-4840-AAF5-A428B3A39CF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B3C3F82-64CE-4840-AAF5-A428B3A39CF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68BFA421-B070-43DC-98F6-DD0670AB21EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68BFA421-B070-43DC-98F6-DD0670AB21EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68BFA421-B070-43DC-98F6-DD0670AB21EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68BFA421-B070-43DC-98F6-DD0670AB21EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,5 +98,6 @@ Global
 		{CE78DDD4-F1C4-429C-9D76-2060EEEC2042} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
 		{29E5F2A8-4855-4A3C-96C6-510BC582AF6A} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
 		{3B3C3F82-64CE-4840-AAF5-A428B3A39CF9} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
+		{68BFA421-B070-43DC-98F6-DD0670AB21EE} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
 	EndGlobalSection
 EndGlobal

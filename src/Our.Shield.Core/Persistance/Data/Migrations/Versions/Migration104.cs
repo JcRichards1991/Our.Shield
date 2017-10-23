@@ -122,7 +122,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
         private void ConfigMapper(string appId, dynamic definition, Func<dynamic, dynamic> map)
         {
             var sql = new Sql();
-            sql.Where<Data.Dto.Configuration>(x => x.AppId == appId, _sqlSyntax);
+            sql.Where<Data.Dto.Configuration>(x => x.AppId == appId);
 
             var config = _database.FirstOrDefault<Data.Dto.Configuration>(sql);
 

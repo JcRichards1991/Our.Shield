@@ -27,6 +27,9 @@ namespace Our.Shield.Core.Models
         [JsonProperty("icon")]
         string Icon { get; }
 
+        [JsonProperty("tabs")]
+        string[] Tabs { get; }
+
         /// <summary>
         /// The initialise method for the App
         /// </summary>

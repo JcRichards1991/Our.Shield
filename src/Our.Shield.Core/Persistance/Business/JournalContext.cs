@@ -54,12 +54,12 @@ namespace Our.Shield.Core.Persistance.Business
 
             if (environmentId.HasValue)
             { 
-                sql.Where<Data.Dto.Journal>(j => j.EnvironmentId == environmentId, Syntax);
+                sql.Where<Data.Dto.Journal>(j => j.EnvironmentId == environmentId);
             }
             
             if (appId != null)
             {
-                sql.Where<Data.Dto.Journal>(j => j.AppId == appId, Syntax);
+                sql.Where<Data.Dto.Journal>(j => j.AppId == appId);
             }
 
             sql.OrderByDescending<Data.Dto.Journal>(j => j.Datestamp, Syntax);

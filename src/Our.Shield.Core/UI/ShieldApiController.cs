@@ -29,7 +29,6 @@ namespace Our.Shield.Core.UI
         public TreeView View(int id)
         {
             var environments = Operation.JobService.Instance.Environments.OrderBy(x => x.Key.SortOrder).ToDictionary(x => x.Key, v => v.Value);
-            int totalPages = 1;
 
             if (id == Constants.Tree.EnvironmentsRootId)
             {
@@ -43,6 +42,7 @@ namespace Our.Shield.Core.UI
 
             foreach (var environment in environments)
             {
+                int totalPages;
                 if (id == environment.Key.Id)
                 {
                     var journals = Operation.EnvironmentService.Instance.JournalListing<JournalMessage>(id, 1, 100, out totalPages);
@@ -56,6 +56,7 @@ namespace Our.Shield.Core.UI
                         Enable = x.ReadConfiguration().Enable
                     });
 
+                    var appArray = apps as AppListingItem[] ?? apps.ToArray();
                     return new TreeView
                     {
                         Type = TreeView.TreeViewType.Environment,
@@ -63,13 +64,13 @@ namespace Our.Shield.Core.UI
                         Description = $"View apps for the {environment.Key.Name} environment",
                         Environment = environment.Key,
                         Environments = environments.Keys,
-                        Apps = apps.OrderBy(x => x.Name),
+                        Apps = appArray.OrderBy(x => x.Name),
                         JournalListing = new JournalListing
                         {
                             Journals = journals.Select(x => new JournalListingItem
                             {
                                 Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                                App = apps.FirstOrDefault(a => a.AppId == x.AppId),
+                                App = appArray.FirstOrDefault(a => a.AppId == x.AppId),
                                 Environment = environment.Key,
                                 Message = x.Message
                             }),
@@ -80,46 +81,46 @@ namespace Our.Shield.Core.UI
 
                 foreach (var job in environment.Value)
                 {
-                    if (id == job.Id)
+                    if (id != job.Id)
+                        continue;
+
+                    var appAssests = new AppAssest
                     {
-                        var appAssests = new AppAssest
-                        {
-                            View = job.App.GetType().GetCustomAttribute<AppEditorAttribute>()?.FilePath ?? null,
+                        View = job.App.GetType().GetCustomAttribute<AppEditorAttribute>()?.FilePath,
 
-                            Stylesheets = job.App.GetType().GetCustomAttributes<AppAssetAttribute>()
-                                .Where(x => x.AssetType == ClientDependency.Core.ClientDependencyType.Css)
-                                .Select(x => x.FilePath),
+                        Stylesheets = job.App.GetType().GetCustomAttributes<AppAssetAttribute>()
+                            .Where(x => x.AssetType == ClientDependency.Core.ClientDependencyType.Css)
+                            .Select(x => x.FilePath),
 
-                            Scripts = job.App.GetType().GetCustomAttributes<AppAssetAttribute>()
-                                .Where(x => x.AssetType == ClientDependency.Core.ClientDependencyType.Javascript)
-                                .Select(x => x.FilePath)
-                        };
+                        Scripts = job.App.GetType().GetCustomAttributes<AppAssetAttribute>()
+                            .Where(x => x.AssetType == ClientDependency.Core.ClientDependencyType.Javascript)
+                            .Select(x => x.FilePath)
+                    };
                         
-                        var journals = job.ListJournals<JournalMessage>(1, 50, out totalPages);
+                    var journals = job.ListJournals<JournalMessage>(1, 50, out totalPages);
 
-                        return new TreeView
+                    return new TreeView
+                    {
+                        Type = TreeView.TreeViewType.App,
+                        Name = job.App.Name,
+                        Description = job.App.Description,
+                        Environments = environments.Keys,
+                        Environment = environment.Key,
+                        App = job.App,
+                        Configuration = job.ReadConfiguration(),
+                        AppAssests = appAssests,
+                        JournalListing = new JournalListing
                         {
-                            Type = TreeView.TreeViewType.App,
-                            Name = job.App.Name,
-                            Description = job.App.Description,
-                            Environments = environments.Keys,
-                            Environment = environment.Key,
-                            App = job.App,
-                            Configuration = job.ReadConfiguration(),
-                            AppAssests = appAssests,
-                            JournalListing = new JournalListing
+                            Journals = journals.Select(x => new JournalListingItem
                             {
-                                Journals = journals.Select(x => new JournalListingItem
-                                {
-                                    Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                                    App = new AppListingItem(job),
-                                    Environment = environment.Key,
-                                    Message = x.Message
-                                }),
-                                TotalPages = totalPages,
-                            }
-                        };
-                    }
+                                Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+                                App = new AppListingItem(job),
+                                Environment = environment.Key,
+                                Message = x.Message
+                            }),
+                            TotalPages = totalPages
+                        }
+                    };
                 }
             }
             return null;
@@ -147,8 +148,8 @@ namespace Our.Shield.Core.UI
                 return false;
             }
             var configuration = json.ToObject(((Job)job).ConfigType) as IConfiguration;
-            configuration.Enable = json.GetValue(nameof(IConfiguration.Enable), System.StringComparison.InvariantCultureIgnoreCase).Value<bool>();
-            
+            configuration.Enable = json.GetValue(nameof(IConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase).Value<bool>();
+
             if (Security.CurrentUser != null)
             {
                 var user = Security.CurrentUser;
@@ -163,13 +164,14 @@ namespace Our.Shield.Core.UI
         /// </summary>
         /// <param name="id"></param>
         /// <param name="page"></param>
+        /// <param name="orderBy"></param>
+        /// <param name="orderByDirection"></param>
         /// <returns></returns>
         [HttpGet]
         public JournalListing Journals(int id, int page, string orderBy, string orderByDirection)
         {
             var environments = Operation.JobService.Instance.Environments;
-            var apps = environments.First().Value.Select(x => x.App);
-            int totalPages = 1;
+            int totalPages;
 
             if (id == Constants.Tree.EnvironmentsRootId)
             {
@@ -189,41 +191,39 @@ namespace Our.Shield.Core.UI
                     TotalPages = totalPages
                 };
             }
-            else
+
+            foreach (var environment in environments)
             {
-                foreach (var environment in environments)
+                if (id == environment.Key.Id)
                 {
-                    if (id == environment.Key.Id)
+                    return new JournalListing
+                    {
+                        Journals = Operation.EnvironmentService.Instance.JournalListing<JournalMessage>(id, page, 100, out totalPages).Select(x => new JournalListingItem
+                        {
+                            Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+                            App = new AppListingItem(environment.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
+                            Environment = environment.Key,
+                            Message = x.Message
+                        }),
+                        TotalPages = totalPages
+                    };
+                }
+
+                foreach (var job in environment.Value)
+                {
+                    if (id == job.Id)
                     {
                         return new JournalListing
                         {
-                            Journals = Operation.EnvironmentService.Instance.JournalListing<JournalMessage>(id, page, 100, out totalPages).Select(x => new JournalListingItem
+                            Journals = job.ListJournals<JournalMessage>(page, 50, out totalPages).Select(x => new JournalListingItem
                             {
                                 Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                                App = new AppListingItem(environment.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
+                                App = new AppListingItem(job),
                                 Environment = environment.Key,
                                 Message = x.Message
                             }),
                             TotalPages = totalPages
                         };
-                    }
-
-                    foreach (var job in environment.Value)
-                    {
-                        if (id == job.Id)
-                        {
-                            return new JournalListing
-                            {
-                                Journals = job.ListJournals<JournalMessage>(page, 50, out totalPages).Select(x => new JournalListingItem
-                                {
-                                    Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                                    App = new AppListingItem(job),
-                                    Environment = environment.Key,
-                                    Message = x.Message
-                                }),
-                                TotalPages = totalPages
-                            };
-                        }
                     }
                 }
             }
@@ -268,11 +268,7 @@ namespace Our.Shield.Core.UI
         {
             var environment = (Models.Environment)Operation.JobService.Instance.Environments.FirstOrDefault(x => x.Key.Id.Equals(id)).Key;
 
-            if(environment != null)
-            {
-                return Operation.EnvironmentService.Instance.Delete(environment);
-            }
-            return false;
+            return environment != null && Operation.EnvironmentService.Instance.Delete(environment);
         }
 
         /// <summary>
@@ -288,12 +284,13 @@ namespace Our.Shield.Core.UI
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="environments"></param>
+        /// <param name="environmentsJson"></param>
         /// <returns></returns>
         [HttpPost]
-        public bool SortEnvironments([FromBody] IEnumerable<JObject> json)
+        public bool SortEnvironments([FromBody] IEnumerable<JObject> environmentsJson)
         {
-            if (json == null || !json.Any())
+            var json = environmentsJson.ToList();
+            if (!json.Any())
             {
                 return false;
             }
@@ -303,20 +300,20 @@ namespace Our.Shield.Core.UI
 
             foreach (var environment in environments)
             {
-                if (oldEnvironments.Any(x => x.Id.Equals(environment.Id) && !x.SortOrder.Equals(environment.SortOrder)))
+                if (!oldEnvironments.Any(x => x.Id.Equals(environment.Id) && !x.SortOrder.Equals(environment.SortOrder)))
+                    continue;
+
+                if (!Operation.EnvironmentService.Instance.Write(environment))
                 {
-                    if (!Operation.EnvironmentService.Instance.Write(environment))
-                    {
-                        return false;
-                    }
-
-                    if (!Operation.JobService.Instance.Unregister(environment))
-                    {
-                        return false;
-                    }
-
-                    Operation.JobService.Instance.Register(environment);
+                    return false;
                 }
+
+                if (!Operation.JobService.Instance.Unregister(environment))
+                {
+                    return false;
+                }
+
+                Operation.JobService.Instance.Register(environment);
             }
             return true;
         }

@@ -1,0 +1,44 @@
+﻿<div ng-controller="Shield.Editors.SiteMaintenance.Edit as vm" ng-init="vm.init()">
+    <ng-form name="SiteMaintenanceForm">
+
+        <div class="umb-el-wrap control-group umb-control-group">
+            <label for="unauthorisedAction" class="control-label">
+                <localize key="Shield.SiteMaintenance.Properties_UmbracoUsersEnableLabel">Allow Authenticated Umbraco Users</localize>
+                <small>
+                    <localize key="Shield.SiteMaintenance.Properties_UmbracoUsersEnableDescription">Whether or not the frontend is accessible by users who have authenticated as an Umbraco User</localize>
+                </small>
+            </label>
+
+            <div class="controls">
+                <div class="umb-editor umb-checkbox">
+                    <input type="checkbox" id="umbracoUsersEnabled" ng-model="vm.configuration.umbracoUserEnable" />
+                </div>
+            </div>
+        </div>
+
+        <div class="umb-el-wrap control-group umb-control-group">
+            <label class="control-label">
+                <localize key="Shield.Properties_IpAccessControlLabel"></localize>
+                <small>
+                    <localize key="Shield.Properties_IpAccessControlDescription"></localize>
+                </small>
+            </label>
+
+            <shield-ip-access-control model="vm.configuration.ipAccessRules"></shield-ip-access-control>
+        </div>
+
+        <div class="umb-el-wrap control-group umb-control-group">
+            <label for="unauthorizedAction" class="control-label">
+                <localize key="Shield.Properties_UnauthorizedLabel"></localize>
+                <small>
+                    <localize key="Shield.Properties_UnauthozisedDescription"></localize>
+                </small>
+            </label>
+            <div class="controls">
+                <div class="umb-editor">
+                    <shield-transfer-url model="vm.configuration.unauthorized"></shield-transfer-url>
+                </div>
+            </div>
+        </div>
+    </ng-form>
+</div>

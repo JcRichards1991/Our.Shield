@@ -97,7 +97,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
             //  Check if Backoffice Access has been installed, as we may
             //  need to update the configuration to match the new class
             var sql = new Sql();
-            sql.Where<Data.Dto.Configuration>(x => x.AppId == "BackofficeAccess", _sqlSyntax);
+            sql.Where<Data.Dto.Configuration>(x => x.AppId == "BackofficeAccess");
 
             var config = _database.FirstOrDefault<Data.Dto.Configuration>(sql);
 

@@ -35,6 +35,15 @@ namespace Our.Shield.Core.Models
         [JsonProperty("icon")]
         public abstract string Icon { get; }
 
+        [JsonProperty("tabs")]
+        public virtual string[] Tabs
+        {
+            get
+            {
+                return new string[2] { "Configuration", "Journal" };
+            }
+        }
+
         /// <summary>
         /// The initialise method for the App
         /// </summary>

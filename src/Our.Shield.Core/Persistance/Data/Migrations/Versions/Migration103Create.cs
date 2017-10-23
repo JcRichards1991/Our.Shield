@@ -45,7 +45,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
             else
             {
                 _schemaHelper.CreateTable<Dto.Environment.Environment103>();
-                Context.Database.Insert(new Dto.Environment.Environment103
+                _database.Insert(new Dto.Environment.Environment103
                 {
                     Name = "Default",
                     Icon = "icon-firewall red",
