@@ -122,5 +122,14 @@ namespace Our.Shield.Core.Models
         /// <returns></returns>
         public int UnwatchWebRequests(IApp app) =>
             WebRequestHandler.Unwatch(app.Id);
+
+        public int ExceptionWebRequest(Regex regex) => WebRequestHandler.Exception(this, regex);
+        public int ExceptionWebRequest(UmbracoUrl url) => WebRequestHandler.Exception(this, null, url);
+
+        public int UnexceptionWebRequest(Regex regex) => WebRequestHandler.Unexception(this, regex);
+        public int UnexceptionWebRequest(UmbracoUrl url) => WebRequestHandler.Unexception(this, url);
+
+        public int UnexceptionWebRequest() => WebRequestHandler.Unexception(this);
+
     }
 }

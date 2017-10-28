@@ -22,5 +22,16 @@ namespace Our.Shield.Core.Models
         /// </summary>
         [JsonProperty("value")]
         public string Value { get; set; }
-    }
+
+		public override bool Equals(object obj)
+		{
+			var other = (UmbracoUrl) obj;
+			return (Type == other.Type && Value.Equals(other.Value)) ? true : false;
+		}
+
+		public override int GetHashCode()
+		{
+			return ((int) Type) + Value.GetHashCode();
+		}
+	}
 }

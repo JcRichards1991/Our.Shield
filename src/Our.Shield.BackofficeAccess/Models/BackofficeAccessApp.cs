@@ -185,6 +185,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 true);
 
             //Add watch on the hard location
+			job.ExceptionWebRequest(config.Unauthorized.Url);
             job.WatchWebRequests(PipeLineStages.BeginRequest, new Regex("^((" + hardLocation.TrimEnd('/') + "(/)?)|(" + hardLocation + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase), 20020, (count, httpApp) =>
             {
                 //Check if request has our access token, if so, we're
@@ -251,6 +252,7 @@ namespace Our.Shield.BackofficeAccess.Models
             }
 
             //Add watch on the on-disk UmbracoPath location to do the security checking of the user's ip
+			job.ExceptionWebRequest(config.Unauthorized.Url);
             job.WatchWebRequests(PipeLineStages.BeginRequest, hardLocationRegex, 21000, (count, httpApp) =>
             {
                 //If request has an authenticated user,
@@ -321,6 +323,7 @@ namespace Our.Shield.BackofficeAccess.Models
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(AllowKey);
             job.UnwatchWebRequests();
+			job.UnexceptionWebRequest();
 
             ResetterLock = 0;
 

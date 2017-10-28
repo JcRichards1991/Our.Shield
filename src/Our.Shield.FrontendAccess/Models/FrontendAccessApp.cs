@@ -76,8 +76,8 @@ namespace Our.Shield.FrontendAccess.Models
         /// <returns></returns>
         public override bool Execute(IJob job, IConfiguration c)
         {
-            ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(AllowKey);
             job.UnwatchWebRequests();
+            job.UnexceptionWebRequest();
 
             if (!c.Enable || !job.Environment.Enable)
             {
@@ -92,7 +92,7 @@ namespace Our.Shield.FrontendAccess.Models
             {
                 job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
             }
-
+			job.ExceptionWebRequest(config.Unauthorized.Url);
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 10000, (count, httpApp) =>
             {
                 if ((config.UmbracoUserEnable && !AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))

@@ -45,7 +45,7 @@ namespace Our.Shield.Core.Operation
             }
         }
 
-        private static ReaderWriterLockSlim jobLock = new ReaderWriterLockSlim();
+        private static Locker jobLock = new Locker();
 
         private static readonly Lazy<IDictionary<int, Job>> jobs = 
             new Lazy<IDictionary<int, Job>>(() => 
@@ -65,30 +65,21 @@ namespace Our.Shield.Core.Operation
         {
             get
             {
-                if (jobLock.TryEnterReadLock(taskLockTimeout))
-                {
-                    try
+				return jobLock.Read<Dictionary<IEnvironment, IList<IJob>>>(() => 
+				{
+	                var results = new Dictionary<IEnvironment, IList<IJob>>();
+                    foreach (var kvp in jobs.Value)
                     {
-                        var results = new Dictionary<IEnvironment, IList<IJob>>();
-                        foreach (var kvp in jobs.Value)
+                        IList<IJob> jobs = null;
+                        if (!results.TryGetValue(kvp.Value.Environment, out jobs))
                         {
-                            IList<IJob> jobs = null;
-                            if (!results.TryGetValue(kvp.Value.Environment, out jobs))
-                            {
-                                jobs = new List<IJob>();
-                                results.Add(kvp.Value.Environment, jobs);
-                            }
-                            jobs.Add(kvp.Value.DeepCopy());
+                            jobs = new List<IJob>();
+                            results.Add(kvp.Value.Environment, jobs);
                         }
-
-                        return results;
+                        jobs.Add(kvp.Value.DeepCopy());
                     }
-                    finally
-                    {
-                        jobLock.ExitReadLock();
-                    }
-                }
-                return null;
+					return results;
+                });
             }
         }
 
@@ -99,18 +90,10 @@ namespace Our.Shield.Core.Operation
         /// <returns></returns>
         public IJob Job(int id)
         {
-            if (jobLock.TryEnterReadLock(taskLockTimeout))
-            {
-                try
-                {
-                    return jobs.Value[id].DeepCopy();
-                }
-                finally
-                {
-                    jobLock.ExitReadLock();
-                }
-            }
-            return null;
+			return jobLock.Read<IJob>(() =>
+			{
+                return jobs.Value[id].DeepCopy();
+            });
         }                    
 
         private void LoadMigrations(IApp app, ApplicationContext applicationContext)
@@ -251,44 +234,32 @@ namespace Our.Shield.Core.Operation
             {
                 //System.Diagnostics.Debug.WriteLine("START running poll with " + ranTick.ToString());
                 ranTick = ranNow;
-                if (jobLock.TryEnterWriteLock(taskLockTimeout))
-                {
-                    try
+				if (jobLock.Write(() => 
+				{
+                    foreach (var reg in jobs.Value)
                     {
-                        foreach (var reg in jobs.Value)
-                        {
-                            var ct = new CancellationTokenSource();
-                            var task = new Task<bool>(() => Execute(reg.Value), ct.Token, TaskCreationOptions.PreferFairness);
+                        var ct = new CancellationTokenSource();
+                        var task = new Task<bool>(() => Execute(reg.Value), ct.Token, TaskCreationOptions.PreferFairness);
 
-                            reg.Value.CancelToken = ct;
-                            reg.Value.Task = task;
-                        }
+                        reg.Value.CancelToken = ct;
+                        reg.Value.Task = task;
                     }
-                    finally
-                    {
-                        jobLock.ExitWriteLock();
-                    }
-
-                    if (jobLock.TryEnterReadLock(taskLockTimeout))
-                    {
-                        try
-                        {
-                            foreach (var reg in jobs.Value)
-                            {
-                                reg.Value.Task.Start();
-                            }
-                        }
-                        finally
-                        {
-                            jobLock.ExitReadLock();
-                        }
-                    }
-                }
-
-                if (Interlocked.CompareExchange(ref ranTick, ranRepeat, ranNow) != ranRepeat)
-                {
-                    ranTick = DateTime.UtcNow.AddSeconds(poll).Ticks;
-                }
+                }))
+				{
+					if (jobLock.Read(() =>
+					{
+						foreach (var reg in jobs.Value)
+						{
+							reg.Value.Task.Start();
+						}
+					}))
+					{
+						if (Interlocked.CompareExchange(ref ranTick, ranRepeat, ranNow) != ranRepeat)
+						{
+							ranTick = DateTime.UtcNow.AddSeconds(poll).Ticks;
+						}
+					}
+				}
                 //System.Diagnostics.Debug.WriteLine("END running poll with " + ranTick.ToString());
             }
             finally
@@ -304,35 +275,21 @@ namespace Our.Shield.Core.Operation
                 job.CancelToken.Token.ThrowIfCancellationRequested();
 
                 var config = ReadConfiguration(job, job.App.DefaultConfiguration);
-                if (jobLock.TryEnterReadLock(taskLockTimeout))
-                {
-                    try
-                    {
-                        if (job.LastRan != null && config.LastModified < job.LastRan)
-                        {
-                            return true;
-                        }
-                    }
-                    finally
-                    {
-                        jobLock.ExitReadLock();
-                    }
-                }
+				if (jobLock.Read<bool>(() =>
+				{
+                    return (job.LastRan != null && config.LastModified < job.LastRan);
+                }))
+				{
+					return true;
+				}
 
                 if (job.App.Execute(job, config))
                 {
-                    if (jobLock.TryEnterWriteLock(taskLockTimeout))
-                    {
-                        try
-                        {
-                            job.LastRan = DateTime.UtcNow;
-                            return true;
-                        }
-                        finally
-                        {
-                            jobLock.ExitWriteLock();
-                        }
-                    }
+					jobLock.Write(() =>
+					{
+                        job.LastRan = DateTime.UtcNow;
+                    });
+					return true;
                 }
             }
             catch (OperationCanceledException)
@@ -414,27 +371,18 @@ namespace Our.Shield.Core.Operation
         /// <returns>True if successfully added; otherwise, False</returns>
         public bool Register(IEnvironment environment, IApp app)
         {
-            if (jobLock.TryEnterWriteLock(taskLockTimeout))
-            {
-                try
+            return jobLock.Write(() =>
+			{
+                var job = new Job
                 {
-                    var job = new Job
-                    {
-                        Id = registerCount++,
-                        Environment = environment,
-                        App = app,
-                        ConfigType = app.GetType().BaseType.GenericTypeArguments[0]
-                    };
+                    Id = registerCount++,
+                    Environment = environment,
+                    App = app,
+                    ConfigType = app.GetType().BaseType.GenericTypeArguments[0]
+                };
 
-                    jobs.Value.Add(job.Id, job);
-                    return true;
-                }
-                finally
-                {
-                    jobLock.ExitWriteLock();
-                }
-            }
-            return false;
+                jobs.Value.Add(job.Id, job);
+            });
         }
 
         /// <summary>
@@ -444,27 +392,18 @@ namespace Our.Shield.Core.Operation
         /// <returns></returns>
         public bool Unregister(int id)
         {
-            if (jobLock.TryEnterWriteLock(taskLockTimeout))
-            {
-                try
+            return jobLock.Write(() =>
+			{
+                Job job = null;
+                if (jobs.Value.TryGetValue(id, out job))
                 {
-                    Job job = null;
-                    if (jobs.Value.TryGetValue(id, out job))
+                    if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
                     {
-                        if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
-                        {
-                            job.CancelToken.Cancel();
-                        }
-                        jobs.Value.Remove(id);
-                        return true;
+                        job.CancelToken.Cancel();
                     }
+                    jobs.Value.Remove(id);
                 }
-                finally
-                {
-                    jobLock.ExitWriteLock();
-                }
-            }
-            return false;
+            });
         }
 
         /// <summary>
@@ -481,35 +420,26 @@ namespace Our.Shield.Core.Operation
         /// <returns>True if successfully removed; otherwise, False</returns>
         public bool Unregister(IEnvironment environment)
         {
-            if (jobLock.TryEnterWriteLock(taskLockTimeout))
-            {
-                try
+            return jobLock.Write(() => 
+			{
+                var keys = new List<int>();
+                foreach (var job in jobs.Value)
                 {
-                    var keys = new List<int>();
-                    foreach (var job in jobs.Value)
+                    if (job.Value.Environment.Id == environment.Id)
                     {
-                        if (job.Value.Environment.Id == environment.Id)
+                        if (job.Value.Task != null && !job.Value.Task.IsCanceled && !job.Value.Task.IsCompleted && 
+							!job.Value.CancelToken.IsCancellationRequested)
                         {
-                            if (job.Value.Task != null && !job.Value.Task.IsCanceled && !job.Value.Task.IsCompleted && !job.Value.CancelToken.IsCancellationRequested)
-                            {
-                                job.Value.CancelToken.Cancel();
-                            }
-                            keys.Add(job.Key);
+                            job.Value.CancelToken.Cancel();
                         }
+                        keys.Add(job.Key);
                     }
-                    foreach (var key in keys)
-                    {
-                        jobs.Value.Remove(key);
-                    }
-
-                    return true;
                 }
-                finally
+                foreach (var key in keys)
                 {
-                    jobLock.ExitWriteLock();
+                    jobs.Value.Remove(key);
                 }
-            }
-            return false;
+            });
         }
 
         /// <summary>
@@ -519,35 +449,26 @@ namespace Our.Shield.Core.Operation
         /// <returns>True if successfully removed; otherwise, False</returns>
         public bool Unregister(string appId)
         {
-            if (jobLock.TryEnterWriteLock(taskLockTimeout))
+            return jobLock.Write(() => 
             {
-                try
+                var removeItems = new List<int>();
+                Job job = null;
+                foreach (var reg in jobs.Value)
                 {
-                    var removeItems = new List<int>();
-                    Job job = null;
-                    foreach (var reg in jobs.Value)
+                    if (reg.Value.App.Id == appId)
                     {
-                        if (reg.Value.App.Id == appId)
+                        if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
                         {
-                            if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
-                            {
-                                job.CancelToken.Cancel();
-                            }
-                            removeItems.Add(reg.Key);
+                            job.CancelToken.Cancel();
                         }
+                        removeItems.Add(reg.Key);
                     }
-                    foreach (var item in removeItems)
-                    {
-                        jobs.Value.Remove(item);
-                    }
-                    return true;
                 }
-                finally
+                foreach (var item in removeItems)
                 {
-                    jobLock.ExitWriteLock();
+                    jobs.Value.Remove(item);
                 }
-            }
-            return false;
+            });
         }
 
         /// <summary>

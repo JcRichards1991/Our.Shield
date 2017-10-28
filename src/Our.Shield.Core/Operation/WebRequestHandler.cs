@@ -7,6 +7,7 @@ using System.Threading;
 using System.Web;
 using System.Net;
 using Umbraco.Core.Logging;
+using System.Text;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.Core.Operation.WebRequestHandler), nameof(Our.Shield.Core.Operation.WebRequestHandler.Register))]
 namespace Our.Shield.Core.Operation
@@ -25,12 +26,6 @@ namespace Our.Shield.Core.Operation
     /// </summary>
     internal class WebRequestHandler : IHttpModule
     {
-#if DEBUG
-        private const int watchLockTimeout = 1000000;
-#else
-        private const int watchLockTimeout = 1000;
-#endif
-
         private const int requestRestartLimit = 100;
 
         /// <summary>
@@ -50,7 +45,7 @@ namespace Our.Shield.Core.Operation
             public int SortOrder;
             public bool ContinueProcessing;
             public List<string> Domains;
-            public ReaderWriterLockSlim[] WatchLocks;
+            public Locker[] WatchLocks;
             public List<Watcher>[] Watchers;
 
             public Environ(IEnvironment environment)
@@ -59,13 +54,14 @@ namespace Our.Shield.Core.Operation
                 SortOrder = environment.SortOrder;
                 ContinueProcessing = environment.ContinueProcessing;
                 Domains = Domains(environment.Domains);
-                WatchLocks = new ReaderWriterLockSlim[PipeLineStagesLength];
+                WatchLocks = new Locker[PipeLineStagesLength];
                 Watchers = new List<Watcher>[PipeLineStagesLength];
                 for (var index = 0; index != PipeLineStagesLength; index++)
                 {
-                    WatchLocks[index] = new ReaderWriterLockSlim();
+                    WatchLocks[index] = new Locker();
                     Watchers[index] = new List<Watcher>();
                 }
+
             }
         }
 
@@ -78,8 +74,24 @@ namespace Our.Shield.Core.Operation
             public Func<int, HttpApplication, WatchResponse> Request;
         }
 
-        private static ReaderWriterLockSlim EnvironLock = new ReaderWriterLockSlim();
+        private class UrlException
+        {
+            public int Id;
+            public int EnvironmentId;
+            public string AppId;
+            public Regex Regex;
+			public UmbracoUrl Url;
+			public bool CalculatedUrl;
+			public string CalculatedUrlWithoutSlash;
+			public string CalculatedUrlWithSlash;
+        }
+
+        private static Locker EnvironLock = new Locker();
         private static SortedDictionary<int, Environ> Environs = new SortedDictionary<int, Environ>();
+		private static bool[] EnvironHasWatches = new bool[PipeLineStagesLength];
+
+        private static Locker UrlExceptionLock = new Locker();
+        private static List<UrlException> UrlExceptions = new List<UrlException>();
 
         private static int requestCount = 0;
 
@@ -136,56 +148,36 @@ namespace Our.Shield.Core.Operation
         /// <returns></returns>
         public static int Watch(IJob job, PipeLineStages stage, Regex regex, int priority, Func<int, HttpApplication, WatchResponse> request)
         {
-            var count = Interlocked.Increment(ref requestCount);
-
-            if (EnvironLock.TryEnterWriteLock(watchLockTimeout))
-            {
-                Environ environ;
-                try
+            Environ environ = null;
+			if (EnvironLock.Write(() =>
+			{
+                if (!Environs.TryGetValue(job.Environment.SortOrder, out environ))
                 {
-                    if (!Environs.TryGetValue(job.Environment.SortOrder, out environ))
-                    {
-                        Environs.Add(job.Environment.SortOrder, environ = new Environ(job.Environment));
-                    }
+                    Environs.Add(job.Environment.SortOrder, environ = new Environ(job.Environment));
                 }
-                finally
-                {
-                    EnvironLock.ExitWriteLock();
-                }
-
-                if (EnvironLock.TryEnterReadLock(watchLockTimeout))
-                {
-                    try
-                    {
-                        if (environ.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
-                        {
-                            try
-                            {
-                                var watchList = environ.Watchers[(int) stage];
-                                watchList.Add(new Watcher
-                                {
-                                    Id = count,
-                                    Priority = priority,
-                                    AppId = job.App.Id,
-                                    Regex = regex,
-                                    Request = request
-                                });
-                                watchList.Sort(new WatchComparer());
-                            }
-                            finally
-                            {
-                                environ.WatchLocks[(int) stage].ExitWriteLock();
-                            }
-                        }
-                    }
-                    finally
-                    {
-                        EnvironLock.ExitReadLock();
-                    }
-                }
-            }
-
-            return count;
+            }))
+			{
+				return EnvironLock.Read<int>(() =>
+				{
+					return environ.WatchLocks[(int) stage].Write<int>(() =>
+					{
+						var watchList = environ.Watchers[(int) stage];
+						var count = Interlocked.Increment(ref requestCount);
+						EnvironHasWatches[(int) stage] = true;
+						watchList.Add(new Watcher
+						{
+							Id = count,
+							Priority = priority,
+							AppId = job.App.Id,
+							Regex = regex,
+							Request = request
+						});
+						watchList.Sort(new WatchComparer());
+						return count;
+					});
+				});
+			}
+			return -1;
         }
 
         /// <summary>
@@ -194,79 +186,25 @@ namespace Our.Shield.Core.Operation
         /// <param name="job"></param>
         /// <param name="regex"></param>
         /// <returns></returns>
-        public static int Unwatch(IJob job, PipeLineStages stage, Regex regex)
+        public static int Unwatch(IJob job, PipeLineStages stage, Regex regex = null)
         {
-            string regy = regex == null ? null : regex.ToString();
-
-            if (EnvironLock.TryEnterReadLock(watchLockTimeout))
-            {
-                try
+			return EnvironLock.Read(() =>
+			{
+                Environ environ;
+                if (!Environs.TryGetValue(job.Environment.SortOrder, out environ))
                 {
-                    Environ environ;
-                    if (!Environs.TryGetValue(job.Environment.SortOrder, out environ))
-                    {
-                        return 0;
-                    }
+                    return 0;
+                }
 
-                    if (environ.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
-                    {
-                        try
-                        {
-                            return environ.Watchers[(int) stage].RemoveAll(x =>
-                                x.AppId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase) && 
-                                ((regy == null && x.Regex == null) || 
-                                (regy != null && x.Regex != null && regy.Equals(x.Regex.ToString(), StringComparison.InvariantCulture))));
-                        }
-                        finally
-                        {
-                            environ.WatchLocks[(int) stage].ExitWriteLock();
-                        }
-                    }
-                }
-                finally
-                {
-                    EnvironLock.ExitReadLock();
-                }
-            }
-            return 0;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="job"></param>
-        /// <returns></returns>
-        public static int Unwatch(IJob job, PipeLineStages stage)
-        {
-            if (EnvironLock.TryEnterReadLock(watchLockTimeout))
-            {
-                try
-                {
-                    Environ environ;
-                    if (!Environs.TryGetValue(job.Environment.SortOrder, out environ))
-                    {
-                        return 0;
-                    }
-
-                    if (environ.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
-                    {
-                        try
-                        {
-                            return environ.Watchers[(int) stage].RemoveAll(x =>
-                                x.AppId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase));
-                        }
-                        finally
-                        {
-                            environ.WatchLocks[(int) stage].ExitWriteLock();
-                        }
-                    }
-                }
-                finally
-                {
-                    EnvironLock.ExitReadLock();
-                }
-            }
-            return 0;
+				return environ.WatchLocks[(int) stage].Write<int>(() =>
+				{
+			        string regy = regex == null ? null : regex.ToString();
+                    return environ.Watchers[(int) stage].RemoveAll(x =>
+                        x.AppId.Equals(job.App.Id, StringComparison.InvariantCultureIgnoreCase) && 
+                        ((regy == null && x.Regex == null) || 
+                        (regy != null && x.Regex != null && regy.Equals(x.Regex.ToString(), StringComparison.InvariantCulture))));
+                });
+			});
         }
 
         public static int Unwatch(string appId) => Unwatch(null, appId);
@@ -276,67 +214,58 @@ namespace Our.Shield.Core.Operation
         /// </summary>
         /// <param name="appId"></param>
         /// <returns></returns>
-        public static int Unwatch(int? environmentId = null, string appId = null)
+        public static int Unwatch(int? environmentId = null, string appId = null, PipeLineStages? stage = null, Regex regex = null)
         {
             var count = 0;
             var deleteEnvirons = new List<int>();
 
-            if (EnvironLock.TryEnterReadLock(watchLockTimeout))
-            {
-                try
+			if (EnvironLock.Read(() =>
+			{
+				string regy = regex == null ? null : regex.ToString();
+                foreach (var environ in Environs.Where(x => environmentId == null || x.Value.Id == environmentId))
                 {
-                    foreach (var environ in Environs.Where(x => environmentId == null || x.Value.Id == environmentId))
+                    int watchCount = 0;
+                    foreach (var objectStage in Enum.GetValues(typeof(PipeLineStages)))
                     {
-                        int watchCount = 0;
-                        foreach (var stage in Enum.GetValues(typeof(PipeLineStages)))
-                        {
-                            if (environ.Value.WatchLocks[(int) stage].TryEnterWriteLock(watchLockTimeout))
-                            {
-                                try
-                                {
-                                    count += environ.Value.Watchers[(int) stage].RemoveAll(x =>
-                                        appId == null ||
-                                        x.AppId.Equals(appId, StringComparison.InvariantCultureIgnoreCase));
-                                    watchCount += environ.Value.Watchers[(int) stage].Count();
-                                }
-                                finally
-                                {
-                                    environ.Value.WatchLocks[(int) stage].ExitWriteLock();
-                                }
-                            }
-                        }
+						var currentStage = (PipeLineStages) objectStage; 
+						if (stage != null && currentStage != stage)
+						{
+							continue;
+						}
 
-                        if (watchCount == 0)
-                        {
-                            deleteEnvirons.Add(environ.Value.SortOrder);
-                        }
+                        watchCount += environ.Value.WatchLocks[(int) currentStage].Write<int>(() => 
+						{
+                            count += environ.Value.Watchers[(int) currentStage].RemoveAll(x =>
+                                (appId == null ||
+								x.AppId.Equals(appId, StringComparison.InvariantCultureIgnoreCase)) && 
+								((regy == null && x.Regex == null) || 
+								(regy != null && x.Regex != null && regy.Equals(x.Regex.ToString(), StringComparison.InvariantCulture))));
+                            return environ.Value.Watchers[(int) currentStage].Count();
+                        });
+                    }
+
+                    if (watchCount == 0)
+                    {
+                        deleteEnvirons.Add(environ.Value.SortOrder);
                     }
                 }
-                finally
-                {
-                    EnvironLock.ExitReadLock();
-                }
-            }
+            }))
+			{
+				if (!deleteEnvirons.Any())
+				{
+					return count;
+				}
 
-            if (deleteEnvirons.Any())
-            {
-                if (EnvironLock.TryEnterWriteLock(watchLockTimeout))
-                {
-                    try
-                    {
-                        foreach (var sortOrder in deleteEnvirons)
-                        {
-                            Environs.Remove(sortOrder);
-                        }
-                    }
-                    finally
-                    {
-                        EnvironLock.ExitWriteLock();
-                    }
-                }
-            }
-
-            return count;
+				return EnvironLock.Write<int>(() =>
+				{
+					foreach (var sortOrder in deleteEnvirons)
+					{
+						Environs.Remove(sortOrder);
+					}
+					return count;
+				});
+			}
+			return 0;
         }
 
         /// <summary>
@@ -352,6 +281,55 @@ namespace Our.Shield.Core.Operation
             application.EndRequest += (new EventHandler(this.Application_EndRequest));
         }
 
+		private bool MakeSureAllUrlExceptionsHaveBeenCalculated()
+		{
+			return UrlExceptionLock.Write(() =>
+			{
+				foreach (var exception in UrlExceptions.Where(x => x.CalculatedUrl == false))
+				{
+					var url = new UmbracoUrlService().Url(exception.Url);
+					exception.CalculatedUrl = true;
+					if (string.IsNullOrWhiteSpace(url))
+					{
+						continue;
+					}
+					var query = url.IndexOf('?');
+					if (query == 0)
+					{
+						exception.CalculatedUrlWithoutSlash = url;
+						exception.CalculatedUrlWithSlash = "/" + url;
+						continue;
+					}
+					var point = (query == -1 ? url.Length : query) - 1;
+					var builder = new StringBuilder(url.Length);
+					if (url[point] == '/')
+					{
+						exception.CalculatedUrlWithSlash = url;
+
+						for (var i = 0; i != url.Length; i++)
+						{
+							if (i != point)
+							{
+								builder.Append(url[i]);
+							}
+						}
+						exception.CalculatedUrlWithoutSlash = builder.ToString();
+						continue;
+					}
+					exception.CalculatedUrlWithoutSlash = url;
+					for (var i = 0; i != url.Length; i++)
+					{
+						builder.Append(url[i]);
+						if (i == point)
+						{
+							builder.Append('/');
+						}
+					}
+					exception.CalculatedUrlWithSlash = builder.ToString();
+				} 
+			});
+		}
+
         private WatchResponse.Cycles ExecuteResponse(Watcher watch, WatchResponse response, HttpApplication application)
         {
             if (response.Transfer == null)
@@ -365,47 +343,51 @@ namespace Our.Shield.Core.Operation
                 return WatchResponse.Cycles.Stop;
             }
 
-            var url = new UmbracoUrlService().Url(response.Transfer.Url);
-            if (!string.IsNullOrWhiteSpace(url))
+			if (!MakeSureAllUrlExceptionsHaveBeenCalculated())
+			{
+                return WatchResponse.Cycles.Error;
+			}
+
+			var urlExeceptionResult = UrlExceptionLock.Read<Tuple<bool, WatchResponse.Cycles?>>(() =>
+			{
+				foreach (var exception in UrlExceptions)
+				{
+					if (exception.Regex != null && (exception.Regex.IsMatch(application.Context.Request.Url.PathAndQuery) ||
+						exception.Regex.IsMatch(application.Context.Request.Url.AbsoluteUri)))
+					{
+						return new Tuple<bool, WatchResponse.Cycles?>(true, WatchResponse.Cycles.Continue);
+					}
+					if (exception.CalculatedUrl && 
+						(exception.CalculatedUrlWithoutSlash.Equals(application.Context.Request.Url.PathAndQuery, StringComparison.InvariantCultureIgnoreCase) ||
+						exception.CalculatedUrlWithSlash.Equals(application.Context.Request.Url.PathAndQuery, StringComparison.InvariantCultureIgnoreCase) ||
+						exception.CalculatedUrlWithoutSlash.Equals(application.Context.Request.Url.AbsoluteUri, StringComparison.InvariantCultureIgnoreCase) ||
+						exception.CalculatedUrlWithSlash.Equals(application.Context.Request.Url.AbsoluteUri, StringComparison.InvariantCultureIgnoreCase)))
+					{
+						return new Tuple<bool, WatchResponse.Cycles?>(true, WatchResponse.Cycles.Continue);
+					}
+				}
+				return new Tuple<bool, WatchResponse.Cycles?>(false, null);
+			});
+
+			if (urlExeceptionResult == null)
+			{
+                return WatchResponse.Cycles.Error;
+			}
+			if (urlExeceptionResult.Item1 == true && urlExeceptionResult.Item2 != null)
+			{
+				return (WatchResponse.Cycles) urlExeceptionResult.Item2;
+			}
+
+			var url = new UmbracoUrlService().Url(response.Transfer.Url);
+            switch (response.Transfer.TransferType)
             {
-                string urlSlash = string.Copy(url);
-                if (urlSlash[urlSlash.Length - 1] != '/')
-                {
-                    urlSlash += "/";
-                }
+                case TransferTypes.Redirect:
+                    application.Context.Response.Redirect(url, true);
+                    return WatchResponse.Cycles.Stop;
 
-                var slash = string.Copy(application.Context.Request.Url.AbsoluteUri);
-                if (slash[slash.Length - 1] != '/')
-                {
-                    slash += "/";
-                }
-
-                if (slash.Equals(urlSlash))
-                {
-                    return WatchResponse.Cycles.Continue;
-                }
-
-                slash = string.Copy(application.Context.Request.Url.PathAndQuery);
-                if (slash[slash.Length - 1] != '/')
-                {
-                    slash += "/";
-                }
-
-                if (slash.Equals(urlSlash))
-                {
-                    return WatchResponse.Cycles.Continue;
-                }
-
-                switch (response.Transfer.TransferType)
-                {
-                    case TransferTypes.Redirect:
-                        application.Context.Response.Redirect(url, true);
-                        return WatchResponse.Cycles.Stop;
-
-                    case TransferTypes.Rewrite:
-                        application.Context.RewritePath(url, string.Empty, string.Empty);
-                        return WatchResponse.Cycles.Restart;
-                }
+                case TransferTypes.Rewrite:
+                    application.Context.RewritePath(url, string.Empty, string.Empty);
+                    return WatchResponse.Cycles.Restart;
             }
 
             return WatchResponse.Cycles.Error;
@@ -413,93 +395,90 @@ namespace Our.Shield.Core.Operation
 
         private void Request(PipeLineStages stage, HttpApplication application)
         {
-            if (EnvironLock.TryEnterReadLock(watchLockTimeout))
-            {
-                try
+			if (EnvironHasWatches[(int) stage] == false)
+			{
+				return;
+			}
+
+			int count = 0;
+
+			while (true == EnvironLock.Read<bool?>(() =>
+			{
+                if (!Environs.Any())
                 {
-                    if (!Environs.Any())
-                    {
-                        return;
-                    }
+                    return false;
+                }
 
-                    int count = 0;
-restart:
-                    if (count++ > requestRestartLimit)
-                    {
-                        application.Context.Response.StatusCode = 500;
-                        application.CompleteRequest();
-                    }
+                if (count++ > requestRestartLimit)
+                {
+                    application.Context.Response.StatusCode = 500;
+                    application.CompleteRequest();
+					return false;
+                }
 
-                    string uri = application.Context.Request.Url.AbsoluteUri;
-                    string uriWithoutDomain = null;
+                string uri = application.Context.Request.Url.AbsoluteUri;
+                string uriWithoutDomain = null;
 
-                    foreach (var environ in Environs)
+                foreach (var environ in Environs)
+                {
+                    string filePath = null;
+                    if (environ.Value.Domains == null)
                     {
-                        string filePath = null;
-                        if (environ.Value.Domains == null)
+                        if (uriWithoutDomain == null)
                         {
-                            if (uriWithoutDomain == null)
-                            {
-                                uriWithoutDomain = application.Context.Request.Url.LocalPath;
-                            }
-                            filePath = uriWithoutDomain;
+                            uriWithoutDomain = application.Context.Request.Url.LocalPath;
+                        }
+                        filePath = uriWithoutDomain;
+                    }
+                    else
+                    {
+                        var domain = environ.Value.Domains.FirstOrDefault(x => uri.StartsWith(x, StringComparison.InvariantCultureIgnoreCase));
+                        if (domain != null)
+                        {
+                            filePath = uri.Substring(domain.Length - 1);
                         }
                         else
                         {
-                            var domain = environ.Value.Domains.FirstOrDefault(x => uri.StartsWith(x, StringComparison.InvariantCultureIgnoreCase));
-                            if (domain != null)
-                            {
-                                filePath = uri.Substring(domain.Length - 1);
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-
-                        if (environ.Value.WatchLocks[(int) stage].TryEnterReadLock(watchLockTimeout))
-                        {
-                            try
-                            {
-                                foreach (var watch in environ.Value.Watchers[(int) stage])
-                                {
-                                    if ((watch.Regex == null || watch.Regex.IsMatch(filePath)))
-                                    {
-                                        switch (ExecuteResponse(watch, watch.Request(count, application), application))
-                                        {
-                                            case WatchResponse.Cycles.Stop:
-                                                return;
-
-                                            case WatchResponse.Cycles.Restart:
-                                                goto restart;
-
-                                            case WatchResponse.Cycles.Error:
-                                                application.Context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
-                                                application.CompleteRequest();
-                                                break;
-
-                                            //  If WatchCycle.Continue we do nothing
-                                        }
-                                    }
-                                }
-                            }
-                            finally
-                            {
-                                environ.Value.WatchLocks[(int) stage].ExitReadLock();
-                            }
-                        }
-
-                        if (!environ.Value.ContinueProcessing)
-                        {
-                            break;
+                            continue;
                         }
                     }
+
+                    if (environ.Value.WatchLocks[(int) stage].Read<bool?>(() =>
+                    {
+                        foreach (var watch in environ.Value.Watchers[(int) stage])
+                        {
+                            if ((watch.Regex == null || watch.Regex.IsMatch(filePath)))
+                            {
+                                switch (ExecuteResponse(watch, watch.Request(count, application), application))
+                                {
+                                    case WatchResponse.Cycles.Stop:
+                                        return false;
+
+                                    case WatchResponse.Cycles.Restart:
+                                        return true;
+
+                                    case WatchResponse.Cycles.Error:
+                                        application.Context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                                        application.CompleteRequest();
+                                        break;
+
+                                    //  If WatchCycle.Continue we do nothing
+                                }
+                            }
+						}
+						return false;
+                    }) == true)
+					{
+						return true;
+					}
+
+                    if (!environ.Value.ContinueProcessing)
+                    {
+                        break;
+                    }
                 }
-                finally
-                {
-                    EnvironLock.ExitReadLock();
-                }
-            }
+				return false;
+            })) ;
         }
 
         private void Application_BeginRequest(object source, EventArgs e)
@@ -532,5 +511,47 @@ restart:
         /// 
         /// </summary>
         public void Dispose() { }
+
+        /// <summary>
+        /// Create an exception Url, that won't be redirected. Usually a service or error page that you want displayed, regardless or what watches want
+        /// </summary>
+        /// <param name="job">The job that created this Exception</param>
+        /// <param name="regex">The url / url rule that can be shown, try and match with or without trailing slash</param>
+        /// <returns>A Unique id for this Exception, or -1 if we failed to create it</returns>
+        public static int Exception(IJob job, Regex regex = null, UmbracoUrl url = null)
+        {
+            return UrlExceptionLock.Write<int>(() => 
+			{
+		        var count = Interlocked.Increment(ref requestCount);
+				UrlExceptions.Add(new UrlException
+				{
+					Id = count,
+					EnvironmentId = job.Environment.Id,
+					AppId = job.App.Id,
+					Regex = regex,
+					Url = url
+				});
+				return count;
+			});
+		}
+
+		public static int Unexception(IJob job, Regex regex = null) => Unexception(job.Environment.Id, job.App.Id, regex);
+		public static int Unexception(IJob job, UmbracoUrl url = null) => Unexception(job.Environment.Id, job.App.Id, null, url);
+		public static int Unexception(IJob job) => Unexception(job.Environment.Id, job.App.Id, null);
+		public static int Unexception(string appId = null, Regex regex = null) => Unexception(null, appId, regex);
+
+		public static int Unexception(int? environmentId = null, string appId = null, Regex regex = null, UmbracoUrl url = null)
+		{
+            return UrlExceptionLock.Write<int>(() =>
+			{
+	            string regy = regex == null ? null : regex.ToString();
+
+				return UrlExceptions.RemoveAll(x => 
+					(environmentId == null || x.EnvironmentId == environmentId) && 
+					(appId == null || x.AppId == appId) ||
+					(regex == null || x.Regex.ToString() == regy) ||
+					(url == null || x.Url.Equals(url)));			
+			});
+		}
     }
 }

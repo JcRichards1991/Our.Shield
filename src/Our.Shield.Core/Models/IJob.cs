@@ -89,5 +89,13 @@ namespace Our.Shield.Core.Models
         /// <param name="app">The App of the corresponding Web Requests to remove</param>
         /// <returns></returns>
         int UnwatchWebRequests(IApp app);
+
+        int ExceptionWebRequest(Regex regex);
+        int ExceptionWebRequest(UmbracoUrl url);
+
+        int UnexceptionWebRequest(Regex regex);
+        int UnexceptionWebRequest(UmbracoUrl url);
+
+        int UnexceptionWebRequest();
     }
 }
