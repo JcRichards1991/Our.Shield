@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Our.Shield.Core.Models;
 using Umbraco.Core.Logging;
-using Umbraco.Core.Persistence;
 
 namespace Our.Shield.Core.Persistance.Business
 {
+    /// <inheritdoc />
     /// <summary>
     /// The Environment Context for handling CRUD operations to and from the database
     /// </summary>
@@ -20,8 +20,8 @@ namespace Our.Shield.Core.Persistance.Business
         {
             try
             {
-                var environments = Database.FetchAll<Data.Dto.Environment>();
-                var domains = MapUmbracoDomains(Database.FetchAll<Data.Dto.Domain>());
+                var environments = Database.FetchAll<Data.Dto.Environment>().ToArray();
+                var domains = MapUmbracoDomains(Database.FetchAll<Data.Dto.Domain>()).ToArray();
 
                 foreach (var environment in environments)
                 {
@@ -32,7 +32,7 @@ namespace Our.Shield.Core.Persistance.Business
             }
             catch(Exception ex)
             {
-                LogHelper.Error(typeof(EnvironmentContext), $"Error listing environments", ex);
+                LogHelper.Error(typeof(EnvironmentContext), "Error listing environments", ex);
                 return Enumerable.Empty<Data.Dto.Environment>();
             }
         }
@@ -46,7 +46,7 @@ namespace Our.Shield.Core.Persistance.Business
         {
             try
             {
-                var environment = Database.SingleOrDefault<Data.Dto.Environment>((object)id);
+                var environment = Database.SingleOrDefault<Data.Dto.Environment>(id);
                 if (environment != null)
                 {
                     environment.Domains = MapUmbracoDomains(Database.FetchAll<Data.Dto.Domain>())
@@ -120,13 +120,13 @@ namespace Our.Shield.Core.Persistance.Business
                 {
                     Instance.Journal.Delete(id);
                     Instance.Configuration.Delete(id);
-                    Instance.Domain.Delete(id, null);
+                    Instance.Domain.Delete(id);
                     Database.Delete<Data.Dto.Environment>(id);
 
                     //reset sortOrder for environments
                     var records = Database.FetchAll<Data.Dto.Environment>().OrderBy(x => x.SortOrder).ToArray();
 
-                    for (var i = 0; i < records.Count() - 1; i++)
+                    for (var i = 0; i < records.Length - 1; i++)
                     {
                         records[i].SortOrder = i;
                         Database.Update(records[i]);

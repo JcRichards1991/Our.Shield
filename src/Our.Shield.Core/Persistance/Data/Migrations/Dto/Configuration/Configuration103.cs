@@ -30,7 +30,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Configuration
         /// Gets or sets the Environment Id
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        [ForeignKey(typeof(Dto.Environment.Environment103), Name = "FK_" + nameof(Shield) + "_" + nameof(Configuration) + "_" + nameof(Data.Dto.Environment))]
+        [ForeignKey(typeof(Environment.Environment103), Name = "FK_" + nameof(Shield) + "_" + nameof(Configuration) + "_" + nameof(Data.Dto.Environment))]
         [Index(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(EnvironmentId))]
         public int EnvironmentId { get; set; }
 

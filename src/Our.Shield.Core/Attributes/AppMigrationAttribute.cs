@@ -2,14 +2,16 @@
 
 namespace Our.Shield.Core.Attributes
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class AppMigrationAttribute : Attribute
     {
         public Type Migration;
 
+        /// <inheritdoc />
         /// <summary>
         /// 
         /// </summary>

@@ -10,13 +10,9 @@ using System.Web;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Core.Security;
-using Umbraco.Core.Services;
 
 namespace Our.Shield.MediaProtection.Models
 {
-    /// <summary>
-    /// 
-    /// </summary>
     [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?version=1.0.4")]
     [AppMigration(typeof(MediaProtectionMigration))]
     public class MediaProtectionApp : App<MediaProtectionConfiguration>
@@ -29,63 +25,45 @@ namespace Our.Shield.MediaProtection.Models
         /// <summary>
         /// Media cache length
         /// </summary>
-        private readonly TimeSpan CacheLength = new TimeSpan(TimeSpan.TicksPerSecond * 30);
+        private readonly TimeSpan _cacheLength = new TimeSpan(TimeSpan.TicksPerSecond * 30);
 
         /// <summary>
         /// Unique cache key
         /// </summary>
         private const string CacheKey = ",e&yL2maXa?CVfWy";
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         public override string Id => nameof(MediaProtection);
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         public override string Name => "Media Protection";
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         public override string Description => "Secure your media by stopping unauthorized access";
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         public override string Icon => "icon-picture red";
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public override IConfiguration DefaultConfiguration
-        {
-            get
+        /// <inheritdoc />
+        public override IConfiguration DefaultConfiguration =>
+            new MediaProtectionConfiguration
             {
-                return new MediaProtectionConfiguration
-                {
-                    EnableHotLinkingProtection = true,
-                    EnableMembersOnlyMedia = true,
-                    HotLinkingProtectedDirectories = new string[0]
-                };
-            }
-        }
+                EnableHotLinkingProtection = true,
+                EnableMembersOnlyMedia = true,
+                HotLinkingProtectedDirectories = new string[0]
+            };
 
-        private static List<int> Ids = new List<int>();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="job"></param>
-        /// <param name="c"></param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public override bool Execute(IJob job, IConfiguration c)
         {
             AddMediaTypes();
-            var config = c as MediaProtectionConfiguration;
-
             job.UnwatchWebRequests();
+
+            if (!(c is MediaProtectionConfiguration config))
+            {
+                job.WriteJournal(new JournalMessage("Error: Config passed into Media Protection was not of the correct type"));
+                return false;
+            }
 
             if (!config.Enable || !job.Environment.Enable)
             {
@@ -133,134 +111,131 @@ namespace Our.Shield.MediaProtection.Models
                 });
             }
 
-            if (config.EnableMembersOnlyMedia)
+            if (!config.EnableMembersOnlyMedia)
+                return true;
+            
+            var mediaFolder = VirtualPathUtility.ToAbsolute(new Uri(Umbraco.Core.IO.SystemDirectories.Media, UriKind.Relative).ToString()) + "/";
+            job.WatchWebRequests(PipeLineStages.BeginRequest, new Regex(mediaFolder, RegexOptions.IgnoreCase), 30100, (count, httpApp) =>
             {
-                var mediaFolder = VirtualPathUtility.ToAbsolute(new Uri(Umbraco.Core.IO.SystemDirectories.Media, UriKind.Relative).ToString()) + "/";
-                job.WatchWebRequests(PipeLineStages.BeginRequest, new Regex(mediaFolder, RegexOptions.IgnoreCase), 30100, (count, httpApp) =>
-                {
-                    var httpContext = new HttpContextWrapper(httpApp.Context);
-                    var umbAuthTicket = httpContext.GetUmbracoAuthTicket();
+                var httpContext = new HttpContextWrapper(httpApp.Context);
+                var umbAuthTicket = httpContext.GetUmbracoAuthTicket();
 
-                    //  If we have logged in as a backend user, then allow all access
-                    if (httpContext.AuthenticateCurrentRequest(umbAuthTicket, true))
+                //  If we have logged in as a backend user, then allow all access
+                if (httpContext.AuthenticateCurrentRequest(umbAuthTicket, true))
+                {
+                    return new WatchResponse(WatchResponse.Cycles.Continue);
+                }
+
+                var filename = httpApp.Request.Url.LocalPath;
+                   
+                var secureMedia = ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(CacheKey + "F" + filename, () =>
+                {
+                    var mediaService = new UmbracoMediaService(Umbraco.Web.UmbracoContext.Current);
+                    var mediaId = mediaService.Id(filename);
+
+                    if (mediaId == null)
                     {
-                        return new WatchResponse(WatchResponse.Cycles.Continue);
+                        return false;
                     }
 
-                    var filename = httpApp.Request.Url.LocalPath;
-                   
-                    var secureMedia = ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(CacheKey + "F" + filename, () =>
-                    {
-                        var mediaService = new UmbracoMediaService(Umbraco.Web.UmbracoContext.Current);
-                        var mediaId = mediaService.Id(filename);
+                    var pathIdKeys = new List<string>();
+                    object accessRights = null;
 
-                        if (mediaId == null)
+                    var traverseId = mediaId;
+
+                    //  We traverse up the ancestors until we either hit the root, or find our access rights 
+                    //  from either our special alias value or a cache value from a previous request
+                    while (traverseId != null)
+                    {
+                        var cacheIdKey = CacheKey + "I" + traverseId;
+                        accessRights = ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(cacheIdKey);
+                        if (accessRights != null)
                         {
-                            return false;
+                            break;
                         }
 
-                        var pathIdKeys = new List<string>();
-                        object accessRights = null;
-
-                        var traverseId = mediaId;
-
-                        //  We traverse up the ancestors until we either hit the root, or find our access rights 
-                        //  from either our special alias value or a cache value from a previous request
-                        while (traverseId != null)
+                        pathIdKeys.Add(cacheIdKey);
+                        var memberOnly = mediaService.Value((int) traverseId, MemberOnlyAlias);
+                        if (memberOnly == null)
                         {
-                            var cacheIdKey = CacheKey + "I" + traverseId.ToString();
-                            accessRights = ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(cacheIdKey);
-                            if (accessRights != null)
+                            accessRights = false;
+                        }
+                        else
+                        {
+                            switch (memberOnly)
                             {
-                                break;
-                            }
+                                case bool _:
+                                    accessRights = (bool) memberOnly ? 1 : 0;
+                                    break;
 
-                            pathIdKeys.Add(cacheIdKey);
-                            var memberOnly = mediaService.Value((int) traverseId, MemberOnlyAlias);
-                            if (memberOnly == null)
-                            {
-                                accessRights = false;
-                            }
-                            else
-                            {
-                                if (memberOnly is bool)
-                                {
-                                    accessRights = (int) memberOnly;
+                                case int _:
+                                    accessRights = (int) memberOnly != 0;
                                     break;
-                                }
-                                        
-                                if (memberOnly is int)
-                                {
-                                    //  Is a boolean value denoting whether you need to be logged in or not to access
-                                    accessRights = (((int) memberOnly)  == 0) ? false : true;
-                                    break;
-                                }
-                            
-                                if (memberOnly is string)
-                                {
+
+                                case string _:
                                     //  Is a MNTP that states which member groups can access this media item
                                     try
                                     {
-                                        accessRights = (int[]) ((string)memberOnly).Split(',').Select(x => int.Parse(x)).ToArray();
-                                        break;
+                                        accessRights = ((string) memberOnly).Split(',').Select(int.Parse).ToArray();
                                     }
                                     catch (Exception)
                                     {
                                         //  Swallow conversion issues, and continue processing
                                     }
-                                }
+                                    break;
                             }
-
-                            traverseId = mediaService.ParentId((int) traverseId);
+                            break;
                         }
 
-                        if (accessRights == null)
-                        {
-                            accessRights = false;
-                        }
-
-                        //  Give our descendants the same access rights as us
-                        foreach (var key in pathIdKeys)
-                        {
-                            ApplicationContext.Current.ApplicationCache.RuntimeCache.InsertCacheItem(key, () => { return accessRights;}, CacheLength );
-                        }
-                        return accessRights;
-
-                    }, CacheLength);
-
-                    if (secureMedia is bool)
-                    {
-                        if ((bool) secureMedia == false || 
-                            (httpApp.Context.User != null && httpApp.Context.User.Identity.IsAuthenticated))
-                        {
-                            //  They are allowed to view this media
-                            return new WatchResponse(WatchResponse.Cycles.Continue);
-                        }
+                        traverseId = mediaService.ParentId((int) traverseId);
                     }
 
-                    if (secureMedia is int[])
+                    if (accessRights == null)
                     {
-                        if (((int[]) secureMedia).Length == 0)
-                        {
-                            //  They are allowed to view this media
-                            return new WatchResponse(WatchResponse.Cycles.Continue);
-                        }
-
-                        if (httpApp.Context.User.Identity.IsAuthenticated)
-                        {
-                            //  TODO: Need to handle when security is member group based
-                            return new WatchResponse(WatchResponse.Cycles.Continue);
-                        }
+                        accessRights = false;
                     }
-                    job.WriteJournal(new JournalMessage($"An unauthenticated member tried to access {filename} with IP Address: {httpApp.Context.Request.UserHostAddress}"));
 
-                    //  You need to be logged in or be a member of the correct member group to see this media
-                    httpApp.Response.StatusCode = (int) HttpStatusCode.Forbidden;
-                    httpApp.Response.End();
-                    return new WatchResponse(WatchResponse.Cycles.Stop);
+                    //  Give our descendants the same access rights as us
+                    foreach (var key in pathIdKeys)
+                    {
+                        ApplicationContext.Current.ApplicationCache.RuntimeCache.InsertCacheItem(key, () => accessRights, _cacheLength );
+                    }
+                    return accessRights;
 
-                });
-            }
+                }, _cacheLength);
+
+                if (secureMedia is bool b)
+                {
+                    if (b == false || 
+                        (httpApp.Context.User != null && httpApp.Context.User.Identity.IsAuthenticated))
+                    {
+                        //  They are allowed to view this media
+                        return new WatchResponse(WatchResponse.Cycles.Continue);
+                    }
+                }
+
+                if (secureMedia is int[] ints)
+                {
+                    if (ints.Length == 0)
+                    {
+                        //  They are allowed to view this media
+                        return new WatchResponse(WatchResponse.Cycles.Continue);
+                    }
+
+                    if (httpApp.Context.User.Identity.IsAuthenticated)
+                    {
+                        //  TODO: Need to handle when security is member group based
+                        return new WatchResponse(WatchResponse.Cycles.Continue);
+                    }
+                }
+                job.WriteJournal(new JournalMessage($"An unauthenticated member tried to access {filename} with IP Address: {httpApp.Context.Request.UserHostAddress}"));
+
+                //  You need to be logged in or be a member of the correct member group to see this media
+                httpApp.Response.StatusCode = (int) HttpStatusCode.Forbidden;
+                httpApp.Response.End();
+                return new WatchResponse(WatchResponse.Cycles.Stop);
+
+            });
 
             return true;
         }
@@ -472,34 +447,36 @@ namespace Our.Shield.MediaProtection.Models
 
             //  Folder
             var folder = SecureFolder();
-            if (contentTypeService.GetMediaType(folder.Alias) == null)
+            if (contentTypeService.GetMediaType(folder.Alias) != null)
+                return;
+
+            var allowedContentTypes = new List<ContentTypeSort>
             {
-                var allowedContentTypes = new List<ContentTypeSort>();
-                allowedContentTypes.Add(new ContentTypeSort(new Lazy<int>(() => doesFileExist.Id), 0, doesFileExist.Alias));
-                allowedContentTypes.Add(new ContentTypeSort(new Lazy<int>(() => doesImageExist.Id), 0, doesImageExist.Alias));
-                allowedContentTypes.Add(new ContentTypeSort(new Lazy<int>(() => folder.Id), 0, folder.Alias));
+                new ContentTypeSort(new Lazy<int>(() => doesFileExist.Id), 0, doesFileExist.Alias),
+                new ContentTypeSort(new Lazy<int>(() => doesImageExist.Id), 0, doesImageExist.Alias),
+                new ContentTypeSort(new Lazy<int>(() => folder.Id), 0, folder.Alias)
+            };
 
-                var umbFolder = contentTypeService.GetMediaType(Umbraco.Core.Constants.Conventions.MediaTypes.Folder);
-                if (umbFolder != null)
-                {
-                    allowedContentTypes.Add(new ContentTypeSort(new Lazy<int>(() => umbFolder.Id), 3, umbFolder.Alias));
-                }
-
-                var umbImage = contentTypeService.GetMediaType(Umbraco.Core.Constants.Conventions.MediaTypes.Image);
-                if (umbImage != null)
-                {
-                    allowedContentTypes.Add(new ContentTypeSort(new Lazy<int>(() => umbImage.Id), 3, umbImage.Alias));
-                }
-                
-                var umbFile = contentTypeService.GetMediaType(Umbraco.Core.Constants.Conventions.MediaTypes.File);
-                if (umbFile != null)
-                {
-                    allowedContentTypes.Add(new ContentTypeSort(new Lazy<int>(() => umbFile.Id), 3, umbFile.Alias));
-                }
-                folder.AllowedContentTypes = allowedContentTypes;
-
-                contentTypeService.Save(folder);
+            var umbFolder = contentTypeService.GetMediaType(Constants.Conventions.MediaTypes.Folder);
+            if (umbFolder != null)
+            {
+                allowedContentTypes.Add(new ContentTypeSort(new Lazy<int>(() => umbFolder.Id), 3, umbFolder.Alias));
             }
+
+            var umbImage = contentTypeService.GetMediaType(Constants.Conventions.MediaTypes.Image);
+            if (umbImage != null)
+            {
+                allowedContentTypes.Add(new ContentTypeSort(new Lazy<int>(() => umbImage.Id), 3, umbImage.Alias));
+            }
+                
+            var umbFile = contentTypeService.GetMediaType(Constants.Conventions.MediaTypes.File);
+            if (umbFile != null)
+            {
+                allowedContentTypes.Add(new ContentTypeSort(new Lazy<int>(() => umbFile.Id), 3, umbFile.Alias));
+            }
+            folder.AllowedContentTypes = allowedContentTypes;
+
+            contentTypeService.Save(folder);
         }
     }
 }

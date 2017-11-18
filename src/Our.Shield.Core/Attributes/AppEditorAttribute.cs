@@ -2,10 +2,11 @@
 
 namespace Our.Shield.Core.Attributes
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class AppEditorAttribute : Attribute
     {
         /// <summary>
@@ -13,6 +14,7 @@ namespace Our.Shield.Core.Attributes
         /// </summary>
         public string FilePath;
         
+        /// <inheritdoc />
         /// <summary>
         /// 
         /// </summary>

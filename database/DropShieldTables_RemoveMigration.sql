@@ -1,5 +1,6 @@
 ﻿DELETE FROM [umbracoMigration]
 WHERE name like 'Shield%'
+AND name != 'ShieldMediaProtection'
 GO
 
 DROP TABLE [ShieldJournal]

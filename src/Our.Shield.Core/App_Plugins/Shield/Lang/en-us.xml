@@ -45,15 +45,13 @@
     <key alias="Required">Required</key>
   </area>
 
-  <area alias="Shield.Properties.IpAccessControl.Options">
+  <area alias="Shield.Properties.IpAccessControl.AccessType">
     <key alias="All">Open to all IP addresses</key>
     <key alias="None">No access for any IP addresses</key>
   </area>
 
-  <area alias="Shield.Properties.IpAccessControl">
-    <key alias="ExceptionDescription">Except for these IP Addresses:-</key>
-  </area>
-  <area alias="Shield.Properties.IpAccessControl.Table">
+  <area alias="Shield.Properties.IpAccessControl.Exceptions">
+    <key alias="Description">Except for these IP Addresses:</key>
     <key alias="IpAddressHeader">IP Address</key>
     <key alias="DescriptionHeader">Description</key>
   </area>

@@ -13,15 +13,13 @@ namespace Our.Shield.Core.Persistance.Data.Migrations
 {
     public static class MigrationExtensions
     {
-        private static string tableNameAttribute<T>() where T : new()
+        private static string TableNameAttribute<T>() where T : new()
         {
-            Type type = typeof(T);
+            var type = typeof(T);
             var tableNameAttribute = type.FirstAttribute<TableNameAttribute>();
             if (tableNameAttribute == null)
                 throw new Exception(
-                    string.Format(
-                        "The Type '{0}' does not contain a TableNameAttribute, which is used to find the name of the table to drop. The operation could not be completed.",
-                        type.Name));
+                    $"The Type '{type.Name}' does not contain a TableNameAttribute, which is used to find the name of the table to drop. The operation could not be completed.");
 
             return tableNameAttribute.Value;
         }
@@ -29,46 +27,46 @@ namespace Our.Shield.Core.Persistance.Data.Migrations
         public static IAlterTableSyntax Table<T>(this IAlterSyntaxBuilder alter) where T : new()
         {
             
-            return alter.Table(tableNameAttribute<T>());
+            return alter.Table(TableNameAttribute<T>());
         }
 
         public static void FromTable<T>(this IDeleteColumnFromTableSyntax alter) where T : new()
         {
-            alter.FromTable(tableNameAttribute<T>());
+            alter.FromTable(TableNameAttribute<T>());
         }
 
         public static IDeleteIndexOnColumnSyntax OnTable<T>(this IDeleteIndexForTableSyntax alter) where T : new()
         {
-            return alter.OnTable(tableNameAttribute<T>());
+            return alter.OnTable(TableNameAttribute<T>());
         }
 
         public static ICreateIndexOnColumnSyntax OnTable<T>(this ICreateIndexForTableSyntax alter) where T : new()
         {
-            return alter.OnTable(tableNameAttribute<T>());
+            return alter.OnTable(TableNameAttribute<T>());
         }
 
         public static ICreateForeignKeyForeignColumnSyntax FromTable<T>(this ICreateForeignKeyFromTableSyntax alter) where T : new()
         {
-            return alter.FromTable(tableNameAttribute<T>());
+            return alter.FromTable(TableNameAttribute<T>());
         }
         public static IDeleteForeignKeyForeignColumnSyntax FromTable<T>(this IDeleteForeignKeyFromTableSyntax alter) where T : new()
         {
-            return alter.FromTable(tableNameAttribute<T>());
+            return alter.FromTable(TableNameAttribute<T>());
         }
 
         public static ICreateForeignKeyPrimaryColumnSyntax ToTable<T>(this ICreateForeignKeyToTableSyntax alter) where T : new()
         {
-            return alter.ToTable(tableNameAttribute<T>());
+            return alter.ToTable(TableNameAttribute<T>());
         }
 
         public static void OnTable<T>(this IDeleteForeignKeyOnTableSyntax alter) where T : new()
         {
-            alter.OnTable(tableNameAttribute<T>());
+            alter.OnTable(TableNameAttribute<T>());
         }
 
         public static bool TableExist<T>(this DatabaseSchemaHelper schemaHelper) where T : new()
         {
-            return schemaHelper.TableExist(tableNameAttribute<T>());
+            return schemaHelper.TableExist(TableNameAttribute<T>());
         }
     }
 }

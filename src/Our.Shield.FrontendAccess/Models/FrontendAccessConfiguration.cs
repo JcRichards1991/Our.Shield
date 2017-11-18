@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Our.Shield.Core;
 using Our.Shield.Core.Models;
 
 namespace Our.Shield.FrontendAccess.Models

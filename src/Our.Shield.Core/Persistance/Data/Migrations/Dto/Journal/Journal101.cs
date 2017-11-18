@@ -23,7 +23,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Journal
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
         [Length(256)]
-        [ForeignKey(typeof(Dto.Configuration.Configuration101), Name = "FK_" + nameof(Shield) + "_" + nameof(Data.Dto.Journal) + "_" + nameof(Configuration), Column = nameof(Dto.Configuration.Configuration101.AppId))]
+        [ForeignKey(typeof(Configuration.Configuration101), Name = "FK_" + nameof(Shield) + "_" + nameof(Data.Dto.Journal) + "_" + nameof(Configuration), Column = nameof(Configuration.Configuration101.AppId))]
         [Index(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(AppId))]
         public string AppId { get; set; }
 
@@ -31,7 +31,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Journal
         /// Gets or sets the Domain Id
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        [ForeignKey(typeof(Dto.Environment.Environment100), Name = "FK_" + nameof(Shield) + "_" + nameof(Data.Dto.Journal) + "_" + nameof(Environment))]
+        [ForeignKey(typeof(Environment.Environment100), Name = "FK_" + nameof(Shield) + "_" + nameof(Data.Dto.Journal) + "_" + nameof(Environment))]
         [Index(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(EnvironmentId))]
         public int EnvironmentId { get; set; }
         

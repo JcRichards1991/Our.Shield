@@ -3,10 +3,10 @@ using System;
 
 namespace Our.Shield.Core.Attributes
 {
+    /// <inheritdoc />
     /// <summary>
-    /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class AppAssetAttribute : Attribute
     {
         /// <summary>
@@ -19,6 +19,7 @@ namespace Our.Shield.Core.Attributes
         /// </summary>
         public string FilePath;
         
+        /// <inheritdoc />
         /// <summary>
         /// 
         /// </summary>

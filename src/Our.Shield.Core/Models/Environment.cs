@@ -4,29 +4,34 @@ using System.Linq;
 
 namespace Our.Shield.Core.Models
 {
+    /// <inheritdoc />
     /// <summary>
     /// Environment Class
     /// </summary>
     public class Environment : IEnvironment
     {
+        /// <inheritdoc />
         /// <summary>
         /// The Id of the Environment
         /// </summary>
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// The Name of the Environment
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// The Icon of the Environment
         /// </summary>
         [JsonProperty("icon")]
         public string Icon { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// The Domains for the Environment
         /// </summary>
@@ -52,17 +57,14 @@ namespace Our.Shield.Core.Models
         /// <returns>True if equals; Otherwise, False</returns>
         public override bool Equals(object other)
         {
-            if (other is Environment)
+            switch (other)
             {
-                return Id == ((Environment) other).Id;
-            }
-            if (other is int)
-            {
-                return Id == ((int) other);
-            }
-            if (other is string)
-            {
-                return Id.ToString().Equals(((string) other));
+                case Environment _:
+                    return Id == ((Environment) other).Id;
+                case int _:
+                    return Id == (int) other;
+                case string _:
+                    return Id.ToString().Equals((string) other);
             }
             return false;
         }
@@ -73,6 +75,7 @@ namespace Our.Shield.Core.Models
         /// <returns>The Environment Id</returns>
         public override int GetHashCode()
         {
+            // ReSharper disable once NonReadonlyMemberInGetHashCode
             return Id;
         }
 
@@ -87,9 +90,10 @@ namespace Our.Shield.Core.Models
         /// Creates an Environment object
         /// </summary>
         /// <param name="data">The DTO object to create the Environment</param>
+        // ReSharper disable once SuggestBaseTypeForParameter
         internal Environment(Persistance.Data.Dto.Environment data)
         {
-            Id = (int) data.Id;
+            Id = data.Id;
             Name = data.Name;
             Icon = data.Icon;
             Domains = data.Domains.Select(x => new Domain(x));

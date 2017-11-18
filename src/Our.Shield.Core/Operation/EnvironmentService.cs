@@ -8,7 +8,7 @@ namespace Our.Shield.Core.Operation
 {
     internal class EnvironmentService
     {
-        private static readonly Lazy<EnvironmentService> _instance = new Lazy<EnvironmentService>(() => new EnvironmentService());
+        private static readonly Lazy<EnvironmentService> EnvironmentServiceInstance = new Lazy<EnvironmentService>(() => new EnvironmentService());
 
         private EnvironmentService()
         {
@@ -17,13 +17,7 @@ namespace Our.Shield.Core.Operation
         /// <summary>
         /// Accessor for instance
         /// </summary>
-        public static EnvironmentService Instance
-        {
-            get
-            {
-                return _instance.Value;
-            }
-        }
+        public static EnvironmentService Instance => EnvironmentServiceInstance.Value;
 
         /// <summary>
         /// Writes an environment to the database
@@ -47,11 +41,11 @@ namespace Our.Shield.Core.Operation
 
                 foreach (var newEnv in environments)
                 {
-                    if (oldEnvironments.Any(x => x.Id.Equals(newEnv.Id) && !x.SortOrder.Equals(newEnv.SortOrder)))
-                    {
-                        JobService.Instance.Unregister(newEnv);
-                        JobService.Instance.Register(newEnv);
-                    }
+                    if (!oldEnvironments.Any(x => x.Id.Equals(newEnv.Id) && !x.SortOrder.Equals(newEnv.SortOrder)))
+                        continue;
+
+                    JobService.Instance.Unregister(newEnv);
+                    JobService.Instance.Register(newEnv);
                 }
             }
             else

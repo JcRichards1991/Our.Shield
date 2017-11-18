@@ -884,7 +884,7 @@ angular.module('umbraco.resources').factory('shieldResource', ['$http', function
         postConfiguration: function (id, config) {
             return $http({
                 method: 'POST',
-                url: apiRoot + 'Configuration?id=' + id,
+                url: apiRoot + 'WriteConfiguration?id=' + id,
                 data: JSON.stringify(config),
                 dataType: 'json',
                 headers: {

@@ -12,23 +12,17 @@ namespace Our.Shield.Core.Persistance.Business
     /// </summary>
     public class DbContext
     {
-        private static readonly Lazy<DbContext> instance = new Lazy<DbContext>(() => new DbContext());
+        private static readonly Lazy<DbContext> DatabaseInstance = new Lazy<DbContext>(() => new DbContext());
 
         /// <summary>
         /// 
         /// </summary>
-        public static DbContext Instance
-        {
-            get
-            {
-                return instance.Value;
-            }
-        }
+        public static DbContext Instance => DatabaseInstance.Value;
 
-        private static readonly Lazy<ConfigurationContext> configurationContext = new Lazy<ConfigurationContext>(() => new ConfigurationContext());
-        private static readonly Lazy<DomainContext> domainContext = new Lazy<DomainContext>(() => new DomainContext());
-        private static readonly Lazy<EnvironmentContext> environmentContext = new Lazy<EnvironmentContext>(() => new EnvironmentContext());
-        private static readonly Lazy<JournalContext> journalContext = new Lazy<JournalContext>(() => new JournalContext());
+        private static readonly Lazy<ConfigurationContext> ConfigurationContext = new Lazy<ConfigurationContext>(() => new ConfigurationContext());
+        private static readonly Lazy<DomainContext> DomainContext = new Lazy<DomainContext>(() => new DomainContext());
+        private static readonly Lazy<EnvironmentContext> EnvironmentContext = new Lazy<EnvironmentContext>(() => new EnvironmentContext());
+        private static readonly Lazy<JournalContext> JournalContext = new Lazy<JournalContext>(() => new JournalContext());
 
         /// <summary>
         /// 
@@ -37,7 +31,7 @@ namespace Our.Shield.Core.Persistance.Business
         {
             get
             {
-                return configurationContext.Value;
+                return ConfigurationContext.Value;
             }
         }
         
@@ -48,7 +42,7 @@ namespace Our.Shield.Core.Persistance.Business
         {
             get
             {
-                return domainContext.Value;
+                return DomainContext.Value;
             }
         }
 
@@ -59,7 +53,7 @@ namespace Our.Shield.Core.Persistance.Business
         {
             get
             {
-                return environmentContext.Value;
+                return EnvironmentContext.Value;
             }
         }
 
@@ -70,7 +64,7 @@ namespace Our.Shield.Core.Persistance.Business
         {
             get
             {
-                return journalContext.Value;
+                return JournalContext.Value;
             }
         }
 
@@ -109,23 +103,24 @@ namespace Our.Shield.Core.Persistance.Business
         /// <returns></returns>
         protected IEnumerable<Data.Dto.Domain> MapUmbracoDomains(IEnumerable<Data.Dto.Domain> domains)
         {
-            if (domains == null || !domains.Any())
+            var domainArray = domains.ToArray();
+
+            if (!domainArray.Any())
             {
                 return Enumerable.Empty<Data.Dto.Domain>();
             }
             var umbracoDomains = UmbracoDomains();
-            foreach (var domain in domains)
+            foreach (var domain in domainArray)
             {
-                if (domain.UmbracoDomainId != null)
+                if (domain.UmbracoDomainId == null)
+                    continue;
+
+                if (umbracoDomains.TryGetValue((int) domain.UmbracoDomainId, out var match))
                 {
-                    string match = null;
-                    if (umbracoDomains.TryGetValue((int) domain.UmbracoDomainId, out match))
-                    {
-                        domain.Name = match;
-                    }
+                    domain.Name = match;
                 }
             }
-            return domains.Where(x => !string.IsNullOrWhiteSpace(x.Name));
+            return domainArray.Where(x => !string.IsNullOrWhiteSpace(x.Name));
         }
 
         /// <summary>
@@ -136,13 +131,12 @@ namespace Our.Shield.Core.Persistance.Business
         protected Data.Dto.Domain MapUmbracoDomain(Data.Dto.Domain domain)
         {
             var umbracoDomains = UmbracoDomains();
-            if (domain.UmbracoDomainId != null)
+            if (domain.UmbracoDomainId == null)
+                return string.IsNullOrWhiteSpace(domain.Name) ? null : domain;
+
+            if (umbracoDomains.TryGetValue((int) domain.UmbracoDomainId, out var match))
             {
-                string match = null;
-                if (umbracoDomains.TryGetValue((int) domain.UmbracoDomainId, out match))
-                {
-                    domain.Name = match;
-                }
+                domain.Name = match;
             }
             return string.IsNullOrWhiteSpace(domain.Name) ? null : domain;
         }

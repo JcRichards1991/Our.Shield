@@ -2,6 +2,5 @@
 {
     internal class Journal : Migrations.Dto.Journal.Journal103
     {
-
     }
 }

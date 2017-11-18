@@ -26,7 +26,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations
         {
             const string productName = nameof(Shield);
 
-            var currentVersion = new SemVersion(0, 0, 0);
+            var currentVersion = new SemVersion(0);
             var migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName).OrderByDescending(x => x.CreateDate);
             var latestMigration = migrations.FirstOrDefault();
 
@@ -36,11 +36,11 @@ namespace Our.Shield.Core.Persistance.Data.Migrations
             if (TargetVersion == currentVersion)
                 return;
 
-            IMigration[] scriptsForMigration = new IMigration[]
+            IMigration[] scriptsForMigration =
             {
-                currentVersion == new SemVersion(0, 0, 0) ? 
-                    (IMigration) new Versions.Migration103Create(sqlSyntax, logger) :
-                    (IMigration) new Versions.Migration103(sqlSyntax, logger),
+                currentVersion == new SemVersion(0) 
+                    ? (IMigration) new Versions.Migration103Create(sqlSyntax, logger)
+                    : new Versions.Migration103(sqlSyntax, logger),
                 new Versions.Migration104(sqlSyntax, logger)
             };
 

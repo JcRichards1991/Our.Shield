@@ -29,8 +29,10 @@
                     <localize key="Shield.Properties_IpAccessControlDescription"></localize>
                 </small>
             </label>
-
-            <shield-ip-access-control model="vm.configuration.ipAccessRules"></shield-ip-access-control>
+            
+            <div class="controls">
+                <shield-ip-access-control model="vm.configuration.ipAccessRules"></shield-ip-access-control>
+            </div>
         </div>
 
         
@@ -38,13 +40,11 @@
             <label for="unauthorizedAction" class="control-label">
                 <localize key="Shield.Properties_UnauthorizedLabel"></localize>
                 <small>
-                    <localize key="Shield.Properties_UnauthozisedDescription"></localize>
+                    <localize key="Shield.Properties_UnauthorizedDescription"></localize>
                 </small>
             </label>
             <div class="controls">
-                <div class="umb-editor">
-                    <shield-transfer-url model="vm.configuration.unauthorized"></shield-transfer-url>
-                </div>
+                <shield-transfer-url model="vm.configuration.unauthorized"></shield-transfer-url>
             </div>
         </div>
     </ng-form>

@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
-using Our.Shield.Core;
 using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
 
 namespace Our.Shield.BackofficeAccess.Models
 {
+    /// <inheritdoc />
     /// <summary>
     /// The Backofffice Access Configuration
     /// </summary>

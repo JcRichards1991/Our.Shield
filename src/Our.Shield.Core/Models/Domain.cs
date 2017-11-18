@@ -2,6 +2,7 @@
 
 namespace Our.Shield.Core.Models
 {
+    /// <inheritdoc />
     /// <summary>
     /// Domain class
     /// </summary>
@@ -13,18 +14,21 @@ namespace Our.Shield.Core.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// The name of the Domain
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// 
         /// </summary>
         [JsonProperty("umbracoDomainId")]
         public int? UmbracoDomainId { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// 
         /// </summary>
@@ -40,6 +44,7 @@ namespace Our.Shield.Core.Models
         /// Constructor for turning a Domain DTO to this Domain object
         /// </summary>
         /// <param name="data">The DTO object from the database</param>
+        // ReSharper disable once SuggestBaseTypeForParameter
         internal Domain(Persistance.Data.Dto.Domain data)
         {
             Id = data.Id;
@@ -55,8 +60,7 @@ namespace Our.Shield.Core.Models
         /// <returns>True if equals; Otherwise, False</returns>
         public override bool Equals(object other)
         {
-            var otherDomain = other as Domain;
-            if (otherDomain == null)
+            if (!(other is Domain otherDomain))
             {
                 return false;
             }
@@ -69,6 +73,7 @@ namespace Our.Shield.Core.Models
         /// <returns>The Domain's Name HashCode</returns>
         public override int GetHashCode()
         {
+            // ReSharper disable once NonReadonlyMemberInGetHashCode
             return Name.GetHashCode();
         }
     }

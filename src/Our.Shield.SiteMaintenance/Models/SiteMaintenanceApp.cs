@@ -9,58 +9,53 @@ using Umbraco.Core;
 
 namespace Our.Shield.SiteMaintenance.Models
 {
-    [AppEditor("/App_Plugins/Shield.SiteMaintenance/Views/FrontendAccess.html?version=1.0.4")]
+    [AppEditor("/App_Plugins/Shield.SiteMaintenance/Views/SiteMaintenance.html?version=1.0.4")]
     public class SiteMaintenanceApp : App<SiteMaintenanceConfiguration>
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public override string Description => "Display a \"Maintenance\" or \"Under Construction\" page to all unauthorised traffic";
+        /// <inheritdoc />
+        public override string Description =>
+            "Display a \"Maintenance\" or \"Under Construction\" page to all unauthorised traffic";
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public override string Icon => "icon-combination-lock blue";
+        /// <inheritdoc />
+        public override string Icon =>
+            "icon-combination-lock blue";
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         public override string Id => nameof(SiteMaintenance);
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         public override string Name => "Site Maintenance";
         
-        /// <summary>
-        /// </summary>
-        public override IConfiguration DefaultConfiguration => new SiteMaintenanceConfiguration
-        {
-            UmbracoUserEnable = true,
-            IpAccessRules = new IpAccessControl
+        /// <inheritdoc />
+        public override IConfiguration DefaultConfiguration =>
+            new SiteMaintenanceConfiguration
             {
-                AccessType = IpAccessControl.AccessTypes.AllowAll,
-                Exceptions = Enumerable.Empty<IpAccessControl.Entry>()
-            },
-            Unauthorized = new TransferUrl
-            {
-                TransferType = TransferTypes.Redirect,
-                Url = new UmbracoUrl
+                UmbracoUserEnable = true,
+                IpAccessRules = new IpAccessControl
                 {
-                    Type = UmbracoUrlTypes.Url,
-                    Value = string.Empty
+                    AccessType = IpAccessControl.AccessTypes.AllowAll,
+                    Exceptions = Enumerable.Empty<IpAccessControl.Entry>()
+                },
+                Unauthorized = new TransferUrl
+                {
+                    TransferType = TransferTypes.Redirect,
+                    Url = new UmbracoUrl
+                    {
+                        Type = UmbracoUrlTypes.Url,
+                        Value = string.Empty
+                    }
                 }
-            }
-        };
+            };
+
+        private readonly IpAccessControlService _ipAccessControlService;
+        public SiteMaintenanceApp()
+        {
+            _ipAccessControlService = new IpAccessControlService();
+        }
 
         private readonly string _allowKey = Guid.NewGuid().ToString();
         
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="job"></param>
-        /// <param name="c"></param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public override bool Execute(IJob job, IConfiguration c)
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(_allowKey);
@@ -77,15 +72,15 @@ namespace Our.Shield.SiteMaintenance.Models
             var hardUmbracoLocation = ApplicationSettings.UmbracoPath;
             var regex = new Regex("^/$|^(/(?!" + hardUmbracoLocation.Trim('/') + ")[\\w-/_]+?)$", RegexOptions.IgnoreCase);
 
-            foreach (var error in new IpAccessControlService().InitIpAccessControl(config.IpAccessRules))
+            foreach (var error in _ipAccessControlService.InitIpAccessControl(config.IpAccessRules))
             {
                 job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
             }
 
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 5000, (count, httpApp) =>
             {
-                if ((config.UmbracoUserEnable && !AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
-                    || !new IpAccessControlService().IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
+                if (config.UmbracoUserEnable && !AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)
+                    || !_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
                 {
                     return new WatchResponse(config.Unauthorized);
                 }

@@ -86,10 +86,8 @@ table.domains-container {
         padding: 4px;
         cursor: move; }
 
-.shield-editor .shield-url-type .shield-url-type-option {
-  margin-top: 15px; }
-  .shield-editor .shield-url-type .shield-url-type-option.left {
-    margin-left: -10px; }
+.shield-editor .tranfer-url-type select, .shield-editor .shield-url-type-option select {
+  margin-bottom: 10px; }
 
 .shield-dashboard div.umb-table div.umb-table-body div.shield-domain-listing ul {
   margin-left: 0; }

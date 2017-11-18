@@ -1,11 +1,8 @@
 ﻿.shield-editor {
-    .shield-url-type {
-        .shield-url-type-option {
-            margin-top: 15px;
+    .tranfer-url-type, .shield-url-type-option {
 
-            &.left {
-                margin-left: -10px;
-            }
+        select {
+            margin-bottom: 10px;
         }
     }
 }

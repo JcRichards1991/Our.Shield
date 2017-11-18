@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Core;
 using Umbraco.Core.Persistence.Migrations;
-using Umbraco.Web;
 
 namespace Our.Shield.Core.Operation
 {
@@ -18,17 +17,15 @@ namespace Our.Shield.Core.Operation
     /// </summary>
     internal class JobService
     {
-        private const int taskLockTimeout = 1000;       //  in millisecs
-
 #if DEBUG
-        private const int poll = 60000;                    //  in secs
+        private const int PollSecs = 60000;                    //  in secs
 #else
-        private const int poll = 60 * 10;               //in secs
+        private const int PollSecs = 60 * 10;               //in secs
 #endif
 
         private const int JobIdStart = 1000;             //  Starting id for Jobs
 
-        private static readonly Lazy<JobService> _instance = new Lazy<JobService>(() => new JobService());
+        private static readonly Lazy<JobService> JobServiceInstance = new Lazy<JobService>(() => new JobService());
 
         private JobService()
         {
@@ -37,21 +34,16 @@ namespace Our.Shield.Core.Operation
         /// <summary>
         /// Accessor for instance
         /// </summary>
-        public static JobService Instance
-        {
-            get
-            {
-                return _instance.Value;
-            }
-        }
+        public static JobService Instance =>
+            JobServiceInstance.Value;
 
-        private static Locker jobLock = new Locker();
+        private static readonly Locker JobLock = new Locker();
 
-        private static readonly Lazy<IDictionary<int, Job>> jobs = 
+        private static readonly Lazy<IDictionary<int, Job>> Jobs = 
             new Lazy<IDictionary<int, Job>>(() => 
             new Dictionary<int, Job>());
 
-        private int registerCount = JobIdStart;
+        private int _registerCount = JobIdStart;
 
         /// <summary>
         /// Is this the first time our package has ran
@@ -65,13 +57,12 @@ namespace Our.Shield.Core.Operation
         {
             get
             {
-				return jobLock.Read<Dictionary<IEnvironment, IList<IJob>>>(() => 
+				return JobLock.Read(() => 
 				{
 	                var results = new Dictionary<IEnvironment, IList<IJob>>();
-                    foreach (var kvp in jobs.Value)
+                    foreach (var kvp in Jobs.Value)
                     {
-                        IList<IJob> jobs = null;
-                        if (!results.TryGetValue(kvp.Value.Environment, out jobs))
+                        if (!results.TryGetValue(kvp.Value.Environment, out var jobs))
                         {
                             jobs = new List<IJob>();
                             results.Add(kvp.Value.Environment, jobs);
@@ -90,10 +81,7 @@ namespace Our.Shield.Core.Operation
         /// <returns></returns>
         public IJob Job(int id)
         {
-			return jobLock.Read<IJob>(() =>
-			{
-                return jobs.Value[id].DeepCopy();
-            });
+			return JobLock.Read(() => Jobs.Value[id].DeepCopy());
         }                    
 
         private void LoadMigrations(IApp app, ApplicationContext applicationContext)
@@ -102,9 +90,12 @@ namespace Our.Shield.Core.Operation
 
             foreach (var attribute in app.GetType().GetCustomAttributes<AppMigrationAttribute>(true))
             {
-                var migration = Activator.CreateInstance(attribute.Migration, 
+                if (!(Activator.CreateInstance(attribute.Migration,
                     applicationContext.DatabaseContext.SqlSyntax,
-                    applicationContext.ProfilingLogger.Logger) as IMigration;
+                    applicationContext.ProfilingLogger.Logger) is IMigration migration))
+                {
+                    continue;
+                }
 
                 var version = migration.GetType().GetCustomAttribute<MigrationAttribute>(true);
 
@@ -119,7 +110,7 @@ namespace Our.Shield.Core.Operation
                 return;
             }
             
-            var currentVersion = new SemVersion(0, 0, 0);
+            var currentVersion = new SemVersion(0);
             var productName = nameof(Shield) + app.Id;
 
             var migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName);
@@ -148,7 +139,7 @@ namespace Our.Shield.Core.Operation
 
             var logger = applicationContext.ProfilingLogger.Logger;
 
-            MigrationRunner migrationsRunner = new MigrationRunner(
+            var migrationsRunner = new MigrationRunner(
                 applicationContext.Services.MigrationEntryService, 
                 logger, 
                 currentVersion, 
@@ -162,7 +153,7 @@ namespace Our.Shield.Core.Operation
             }
             catch (Exception ex)
             {
-                logger.Error(this.GetType(), $"Error running {productName} migration", ex);
+                logger.Error(GetType(), $"Error running {productName} migration", ex);
             }
         }
 
@@ -200,17 +191,17 @@ namespace Our.Shield.Core.Operation
             }
         }
 
-        private const long ranRepeat = 0L;
-        private const long ranNow = 1L;
-        private long ranTick = ranNow;
+        private const long RanRepeat = 0L;
+        private const long RanNow = 1L;
+        private long _ranTick = RanNow;
 
-        private int runningPoll = 0;
+        private int _runningPoll;
 
         public void Poll(bool forceUpdate)
         {
             if (forceUpdate)
             {
-                ranTick = ranRepeat;
+                _ranTick = RanRepeat;
             }
             Poll();
         }
@@ -220,12 +211,12 @@ namespace Our.Shield.Core.Operation
         /// </summary>
         public void Poll()
         {
-            if (DateTime.UtcNow.Ticks < ranTick)
+            if (DateTime.UtcNow.Ticks < _ranTick)
             {
                 return;
             }
 
-            if (Interlocked.CompareExchange(ref Instance.runningPoll, 0, 1) != 0)
+            if (Interlocked.CompareExchange(ref Instance._runningPoll, 0, 1) != 0)
             {
                 return;
             }
@@ -233,10 +224,10 @@ namespace Our.Shield.Core.Operation
             try
             {
                 //System.Diagnostics.Debug.WriteLine("START running poll with " + ranTick.ToString());
-                ranTick = ranNow;
-				if (jobLock.Write(() => 
+                _ranTick = RanNow;
+				if (JobLock.Write(() => 
 				{
-                    foreach (var reg in jobs.Value)
+                    foreach (var reg in Jobs.Value)
                     {
                         var ct = new CancellationTokenSource();
                         var task = new Task<bool>(() => Execute(reg.Value), ct.Token, TaskCreationOptions.PreferFairness);
@@ -246,17 +237,17 @@ namespace Our.Shield.Core.Operation
                     }
                 }))
 				{
-					if (jobLock.Read(() =>
+					if (JobLock.Read(() =>
 					{
-						foreach (var reg in jobs.Value)
+						foreach (var reg in Jobs.Value)
 						{
 							reg.Value.Task.Start();
 						}
 					}))
 					{
-						if (Interlocked.CompareExchange(ref ranTick, ranRepeat, ranNow) != ranRepeat)
+						if (Interlocked.CompareExchange(ref _ranTick, RanRepeat, RanNow) != RanRepeat)
 						{
-							ranTick = DateTime.UtcNow.AddSeconds(poll).Ticks;
+							_ranTick = DateTime.UtcNow.AddSeconds(PollSecs).Ticks;
 						}
 					}
 				}
@@ -264,7 +255,7 @@ namespace Our.Shield.Core.Operation
             }
             finally
             {
-                runningPoll = 0;
+                _runningPoll = 0;
             }
         }
 
@@ -275,17 +266,14 @@ namespace Our.Shield.Core.Operation
                 job.CancelToken.Token.ThrowIfCancellationRequested();
 
                 var config = ReadConfiguration(job, job.App.DefaultConfiguration);
-				if (jobLock.Read<bool>(() =>
-				{
-                    return (job.LastRan != null && config.LastModified < job.LastRan);
-                }))
+				if (JobLock.Read(() => job.LastRan != null && config.LastModified < job.LastRan))
 				{
 					return true;
 				}
 
                 if (job.App.Execute(job, config))
                 {
-					jobLock.Write(() =>
+					JobLock.Write(() =>
 					{
                         job.LastRan = DateTime.UtcNow;
                     });
@@ -371,17 +359,17 @@ namespace Our.Shield.Core.Operation
         /// <returns>True if successfully added; otherwise, False</returns>
         public bool Register(IEnvironment environment, IApp app)
         {
-            return jobLock.Write(() =>
+            return JobLock.Write(() =>
 			{
                 var job = new Job
                 {
-                    Id = registerCount++,
+                    Id = _registerCount++,
                     Environment = environment,
                     App = app,
-                    ConfigType = app.GetType().BaseType.GenericTypeArguments[0]
+                    ConfigType = app.GetType().BaseType?.GenericTypeArguments[0]
                 };
 
-                jobs.Value.Add(job.Id, job);
+                Jobs.Value.Add(job.Id, job);
             });
         }
 
@@ -392,18 +380,17 @@ namespace Our.Shield.Core.Operation
         /// <returns></returns>
         public bool Unregister(int id)
         {
-            return jobLock.Write(() =>
+            return JobLock.Write(() =>
 			{
-                Job job = null;
-                if (jobs.Value.TryGetValue(id, out job))
-                {
-                    if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
-                    {
-                        job.CancelToken.Cancel();
-                    }
-                    jobs.Value.Remove(id);
-                }
-            });
+			    if (!Jobs.Value.TryGetValue(id, out var job))
+                    return;
+
+			    if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
+			    {
+			        job.CancelToken.Cancel();
+			    }
+			    Jobs.Value.Remove(id);
+			});
         }
 
         /// <summary>
@@ -416,14 +403,14 @@ namespace Our.Shield.Core.Operation
         /// <summary>
         /// Removes a collection of jobs from the job service
         /// </summary>
-        /// <param name="jobsToUnregister">The collection of jobs to remove</param>
+        /// <param name="environment">The environment to unregister</param>
         /// <returns>True if successfully removed; otherwise, False</returns>
         public bool Unregister(IEnvironment environment)
         {
-            return jobLock.Write(() => 
+            return JobLock.Write(() => 
 			{
                 var keys = new List<int>();
-                foreach (var job in jobs.Value)
+                foreach (var job in Jobs.Value)
                 {
                     if (job.Value.Environment.Id == environment.Id)
                     {
@@ -437,7 +424,7 @@ namespace Our.Shield.Core.Operation
                 }
                 foreach (var key in keys)
                 {
-                    jobs.Value.Remove(key);
+                    Jobs.Value.Remove(key);
                 }
             });
         }
@@ -449,24 +436,27 @@ namespace Our.Shield.Core.Operation
         /// <returns>True if successfully removed; otherwise, False</returns>
         public bool Unregister(string appId)
         {
-            return jobLock.Write(() => 
+            return JobLock.Write(() => 
             {
                 var removeItems = new List<int>();
-                Job job = null;
-                foreach (var reg in jobs.Value)
+
+                foreach (var reg in Jobs.Value)
                 {
-                    if (reg.Value.App.Id == appId)
+                    var job = reg.Value;
+
+                    if (job.App.Id != appId)
+                        continue;
+
+                    if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
                     {
-                        if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
-                        {
-                            job.CancelToken.Cancel();
-                        }
-                        removeItems.Add(reg.Key);
+                        job.CancelToken.Cancel();
                     }
+                    removeItems.Add(reg.Key);
                 }
+
                 foreach (var item in removeItems)
                 {
-                    jobs.Value.Remove(item);
+                    Jobs.Value.Remove(item);
                 }
             });
         }

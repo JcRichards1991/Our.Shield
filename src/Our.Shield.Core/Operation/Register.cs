@@ -2,11 +2,13 @@
 
 namespace Our.Shield.Core.Operation
 {
+    /// <inheritdoc />
     /// <summary>
     /// Initialization class
     /// </summary>
     public class Register : ApplicationEventHandler
     {
+        /// <inheritdoc />
         /// <summary>
         /// Overrides the ApplicationEventHandler ApplicationStarting method
         /// </summary>
@@ -23,10 +25,10 @@ namespace Our.Shield.Core.Operation
         {
             base.ApplicationStarted(umbracoApplication, applicationContext);
 
-            new Core.Persistance.Data.Migrations.Migration().RunMigrations(applicationContext.DatabaseContext.SqlSyntax, 
+            new Persistance.Data.Migrations.Migration().RunMigrations(applicationContext.DatabaseContext.SqlSyntax, 
                 applicationContext.Services.MigrationEntryService, applicationContext.ProfilingLogger.Logger);
 
-            Operation.JobService.Instance.Init(umbracoApplication, applicationContext);
+            JobService.Instance.Init(umbracoApplication, applicationContext);
 
             Umbraco.Core.Services.ContentService.Published += UmbracoContentService.ClearCache;
             Umbraco.Core.Services.ContentService.UnPublished += UmbracoContentService.ClearCache;

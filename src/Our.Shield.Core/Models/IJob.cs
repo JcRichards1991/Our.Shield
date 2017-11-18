@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Web;
-using static Our.Shield.Core.Operation.WebRequestHandler;
 
 namespace Our.Shield.Core.Models
 {
@@ -53,17 +52,17 @@ namespace Our.Shield.Core.Models
         /// <typeparam name="T">The Type of Journal to return</typeparam>
         /// <param name="page">The page of results to return</param>
         /// <param name="itemsPerPage">The number of items to return per page</param>
+        /// <param name="totalPages">The amount of total pages</param>
         /// <returns>Collection of Journals of the desired type</returns>
         IEnumerable<T> ListJournals<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal;
 
         /// <summary>
         /// Adds a Web Request to WebRequestsHandler collection
         /// </summary>
+        /// <param name="stage">The stage of the pipeline to add a watch too</param>
         /// <param name="regex">The Regex use to match for requests</param>
-        /// <param name="beginRequestPriority">The priority of the begin request watch</param>
-        /// <param name="beginRequest">The function to call when the Regex matches a request</param>
-        /// <param name="endRequestPriority">The priority of the end request watch</param>
-        /// <param name="endRequest">The function to call when the regex matches a request</param>
+        /// <param name="priority">The priority of the request watch</param>
+        /// <param name="request">The function to call when the regex matches a request</param>
         /// <returns></returns>
         int WatchWebRequests(PipeLineStages stage, Regex regex, int priority, 
             Func<int, HttpApplication, WatchResponse> request);
@@ -71,6 +70,7 @@ namespace Our.Shield.Core.Models
         /// <summary>
         /// Removes a Web Requests from the WebRequestHandler collection
         /// </summary>
+        /// <param name="stage">The stage of the pipeline to remove a watch from</param>
         /// <param name="regex">The regex of the corresponding Web Request to remove</param>
         /// <returns></returns>
         int UnwatchWebRequests(PipeLineStages stage, Regex regex);
@@ -78,6 +78,7 @@ namespace Our.Shield.Core.Models
         /// <summary>
         /// Removes all Web Requests from the WebRequestHandler collection created by this job
         /// </summary>
+        /// <param name="stage">The stage of the pipeline to remove watches from</param>
         /// <returns></returns>
         int UnwatchWebRequests(PipeLineStages stage);
 
@@ -90,12 +91,38 @@ namespace Our.Shield.Core.Models
         /// <returns></returns>
         int UnwatchWebRequests(IApp app);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="regex"></param>
+        /// <returns></returns>
         int ExceptionWebRequest(Regex regex);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         int ExceptionWebRequest(UmbracoUrl url);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="regex"></param>
+        /// <returns></returns>
         int UnexceptionWebRequest(Regex regex);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         int UnexceptionWebRequest(UmbracoUrl url);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         int UnexceptionWebRequest();
     }
 }

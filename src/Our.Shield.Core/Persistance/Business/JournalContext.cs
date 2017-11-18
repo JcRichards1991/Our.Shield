@@ -10,36 +10,23 @@ using Umbraco.Core.Persistence;
 
 namespace Our.Shield.Core.Persistance.Business
 {
+    /// <inheritdoc />
     /// <summary>
     /// The Journal context
     /// </summary>
     public class JournalContext : DbContext
     {
-        /// <summary>
-        /// 
-        /// </summary>
         internal class ShouldSerializeContractResolver : DefaultContractResolver
         {
-            public static readonly ShouldSerializeContractResolver Instance = new ShouldSerializeContractResolver();
-
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="member"></param>
-            /// <param name="memberSerialization"></param>
-            /// <returns></returns>
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
-                JsonProperty property = base.CreateProperty(member, memberSerialization);
+                var property = base.CreateProperty(member, memberSerialization);
 
                 if (property.PropertyName.Equals(nameof(IJournal.EnvironmentId), StringComparison.InvariantCultureIgnoreCase) ||
                     property.PropertyName.Equals(nameof(IJournal.AppId), StringComparison.InvariantCultureIgnoreCase) ||
                     property.PropertyName.Equals(nameof(IJournal.Datestamp), StringComparison.InvariantCultureIgnoreCase))
                 {
-                    property.ShouldSerialize = instance =>
-                    {
-                        return false;
-                    };
+                    property.ShouldSerialize = instance => false;
                 }
                 return property;
             }
@@ -54,6 +41,7 @@ namespace Our.Shield.Core.Persistance.Business
 
             if (environmentId.HasValue)
             { 
+                // ReSharper disable once ImplicitlyCapturedClosure
                 sql.Where<Data.Dto.Journal>(j => j.EnvironmentId == environmentId);
             }
             
@@ -74,11 +62,12 @@ namespace Our.Shield.Core.Persistance.Business
                         {
                             try
                             {
-                                var journal = JsonConvert.DeserializeObject(x.Value, type) as Journal;
+                                if (!(JsonConvert.DeserializeObject(x.Value, type) is Journal journal))
+                                    return null;
+
                                 journal.AppId = x.AppId;
                                 journal.Datestamp = x.Datestamp;
                                 journal.EnvironmentId = x.EnvironmentId;
-
                                 return journal;
                             }
                             catch (JsonSerializationException jEx)

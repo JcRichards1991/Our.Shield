@@ -1,13 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Our.Shield.Core.Models;
-using System.Data;
+using System;
 using System.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence;
 using Umbraco.Core.Persistence.Migrations;
 using Umbraco.Core.Persistence.SqlSyntax;
-using System;
 
 namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
 {
@@ -18,8 +17,6 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
     internal class Migration104 : MigrationBase
     {
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
-        private readonly DatabaseSchemaHelper _schemaHelper;
-        private ISqlSyntaxProvider _sqlSyntax;
 
         /// <summary>
         /// Default constructor for the Configuration Migration.
@@ -28,8 +25,6 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
         /// <param name="logger">The Logger</param>
         public Migration104(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
         {
-            _sqlSyntax = sqlSyntax;
-            _schemaHelper = new DatabaseSchemaHelper(_database, logger, _sqlSyntax);
         }
 
         /// <summary>
@@ -50,10 +45,10 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                         XPathUrl = "",
                         ContentPickerUrl = ""
                     }
-                }, (oldData) => {
+                }, oldData => {
                     return new
                     {
-                        backendAccessUrl = oldData.backendAccessUrl,
+                        oldData.backendAccessUrl,
                         ipAccessRules = new IpAccessControl
                         {
                             AccessType = oldData.ipAddressesAccess == 0 ? IpAccessControl.AccessTypes.AllowAll : IpAccessControl.AccessTypes.AllowNone,
@@ -65,8 +60,8 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                             Url = new UmbracoUrl
                             {
                                 Type = oldData.urlType.UrlSelector,
-                                Value = (oldData.urlType.UrlSelector == UmbracoUrlTypes.Url) ? oldData.urlType.StrUrl :
-                                    ((oldData.urlType.UrlSelector == UmbracoUrlTypes.XPath) ? oldData.urlType.XPathUrl :
+                                Value = oldData.urlType.UrlSelector == UmbracoUrlTypes.Url ? oldData.urlType.StrUrl :
+                                    (oldData.urlType.UrlSelector == UmbracoUrlTypes.XPath ? oldData.urlType.XPathUrl :
                                     oldData.urlType.ContentPickerUrl)
                             }
                         }
@@ -87,10 +82,10 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                         XPathUrl = "",
                         ContentPickerUrl = ""
                     }
-                }, (oldData) => {
+                }, oldData => {
                     return new
                     {
-                        umbracoUserEnable = oldData.umbracoUserEnable,
+                        oldData.umbracoUserEnable,
                         ipAccessRules = new IpAccessControl
                         {
                             AccessType = oldData.ipAddressesAccess == 0 ? IpAccessControl.AccessTypes.AllowAll : IpAccessControl.AccessTypes.AllowNone,
@@ -102,8 +97,8 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                             Url = new UmbracoUrl
                             {
                                 Type = oldData.urlType.UrlSelector,
-                                Value = (oldData.urlType.UrlSelector == UmbracoUrlTypes.Url) ? oldData.urlType.StrUrl :
-                                    ((oldData.urlType.UrlSelector == UmbracoUrlTypes.XPath) ? oldData.urlType.XPathUrl :
+                                Value = oldData.urlType.UrlSelector == UmbracoUrlTypes.Url ? oldData.urlType.StrUrl :
+                                    (oldData.urlType.UrlSelector == UmbracoUrlTypes.XPath ? oldData.urlType.XPathUrl :
                                     oldData.urlType.ContentPickerUrl)
                             }
                         }
@@ -124,9 +119,9 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
             var sql = new Sql();
             sql.Where<Data.Dto.Configuration>(x => x.AppId == appId);
 
-            var config = _database.FirstOrDefault<Data.Dto.Configuration>(sql);
+            var configs = _database.Fetch<Data.Dto.Configuration>(sql);
 
-            if (config != null)
+            foreach (var config in configs)
             {
                 //  Deserialize the current config to an anonymous object
                 var oldData = JsonConvert.DeserializeAnonymousType(config.Value, definition);

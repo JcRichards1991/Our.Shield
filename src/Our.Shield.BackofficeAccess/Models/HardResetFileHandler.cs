@@ -8,59 +8,53 @@ namespace Our.Shield.BackofficeAccess.Models
 
         private const string File = "HardReset.txt";
 
-        private bool hasInit = false;
+        private bool _hasInit;
 
-        private string DirectoryPath
-        {
-            get
-            {
-                return AppDomain.CurrentDomain.BaseDirectory + Directory;
-            }
-        }
+        private static string DirectoryPath => AppDomain.CurrentDomain.BaseDirectory + Directory;
 
         public string FilePath => DirectoryPath + File;
 
-        private string hardLocation;
+        private string _hardLocation;
         public string HardLocation
         {
             get
             {
-                if(!hasInit)
+                if(!_hasInit)
                 {
                     Load();
                 }
 
-                return hardLocation;
+                return _hardLocation;
             }
             set
             {
-                hasInit = true;
-                hardLocation = value;
+                _hasInit = true;
+                _hardLocation = value;
             }
         }
 
-        private string softLocation;
+        private string _softLocation;
         public string SoftLocation
         {
             get
             {
-                if(!hasInit)
+                if(!_hasInit)
                 {
                     Load();
                 }
 
-                return softLocation;
+                return _softLocation;
             }
             set
             {
-                hasInit = true;
-                softLocation = value;
+                _hasInit = true;
+                _softLocation = value;
             }
         }
 
         private void Load()
         {
-            hasInit = true;
+            _hasInit = true;
             
             if(!System.IO.File.Exists(FilePath))
             {

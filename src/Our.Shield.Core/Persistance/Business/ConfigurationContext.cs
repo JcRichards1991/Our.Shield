@@ -9,36 +9,22 @@ using Umbraco.Core.Persistence;
 
 namespace Our.Shield.Core.Persistance.Business
 {
+    /// <inheritdoc />
     /// <summary>
     /// The Configuration Context.
     /// </summary>
     public class ConfigurationContext : DbContext
     {
-
-        /// <summary>
-        /// 
-        /// </summary>
         internal class ShouldSerializeContractResolver : DefaultContractResolver
         {
-            public static readonly ShouldSerializeContractResolver Instance = new ShouldSerializeContractResolver();
- 
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="member"></param>
-            /// <param name="memberSerialization"></param>
-            /// <returns></returns>
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
             {
-                JsonProperty property = base.CreateProperty(member, memberSerialization);
+                var property = base.CreateProperty(member, memberSerialization);
  
                 if (property.PropertyName.Equals(nameof(IConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase) || 
                     property.PropertyName.Equals(nameof(IConfiguration.LastModified), StringComparison.InvariantCultureIgnoreCase))
                 {
-                    property.ShouldSerialize = instance =>
-                    {
-                        return false;
-                    };
+                    property.ShouldSerialize = instance => false;
                 }
                 return property;
             }
@@ -47,24 +33,28 @@ namespace Our.Shield.Core.Persistance.Business
         private void SetDefaultConfigurationSingleEnvironmentValues(string appId, IConfiguration configuration)
         {
             var configurationType = configuration.GetType();
-            var properties = configurationType.GetProperties().Where(x => x.GetCustomAttribute<Attributes.SingleEnvironmentAttribute>() != null);
+            var properties = configurationType.GetProperties().Where(x => x.GetCustomAttribute<Attributes.SingleEnvironmentAttribute>() != null).ToArray();
 
-            if (properties.Any())
+            if (!properties.Any())
+                return;
+
+            var records = Database.Fetch<Data.Dto.Configuration>(
+                "WHERE " + nameof(Data.Dto.Configuration.AppId) + " = @0",
+                appId);
+
+            if (!records.Any())
+                return;
+
+            var record = records.FirstOrDefault();
+
+            if (record == null)
+                return;
+
+            var config = JsonConvert.DeserializeObject(record.Value, configurationType) as Configuration;
+
+            foreach (var property in properties)
             {
-                var records = Database.Fetch<Data.Dto.Configuration>(
-                    "WHERE " + nameof(Data.Dto.Configuration.AppId) + " = @0",
-                    appId);
-
-                if (records.Any())
-                {
-                    var record = records.FirstOrDefault();
-                    var config = JsonConvert.DeserializeObject(record.Value, configurationType) as Configuration;
-
-                    foreach (var property in properties)
-                    {
-                        property.SetValue(configuration, property.GetValue(config));
-                    }
-                }
+                property.SetValue(configuration, property.GetValue(config));
             }
         }
 
@@ -78,11 +68,13 @@ namespace Our.Shield.Core.Persistance.Business
         /// <returns></returns>
         public IConfiguration Read(int environmentId, string appId, Type type, IConfiguration defaultConfiguration)
         {
-            var config = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(defaultConfiguration), type) as Configuration;
-            SetDefaultConfigurationSingleEnvironmentValues(appId, config);
+            if (!(JsonConvert.DeserializeObject(JsonConvert.SerializeObject(defaultConfiguration), type) is Configuration defaultConfig))
+                return null;
 
-            config.LastModified = null;
-            config.Enable = false;
+            SetDefaultConfigurationSingleEnvironmentValues(appId, defaultConfig);
+
+            defaultConfig.LastModified = null;
+            defaultConfig.Enable = false;
 
             try
             {
@@ -91,12 +83,16 @@ namespace Our.Shield.Core.Persistance.Business
                     nameof(Data.Dto.Configuration.AppId) + " = @1",
                     environmentId, appId);
 
-                if (record != null && !string.IsNullOrEmpty(record.Value))
-                {
-                    config = JsonConvert.DeserializeObject(record.Value, type) as Configuration;
-                    config.LastModified = record.LastModified;
-                    config.Enable = record.Enable;
-                }
+                if (string.IsNullOrEmpty(record?.Value))
+                    return defaultConfig;
+
+                if (!(JsonConvert.DeserializeObject(record.Value, type) is Configuration config))
+                    return defaultConfig;
+
+                config.LastModified = record.LastModified;
+                config.Enable = record.Enable;
+
+                return config;
             }
             catch (JsonSerializationException jEx)
             {
@@ -108,8 +104,6 @@ namespace Our.Shield.Core.Persistance.Business
                 LogHelper.Error(typeof(ConfigurationContext), $"Error reading configuration with environmentId: {environmentId} for appId: {appId}; to type:{type}", ex);
                 return defaultConfiguration;
             }
-
-            return config;
         }
 
         /// <summary>
@@ -128,30 +122,33 @@ namespace Our.Shield.Core.Persistance.Business
         private void SetSingleEnvironmentValues(IConfiguration configuration, int environmentId, string appId)
         {
             var configurationType = configuration.GetType();
-            var properties = configurationType.GetProperties().Where(x => x.GetCustomAttribute<Attributes.SingleEnvironmentAttribute>() != null);
+            var properties = configurationType.GetProperties().Where(x => x.GetCustomAttribute<Attributes.SingleEnvironmentAttribute>() != null).ToArray();
 
-            if (properties.Any())
+            if (!properties.Any())
+                return;
+
+            var records = Database.Fetch<Data.Dto.Configuration>(
+                "WHERE " + nameof(Data.Dto.Configuration.EnvironmentId) + " != @0 AND " +
+                nameof(Data.Dto.Configuration.AppId) + " = @1",
+                environmentId, appId);
+
+            foreach (var record in records)
             {
-                var records = Database.Fetch<Data.Dto.Configuration>(
-                    "WHERE " + nameof(Data.Dto.Configuration.EnvironmentId) + " != @0 AND " +
-                    nameof(Data.Dto.Configuration.AppId) + " = @1",
-                    environmentId, appId);
+                var config = JsonConvert.DeserializeObject(record.Value, configurationType) as Configuration;
 
-                foreach (var record in records)
+                if (config == null)
+                    continue;
+
+                foreach (var property in properties)
                 {
-                    var config = JsonConvert.DeserializeObject(record.Value, configurationType) as Configuration;
+                    property.SetValue(config, property.GetValue(configuration));
 
-                    foreach (var property in properties)
-                    {
-                        property.SetValue(config, property.GetValue(configuration));
-
-                        record.Value = JsonConvert.SerializeObject(config, Formatting.None,
-                            new JsonSerializerSettings { ContractResolver = new ShouldSerializeContractResolver() });
-                    }
-
-                    config.LastModified = DateTime.UtcNow;
-                    Database.Update(record);
+                    record.Value = JsonConvert.SerializeObject(config, Formatting.None,
+                        new JsonSerializerSettings { ContractResolver = new ShouldSerializeContractResolver() });
                 }
+
+                config.LastModified = DateTime.UtcNow;
+                Database.Update(record);
             }
         }
 

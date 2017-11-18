@@ -26,12 +26,12 @@ namespace Our.Shield.Core.Models
 		public override bool Equals(object obj)
 		{
 			var other = (UmbracoUrl) obj;
-			return (Type == other.Type && Value.Equals(other.Value)) ? true : false;
+		    return Type == other?.Type && Value.Equals(other.Value);
 		}
 
 		public override int GetHashCode()
 		{
-			return ((int) Type) + Value.GetHashCode();
+			return (int) Type + Value.GetHashCode();
 		}
 	}
 }

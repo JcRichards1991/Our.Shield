@@ -1,13 +1,8 @@
-﻿using System;
+﻿using NetTools;
+using Our.Shield.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using NetTools;
-using Our.Shield.Core.Models;
-using Umbraco.Core.Logging;
 
 namespace Our.Shield.Core.Operation
 {
@@ -22,8 +17,7 @@ namespace Our.Shield.Core.Operation
             var errors = new List<string>();
             foreach (var exception in rule.Exceptions)
             {
-                IPAddressRange range;
-                if (!IPAddressRange.TryParse(exception.Value, out range))
+                if (!IPAddressRange.TryParse(exception.Value, out var range))
                 {
                     errors.Add(exception.Value);
                 }
@@ -38,7 +32,7 @@ namespace Our.Shield.Core.Operation
         /// States whether a specific ip address is valid within the rules of client access control
         /// </summary>
         /// <param name="rule"></param>
-        /// <param name="clientIp"></param>
+        /// <param name="ipAddress"></param>
         /// <returns></returns>
         public bool IsValid(IpAccessControl rule, string ipAddress)
         {
@@ -54,14 +48,11 @@ namespace Our.Shield.Core.Operation
 
             var ip6 = clientRange.Begin.MapToIPv6();
 
-            foreach (var exception in rule.Exceptions.Where(x => x.Range != null))
+            if (rule.Exceptions.Where(x => x.Range != null).Any(exception => exception.Range.Contains(ip6)))
             {
-                if (exception.Range.Contains(ip6))
-                {
-                    return rule.AccessType == IpAccessControl.AccessTypes.AllowAll ? false : true;
-                }
+                return rule.AccessType != IpAccessControl.AccessTypes.AllowAll;
             }
-            return rule.AccessType == IpAccessControl.AccessTypes.AllowAll ? true : false;
+            return rule.AccessType == IpAccessControl.AccessTypes.AllowAll;
         }
     }
 }

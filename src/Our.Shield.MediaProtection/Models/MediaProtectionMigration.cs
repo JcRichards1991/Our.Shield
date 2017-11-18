@@ -1,6 +1,4 @@
-﻿using Umbraco.Core;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Persistence;
+﻿using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence.Migrations;
 using Umbraco.Core.Persistence.SqlSyntax;
 
@@ -12,10 +10,7 @@ namespace Our.Shield.MediaProtection.Models
     [Migration("1.0.0", 1, nameof(Shield) + nameof(MediaProtection))]
     internal class MediaProtectionMigration : MigrationBase
     {
-        private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
-        private readonly DatabaseSchemaHelper _schemaHelper;
-
-        public bool AddMediaTypes = false;
+        public bool AddMediaTypes;
 
         /// <summary>
         /// Default constructor for the Configuration Migration
@@ -24,7 +19,6 @@ namespace Our.Shield.MediaProtection.Models
         /// <param name="logger">The Logger</param>
         public MediaProtectionMigration(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
         {
-            _schemaHelper = new DatabaseSchemaHelper(_database, logger, sqlSyntax);
         }
 
         /// <summary>

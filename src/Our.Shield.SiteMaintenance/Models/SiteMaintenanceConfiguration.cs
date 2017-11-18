@@ -3,6 +3,7 @@ using Our.Shield.Core.Models;
 
 namespace Our.Shield.SiteMaintenance.Models
 {
+    /// <inheritdoc />
     public class SiteMaintenanceConfiguration : Configuration
     {
         /// <summary>

@@ -3,9 +3,7 @@ using Our.Shield.Core.Models;
 
 namespace Our.Shield.MediaProtection.Models
 {
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <inheritdoc />
     [JsonObject(MemberSerialization.OptIn)]
     public class MediaProtectionConfiguration : Configuration
     {

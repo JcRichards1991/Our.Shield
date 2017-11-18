@@ -1,11 +1,6 @@
-﻿using Our.Shield.Core.Models;
-using System;
-using System.Net;
-using System.Web;
-using Umbraco.Core;
-using Umbraco.Core.Security;
-using Umbraco.Web;
+﻿using System.Web;
 using Umbraco.Core.Configuration;
+using Umbraco.Core.Security;
 
 namespace Our.Shield.Core.Helpers
 {

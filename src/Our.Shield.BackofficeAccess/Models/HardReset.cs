@@ -49,9 +49,10 @@ namespace Our.Shield.BackofficeAccess.Models
                 }
             }
 
-            var webConfig = new WebConfigFileHandler();
-
-            webConfig.UmbracoPath = "~/" + Path.GetFileName(resetter.SoftLocation);
+            var webConfig = new WebConfigFileHandler
+            {
+                UmbracoPath = "~/" + Path.GetFileName(resetter.SoftLocation)
+            };
             ConfigurationManager.AppSettings.Set("umbracoPath", webConfig.UmbracoPath);
 
             var paths = webConfig.UmbracoReservedPaths;
@@ -97,17 +98,17 @@ namespace Our.Shield.BackofficeAccess.Models
             }
             catch(Exception ex)
             {
-                LogHelper.Error<HardReset>($"Failed to save changes to the website's web.config file", ex);
+                LogHelper.Error<HardReset>("Failed to save changes to the website's web.config file", ex);
                 Directory.Move(resetter.SoftLocation, resetter.HardLocation);
             }
         }
 
-        private static void DeleteDirectory(string target_dir)
+        private static void DeleteDirectory(string targetDir)
         {
-            string[] files = Directory.GetFiles(target_dir);
-            string[] dirs = Directory.GetDirectories(target_dir);
+            var files = Directory.GetFiles(targetDir);
+            var dirs = Directory.GetDirectories(targetDir);
 
-            foreach (string file in files)
+            foreach (var file in files)
             {
                 File.SetAttributes(file, FileAttributes.Normal);
                 File.Delete(file);
@@ -121,7 +122,7 @@ namespace Our.Shield.BackofficeAccess.Models
             try
             {
                 Thread.Sleep(1);
-                Directory.Delete(target_dir, true);
+                Directory.Delete(targetDir, true);
             }
             catch (Exception)
             {
@@ -131,64 +132,64 @@ namespace Our.Shield.BackofficeAccess.Models
 
         internal class WebConfigFileHandler
         {
-            private const string file = "web.config";
+            private const string File = "web.config";
 
-            private string filePath
-            {
-                get
-                {
-                    return AppDomain.CurrentDomain.BaseDirectory + file;
-                }
-            }
+            private static string FilePath => AppDomain.CurrentDomain.BaseDirectory + File;
 
-            private XDocument webConfig;
+            private readonly XDocument _webConfig;
 
             public WebConfigFileHandler()
             {
-                webConfig = XDocument.Load(filePath);
+                _webConfig = XDocument.Load(FilePath);
             }
 
 
             public string UmbracoPath
             {
-                get
-                {
-                    return webConfig.XPathSelectElement("/configuration/appSettings/add[@key='umbracoPath']").Attribute("value").Value;
-                }
+                get => _webConfig.XPathSelectElement("/configuration/appSettings/add[@key='umbracoPath']")?.Attribute("value")?.Value;
                 set
                 {
-                    webConfig.XPathSelectElement("/configuration/appSettings/add[@key='umbracoPath']").Attribute("value").Value = value;
+                    var appKey = _webConfig?.XPathSelectElement("/configuration/appSettings/add[@key='umbracoPath']");
+                    var attr = appKey?.Attribute("value");
+                    if (attr != null)
+                    {
+                        attr.Value = value;
+                    }
                 }
             }
+
             public string[] UmbracoReservedPaths
             {
-                get
-                {
-                    return webConfig.XPathSelectElement("/configuration/appSettings/add[@key='umbracoReservedPaths']").Attribute("value").Value.Split(',');
-                }
+                get => _webConfig.XPathSelectElement("/configuration/appSettings/add[@key='umbracoReservedPaths']")?.Attribute("value")?.Value.Split(',');
                 set
                 {
-                    webConfig.XPathSelectElement("/configuration/appSettings/add[@key='umbracoReservedPaths']").Attribute("value").Value = string.Join(",", value);
+                    var appKey = _webConfig?.XPathSelectElement("/configuration/appSettings/add[@key='umbracoReservedPaths']");
+                    var attr = appKey?.Attribute("value");
+                    if (attr != null)
+                    {
+                        attr.Value = string.Join(",", value);
+                    }
                 }
             }
 
             public void SetLocationPath(string currentLocation, string newLocation)
             {
-                var element = webConfig.XPathSelectElement("/configuration/location[@path='" + currentLocation + "']");
-                if (element != null)
+                var element = _webConfig.XPathSelectElement("/configuration/location[@path='" + currentLocation + "']");
+                var attr = element?.Attribute("path");
+                if (attr != null)
                 {
-                    element.Attribute("path").Value = newLocation;
+                    attr.Value = newLocation;
                 }
             }
 
             public void Save()
             {
-                using (var fileStream = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                using (var fileStream = System.IO.File.Open(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
                 {
                     fileStream.SetLength(0);
                     using (var streamWriter = new StreamWriter(fileStream, Encoding.UTF8))
                     {
-                        streamWriter.Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + webConfig.ToString());
+                        streamWriter.Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + _webConfig);
                     }
                 }
             }

@@ -30,7 +30,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Dto.Journal
         /// Gets or sets the Domain Id
         /// </summary>
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        [ForeignKey(typeof(Dto.Environment.Environment100), Name = "FK_" + nameof(Shield) + "_" + nameof(Data.Dto.Journal) + "_" + nameof(Environment))]
+        [ForeignKey(typeof(Environment.Environment100), Name = "FK_" + nameof(Shield) + "_" + nameof(Data.Dto.Journal) + "_" + nameof(Environment))]
         [Index(IndexTypes.NonClustered, Name = "IX_" + nameof(Shield) + "_" + nameof(EnvironmentId))]
         public int EnvironmentId { get; set; }
         

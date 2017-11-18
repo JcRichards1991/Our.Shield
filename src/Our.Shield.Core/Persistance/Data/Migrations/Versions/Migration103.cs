@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Our.Shield.Core.Models;
 using System.Data;
-using System.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence;
@@ -59,8 +58,6 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
         }
 
         private readonly UmbracoDatabase _database = ApplicationContext.Current.DatabaseContext.Database;
-        private readonly DatabaseSchemaHelper _schemaHelper;
-        private ISqlSyntaxProvider _sqlSyntax;
 
         /// <summary>
         /// Default constructor for the Configuration Migration.
@@ -69,8 +66,6 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
         /// <param name="logger">The Logger</param>
         public Migration103(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
         {
-            _sqlSyntax = sqlSyntax;
-            _schemaHelper = new DatabaseSchemaHelper(_database, logger, _sqlSyntax);
         }
 
         /// <summary>
@@ -101,45 +96,45 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
 
             var config = _database.FirstOrDefault<Data.Dto.Configuration>(sql);
 
-            if (config != null)
+            if (config == null)
+                return;
+
+            var definition = new
             {
-                var definition = new
+                backendAccessUrl = "",
+                ipAddressesAccess = 0,
+                ipAddresses = new IpEntry103[0],
+                unauthorisedAction = TransferTypes.Redirect,
+                unauthorisedUrlType = UmbracoUrlTypes.Url,
+                unauthorisedUrl = "",
+                unauthorisedUrlXPath = "",
+                unauthorisedUrlContentPicker = ""
+            };
+
+            //  Deserialize the current config to an anonymous object
+            var oldData = JsonConvert.DeserializeAnonymousType(config.Value, definition);
+
+            //  Copy the configuration to the new anonymous object
+            var newData = new
+            {
+                oldData.backendAccessUrl,
+                oldData.ipAddressesAccess,
+                oldData.ipAddresses,
+                oldData.unauthorisedAction,
+                urlType = new UrlType103
                 {
-                    backendAccessUrl = "",
-                    ipAddressesAccess = 0,
-                    ipAddresses = new IpEntry103[0],
-                    unauthorisedAction = TransferTypes.Redirect,
-                    unauthorisedUrlType = UmbracoUrlTypes.Url,
-                    unauthorisedUrl = "",
-                    unauthorisedUrlXPath = "",
-                    unauthorisedUrlContentPicker = ""
-                };
+                    UrlSelector = oldData.unauthorisedUrlType,
+                    StrUrl = oldData.unauthorisedUrl,
+                    XPathUrl = oldData.unauthorisedUrlXPath,
+                    ContentPickerUrl = oldData.unauthorisedUrlContentPicker
+                }
+            };
 
-                //  Deserialize the current config to an anonymous object
-                var oldData = JsonConvert.DeserializeAnonymousType(config.Value, definition);
+            //  serialize the new configuration to the db entry's value
+            config.Value = JsonConvert.SerializeObject(newData, Formatting.None);
 
-                //  Copy the configuration to the new anonymous object
-                var newData = new
-                {
-                    backendAccessUrl = oldData.backendAccessUrl,
-                    ipAddressesAccess = oldData.ipAddressesAccess,
-                    ipAddresses = oldData.ipAddresses,
-                    unauthorisedAction = oldData.unauthorisedAction,
-                    urlType = new UrlType103
-                    {
-                        UrlSelector = oldData.unauthorisedUrlType,
-                        StrUrl = oldData.unauthorisedUrl,
-                        XPathUrl = oldData.unauthorisedUrlXPath,
-                        ContentPickerUrl = oldData.unauthorisedUrlContentPicker
-                    }
-                };
-
-                //  serialize the new configuration to the db entry's value
-                config.Value = JsonConvert.SerializeObject(newData, Formatting.None);
-
-                //  Update the entry within the DB.
-                _database.Update(config);
-            }
+            //  Update the entry within the DB.
+            _database.Update(config);
         }
 
         /// <summary>

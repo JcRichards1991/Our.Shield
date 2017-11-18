@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Our.Shield.Core.Helpers;
-using Our.Shield.Core.Models;
-using Umbraco.Core.Configuration;
+﻿using Our.Shield.Core.Models;
 
 namespace Our.Shield.Core.Operation
 {

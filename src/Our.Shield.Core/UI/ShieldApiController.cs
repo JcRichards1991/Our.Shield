@@ -13,6 +13,7 @@ using Umbraco.Web.Mvc;
 
 namespace Our.Shield.Core.UI
 {
+    /// <inheritdoc />
     /// <summary>
     /// Api Controller for the Umbraco Access area of the custom section
     /// </summary>
@@ -133,7 +134,7 @@ namespace Our.Shield.Core.UI
         /// <param name="json"></param>
         /// <returns></returns>
         [HttpPost]
-        public new bool Configuration(int id, [FromBody] JObject json)
+        public bool WriteConfiguration(int id, [FromBody] JObject json)
         {
             if (json == null)
             {
@@ -147,14 +148,20 @@ namespace Our.Shield.Core.UI
                 //  Invalid id
                 return false;
             }
-            var configuration = json.ToObject(((Job)job).ConfigType) as IConfiguration;
+
+            if (!(json.ToObject(((Job)job).ConfigType) is IConfiguration configuration))
+            {
+                return false;
+            }
             configuration.Enable = json.GetValue(nameof(IConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase).Value<bool>();
 
-            if (Security.CurrentUser != null)
+            if (Security.CurrentUser == null)
             {
-                var user = Security.CurrentUser;
-                job.WriteJournal(new JournalMessage($"{user.Name} has updated the configuration"));
+                return job.WriteConfiguration(configuration);
             }
+
+            var user = Security.CurrentUser;
+            job.WriteJournal(new JournalMessage($"{user.Name} has updated the configuration"));
 
             return job.WriteConfiguration(configuration);
         }

@@ -2,6 +2,5 @@
 {
     public class Domain : Migrations.Dto.Domain.Domain100
     {
-
     }
 }

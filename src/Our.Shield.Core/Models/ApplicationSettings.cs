@@ -10,16 +10,12 @@ namespace Our.Shield.Core.Models
     {
         private static string GetAppKeyValue(string key, string fallback = null)
         {
-            if (string.IsNullOrEmpty(ConfigurationManager.AppSettings[key]))
-            {
-                return fallback;
-            }
-
-            return ConfigurationManager.AppSettings[key];
+            return string.IsNullOrEmpty(ConfigurationManager.AppSettings[key])
+                ? fallback
+                : ConfigurationManager.AppSettings[key];
         }
 
-        private static string umbracoPath;
-
+        private static string _umbracoPath;
         /// <summary>
         /// Gets the Umbraco Path app setting value
         /// </summary>
@@ -27,25 +23,27 @@ namespace Our.Shield.Core.Models
         {
             get
             {
-                if (!string.IsNullOrEmpty(umbracoPath))
-                    return umbracoPath;
+                if (!string.IsNullOrEmpty(_umbracoPath))
+                    return _umbracoPath;
 
                 var path = GetAppKeyValue("umbracoPath", "~/umbraco");
                 path = Umbraco.Core.IO.IOHelper.ResolveUrl(path);
-                return umbracoPath = path.EnsureEndsWith('/');
+                return _umbracoPath = path.EnsureEndsWith('/');
             }
         }
 
-        private static string umbracoVersion;
-
+        private static string _umbracoVersion;
+        /// <summary>
+        /// The current installed version of umbraco
+        /// </summary>
         public static string UmbracoVersion
         {
             get
             {
-                if (!string.IsNullOrEmpty(umbracoVersion))
-                    return umbracoVersion;
+                if (!string.IsNullOrEmpty(_umbracoVersion))
+                    return _umbracoVersion;
 
-                return umbracoVersion = GetAppKeyValue("umbracoConfigurationStatus");
+                return _umbracoVersion = GetAppKeyValue("umbracoConfigurationStatus");
             }
         }
     }

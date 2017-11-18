@@ -2,13 +2,14 @@
 
 namespace Our.Shield.Core.UI
 {
+    /// <inheritdoc />
     /// <summary>
     /// Initialization class
     /// </summary>
     public class Register : ApplicationEventHandler
     {
+        /// <inheritdoc />
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="umbracoApplication"></param>
         /// <param name="applicationContext"></param>

@@ -21,16 +21,13 @@ namespace Our.Shield.Core.Persistance.Business
         {
             try
             {
-                if (environmentId == null)
-                {
-                    return MapUmbracoDomains(Database.FetchAll<Data.Dto.Domain>());
-                }
-
-                return MapUmbracoDomains(Database.Fetch<Data.Dto.Domain>("WHERE " + nameof(Data.Dto.Domain.EnvironmentId) + " = @0", environmentId));
+                return environmentId == null
+                    ? MapUmbracoDomains(Database.FetchAll<Data.Dto.Domain>())
+                    : MapUmbracoDomains(Database.Fetch<Data.Dto.Domain>("WHERE " + nameof(Data.Dto.Domain.EnvironmentId) + " = @0", environmentId));
             }
             catch(Exception ex)
             {
-                LogHelper.Error(typeof(DomainContext), $"Error listing domains", ex);
+                LogHelper.Error(typeof(DomainContext), "Error listing domains", ex);
             }
 
             return Enumerable.Empty<Data.Dto.Domain>();
@@ -45,7 +42,7 @@ namespace Our.Shield.Core.Persistance.Business
         {
             try
             {
-                return MapUmbracoDomain(Database.SingleOrDefault<Data.Dto.Domain>((object)id));
+                return MapUmbracoDomain(Database.SingleOrDefault<Data.Dto.Domain>(id));
             }
             catch(Exception ex)
             {
@@ -104,7 +101,7 @@ namespace Our.Shield.Core.Persistance.Business
                 var sql = new Sql();
                 sql.Where(nameof(Data.Dto.Domain.EnvironmentId) + " = @0", environmentId);
 
-                if (domainIds != null && domainIds.Any())
+                if (domainIds != null)
                 {
                     foreach (var id in domainIds)
                     {

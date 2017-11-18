@@ -1,8 +1,5 @@
 ﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
-using Umbraco.Core.Events;
-using Umbraco.Core.Models;
-using Umbraco.Core.Publishing;
 using Umbraco.Core.Services;
 
 namespace Our.Shield.GoogleSafeBrowsing.Models
@@ -10,67 +7,43 @@ namespace Our.Shield.GoogleSafeBrowsing.Models
     [AppEditor("/App_Plugins/Shield.GoogleSafeBrowsing/Views/GoogleSafeBrowsing.html?version=1.0.4")]
     public class GoogleSafeBrowsingApp : App<GoogleSafeBrowsingConfiguration>
     {
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         public override string Description => "Stops the content editors from linking to dangerous domains";
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         public override string Icon => "icon-alert red";
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         public override string Id => nameof(GoogleSafeBrowsing);
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         public override string Name => "Google Safe Browsing";
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public override IConfiguration DefaultConfiguration
-        {
-            get
-            {
-                return new GoogleSafeBrowsingConfiguration();
-            }
-        }
+        /// <inheritdoc />
+        public override IConfiguration DefaultConfiguration => new GoogleSafeBrowsingConfiguration();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="job"></param>
-        /// <param name="c"></param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public override bool Execute(IJob job, IConfiguration c)
         {
-            ContentService.Saving -= ContentService_Saving;
-            ContentService.Publishing -= ContentService_Publishing;
-
-            if (!c.Enable)
+            if (!(c is GoogleSafeBrowsingConfiguration config))
             {
-                return true;
+                job.WriteJournal(new JournalMessage("Error: Config passed into Google safe Browsing was not of the correct type"));
+                return false;
             }
 
-            ContentService.Saving += ContentService_Saving;
-            ContentService.Publishing += ContentService_Publishing;
+            ContentService.Saving += (sender, e) =>
+            {
+                if (!config.Enable)
+                    return;
+            };
+
+            ContentService.Publishing += (sender, e) =>
+            {
+                if (!config.Enable)
+                    return;
+            };
 
             return true;
-        }
-
-        private void ContentService_Publishing(IPublishingStrategy sender, PublishEventArgs<IContent> e)
-        {
-            
-        }
-
-        private void ContentService_Saving(IContentService sender, SaveEventArgs<IContent> e)
-        {
-            
         }
     }
 }

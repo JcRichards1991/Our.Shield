@@ -4,6 +4,7 @@ using Umbraco.Core.Persistence.Migrations;
 
 namespace Our.Shield.Core.Models
 {
+    /// <inheritdoc />
     /// <summary>
     /// 
     /// </summary>
@@ -119,7 +120,7 @@ namespace Our.Shield.Core.Models
         IConfiguration DefaultConfiguration { get; }
 
         /// <summary>
-        /// 
+        /// The Migrations for the App
         /// </summary>
         [JsonIgnore]
         IDictionary<string, IMigration> Migrations { get; set; }

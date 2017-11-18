@@ -12,7 +12,7 @@ namespace Our.Shield.Core.Operation
 #else
         private const int LockWait = 1000;
 #endif
-		private ReaderWriterLockSlim slim = new ReaderWriterLockSlim();
+		private readonly ReaderWriterLockSlim _slim = new ReaderWriterLockSlim();
 
 		public bool Read(Action execute
 #if DEBUG
@@ -22,20 +22,20 @@ namespace Our.Shield.Core.Operation
 
 		{
 #if DEBUG
-			var callingMethodDebug = sourceFilePath + ":" + sourceLineNumber.ToString() + " Locker.Read() = ";
+			var callingMethodDebug = sourceFilePath + ":" + sourceLineNumber + " Locker.Read() = ";
 #endif
-			bool hasLocked = false;
+			var hasLocked = false;
 			try
 			{
-				if (!slim.TryEnterReadLock(LockWait))
+				if (!_slim.TryEnterReadLock(LockWait))
 				{
 #if DEBUG
-					System.Diagnostics.Debug.WriteLine(callingMethodDebug + "failed to require lock");
+					Debug.WriteLine(callingMethodDebug + "failed to require lock");
 #endif
 					return false;
 				}
 #if DEBUG
-				System.Diagnostics.Debug.WriteLine(callingMethodDebug + "required lock");
+				Debug.WriteLine(callingMethodDebug + "required lock");
 #endif
 				hasLocked = true;
 				execute();
@@ -46,9 +46,9 @@ namespace Our.Shield.Core.Operation
 				if (hasLocked)
 				{
 #if DEBUG
-					System.Diagnostics.Debug.WriteLine(callingMethodDebug + "released lock");
+					Debug.WriteLine(callingMethodDebug + "released lock");
 #endif
-					slim.ExitReadLock();
+					_slim.ExitReadLock();
 				}
 			}
 		}
@@ -56,16 +56,16 @@ namespace Our.Shield.Core.Operation
 		public T Read<T>(Func<T> execute, [CallerMemberName] string memberName = "", 
 			[CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
 		{
-			var callingMethodDebug = sourceFilePath + ":" + sourceLineNumber.ToString() + " Locker.Read<T>() = ";
-			bool hasLocked = false;
+			var callingMethodDebug = sourceFilePath + ":" + sourceLineNumber + " Locker.Read<T>() = ";
+			var hasLocked = false;
 			try
 			{
-				if (!slim.TryEnterReadLock(LockWait))
+				if (!_slim.TryEnterReadLock(LockWait))
 				{
-					System.Diagnostics.Debug.WriteLine(callingMethodDebug + "failed to require lock");
+					Debug.WriteLine(callingMethodDebug + "failed to require lock");
 					return default(T);
 				}
-				System.Diagnostics.Debug.WriteLine(callingMethodDebug + "required lock");
+				Debug.WriteLine(callingMethodDebug + "required lock");
 				hasLocked = true;
 				return execute();
 			}
@@ -73,8 +73,8 @@ namespace Our.Shield.Core.Operation
 			{
 				if (hasLocked)
 				{
-					System.Diagnostics.Debug.WriteLine(callingMethodDebug + "released lock");
-					slim.ExitReadLock();
+					Debug.WriteLine(callingMethodDebug + "released lock");
+					_slim.ExitReadLock();
 				}
 			}
 		}
@@ -82,16 +82,16 @@ namespace Our.Shield.Core.Operation
 		public bool Write(Action execute, [CallerMemberName] string memberName = "", 
 			[CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
 		{
-			var callingMethodDebug = sourceFilePath + ":" + sourceLineNumber.ToString() + " Locker.Write() = ";
-			bool hasLocked = false;
+			var callingMethodDebug = sourceFilePath + ":" + sourceLineNumber + " Locker.Write() = ";
+			var hasLocked = false;
 			try
 			{
-				if (!slim.TryEnterWriteLock(LockWait))
+				if (!_slim.TryEnterWriteLock(LockWait))
 				{
-					System.Diagnostics.Debug.WriteLine(callingMethodDebug + "failed to require lock");
+					Debug.WriteLine(callingMethodDebug + "failed to require lock");
 					return false;
 				}
-				System.Diagnostics.Debug.WriteLine(callingMethodDebug + "required lock");
+				Debug.WriteLine(callingMethodDebug + "required lock");
 				hasLocked = true;
 				execute();
 				return true;
@@ -100,8 +100,8 @@ namespace Our.Shield.Core.Operation
 			{
 				if (hasLocked)
 				{
-					System.Diagnostics.Debug.WriteLine(callingMethodDebug + "released lock");
-					slim.ExitWriteLock();
+					Debug.WriteLine(callingMethodDebug + "released lock");
+					_slim.ExitWriteLock();
 				}
 			}
 		}
@@ -109,16 +109,16 @@ namespace Our.Shield.Core.Operation
 		public T Write<T>(Func<T> execute, [CallerMemberName] string memberName = "", 
 			[CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
 		{
-			var callingMethodDebug = sourceFilePath + ":" + sourceLineNumber.ToString() + " Locker.Write<T>() = ";
-			bool hasLocked = false;
+			var callingMethodDebug = sourceFilePath + ":" + sourceLineNumber + " Locker.Write<T>() = ";
+			var hasLocked = false;
 			try
 			{
-				if (!slim.TryEnterWriteLock(LockWait))
+				if (!_slim.TryEnterWriteLock(LockWait))
 				{
-					System.Diagnostics.Debug.WriteLine(callingMethodDebug + "failed to require lock");
+					Debug.WriteLine(callingMethodDebug + "failed to require lock");
 					return default(T);
 				}
-				System.Diagnostics.Debug.WriteLine(callingMethodDebug + "required lock");
+				Debug.WriteLine(callingMethodDebug + "required lock");
 				hasLocked = true;
 				return execute();
 			}
@@ -126,18 +126,18 @@ namespace Our.Shield.Core.Operation
 			{
 				if (hasLocked)
 				{
-					System.Diagnostics.Debug.WriteLine(callingMethodDebug + "released lock");
-					slim.ExitWriteLock();
+					Debug.WriteLine(callingMethodDebug + "released lock");
+					_slim.ExitWriteLock();
 				}
 			}
 		}
 
 		bool Upgradable(Func<bool> executeReadBefore, Action executeWrite, Action<bool> executeReadAfter)
 		{
-			bool hasReadLocked = false;
+			var hasReadLocked = false;
 			try
 			{
-				if (!slim.TryEnterUpgradeableReadLock(LockWait))
+				if (!_slim.TryEnterUpgradeableReadLock(LockWait))
 				{
 					return false;
 				}
@@ -145,10 +145,10 @@ namespace Our.Shield.Core.Operation
 				var doRunWrite = executeReadBefore();
 				if (doRunWrite)
 				{
-					bool hasWriteLock = false;
+					var hasWriteLock = false;
 					try
 					{
-						if (!slim.TryEnterWriteLock(LockWait))
+						if (!_slim.TryEnterWriteLock(LockWait))
 						{
 							return false;
 						}
@@ -159,21 +159,18 @@ namespace Our.Shield.Core.Operation
 					{
 						if (hasWriteLock)
 						{
-							slim.ExitWriteLock();
+							_slim.ExitWriteLock();
 						}
 					}
 				}
-				if (executeReadAfter != null)
-				{
-					executeReadAfter(doRunWrite);
-				}
-				return true;
+                executeReadAfter?.Invoke(doRunWrite);
+                return true;
 			}
 			finally
 			{
 				if (hasReadLocked)
 				{
-					slim.ExitUpgradeableReadLock();
+					_slim.ExitUpgradeableReadLock();
 				}
 			}
 		}
