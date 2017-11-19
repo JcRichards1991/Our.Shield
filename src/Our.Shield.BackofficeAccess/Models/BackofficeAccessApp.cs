@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using Umbraco.Core;
+using System.Diagnostics;
 
 namespace Our.Shield.BackofficeAccess.Models
 {
@@ -143,8 +144,12 @@ namespace Our.Shield.BackofficeAccess.Models
                 ? config.BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/')
                 : umbracoLocation;
 
-            //Match Umbraco path for badly written Umbraco Packages, that only work with hardcoded /umbraco/backoffice
-            if (!softLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase) && !hardLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase))
+#if TRACE
+			Debug.WriteLine($"AddSoftWatches({job.Environment.Name}): hardLocation = {hardLocation}, softLocation = {softLocation}");
+#endif
+
+			//Match Umbraco path for badly written Umbraco Packages, that only work with hardcoded /umbraco/backoffice
+			if (!softLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase) && !hardLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase))
             {
                 SoftWatcher(job,
                     new Regex("^((" + umbracoLocation + "backoffice([\\w-/_]+))|(" + umbracoLocation + "[\\w-/_]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase),
@@ -170,8 +175,12 @@ namespace Our.Shield.BackofficeAccess.Models
                 config.Unauthorized.TransferType.Equals(TransferTypes.Rewrite),
                 true);
 
+			if (config.Enable && job.Environment.Enable)
+			{
+				job.ExceptionWebRequest(config.Unauthorized.Url);
+			}
+
             //Add watch on the hard location
-			job.ExceptionWebRequest(config.Unauthorized.Url);
             job.WatchWebRequests(PipeLineStages.BeginRequest, new Regex("^((" + hardLocation.TrimEnd('/') + "(/)?)|(" + hardLocation + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase), 20020, (count, httpApp) =>
             {
                 //Check if request has our access token, if so, we're

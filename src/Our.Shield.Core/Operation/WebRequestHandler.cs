@@ -8,6 +8,7 @@ using System.Web;
 using System.Net;
 using Umbraco.Core.Logging;
 using System.Text;
+using System.Diagnostics;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.Core.Operation.WebRequestHandler), nameof(Our.Shield.Core.Operation.WebRequestHandler.Register))]
 namespace Our.Shield.Core.Operation
@@ -42,6 +43,7 @@ namespace Our.Shield.Core.Operation
         private class Environ
         {
             public readonly int Id;
+			public readonly string Name;
             public readonly int SortOrder;
             public readonly bool ContinueProcessing;
             // ReSharper disable once MemberHidesStaticFromOuterClass
@@ -52,6 +54,7 @@ namespace Our.Shield.Core.Operation
             public Environ(IEnvironment environment)
             {
                 Id = environment.Id;
+				Name = string.Copy(environment.Name);
                 SortOrder = environment.SortOrder;
                 ContinueProcessing = environment.ContinueProcessing;
                 Domains = Domains(environment.Domains);
@@ -224,7 +227,7 @@ namespace Our.Shield.Core.Operation
         /// <returns></returns>
         public static int Unwatch(int? environmentId = null, string appId = null, PipeLineStages? stage = null, Regex regex = null)
         {
-            var count = 0;
+            var watchRemovedCounter = 0;
             var deleteEnvirons = new List<int>();
 
             // ReSharper disable once InvertIf
@@ -233,7 +236,7 @@ namespace Our.Shield.Core.Operation
 				var regy = regex?.ToString();
                 foreach (var environ in Environs.Where(x => environmentId == null || x.Value.Id == environmentId))
                 {
-                    var watchCount = 0;
+                    var watchRemainCounter = 0;
                     foreach (var objectStage in Enum.GetValues(typeof(PipeLineStages)))
                     {
 						var currentStage = (PipeLineStages) objectStage; 
@@ -242,18 +245,18 @@ namespace Our.Shield.Core.Operation
 							continue;
 						}
 
-                        watchCount += environ.Value.WatchLocks[(int) currentStage].Write(() => 
+                        watchRemainCounter += environ.Value.WatchLocks[(int) currentStage].Write(() => 
 						{
-                            count += environ.Value.Watchers[(int) currentStage].RemoveAll(x =>
+                            watchRemovedCounter += environ.Value.Watchers[(int) currentStage].RemoveAll(x =>
                                 (appId == null ||
 								x.AppId.Equals(appId, StringComparison.InvariantCultureIgnoreCase)) && 
-								(regy == null && x.Regex == null || 
-								regy != null && x.Regex != null && regy.Equals(x.Regex.ToString(), StringComparison.InvariantCulture)));
+								(regy == null || 
+								(regy != null && x.Regex != null && regy.Equals(x.Regex.ToString(), StringComparison.InvariantCulture))));
                             return environ.Value.Watchers[(int) currentStage].Count();
                         });
                     }
 
-                    if (watchCount == 0)
+                    if (watchRemainCounter == 0)
                     {
                         deleteEnvirons.Add(environ.Value.SortOrder);
                     }
@@ -262,7 +265,7 @@ namespace Our.Shield.Core.Operation
 			{
 				if (!deleteEnvirons.Any())
 				{
-					return count;
+					return watchRemovedCounter;
 				}
 
 			    // ReSharper disable once ImplicitlyCapturedClosure
@@ -272,7 +275,7 @@ namespace Our.Shield.Core.Operation
 				    {
 				        Environs.Remove(sortOrder);
 				    }
-				    return count;
+				    return watchRemovedCounter;
 				});
 			}
 			return 0;
@@ -341,7 +344,7 @@ namespace Our.Shield.Core.Operation
 		}
 
         // ReSharper disable once UnusedParameter.Local
-        private WatchResponse.Cycles ExecuteResponse(Watcher watch, WatchResponse response, HttpApplication application)
+        private WatchResponse.Cycles ExecuteResponse(int environmentId, Watcher watch, WatchResponse response, HttpApplication application)
         {
             if (response.Transfer == null)
             {
@@ -361,7 +364,7 @@ namespace Our.Shield.Core.Operation
 
 			var urlExeceptionResult = UrlExceptionLock.Read(() =>
 			{
-				foreach (var exception in UrlExceptions)
+				foreach (var exception in UrlExceptions.Where(x => x.EnvironmentId == environmentId))
 				{
 					if (exception.Regex != null && (exception.Regex.IsMatch(application.Context.Request.Url.PathAndQuery) ||
 						exception.Regex.IsMatch(application.Context.Request.Url.AbsoluteUri)))
@@ -430,7 +433,7 @@ namespace Our.Shield.Core.Operation
                 var uri = application.Context.Request.Url.AbsoluteUri;
                 string uriWithoutDomain = null;
 
-                foreach (var environ in Environs)
+				foreach (var environ in Environs)
                 {
                     string filePath;
                     if (environ.Value.Domains == null)
@@ -460,20 +463,36 @@ namespace Our.Shield.Core.Operation
                         {
                             if (watch.Regex != null && !watch.Regex.IsMatch(filePath))
                                 continue;
-
-                            switch (ExecuteResponse(watch, watch.Request(count, application), application))
+#if TRACE
+							var debug = $"{uri}: Watcher({environ.Value.Name}, {watch.AppId}, {watch.Priority}, {watch.Regex}) returned ";
+#endif
+							switch (ExecuteResponse(environ.Value.Id, watch, watch.Request(count, application), application))
                             {
                                 case WatchResponse.Cycles.Stop:
+#if TRACE
+									Debug.WriteLine(debug + "Stop");
+#endif
                                     return false;
 
                                 case WatchResponse.Cycles.Restart:
+#if TRACE
+									Debug.WriteLine(debug + "Restart");
+#endif
                                     return true;
 
                                 case WatchResponse.Cycles.Error:
+#if TRACE
+									Debug.WriteLine(debug + "Error");
+#endif
                                     application.Context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
                                     application.CompleteRequest();
                                     break;
 
+#if TRACE
+								default:
+									Debug.WriteLine(debug + "Continue");
+									break;
+#endif
                                 //  If WatchCycle.Continue we do nothing
                             }
                         }
