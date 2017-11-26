@@ -14,6 +14,7 @@ using Umbraco.Core.Security;
 namespace Our.Shield.MediaProtection.Models
 {
     [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?version=1.0.4")]
+    [AppJournal]
     [AppMigration(typeof(MediaProtectionMigration))]
     public class MediaProtectionApp : App<MediaProtectionConfiguration>
     {

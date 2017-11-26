@@ -17,9 +17,14 @@ namespace Our.Shield.Core.Operation
             var errors = new List<string>();
             foreach (var exception in rule.Exceptions)
             {
-                if (!IPAddressRange.TryParse(exception.Value, out var range))
+                var ipAddressRange = exception.IPAddressType == IpAccessControl.IPAddressType.Single
+                    ? exception.FromIPAddress
+                    : $"{exception.FromIPAddress}-{exception.ToIpAddress}";
+
+
+                if (!IPAddressRange.TryParse(ipAddressRange, out var range))
                 {
-                    errors.Add(exception.Value);
+                    errors.Add(ipAddressRange);
                 }
                 range.Begin = range.Begin.MapToIPv6();
                 range.End = range.End.MapToIPv6();

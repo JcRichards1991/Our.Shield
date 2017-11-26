@@ -28,8 +28,17 @@ namespace Our.Shield.Core.Models
         [JsonProperty("icon")]
         string Icon { get; }
 
-        [JsonProperty("tabs")]
-        string[] Tabs { get; }
+        /// <summary>
+        /// The default configuration for the App
+        /// </summary>
+        [JsonIgnore]
+        IConfiguration DefaultConfiguration { get; }
+
+        /// <summary>
+        /// The Migrations for the App
+        /// </summary>
+        [JsonIgnore]
+        IDictionary<string, IMigration> Migrations { get; set; }
 
         /// <summary>
         /// The initialise method for the App
@@ -112,17 +121,5 @@ namespace Our.Shield.Core.Models
         /// <param name="totalPages"></param>
         /// <returns>A collection of Journals for the Configuration</returns>
         IEnumerable<T> ListJournals<T>(int jobId, int page, int itemsPerPage, out int totalPages) where T : IJournal;
-
-        /// <summary>
-        /// The default configuration for the App
-        /// </summary>
-        [JsonIgnore]
-        IConfiguration DefaultConfiguration { get; }
-
-        /// <summary>
-        /// The Migrations for the App
-        /// </summary>
-        [JsonIgnore]
-        IDictionary<string, IMigration> Migrations { get; set; }
     }
 }

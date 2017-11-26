@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0"?>
 <dashBoard xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
   <section alias="shieldOverview" xdt:Locator="Match(alias)" xdt:Transform="Remove" />
-  <section alias="shieldEnvironments" xdt:Locator="Match(alias)" xdt:Transform="InsertIfMissing">
+  <section alias="shieldJournals" xdt:Locator="Match(alias)" xdt:Transform="Remove" />
+  <section alias="shieldEnvironments" xdt:Locator="Match(alias)" xdt:Transform="Replace">
     <areas>
       <area>shield</area>
     </areas>
@@ -9,12 +10,12 @@
       <control>/App_Plugins/Shield/Backoffice/Dashboards/Environments.html</control>
     </tab>
   </section>
-  <section alias="shieldJournals" xdt:Locator="Match(alias)" xdt:Transform="InsertIfMissing">
+  <section alias="shieldJournal" xdt:Locator="Match(alias)" xdt:Transform="InsertIfMissing">
     <areas>
       <area>shield</area>
     </areas>
     <tab caption="Journals">
-      <control>/App_Plugins/Shield/Backoffice/Dashboards/Journals.html</control>
+      <control>/App_Plugins/Shield/Backoffice/Dashboards/Journal.html</control>
     </tab>
   </section>
 </dashBoard>

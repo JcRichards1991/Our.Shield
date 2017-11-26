@@ -17,6 +17,7 @@ namespace Our.Shield.BackofficeAccess.Models
     /// <summary>
     /// </summary>
     [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.4")]
+    [AppJournal]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
     {
         /// <inheritdoc />

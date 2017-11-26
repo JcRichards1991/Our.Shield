@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
+using Our.Shield.Elmah.Attributes;
 using Umbraco.Core;
 
 namespace Our.Shield.Elmah.Models
 {
-    [AppEditor("/App_Plugins/Shield.Elmah/Views/Elmah.html?version=1.0.4")]
+    [ReportingTab]
+    [AppEditor("/App_Plugins/Shield.Elmah/Views/Elmah.html?version=1.0.4", sortOrder: 1)]
+    [AppJournal(sortOrder: 2)]
     public class ElmahApp : App<ElmahConfiguration>
     {
         private readonly string _allowKey = Guid.NewGuid().ToString();
@@ -26,8 +28,6 @@ namespace Our.Shield.Elmah.Models
 
         /// <inheritdoc />
         public override string Name => Id;
-
-        public override string[] Tabs => new [] {"Configuration", "Reporting", "Journal"};
 
         /// <inheritdoc />
         public override IConfiguration DefaultConfiguration => new ElmahConfiguration

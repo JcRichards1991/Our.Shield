@@ -1,9 +1,9 @@
-﻿<div ng-controller="Shield.Editors.FrontendAccess.Edit as vm" ng-init="vm.init()">
+﻿<div ng-controller="Shield.Editors.FrontendAccess.Edit as vm">
     <ng-form name="FrontendAccessForm">
 
         <div class="umb-el-wrap control-group umb-control-group">
-            <label for="unauthorisedAction" class="control-label">
-                <localize key="Shield.FrontendAccess.Properties_UmbracoUsersEnableLabel">Allow Authenticated Umbraco Users</localize>
+            <label for="umbracoUsersEnabled" class="control-label">
+                <localize key="Shield.Properties_UmbracoUsersEnableLabel">Allow Authenticated Umbraco Users</localize>
                 <small>
                     <localize key="Shield.FrontendAccess.Properties_UmbracoUsersEnableDescription">Whether or not the frontend is accessible by users who have authenticated as an Umbraco User</localize>
                 </small>
@@ -23,22 +23,22 @@
                     <localize key="Shield.Properties_IpAccessControlDescription"></localize>
                 </small>
             </label>
+
             <div class="controls">
                 <shield-ip-access-control model="vm.configuration.ipAccessRules"></shield-ip-access-control>
             </div>
         </div>
 
+
         <div class="umb-el-wrap control-group umb-control-group">
             <label for="unauthorizedAction" class="control-label">
                 <localize key="Shield.Properties_UnauthorizedLabel"></localize>
                 <small>
-                    <localize key="Shield.Properties_UnauthozisedDescription"></localize>
+                    <localize key="Shield.Properties_UnauthorizedDescription"></localize>
                 </small>
             </label>
             <div class="controls">
-                <div class="umb-editor">
-                    <shield-transfer-url model="vm.configuration.unauthorized"></shield-transfer-url>
-                </div>
+                <shield-transfer-url model="vm.configuration.unauthorized"></shield-transfer-url>
             </div>
         </div>
     </ng-form>

@@ -282,7 +282,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\AppJournalAttribute.cs" />
     <Compile Include="Attributes\AppMigrationAttribute.cs" />
+    <Compile Include="Attributes\AppTabAttribute.cs" />
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
     <Compile Include="Models\IpAccessControl.cs" />
     <Compile Include="Models\ApplicationSettings.cs" />
@@ -308,7 +310,6 @@
     <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal101.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal103.cs" />
     <Compile Include="Persistance\Data\Migrations\MigrationExtensions.cs" />
-    <Compile Include="Persistance\Data\Migrations\Versions\Migration104.cs" />
     <Compile Include="Persistance\Data\Migrations\Versions\Migration103Create.cs" />
     <Compile Include="Persistance\Data\Migrations\Versions\Migration103.cs" />
     <Compile Include="UI\AppAssest.cs" />
@@ -368,20 +369,22 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield\Backoffice\Css\Shield.css" />
-    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Journals.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Journal.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Environments.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Settings.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Scripts\Shield.js" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Create.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Delete.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Views\Dialogs\EditIpException.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\IpAccessControl.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\IpAccessControlRanges.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\TransferUrl.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\UmbracoUrl.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Views\EditApp.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Views\EditEnvironment.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Sort.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\JournalListing.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Views\Environment.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml">
       <SubType>Designer</SubType>
     </Content>

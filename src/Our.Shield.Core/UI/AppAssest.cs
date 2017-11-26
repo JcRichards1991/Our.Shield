@@ -11,12 +11,6 @@ namespace Our.Shield.Core.UI
         /// <summary>
         /// 
         /// </summary>
-        [JsonProperty("view")]
-        public string View { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         [JsonProperty("stylesheets")]
         public IEnumerable<string> Stylesheets { get; set; }
 

@@ -224,5 +224,25 @@ namespace Our.Shield.Core.Persistance.Business
             }
             return false;
         }
+
+        public void ConfigMapper(string appId, dynamic definition, Func<dynamic, dynamic> map)
+        {
+            var sql = new Sql();
+            sql.Where<Data.Dto.Configuration>(x => x.AppId == appId);
+
+            var configs = Database.Fetch<Data.Dto.Configuration>(sql);
+
+            foreach (var config in configs)
+            {
+                //  Deserialize the current config to an anonymous object
+                var oldData = JsonConvert.DeserializeAnonymousType(config.Value, definition);
+
+                //  serialize the new configuration to the db entry's value
+                config.Value = JsonConvert.SerializeObject(map(oldData), Formatting.None);
+
+                //  Update the entry within the DB.
+                Database.Update(config);
+            }
+        }
     }
 }

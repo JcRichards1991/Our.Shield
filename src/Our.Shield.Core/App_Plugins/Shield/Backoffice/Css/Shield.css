@@ -31,7 +31,7 @@
   width: 100%; }
 
 .shield-editor .umb-table .umb-table-row .umb-table-cell.shield-table__name-small, .shield-dashboard .umb-table .umb-table-row .umb-table-cell.shield-table__name-small {
-  max-width: 14%;
+  max-width: 15%;
   -ms-flex: 1 1 14%;
   flex: 1 1 14%; }
 

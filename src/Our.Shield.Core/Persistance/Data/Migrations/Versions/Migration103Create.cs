@@ -4,6 +4,7 @@ using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence;
 using Umbraco.Core.Persistence.Migrations;
 using Umbraco.Core.Persistence.SqlSyntax;
+using Constants = Our.Shield.Core.UI.Constants;
 
 namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
 {
@@ -51,7 +52,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                     Icon = "icon-firewall red",
                     Enable = true,
                     ContinueProcessing = true,
-                    SortOrder = 999999,
+                    SortOrder = Constants.Tree.DefaultEnvironmentId,
                     ColorIndicator = "#df7f48"
                 });
             }

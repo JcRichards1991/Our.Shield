@@ -16,16 +16,37 @@ namespace Our.Shield.Core.Models
             AllowNone = 1
         }
 
+        public enum IPAddressType
+        {
+            [Description("The Value is an IP Address")]
+            Single,
+            [Description("The Value is an IP Address Range")]
+            Range
+        }
+
         /// <summary>
         /// IP Address Model
         /// </summary>
         public class Entry
         {
+
+            /// <summary>
+            /// The Type of the IP addresses
+            /// </summary>
+            [JsonProperty("ipAddressType")]
+            public IPAddressType IPAddressType { get; set; }
+
             /// <summary>
             /// Range or Ip Address with optional Cidr
             /// </summary>
-            [JsonProperty("value")]
-            public string Value { get; set; }
+            [JsonProperty("fromIpAddress")]
+            public string FromIPAddress { get; set; }
+
+            /// <summary>
+            /// Range or Ip Address with optional Cidr
+            /// </summary>
+            [JsonProperty("toIpAddress")]
+            public string ToIpAddress { get; set; }
 
             internal IPAddressRange Range { get; set; }
 
@@ -47,7 +68,5 @@ namespace Our.Shield.Core.Models
         /// </summary>
         [JsonProperty("exceptions")]
         public IEnumerable<Entry> Exceptions { get; set; }
-
-
     }
 }

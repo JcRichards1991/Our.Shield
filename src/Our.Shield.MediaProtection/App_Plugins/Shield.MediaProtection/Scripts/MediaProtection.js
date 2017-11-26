@@ -12,7 +12,6 @@ angular.module('umbraco').controller('Shield.Editors.MediaProtection.Edit',
     function ($scope, shieldMediaProtectionResource) {
         var vm = this;
         angular.extend(vm, {
-            loading: true,
             configuration: $scope.$parent.configuration,
             directories: [],
             init: function () {

@@ -10,6 +10,7 @@ using Umbraco.Core;
 namespace Our.Shield.SiteMaintenance.Models
 {
     [AppEditor("/App_Plugins/Shield.SiteMaintenance/Views/SiteMaintenance.html?version=1.0.4")]
+    [AppJournal]
     public class SiteMaintenanceApp : App<SiteMaintenanceConfiguration>
     {
         /// <inheritdoc />

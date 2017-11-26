@@ -6,7 +6,6 @@ using Our.Shield.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Web.Http;
 using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
@@ -37,16 +36,16 @@ namespace Our.Shield.Core.UI
                 return new TreeView
                 {
                     Description = "List of the different environments your Umbraco instance operates under",
-                    Environments = environments.Keys
+                    Environments = environments.Keys,
+                    Type = TreeViewType.Environments
+                    
                 };
             }
 
             foreach (var environment in environments)
             {
-                int totalPages;
                 if (id == environment.Key.Id)
                 {
-                    var journals = Operation.EnvironmentService.Instance.JournalListing<JournalMessage>(id, 1, 100, out totalPages);
                     var apps = environment.Value.Select(x => new AppListingItem
                     {
                         Id = x.Id,
@@ -60,23 +59,12 @@ namespace Our.Shield.Core.UI
                     var appArray = apps as AppListingItem[] ?? apps.ToArray();
                     return new TreeView
                     {
-                        Type = TreeView.TreeViewType.Environment,
+                        Type = TreeViewType.Environment,
                         Name = environment.Key.Name,
                         Description = $"View apps for the {environment.Key.Name} environment",
                         Environment = environment.Key,
                         Environments = environments.Keys,
-                        Apps = appArray.OrderBy(x => x.Name),
-                        JournalListing = new JournalListing
-                        {
-                            Journals = journals.Select(x => new JournalListingItem
-                            {
-                                Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                                App = appArray.FirstOrDefault(a => a.AppId == x.AppId),
-                                Environment = environment.Key,
-                                Message = x.Message
-                            }),
-                            TotalPages = totalPages
-                        }
+                        Apps = appArray.OrderBy(x => x.Name)
                     };
                 }
 
@@ -85,42 +73,42 @@ namespace Our.Shield.Core.UI
                     if (id != job.Id)
                         continue;
 
-                    var appAssests = new AppAssest
-                    {
-                        View = job.App.GetType().GetCustomAttribute<AppEditorAttribute>()?.FilePath,
-
-                        Stylesheets = job.App.GetType().GetCustomAttributes<AppAssetAttribute>()
-                            .Where(x => x.AssetType == ClientDependency.Core.ClientDependencyType.Css)
-                            .Select(x => x.FilePath),
-
-                        Scripts = job.App.GetType().GetCustomAttributes<AppAssetAttribute>()
-                            .Where(x => x.AssetType == ClientDependency.Core.ClientDependencyType.Javascript)
-                            .Select(x => x.FilePath)
-                    };
+                    var tabAttrs =
+                    (job.App.GetType().GetCustomAttributes(typeof(AppTabAttribute), true) as
+                         IEnumerable<AppTabAttribute> ?? new List<AppTabAttribute>()).ToList();
                         
-                    var journals = job.ListJournals<JournalMessage>(1, 50, out totalPages);
+
+                    var tabs = new List<Tab>();
+                    var appView = string.Empty;
+                    foreach (var tabAttr in tabAttrs.OrderBy(x => x.SortOrder))
+                    {
+                        var tab = new Tab
+                        {
+                            View = tabAttr.FilePath,
+                            Caption = tabAttr.Caption,
+                            Id = tabAttr.SortOrder,
+                            Active = tabAttr.SortOrder == 0
+                        };
+
+                        if (tabAttr is AppEditorAttribute appEditorAttr)
+                        {
+                            appView = appEditorAttr.AppView;
+                        }
+
+                        tabs.Add(tab);
+                    }
 
                     return new TreeView
                     {
-                        Type = TreeView.TreeViewType.App,
+                        Type = TreeViewType.App,
                         Name = job.App.Name,
                         Description = job.App.Description,
                         Environments = environments.Keys,
                         Environment = environment.Key,
                         App = job.App,
+                        AppView = appView,
                         Configuration = job.ReadConfiguration(),
-                        AppAssests = appAssests,
-                        JournalListing = new JournalListing
-                        {
-                            Journals = journals.Select(x => new JournalListingItem
-                            {
-                                Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                                App = new AppListingItem(job),
-                                Environment = environment.Key,
-                                Message = x.Message
-                            }),
-                            TotalPages = totalPages
-                        }
+                        Tabs = tabs
                     };
                 }
             }
@@ -175,12 +163,12 @@ namespace Our.Shield.Core.UI
         /// <param name="orderByDirection"></param>
         /// <returns></returns>
         [HttpGet]
-        public JournalListing Journals(int id, int page, string orderBy, string orderByDirection)
+        public JournalListing Journals(int? id, int page, string orderBy, string orderByDirection)
         {
             var environments = Operation.JobService.Instance.Environments;
             int totalPages;
 
-            if (id == Constants.Tree.EnvironmentsRootId)
+            if (!id.HasValue)
             {
                 return new JournalListing
                 {
@@ -195,7 +183,8 @@ namespace Our.Shield.Core.UI
                             Message = x.Message
                         };
                     }),
-                    TotalPages = totalPages
+                    TotalPages = totalPages,
+                    Type = TreeViewType.Environments
                 };
             }
 
@@ -205,14 +194,15 @@ namespace Our.Shield.Core.UI
                 {
                     return new JournalListing
                     {
-                        Journals = Operation.EnvironmentService.Instance.JournalListing<JournalMessage>(id, page, 100, out totalPages).Select(x => new JournalListingItem
+                        Journals = Operation.EnvironmentService.Instance.JournalListing<JournalMessage>(id.Value, page, 100, out totalPages).Select(x => new JournalListingItem
                         {
                             Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
                             App = new AppListingItem(environment.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
                             Environment = environment.Key,
                             Message = x.Message
                         }),
-                        TotalPages = totalPages
+                        TotalPages = totalPages,
+                        Type = TreeViewType.Environment
                     };
                 }
 
@@ -229,7 +219,8 @@ namespace Our.Shield.Core.UI
                                 Environment = environment.Key,
                                 Message = x.Message
                             }),
-                            TotalPages = totalPages
+                            TotalPages = totalPages,
+                            Type = TreeViewType.App
                         };
                     }
                 }

@@ -39,7 +39,7 @@
             /// <summary>
             /// The default environment id
             /// </summary>
-            public const int DefaultEnvironmentId = 1;
+            public const int DefaultEnvironmentId = 999999;
         }
     }
 }

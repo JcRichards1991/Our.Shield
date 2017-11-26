@@ -20,5 +20,18 @@ namespace Our.Shield.Core.Models
         /// <inheritdoc />
         [JsonProperty("datestamp")]
         public DateTime Datestamp { get; internal set; }
+
+        /// <inheritdoc />
+        [JsonProperty("message")]
+        public string Message { get; internal set; }
+
+        /// <summary>
+        /// Initialises a JournalMessage Object with the desired message
+        /// </summary>
+        /// <param name="message">The message for the journal</param>
+        protected Journal(string message)
+        {
+            Message = message;
+        }
     }
 }

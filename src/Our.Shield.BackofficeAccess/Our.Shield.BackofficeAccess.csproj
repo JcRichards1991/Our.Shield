@@ -281,6 +281,8 @@
     <Compile Include="Models\BackofficeAccessApp.cs" />
     <Compile Include="Models\HardReset.cs" />
     <Compile Include="Models\HardResetFileHandler.cs" />
+    <Compile Include="Persistence\Migrations\Migration104.cs" />
+    <Compile Include="Persistence\Models\Configuration103.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

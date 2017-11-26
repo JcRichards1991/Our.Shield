@@ -28,9 +28,6 @@ namespace Our.Shield.Core.Models
         [JsonProperty("icon")]
         public abstract string Icon { get; }
 
-        [JsonProperty("tabs")]
-        public virtual string[] Tabs => new [] { "Configuration", "Journal" };
-
         /// <inheritdoc />
         public virtual bool Init() =>
             true;

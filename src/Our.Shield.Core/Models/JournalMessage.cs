@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Our.Shield.Core.Models
+﻿namespace Our.Shield.Core.Models
 {
     /// <inheritdoc />
     /// <summary>
@@ -8,24 +6,8 @@ namespace Our.Shield.Core.Models
     /// </summary>
     public class JournalMessage : Journal
     {
-        /// <summary>
-        /// The message for the Journal
-        /// </summary>
-        [JsonProperty("message")]
-        public string Message { get; set; }
-
-        /// <summary>
-        /// Default constructure
-        /// </summary>
-        public JournalMessage() { }
-
-        /// <summary>
-        /// Initialises a JournalMessage Object with the desired message
-        /// </summary>
-        /// <param name="message">The message for the journal</param>
-        public JournalMessage(string message)
+        public JournalMessage(string message) : base(message)
         {
-            Message = message;
         }
     }
 }

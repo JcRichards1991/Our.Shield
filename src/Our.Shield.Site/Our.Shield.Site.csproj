@@ -207,6 +207,9 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Our.Umbraco.InnerContent, Version=1.0.6286.21529, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Our.Umbraco.InnerContent.Core.1.0.3\lib\net45\Our.Umbraco.InnerContent.dll</HintPath>
+    </Reference>
     <Reference Include="Our.Umbraco.MigrationsViewer.Core, Version=0.1.2.30, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Our.Umbraco.MigrationsViewer.0.1.2\lib\net45\Our.Umbraco.MigrationsViewer.Core.dll</HintPath>
       <Private>True</Private>
@@ -214,6 +217,9 @@
     <Reference Include="Our.Umbraco.NestedContent, Version=0.4.6286.19708, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Our.Umbraco.NestedContent.0.4.0\lib\net45\Our.Umbraco.NestedContent.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Our.Umbraco.StackedContent, Version=1.0.6286.25615, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Our.Umbraco.StackedContent.1.0.4\lib\net45\Our.Umbraco.StackedContent.dll</HintPath>
     </Reference>
     <Reference Include="Our.Umbraco.Vorto, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Our.Umbraco.Vorto.1.5.3\lib\net45\Our.Umbraco.Vorto.dll</HintPath>
@@ -407,6 +413,13 @@
     <Content Include="App_Plugins\Archetype\views\archetype.config.stylescript.dialog.html" />
     <Content Include="App_Plugins\Archetype\views\archetype.default.html" />
     <Content Include="App_Plugins\Archetype\views\archetype.html" />
+    <Content Include="App_Plugins\InnerContent\css\innercontent.css" />
+    <Content Include="App_Plugins\InnerContent\js\innercontent.controllers.js" />
+    <Content Include="App_Plugins\InnerContent\js\innercontent.resources.js" />
+    <Content Include="App_Plugins\InnerContent\views\innercontent.dialog.html" />
+    <Content Include="App_Plugins\InnerContent\views\innercontent.doctypepicker.html" />
+    <Content Include="App_Plugins\InnerContent\views\innercontent.doctypetabpicker.html" />
+    <Content Include="App_Plugins\InnerContent\views\innercontent.overlay.html" />
     <Content Include="App_Plugins\MigrationsViewer\backoffice\migrationsViewer\Controller.js" />
     <Content Include="App_Plugins\MigrationsViewer\backoffice\migrationsViewer\edit.html" />
     <Content Include="App_Plugins\MigrationsViewer\lang\cs.xml" />
@@ -436,6 +449,10 @@
     <Content Include="App_Plugins\NestedContent\Views\nestedcontent.doctypepicker.html" />
     <Content Include="App_Plugins\NestedContent\Views\nestedcontent.editor.html" />
     <Content Include="App_Plugins\NestedContent\Views\nestedcontent.html" />
+    <Content Include="App_Plugins\StackedContent\css\stackedcontent.css" />
+    <Content Include="App_Plugins\StackedContent\js\stackedcontent.controllers.js" />
+    <Content Include="App_Plugins\StackedContent\js\stackedcontent.resources.js" />
+    <Content Include="App_Plugins\StackedContent\views\stackedcontent.html" />
     <Content Include="App_Plugins\Terratype.GoogleMapsV3\Images\Example.png" />
     <Content Include="App_Plugins\Terratype.GoogleMapsV3\Images\Logo.png" />
     <Content Include="App_Plugins\Terratype.GoogleMapsV3\Images\m1.png" />
@@ -667,6 +684,8 @@
     <Content Include="Config\EmbeddedMedia.config" />
     <Content Include="Config\BaseRestExtensions.config" />
     <Content Include="Config\404handlers.config" />
+    <Content Include="App_Plugins\InnerContent\package.manifest" />
+    <Content Include="App_Plugins\StackedContent\package.manifest" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

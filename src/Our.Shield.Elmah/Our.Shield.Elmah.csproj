@@ -276,6 +276,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\ReportingTabAttribute.cs" />
     <Compile Include="Models\ElmahApp.cs" />
     <Compile Include="Models\ElmahConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -284,6 +285,7 @@
     <Content Include="App_Plugins\Shield.Elmah\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.Elmah\Scripts\Elmah.js" />
     <Content Include="App_Plugins\Shield.Elmah\Views\Elmah.html" />
+    <Content Include="App_Plugins\Shield.Elmah\Views\Reporting.html" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -14,10 +14,7 @@
             var vm = this;
 
             angular.extend(vm, {
-                loading: true,
-                init: function () {
-                    vm.loading = false;
-                }
+                configuration: $scope.$parent.configuration
             });
         }]
     );

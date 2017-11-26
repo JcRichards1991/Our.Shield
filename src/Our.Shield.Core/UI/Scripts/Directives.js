@@ -42,8 +42,7 @@ angular.module('umbraco.directives').directive('shieldApp',
    * @description
    * Custom angular directive for converting string to number
 */
-angular.module('umbraco.directives').directive('shieldConvertToNumber',
-    function () {
+angular.module('umbraco.directives').directive('shieldConvertToNumber', function () {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -68,19 +67,20 @@ angular.module('umbraco.directives').directive('shieldConvertToNumber',
    * Adds form input elements to the backoffice access form for validation
 */
 angular.module('umbraco.directives').directive('shieldAddToForm', function () {
-    return {
-        restrict: 'A',
-        require: ['ngModel', '^form'],
-        link: function ($scope, $element, $attr, controllers) {
-            var ngModel = controllers[0],
-                $form = controllers[1];
+        return {
+            restrict: 'A',
+            require: ['ngModel', '^form'],
+            link: function ($scope, $element, $attr, controllers) {
+                var ngModel = controllers[0],
+                    $form = controllers[1];
 
-            $form.$removeControl(ngModel);
-            ngModel.$name = $attr.name;
-            $form.$addControl(ngModel);
+                $form.$removeControl(ngModel);
+                ngModel.$name = $attr.name;
+                $form.$addControl(ngModel);
+            }
         }
     }
-});
+);
 
 /**
    * @ngdoc directive
@@ -162,34 +162,8 @@ angular.module('umbraco.directives').directive('shieldIpAccessControl', function
         scope: {
             model: '='
         },
-        controller: ['$scope', 'localizationService', function ($scope, localizationService) {
-            angular.extend($scope, {
-                remove: function ($index) {
-                    var ip = $scope.model.exceptions[$index],
-                        msg = ip.value;
+        controller: ['$scope', function ($scope) {
 
-                    if (ip.value !== '') {
-                        if (ip.description !== '') {
-                            msg += ' - ' + ip.description;
-                        }
-
-                        localizationService.localize('Shield.Properties.IpAccessControl.Messages_ConfirmRemoveIp').then(function (warningMsg) {
-                            if (confirm(warningMsg + msg)) {
-                                $scope.model.exceptions.splice($index, 1);
-                            }
-                        });
-                    } else {
-                        $scope.model.exceptions.splice($index, 1);
-                    }
-                }
-            });
-
-            if ($scope.model.exceptions.length === 0) {
-                $scope.model.exceptions.push({
-                    value: '',
-                    description: ''
-                });
-            }
         }]
     };
 });
@@ -207,8 +181,61 @@ angular.module('umbraco.directives').directive('shieldIpAccessControlRanges', fu
         restrict: 'E',
         templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/IpAccessControlRanges.html',
         scope: {
-            model: '='
-        }
+            exceptions: '='
+        },
+        controller: ['$scope', 'localizationService', 'dialogService', function ($scope, localizationService, dialogService) {
+            angular.extend($scope, {
+                add: function () {
+                    $scope.openDialog(-1);
+                },
+                edit: function ($index) {
+                    $scope.openDialog($index)
+                },
+                openDialog: function ($index) {
+                    var dialogData = null;
+                    if ($index === -1) {
+                        dialogData = {
+                            value: '',
+                            description: '',
+                            ipAddressType: 1
+                        };
+                    } else {
+                        dialogData = angular.copy($scope.exceptions[$index]);
+                    }
+
+                    dialogService.open({
+                        template: '../App_Plugins/Shield/Backoffice/Views/Dialogs/EditIpException.html',
+                        dialogData: dialogData,
+                        callback: function (ipException) {
+                            if ($index === -1) {
+                                $scope.exceptions.push(ipException);
+                            } else {
+                                $scope.exceptions[$index] = ipException;
+                            }
+                        }
+                    });
+                },
+                remove: function ($index) {
+                    var exception = $scope.exceptions[$index];
+
+                    if (exception.value !== '') {
+                        var msg = exception.value;
+
+                        if (exception.description !== '') {
+                            msg += ' - ' + exception.description;
+                        }
+
+                        localizationService.localize('Shield.Properties.IpAccessControl.Messages_ConfirmRemoveIp').then(function (warningMsg) {
+                            if (confirm(warningMsg + msg)) {
+                                $scope.exceptions.splice($index, 1);
+                            }
+                        });
+                    } else {
+                        $scope.exceptions.splice($index, 1);
+                    }
+                }
+            });
+        }]
     };
 });
 
@@ -271,97 +298,5 @@ angular.module('umbraco.directives').directive('shieldTransferUrl', function () 
         scope: {
             model: '='
         }
-    };
-});
-
-/**
-   * @ngdoc directive
-   * @name shield-journal-listing
-   * @function
-   *
-   * @description
-   * Custom directive for handling the selected Url type
-*/
-angular.module('umbraco.directives').directive('shieldJournalListing', function () {
-    return {
-        restrict: 'E',
-        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/JournalListing.html',
-        scope: {
-            items: '=',
-            totalPages: '=',
-            viewId: '=',
-            type: '='
-        },
-        controller: ['$scope', '$location', 'shieldResource', function ($scope, $location, shieldResource) {
-            angular.extend($scope, {
-                pageNumber: 1,
-                options: {
-                    orderBy: 'datestamp',
-                    orderDirection: 'desc'
-                },
-                columns: [
-                    {
-                        id: 0,
-                        name: 'Date',
-                        alias: 'datestamp',
-                        allowSorting: true,
-                        show: true
-                    },
-                    {
-                        id: 1,
-                        name: 'Environment',
-                        alias: 'environment',
-                        allowSorting: true,
-                        show: true
-                    },
-                    {
-                        id: 2,
-                        name: 'App',
-                        alias: 'app',
-                        allowSorting: false,
-                        show: true
-                    },
-                    {
-                        id: 3,
-                        name: 'Message',
-                        alias: 'message',
-                        allowSorting: false,
-                        show: true
-                    },
-                ],
-                editItem: function (item) {
-                    $location.path('/shield/shield/edit/' + item.id);
-                },
-                nextPage: function (page) {
-                    $scope.pageNumber = page;
-                    $scope.getListing();
-                },
-                previousPage: function (page) {
-                    $scope.pageNumber = page;
-                    $scope.getListing();
-                },
-                gotoPage: function (page) {
-                    $scope.pageNumber = page;
-                    $scope.getListing();
-                },
-                isSortDirection: function (col, direction) {
-                    return false;
-                    //return listViewHelper.setSortingDirection(col, direction, $scope.options);
-                },
-                sort: function (field, allow) {
-                    if (allow) {
-                        $scope.options.orderBySystemField = false;
-                        listViewHelper.setSorting(field, allow, $scope.options);
-                        $scope.getListing();
-                    }
-                },
-                getListing: function () {
-                    shieldResource.getJournals($scope.viewId, $scope.pageNumber, $scope.options.orderBy, $scope.options.orderDirection).then(function (response) {
-                        $scope.items = response.data.items;
-                        $scope.totalPages = response.data.totalPages;
-                    });
-                }
-            });
-        }]
     };
 });

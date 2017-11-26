@@ -15,7 +15,7 @@ namespace Our.Shield.Core.Models
         Redirect = 0,
 
         [Description("Internally restarts the process with a new Url, but their Address bar will not reflect this change")]
-        Rewrite = 1,
+        Rewrite = 1
     }
 
     public class TransferUrl

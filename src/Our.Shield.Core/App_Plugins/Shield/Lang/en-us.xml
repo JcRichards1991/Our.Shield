@@ -11,6 +11,7 @@
   <area alias="Shield.General">
     <key alias="Name">Shield</key>
     <key alias="Remove">Remove</key>
+    <key alias="Edit">Edit</key>
 
     <key alias="SaveConfigurationSuccess">Have successfully updated the App</key>
     <key alias="SaveConfigurationError">Unable to update configuration</key>
@@ -39,6 +40,8 @@
 
     <key alias="UnauthorizedLabel">Unauthorized</key>
     <key alias="UnauthorizedDescription">The page to redirect / rewrite the user to, when access is being denied</key>
+
+    <key alias="UmbracoUsersEnableLabel">Allow Authenticated Umbraco Users</key>
   </area>
 
   <area alias="Shield.Properties.Validation">
@@ -54,6 +57,8 @@
     <key alias="Description">Except for these IP Addresses:</key>
     <key alias="IpAddressHeader">IP Address</key>
     <key alias="DescriptionHeader">Description</key>
+    <key alias="IpAddressFrom">IP Address Range From</key>
+    <key alias="IpAddressTo">IP Address Range To</key>
   </area>
 
   <area alias="Shield.Properties.IpAccessControl.Validation">

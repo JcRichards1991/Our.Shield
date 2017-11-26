@@ -2,7 +2,7 @@
 
     <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
 
-    <umb-editor-view>
+    <umb-editor-view ng-if="!vm.loading">
         <umb-editor-container>
             <div class="form-horizontal">
                 <div class="umb-el-wrap control-group umb-control-group">

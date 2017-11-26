@@ -8,25 +8,26 @@
     </thead>
 
     <tbody>
-        <tr ng-repeat="ip in model track by $index">
+        <tr ng-repeat="exception in exceptions track by $index">
             <td>
-                <input type="text" id="ipAddress{{$index}}" name="ipAddress{{$index}}" ng-model="ip.value" required shield-ipaddressvalid shield-ipaddressduplicate="{{model}}" shield-add-to-form="" />
-                <span class="help-inline" val-msg-for="ipAddress{{$index}}" val-toggle-msg="required">
-                    <localize key="Shield.Properties.Validation_Required">Required</localize>
+                <span ng-if="exception.ipAddressType === 0">
+                    {{exception.fromIpAddress}}
                 </span>
-                <span class="help-inline" val-msg-for="ipAddress{{$index}}" val-toggle-msg="shieldIpaddressduplicate">
-                    <localize key="Shield.Properties.IpAccessControl.Validation_IpDuplicate">IP Address has already been added</localize>
-                </span>
-                <span class="help-inline" val-msg-for="ipAddress{{$index}}" val-toggle-msg="shieldIpaddressvalid">
-                    <localize key="Shield.Properties.IpAccessControl.Validation_IpInvalid">Invalid IP Address. Please enter a valid IPv4 or IPv6 address</localize>
+
+                <span ng-if="exception.ipAddressType === 1">
+                    {{exception.fromIpAddress}} - {{exception.toIpAddress}}
                 </span>
             </td>
 
             <td>
-                <input type="text" ng-model="ip.description" />
+                <span>{{exception.description}}</span>
             </td>
 
             <td>
+                <span class="btn btn-info" ng-click="edit($index)">
+                    <localize key="Shield.General_Edit">Edit</localize>
+                </span>
+                
                 <span class="btn btn-danger" ng-click="remove($index)">
                     <localize key="Shield.General_Remove">Remove</localize>
                 </span>
@@ -39,7 +40,7 @@
             <td></td>
 
             <td>
-                <span class="btn btn-success" ng-click="model.push({value: '', description: ''})">
+                <span class="btn btn-success" ng-click="add()">
                     <localize key="general_add">Add</localize>
                 </span>
             </td>

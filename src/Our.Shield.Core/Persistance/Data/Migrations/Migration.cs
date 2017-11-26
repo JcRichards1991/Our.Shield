@@ -40,8 +40,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations
             {
                 currentVersion == new SemVersion(0) 
                     ? (IMigration) new Versions.Migration103Create(sqlSyntax, logger)
-                    : new Versions.Migration103(sqlSyntax, logger),
-                new Versions.Migration104(sqlSyntax, logger)
+                    : new Versions.Migration103(sqlSyntax, logger)
             };
 
             MigrationRunner migrationsRunner = new MigrationRunner(migrationEntryService, logger, currentVersion, TargetVersion, 

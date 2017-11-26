@@ -11,9 +11,6 @@
   <area alias="Shield.BackofficeAccess.Properties">
     <key alias="BackendAccessUrlLabel">Backend Office Access URL</key>
     <key alias="BackendAccessUrlDescription">The URL used to access the CMS</key>
-
-    <key alias="UnauthorisedActionLabel">Unauthorised Action</key>
-    <key alias="UnauthorisedActionDescription">Whether to redirect the user or to rewrite the request to another location, when from a disallowed IP Address</key>
   </area>
 
   <area alias="Shield.BackofficeAccess.ErrorMessages">

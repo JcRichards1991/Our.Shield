@@ -33,25 +33,25 @@ namespace Our.Shield.Core.Models
         IEnumerable<IDomain> Domains { get; }
 
         /// <summary>
-        /// 
+        /// The sort order of the enviornment
         /// </summary>
         [JsonProperty("sortOrder")]
         int SortOrder { get; }
 
         /// <summary>
-        /// 
+        /// whether or not the environment is enabled
         /// </summary>
         [JsonProperty("enable")]
         bool Enable { get; }
 
         /// <summary>
-        /// 
+        /// Whether or not the environment should continue proccessing
         /// </summary>
         [JsonProperty("continueProcessing")]
         bool ContinueProcessing { get; }
 
         /// <summary>
-        /// 
+        /// The Environment Color indicator as hexedecimal
         /// </summary>
         [JsonProperty("colorIndicator")]
         string ColorIndicator { get; }

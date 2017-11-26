@@ -4,6 +4,7 @@ using Our.Shield.Core.Models;
 namespace Our.Shield.ScraperDefense.Models
 {
     [AppEditor("/App_Plugins/Shield.ScraperDefense/Views/ScraperDefense.html?version=1.0.4")]
+    [AppJournal]
     public class ScraperDefenseApp : App<ScraperDefenseConfiguration>
     {
         /// <inheritdoc />

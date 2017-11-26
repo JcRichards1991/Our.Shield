@@ -25,5 +25,11 @@ namespace Our.Shield.Core.Models
         /// </summary>
         [JsonProperty("datestamp")]
         DateTime Datestamp { get; }
+
+        /// <summary>
+        /// The message of the Journal
+        /// </summary>
+        [JsonProperty("message")]
+        string Message { get; }
     }
 }

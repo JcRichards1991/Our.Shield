@@ -1,0 +1,81 @@
+﻿<form name="editExceptionDialogForm" ng-submit="vm.submit()" ng-controller="Shield.Editors.Dialogs.EditException as vm">
+    <umb-panel>
+        <div class="umb-panel-body no-header umb-scrollable with-footer">
+            <umb-pane>
+                <div class="umb-el-wrap control-group umb-control-group">
+                    <div>
+                        <label for="IpAddressType" class="control-label">
+                            <localize key="Shield.Properties.IpAccessControl.Exceptions_IpAddressHeader">IP Address</localize>
+                        </label>
+                        <div class="controls">
+                            <div class="umb-editor">
+                                <select id="IpAddressType" name="IpAddressType" style="width:100%;" ng-model="vm.exception.ipAddressType" shield-convert-to-number>
+                                    <option value="0">Single IP Address</option>
+                                    <option value="1">IP Adress Range</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="umb-el-wrap control-group umb-control-group">
+                    <div>
+                        <label for="ipAddress" class="control-label">
+                            <localize key="Shield.Properties.IpAccessControl.Exceptions_IpAddressHeader" ng-if="vm.exception.ipAddressType === 0">IP Address</localize>
+                            <localize key="Shield.Properties.IpAccessControl.Exceptions_IpAddressFrom" ng-if="vm.exception.ipAddressType === 1">IP Address Range From</localize>
+                        </label>
+                        <div class="controls">
+                            <div class="umb-editor">
+                                <input type="text" id="ipAddress" name="ipAddress" style="width:100%;" ng-model="vm.exception.fromIpAddress" required />
+                                <span class="help-inline" val-msg-for="ipAddress" val-toggle-msg="required">
+                                    <localize key="Shield.Properties.Validation_Required">Required</localize>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="vm.exception.ipAddressType === 1">
+                    <div class="umb-el-wrap control-group umb-control-group">
+                        <div>
+                            <label for="ipAddress" class="control-label">
+                                <localize key="Shield.Properties.IpAccessControl.Exceptions_IpAddressTo">IP Address Range To</localize>
+                            </label>
+                            <div class="controls">
+                                <div class="umb-editor">
+                                    <input type="text" id="ipAddress" name="ipAddress" style="width:100%;" ng-model="vm.exception.toIpAddress" required />
+                                    <span class="help-inline" val-msg-for="ipAddress" val-toggle-msg="required">
+                                        <localize key="Shield.Properties.Validation_Required">Required</localize>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="umb-el-wrap control-group umb-control-group">
+                    <div>
+                        <label for="ipDescription" class="control-label">
+                            <localize key="Shield.Properties.IpAccessControl.Exceptions_DescriptionHeader">Description</localize>
+                        </label>
+                        <div class="controls">
+                            <div class="umb-editor">
+                                <input type="text" id="ipDescription" name="ipDescription" style="width:100%;" ng-model="vm.exception.description" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </umb-pane>
+        </div>
+        <div class="umb-panel-footer">
+            <div class="btn-toolbar umb-btn-toolbar pull-right">
+                <a class="btn btn-link" ng-click="vm.close()">
+                    <localize key="cancel" />
+                </a>
+                <button type="submit" class="btn btn-primary" ng-disabled="!editExceptionDialogForm.$valid">
+                    <localize key="buttons_save">Save</localize>
+                </button>
+            </div>
+        </div>
+    </umb-panel>
+
+</form>

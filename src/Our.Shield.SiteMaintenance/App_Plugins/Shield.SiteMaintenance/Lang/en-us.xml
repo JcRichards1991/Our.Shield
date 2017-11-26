@@ -9,11 +9,7 @@
   </area>
 
   <area alias="Shield.SiteMaintenance.Properties">
-    <key alias="UmbracoUsersEnableLabel">Allow Authenticated Umbraco Users</key>
-    <key alias="UmbracoUsersEnableDescription">Whether or not the frontend is accessible by users who have authenticated as an Umbraco User</key>
-    
-    <key alias="UnauthorisedActionLabel">Unauthorised Action</key>
-    <key alias="UnauthorisedActionDescription">Whether to redirect the user or to rewrite the request to another location when the user is not authenticated as an Umbraco User</key>
+    <key alias="UmbracoUsersEnableDescription">Whether or not the Frontend is accessible by users who have authenticated as an Umbraco User</key>
   </area>
   
 </language>

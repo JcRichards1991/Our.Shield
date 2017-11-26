@@ -7,7 +7,9 @@
             </small>
         </label>
         <div class="controls">
-            <input type="checkbox" id="enable" ng-model="vm.environment.enable" />
+            <div class="umb-editor umb-checkbox">
+                <input type="checkbox" id="enable" ng-model="vm.environment.enableg" />
+            </div>
         </div>
     </div>
 </div>
@@ -21,13 +23,15 @@
             </small>
         </label>
         <div class="controls">
-            <input type="text" id="colorIndicator" name="colorIndicator" ng-model="vm.environment.colorIndicator" required ng-trim="false" ng-pattern="/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i"/>
-            <span class="help-inline" val-msg-for="colorIndicator" val-toggle-msg="required">
-                <localize key="Shield.Properties.Validation_Required">Required</localize>
-            </span>
-            <span class="help-inline" val-msg-for="colorIndicator" val-toggle-msg="pattern">
-                <localize key="Shield.Environment.Properties.Validation_ColorIndicatorInvalid">Invalid hexedecimal color</localize>
-            </span>
+            <div class="umb-editor">
+                <input type="text" id="colorIndicator" name="colorIndicator" ng-model="vm.environment.colorIndicator" required ng-trim="false" ng-pattern="/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i"/>
+                <span class="help-inline" val-msg-for="colorIndicator" val-toggle-msg="required">
+                    <localize key="Shield.Properties.Validation_Required">Required</localize>
+                </span>
+                <span class="help-inline" val-msg-for="colorIndicator" val-toggle-msg="pattern">
+                    <localize key="Shield.Environment.Properties.Validation_ColorIndicatorInvalid">Invalid hexedecimal color</localize>
+                </span>
+            </div>
         </div>
     </div>
 </div>-->
@@ -42,7 +46,9 @@
                 </small>
             </label>
             <div class="controls">
-                <input type="checkbox" id="continueProcessing" ng-model="vm.environment.continueProcessing" />
+                <div class="umb-editor umb-checkbox">
+                    <input type="checkbox" id="continueProcessing" ng-model="vm.environment.continueProcessing" />
+                </div>
             </div>
         </div>
     </div>
@@ -61,7 +67,12 @@
                         <tbody>
                             <tr ng-repeat="domain in vm.environment.domains track by $index">
                                 <td>
-                                    <input type="text" id="domain{{$index}}" name="domain{{$index}}" ng-model="domain.name" required shield-add-to-form="" ng-trim="false" ng-pattern="/^(http(s)?:\/\/)(([\w-_]+((\.[\w-_]+)+)?)+)(\.[\w]+)?(:[0-9]+)?([\w-_\/]+)?$/i" />
+                                    <input type="text" id="domain{{$index}}" name="domain{{$index}}" ng-model="domain.name"
+                                           required
+                                           shield-add-to-form
+                                           ng-trim="false"
+                                           ng-pattern="/^(http(s)?:\/\/)(([\w-_]+((\.[\w-_]+)+)?)+)(\.[\w]+)?(:[0-9]+)?([\w-_\/]+)?$/i" />
+
                                     <span class="help-inline" val-msg-for="domain{{$index}}" val-toggle-msg="required">
                                         <localize key="Shield.Properties.Validation_Required">Required</localize>
                                     </span>

@@ -1,25 +1,3 @@
-﻿<div ng-controller="Shield.Editors.ScraperDefense.Edit as vm" ng-init="vm.init()">
-    <div class="umb-el-wrap control-group umb-control-group">
-        <label for="hotlinking" class="control-label">
-            Number of request per minute
-            <small>
-                how many requests can an IP Address make to the server per a minute to report as suspicious activity
-            </small>
-        </label>
-        <div class="controls">
-            <input type="number" id="requestPerMinute" ng-model="vm.configuration.requestPerMinute" />
-        </div>
-    </div>
-
-    <div class="umb-el-wrap control-group umb-control-group">
-        <label for="securemedia" class="control-label">
-            Duration in days
-            <small>
-                The amount of days an IP address will be banned for suspicious activity
-            </small>
-        </label>
-        <div class="controls">
-            <input type="text" id="securemedia" ng-model="vm.configuration.duration" />
-        </div>
-    </div>
+﻿<div ng-controller="Shield.Editors.ScraperDefense.Edit as vm">
+    
 </div>
