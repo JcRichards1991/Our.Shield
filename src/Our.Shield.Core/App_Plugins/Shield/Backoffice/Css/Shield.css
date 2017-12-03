@@ -1,8 +1,91 @@
+.shield-dashboard div.umb-table div.umb-table-body div.shield-domain-listing ul {
+  margin-left: 0; }
+
+table.domains-container {
+  width: 75%; }
+  table.domains-container thead tr, table.domains-container tbody tr, table.domains-container tfoot tr {
+    height: 72px; }
+    table.domains-container thead tr td, table.domains-container thead tr th, table.domains-container tbody tr td, table.domains-container tbody tr th, table.domains-container tfoot tr td, table.domains-container tfoot tr th {
+      max-width: 100%; }
+      table.domains-container thead tr td:last-child, table.domains-container thead tr th:last-child, table.domains-container tbody tr td:last-child, table.domains-container tbody tr th:last-child, table.domains-container tfoot tr td:last-child, table.domains-container tfoot tr th:last-child {
+        text-align: right; }
+    table.domains-container thead tr td input, table.domains-container tbody tr td input, table.domains-container tfoot tr td input {
+      display: block;
+      width: 85%; }
+    table.domains-container thead tr td span.help-inline, table.domains-container tbody tr td span.help-inline, table.domains-container tfoot tr td span.help-inline {
+      position: absolute;
+      color: #9d261d; }
+    table.domains-container thead tr td:last-child span.btn:last-child, table.domains-container tbody tr td:last-child span.btn:last-child, table.domains-container tfoot tr td:last-child span.btn:last-child {
+      margin-left: 4px; }
+    table.domains-container thead tr th, table.domains-container tbody tr th, table.domains-container tfoot tr th {
+      text-align: left; }
+  table.domains-container tbody tr:not(:first-child) {
+    border-top: 1px solid #000; }
+    table.domains-container tbody tr:not(:first-child):last-child {
+      border-bottom: 1px solid #000; }
+
 .shield-editor .shield-editor-header {
   margin-right: 20px;
   position: absolute;
   top: 24px;
   right: 0px; }
+
+table.ipaddress-container {
+  width: 75%;
+  margin: 10px 0 0 20px; }
+  table.ipaddress-container tbody tr, table.ipaddress-container tfoot tr {
+    height: 72px; }
+  table.ipaddress-container thead td, table.ipaddress-container thead th, table.ipaddress-container tbody td, table.ipaddress-container tbody th, table.ipaddress-container tfoot td, table.ipaddress-container tfoot th {
+    max-width: 275px;
+    min-width: 275px; }
+    table.ipaddress-container thead td:last-child, table.ipaddress-container thead th:last-child, table.ipaddress-container tbody td:last-child, table.ipaddress-container tbody th:last-child, table.ipaddress-container tfoot td:last-child, table.ipaddress-container tfoot th:last-child {
+      text-align: right;
+      min-width: 160px;
+      max-width: 160px; }
+  table.ipaddress-container thead td input, table.ipaddress-container tbody td input, table.ipaddress-container tfoot td input {
+    display: block; }
+  table.ipaddress-container thead td span.help-inline, table.ipaddress-container tbody td span.help-inline, table.ipaddress-container tfoot td span.help-inline {
+    position: absolute;
+    color: #9d261d; }
+  table.ipaddress-container thead td:last-child span.btn:last-child, table.ipaddress-container tbody td:last-child span.btn:last-child, table.ipaddress-container tfoot td:last-child span.btn:last-child {
+    margin-left: 4px; }
+  table.ipaddress-container thead th, table.ipaddress-container tbody th, table.ipaddress-container tfoot th {
+    text-align: left; }
+  table.ipaddress-container tbody tr {
+    border-top: 1px solid #000; }
+    table.ipaddress-container tbody tr:last-child {
+      border-bottom: 1px solid #000; }
+
+.umb-dialog-body.shield-sort .sortableFrame {
+  height: auto;
+  overflow: auto; }
+  .umb-dialog-body.shield-sort .sortableFrame .sortableNodes {
+    padding: 4px;
+    display: block;
+    border-spacing: 0;
+    border-collapse: collapse; }
+    .umb-dialog-body.shield-sort .sortableFrame .sortableNodes thead th:first-child {
+      width: 100%; }
+    .umb-dialog-body.shield-sort .sortableFrame .sortableNodes thead .header {
+      border-bottom: 1px solid #ccc;
+      padding: 4px;
+      padding-right: 25px;
+      background-image: url(/Umbraco_Client/Tablesorting/img/bg.gif);
+      cursor: pointer;
+      font-weight: bold;
+      background-repeat: no-repeat;
+      background-position: center right; }
+      .umb-dialog-body.shield-sort .sortableFrame .sortableNodes thead .header.nowrap {
+        white-space: nowrap; }
+    .umb-dialog-body.shield-sort .sortableFrame .sortableNodes tbody tr {
+      cursor: move; }
+      .umb-dialog-body.shield-sort .sortableFrame .sortableNodes tbody tr td {
+        border-bottom: 1px solid #efefef;
+        padding: 4px;
+        cursor: move; }
+
+.shield-editor .tranfer-url-type select, .shield-editor .transfer-url-type-option select {
+  margin-bottom: 10px; }
 
 .shield-editor .umb-table .umb-table-body .umb-table-cell.shield-table__name, .shield-editor .umb-table .umb-table-body .umb-table-cell.shield-table__name-large, .shield-dashboard .umb-table .umb-table-body .umb-table-cell.shield-table__name, .shield-dashboard .umb-table .umb-table-body .umb-table-cell.shield-table__name-large {
   font-size: 14px;
@@ -34,60 +117,3 @@
   max-width: 15%;
   -ms-flex: 1 1 14%;
   flex: 1 1 14%; }
-
-table.domains-container {
-  width: 75%; }
-  table.domains-container thead tr, table.domains-container tbody tr, table.domains-container tfoot tr {
-    height: 72px; }
-    table.domains-container thead tr td, table.domains-container thead tr th, table.domains-container tbody tr td, table.domains-container tbody tr th, table.domains-container tfoot tr td, table.domains-container tfoot tr th {
-      max-width: 100%; }
-      table.domains-container thead tr td:last-child, table.domains-container thead tr th:last-child, table.domains-container tbody tr td:last-child, table.domains-container tbody tr th:last-child, table.domains-container tfoot tr td:last-child, table.domains-container tfoot tr th:last-child {
-        text-align: right; }
-    table.domains-container thead tr td input, table.domains-container tbody tr td input, table.domains-container tfoot tr td input {
-      display: block;
-      width: 85%; }
-    table.domains-container thead tr td span.help-inline, table.domains-container tbody tr td span.help-inline, table.domains-container tfoot tr td span.help-inline {
-      position: absolute;
-      color: #9d261d; }
-    table.domains-container thead tr td:last-child span.btn:last-child, table.domains-container tbody tr td:last-child span.btn:last-child, table.domains-container tfoot tr td:last-child span.btn:last-child {
-      margin-left: 4px; }
-    table.domains-container thead tr th, table.domains-container tbody tr th, table.domains-container tfoot tr th {
-      text-align: left; }
-  table.domains-container tbody tr:not(:first-child) {
-    border-top: 1px solid #000; }
-    table.domains-container tbody tr:not(:first-child):last-child {
-      border-bottom: 1px solid #000; }
-
-.umb-dialog-body.shield-sort .sortableFrame {
-  height: auto;
-  overflow: auto; }
-  .umb-dialog-body.shield-sort .sortableFrame .sortableNodes {
-    padding: 4px;
-    display: block;
-    border-spacing: 0;
-    border-collapse: collapse; }
-    .umb-dialog-body.shield-sort .sortableFrame .sortableNodes thead th:first-child {
-      width: 100%; }
-    .umb-dialog-body.shield-sort .sortableFrame .sortableNodes thead .header {
-      border-bottom: 1px solid #ccc;
-      padding: 4px;
-      padding-right: 25px;
-      background-image: url(/Umbraco_Client/Tablesorting/img/bg.gif);
-      cursor: pointer;
-      font-weight: bold;
-      background-repeat: no-repeat;
-      background-position: center right; }
-      .umb-dialog-body.shield-sort .sortableFrame .sortableNodes thead .header.nowrap {
-        white-space: nowrap; }
-    .umb-dialog-body.shield-sort .sortableFrame .sortableNodes tbody tr {
-      cursor: move; }
-      .umb-dialog-body.shield-sort .sortableFrame .sortableNodes tbody tr td {
-        border-bottom: 1px solid #efefef;
-        padding: 4px;
-        cursor: move; }
-
-.shield-editor .tranfer-url-type select, .shield-editor .shield-url-type-option select {
-  margin-bottom: 10px; }
-
-.shield-dashboard div.umb-table div.umb-table-body div.shield-domain-listing ul {
-  margin-left: 0; }

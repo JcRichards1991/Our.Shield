@@ -359,12 +359,13 @@
     <None Include="Our.Shield.Core.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="UI\Scss\Partials\_shield-dashboard.scss" />
-    <None Include="UI\Scss\Partials\_shield-domain-listing-table.scss" />
-    <None Include="UI\Scss\Partials\_shield-editor-header.scss" />
-    <None Include="UI\Scss\Partials\_shield-Sort-Panel-Overview.scss" />
-    <None Include="UI\Scss\Partials\_shield-umb-table.scss" />
-    <None Include="UI\Scss\Partials\_shield-url-type.scss" />
+    <None Include="UI\Scss\Partials\_ip-access-control-ranges.scss" />
+    <None Include="UI\Scss\Partials\_dashboard.scss" />
+    <None Include="UI\Scss\Partials\_domain-listing-table.scss" />
+    <None Include="UI\Scss\Partials\_editor-header.scss" />
+    <None Include="UI\Scss\Partials\_sort-panel-overview.scss" />
+    <None Include="UI\Scss\Partials\_umb-table.scss" />
+    <None Include="UI\Scss\Partials\_transfer-url.scss" />
     <None Include="UI\Scss\Styles.scss" />
   </ItemGroup>
   <ItemGroup>

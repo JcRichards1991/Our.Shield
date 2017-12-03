@@ -197,7 +197,7 @@ angular.module('umbraco.directives').directive('shieldIpAccessControlRanges', fu
                         dialogData = {
                             value: '',
                             description: '',
-                            ipAddressType: 1
+                            ipAddressType: 0
                         };
                     } else {
                         dialogData = angular.copy($scope.exceptions[$index]);

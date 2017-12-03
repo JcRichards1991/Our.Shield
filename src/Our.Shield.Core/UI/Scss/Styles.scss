@@ -1,11 +1,13 @@
-﻿@import "partials/shield-editor-header";
+﻿@import "partials/dashboard";
 
-@import "partials/shield-umb-table";
+@import "partials/domain-listing-table";
 
-@import "partials/shield-domain-listing-table";
+@import "partials/editor-header";
 
-@import "partials/shield-Sort-Panel-Overview";
+@import "partials/ip-access-control-ranges";
 
-@import "partials/shield-url-type";
+@import "partials/sort-panel-overview";
 
-@import "partials/shield-dashboard";
+@import "partials/transfer-url";
+
+@import "partials/umb-table";

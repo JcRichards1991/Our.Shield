@@ -34,11 +34,6 @@ var scssFiles = [
         name: 'Shield.css'
     },
     {
-        files: src + '.BackofficeAccess/UI/Scss/*.scss',
-        output: src + '.BackofficeAccess' + cssOutput + '.BackofficeAccess/Css',
-        name: 'BackofficeAccess.css'
-    },
-    {
         files: src + '.MediaProtection/UI/Scss/*.scss',
         output: src + '.MediaProtection' + cssOutput + '.MediaProtection/Css',
         name: 'MediaProtection.css'
