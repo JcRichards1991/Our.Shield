@@ -13,7 +13,6 @@
                 <span ng-if="exception.ipAddressType === 0">
                     {{exception.fromIpAddress}}
                 </span>
-
                 <span ng-if="exception.ipAddressType === 1">
                     {{exception.fromIpAddress}} - {{exception.toIpAddress}}
                 </span>
@@ -25,11 +24,11 @@
 
             <td>
                 <span class="btn btn-info" ng-click="edit($index)">
-                    <localize key="Shield.General_Edit">Edit</localize>
+                    <localize key="general_edit">Edit</localize>
                 </span>
                 
                 <span class="btn btn-danger" ng-click="remove($index)">
-                    <localize key="Shield.General_Remove">Remove</localize>
+                    <localize key="general_remove">Remove</localize>
                 </span>
             </td>
         </tr>

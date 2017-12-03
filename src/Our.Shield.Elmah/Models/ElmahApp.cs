@@ -7,6 +7,7 @@ using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using Our.Shield.Elmah.Attributes;
 using Umbraco.Core;
+using System.Globalization;
 
 namespace Our.Shield.Elmah.Models
 {
@@ -18,17 +19,17 @@ namespace Our.Shield.Elmah.Models
         private readonly string _allowKey = Guid.NewGuid().ToString();
 
         /// <inheritdoc />
-        public override string Description => "Lock down access to Elmah reporting page to only be viewed by Authenticated Umbraco Users and/or secure via IP restrictions";
-
-        /// <inheritdoc />
-        public override string Icon => "icon-combination-lock red";
-
-        /// <inheritdoc />
         public override string Id => nameof(Elmah);
 
         /// <inheritdoc />
-        public override string Name => Id;
+        public override string Name =>
+            ApplicationContext.Current.Services.TextService.Localize("Shield.Elmah.General/Name", CultureInfo.CurrentCulture);
 
+        /// <inheritdoc />
+        public override string Description => ApplicationContext.Current.Services.TextService.Localize("Shield.Elmah.General/Description", CultureInfo.CurrentCulture);
+
+        /// <inheritdoc />
+        public override string Icon => "icon-combination-lock red";
         /// <inheritdoc />
         public override IConfiguration DefaultConfiguration => new ElmahConfiguration
         {

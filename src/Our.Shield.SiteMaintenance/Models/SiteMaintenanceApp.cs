@@ -6,6 +6,7 @@ using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using Umbraco.Core;
+using System.Globalization;
 
 namespace Our.Shield.SiteMaintenance.Models
 {
@@ -14,19 +15,20 @@ namespace Our.Shield.SiteMaintenance.Models
     public class SiteMaintenanceApp : App<SiteMaintenanceConfiguration>
     {
         /// <inheritdoc />
+        public override string Id => nameof(SiteMaintenance);
+
+        /// <inheritdoc />
+        public override string Name =>
+            ApplicationContext.Current.Services.TextService.Localize("Shield.SiteMaintenance.General/Name", CultureInfo.CurrentCulture);
+
+        /// <inheritdoc />
         public override string Description =>
-            "Display a \"Maintenance\" or \"Under Construction\" page to all unauthorised traffic";
+            ApplicationContext.Current.Services.TextService.Localize("Shield.SiteMaintenance.General/Description", CultureInfo.CurrentCulture);
 
         /// <inheritdoc />
         public override string Icon =>
             "icon-combination-lock blue";
 
-        /// <inheritdoc />
-        public override string Id => nameof(SiteMaintenance);
-
-        /// <inheritdoc />
-        public override string Name => "Site Maintenance";
-        
         /// <inheritdoc />
         public override IConfiguration DefaultConfiguration =>
             new SiteMaintenanceConfiguration

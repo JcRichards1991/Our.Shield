@@ -4,6 +4,11 @@
     <name>Jonathan Richards</name>
   </creator>
 
+  <area alias="Shield.MediaProtection.General">
+    <key alias="Name">Media Protection</key>
+    <key alias="Description">Secure your media by stopping unauthorized access</key>
+  </area>
+
   <area alias="Shield.MediaProtection">
     <key alias="HotlinkingLabel">Hot Linking Protection</key>
     <key alias="HotlinkingDescription">Stop unauthorized users from accessing your assets from other websites</key>

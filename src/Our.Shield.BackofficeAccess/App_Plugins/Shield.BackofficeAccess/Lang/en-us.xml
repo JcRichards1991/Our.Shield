@@ -5,7 +5,8 @@
   </creator>
 
   <area alias="Shield.BackofficeAccess.General">
-    <key alias="AreaName">Backoffice Access</key>
+    <key alias="Name">Backoffice Access</key>
+    <key alias="Description">Change the backoffice access URL and/or secure your backoffice access URL via IP restrictions</key>
   </area>
 
   <area alias="Shield.BackofficeAccess.Properties">

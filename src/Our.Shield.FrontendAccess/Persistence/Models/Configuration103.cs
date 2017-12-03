@@ -1,8 +1,23 @@
 ﻿using Newtonsoft.Json;
 using Our.Shield.Core.Models;
+using System.Collections.Generic;
 
 namespace Our.Shield.FrontendAccess.Persistence.Models
 {
+    public class Configuration103
+    {
+        [JsonProperty("umbracoUserEnable")]
+        public bool UmbracoUserEnable { get; set; }
+        [JsonProperty("ipAddressesAccess")]
+        public int IpAddressesAccess { get; set; }
+        [JsonProperty("ipAddresses")]
+        public IEnumerable<IpEntry103> IpAddresses { get; set; }
+        [JsonProperty("unauthorisedAction")]
+        public TransferTypes UnauthorisedAction { get; set; }
+        [JsonProperty("urlType")]
+        public UrlType103 UrlType { get; set; }
+    }
+
     public class IpEntry103
     {
         [JsonProperty("ipAddress")]

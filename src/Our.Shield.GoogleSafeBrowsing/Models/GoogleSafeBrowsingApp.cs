@@ -1,5 +1,7 @@
 ﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
+using System.Globalization;
+using Umbraco.Core;
 using Umbraco.Core.Services;
 
 namespace Our.Shield.GoogleSafeBrowsing.Models
@@ -9,16 +11,18 @@ namespace Our.Shield.GoogleSafeBrowsing.Models
     public class GoogleSafeBrowsingApp : App<GoogleSafeBrowsingConfiguration>
     {
         /// <inheritdoc />
-        public override string Description => "Stops the content editors from linking to dangerous domains";
-
-        /// <inheritdoc />
-        public override string Icon => "icon-alert red";
-
-        /// <inheritdoc />
         public override string Id => nameof(GoogleSafeBrowsing);
 
         /// <inheritdoc />
-        public override string Name => "Google Safe Browsing";
+        public override string Name =>
+            ApplicationContext.Current.Services.TextService.Localize("Shield.GoogleSafeBrowsing.General/Name", CultureInfo.CurrentCulture);
+
+        /// <inheritdoc />
+        public override string Description =>
+            ApplicationContext.Current.Services.TextService.Localize("Shield.GoogleSafeBrowsing.General/Description", CultureInfo.CurrentCulture);
+
+        /// <inheritdoc />
+        public override string Icon => "icon-alert red";
 
         /// <inheritdoc />
         public override IConfiguration DefaultConfiguration => new GoogleSafeBrowsingConfiguration();

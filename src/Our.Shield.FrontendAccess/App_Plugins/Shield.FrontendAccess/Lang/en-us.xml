@@ -5,7 +5,8 @@
   </creator>
 
   <area alias="Shield.FrontendAccess.General">
-    <key alias="AreaName">Frontend Access</key>
+    <key alias="Name">Frontend Access</key>
+    <key alias="Description">Lock down the frontend to only be viewed by Umbraco Authenticated Users and/or secure the frontend via IP restrictions</key>
   </area>
 
   <area alias="Shield.FrontendAccess.Properties">

@@ -5,7 +5,8 @@
   </creator>
 
   <area alias="Shield.SiteMaintenance.General">
-    <key alias="AreaName">Site Maintenance</key>
+    <key alias="Name">Site Maintenance</key>
+    <key alias="Description">Display a "Maintenance" or "Under Construction" page to all unauthorised traffic</key>
   </area>
 
   <area alias="Shield.SiteMaintenance.Properties">

@@ -1,5 +1,7 @@
 ﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
+using System.Globalization;
+using Umbraco.Core;
 
 namespace Our.Shield.ScraperDefense.Models
 {
@@ -8,16 +10,18 @@ namespace Our.Shield.ScraperDefense.Models
     public class ScraperDefenseApp : App<ScraperDefenseConfiguration>
     {
         /// <inheritdoc />
-        public override string Description => "Protect your site from being scraped by 3rd party applications/websites";
-
-        /// <inheritdoc />
-        public override string Icon => "";
-
-        /// <inheritdoc />
         public override string Id => nameof(ScraperDefense);
 
         /// <inheritdoc />
-        public override string Name => "Scraper Defense";
+        public override string Name =>
+            ApplicationContext.Current.Services.TextService.Localize("Shield.ScraperDefense.General/Name", CultureInfo.CurrentCulture);
+
+        /// <inheritdoc />
+        public override string Description =>
+            ApplicationContext.Current.Services.TextService.Localize("Shield.ScraperDefense.General/Description", CultureInfo.CurrentCulture);
+
+        /// <inheritdoc />
+        public override string Icon => "";
 
         /// <inheritdoc />
         public override IConfiguration DefaultConfiguration => new ScraperDefenseConfiguration();

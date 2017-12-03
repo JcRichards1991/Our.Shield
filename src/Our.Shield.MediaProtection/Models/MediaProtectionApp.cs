@@ -3,6 +3,7 @@ using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -37,10 +38,12 @@ namespace Our.Shield.MediaProtection.Models
         public override string Id => nameof(MediaProtection);
 
         /// <inheritdoc />
-        public override string Name => "Media Protection";
+        public override string Name =>
+            ApplicationContext.Current.Services.TextService.Localize("Shield.MediaProtection.General/Name", CultureInfo.CurrentCulture);
 
         /// <inheritdoc />
-        public override string Description => "Secure your media by stopping unauthorized access";
+        public override string Description =>
+            ApplicationContext.Current.Services.TextService.Localize("Shield.MediaProtection.General/Description", CultureInfo.CurrentCulture);
 
         /// <inheritdoc />
         public override string Icon => "icon-picture red";

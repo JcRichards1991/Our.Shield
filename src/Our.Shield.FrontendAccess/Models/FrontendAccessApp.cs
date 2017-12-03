@@ -2,26 +2,31 @@
 using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Umbraco.Core;
 
 namespace Our.Shield.FrontendAccess.Models
 {
     [AppEditor("/App_Plugins/Shield.FrontendAccess/Views/FrontendAccess.html?version=1.0.4")]
     [AppJournal]
+    [AppMigration(typeof(Persistence.Migrations.Migration104))]
     public class FrontendAccessApp : App<FrontendAccessConfiguration>
     {
-        /// <inheritdoc />
-        public override string Description => "Lock down the frontend to only be viewed by Umbraco Authenticated Users and/or secure the frontend via IP restrictions";
-
-        /// <inheritdoc />
-        public override string Icon => "icon-combination-lock red";
-
         /// <inheritdoc />
         public override string Id => nameof(FrontendAccess);
 
         /// <inheritdoc />
-        public override string Name => "Frontend Access";
+        public override string Name =>
+            ApplicationContext.Current.Services.TextService.Localize("Shield.FrontendAccess.General/Name", CultureInfo.CurrentCulture);
+
+        /// <inheritdoc />
+        public override string Description =>
+            ApplicationContext.Current.Services.TextService.Localize("Shield.BackofficeAccess.General/Description", CultureInfo.CurrentCulture);
+
+        /// <inheritdoc />
+        public override string Icon => "icon-combination-lock red";
 
         /// <inheritdoc />
         public override IConfiguration DefaultConfiguration => new FrontendAccessConfiguration

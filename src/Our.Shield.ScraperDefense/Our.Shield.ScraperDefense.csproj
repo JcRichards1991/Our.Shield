@@ -288,6 +288,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="App_Plugins\Shield.ScraperDefense\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.ScraperDefense\Scripts\ScraperDefense.js" />
     <Content Include="App_Plugins\Shield.ScraperDefense\Views\ScraperDefense.html" />
   </ItemGroup>

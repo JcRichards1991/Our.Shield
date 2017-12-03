@@ -77,7 +77,7 @@ namespace Our.Shield.Core.UI
                     (job.App.GetType().GetCustomAttributes(typeof(AppTabAttribute), true) as
                          IEnumerable<AppTabAttribute> ?? new List<AppTabAttribute>()).ToList();
                         
-
+                    //  TODO: Make tab captions localized
                     var tabs = new List<Tab>();
                     var appView = string.Empty;
                     foreach (var tabAttr in tabAttrs.OrderBy(x => x.SortOrder))

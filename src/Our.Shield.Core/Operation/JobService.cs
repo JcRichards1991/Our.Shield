@@ -125,10 +125,10 @@ namespace Our.Shield.Core.Operation
 
             foreach (var migration in app.Migrations)
             {
-                var version = new SemVersion(new Version(migration.Key));
-                if (latestVersion < version)
+                var semver = new SemVersion(new Version(migration.Key));
+                if (latestVersion < semver)
                 {
-                    latestVersion = version;
+                    latestVersion = semver;
                 }
             }
 

@@ -10,6 +10,7 @@ using System.Threading;
 using System.Web;
 using Umbraco.Core;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Our.Shield.BackofficeAccess.Models
 {
@@ -18,16 +19,18 @@ namespace Our.Shield.BackofficeAccess.Models
     /// </summary>
     [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.4")]
     [AppJournal]
+    [AppMigration(typeof(Persistence.Migrations.Migration104))]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
     {
         /// <inheritdoc />
         public override string Id => nameof(BackofficeAccess);
 
         /// <inheritdoc />
-        public override string Name => "Backoffice Access";
+        public override string Name =>
+            ApplicationContext.Current.Services.TextService.Localize("Shield.BackofficeAccess.General/Name", CultureInfo.CurrentCulture);
 
         /// <inheritdoc />
-        public override string Description => "Change the backoffice access URL and/or secure your backoffice access URL via IP restrictions";
+        public override string Description => ApplicationContext.Current.Services.TextService.Localize("Shield.BackofficeAccess.General/Description", CultureInfo.CurrentCulture);
 
         /// <inheritdoc />
         public override string Icon => "icon-stop-hand red";

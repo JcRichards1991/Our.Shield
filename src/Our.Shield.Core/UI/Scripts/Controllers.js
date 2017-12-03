@@ -8,17 +8,16 @@
 */
 angular.module('umbraco').controller('Shield.Editors.Edit', 
     [
-        '$scope', '$routeParams', '$location', '$timeout', '$route', '$window', 'notificationsService',
-        'localizationService', 'listViewHelper', 'navigationService', 'treeService', 'shieldResource',
+        '$scope', '$routeParams', '$location', '$timeout', '$route', 'notificationsService',
+        'localizationService', 'navigationService', 'shieldResource',
         function ($scope,
             $routeParams,
-            $location, $timeout,
-            $route, $window,
+            $location,
+            $timeout,
+            $route,
             notificationsService,
             localizationService,
-            listViewHelper,
             navigationService,
-            treeService,
             shieldResource) {
 
             var vm = this;
@@ -76,6 +75,7 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                 vm.ancestors = [{ id: vm.id, name: vm.name }];
                                 vm.apps = response.data.apps;
 
+                                //  TODO: Make tab labels localized
                                 vm.tabs = [
                                     {
                                         id: '0',
@@ -284,15 +284,11 @@ angular.module('umbraco').controller('Shield.Dashboards.Environments',
 */
 angular.module('umbraco').controller('Shield.Dashboards.Journal',
     [
-        '$scope', '$routeParams', '$location', 'notificationsService',
-        'localizationService', 'listViewHelper', 'navigationService', 'shieldResource',
+        '$scope', '$routeParams', '$location', 'listViewHelper', 'shieldResource',
         function($scope,
             $routeParams,
             $location,
-            notificationsService,
-            localizationService,
             listViewHelper,
-            navigationService,
             shieldResource) {
 
             var vm = this;
@@ -391,12 +387,16 @@ angular.module('umbraco').controller('Shield.Dashboards.Journal',
 */
 angular.module('umbraco').controller('Shield.Editors.Dialogs.EditException',
     [
-        '$scope',
-        function ($scope) {
+        '$scope', 'localizationService',
+        function ($scope, localizationService) {
             var vm = this;
 
             angular.extend(vm, {
                 exception: $scope.dialogData,
+                buttonKey: '',
+                init: function () {
+                    vm.buttonKey = 'general_' + (vm.exception.fromIpAddress === '' ? 'add' : 'update');
+                },
                 close: $scope.close,
                 submit: function () {
                     $scope.submit(vm.exception);

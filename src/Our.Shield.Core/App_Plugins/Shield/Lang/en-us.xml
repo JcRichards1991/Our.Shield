@@ -9,10 +9,6 @@
   </area>
 
   <area alias="Shield.General">
-    <key alias="Name">Shield</key>
-    <key alias="Remove">Remove</key>
-    <key alias="Edit">Edit</key>
-
     <key alias="SaveConfigurationSuccess">Have successfully updated the App</key>
     <key alias="SaveConfigurationError">Unable to update configuration</key>
     <key alias="SaveConfigurationInvalid">Unable to update app, there are validation errors</key>
@@ -50,7 +46,7 @@
 
   <area alias="Shield.Properties.IpAccessControl.AccessType">
     <key alias="All">Open to all IP addresses</key>
-    <key alias="None">No access for any IP addresses</key>
+    <key alias="None">No access for all IP addresses</key>
   </area>
 
   <area alias="Shield.Properties.IpAccessControl.Exceptions">

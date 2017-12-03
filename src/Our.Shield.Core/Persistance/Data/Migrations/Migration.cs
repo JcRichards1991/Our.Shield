@@ -14,7 +14,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations
     /// </summary>
     internal class Migration
     {
-        public static readonly SemVersion TargetVersion = new SemVersion(1, 0, 4);
+        public static readonly SemVersion TargetVersion = new SemVersion(1, 0, 3);
 
         /// <summary>
         /// 

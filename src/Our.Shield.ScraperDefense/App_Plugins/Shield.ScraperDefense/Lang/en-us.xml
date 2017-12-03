@@ -4,8 +4,8 @@
     <name>Joshua Richards</name>
   </creator>
 
-  <area alias="Shield.GoogleSafeBrowsing.General">
-    <key alias="Name">Google Safe Browsing</key>
-    <key alias="Description">Stops the content editors from linking to dangerous domains</key>
+  <area alias="Shield.ScraperDefense.General">
+    <key alias="Name">Scraper Defense</key>
+    <key alias="Description">Protect your site from being scraped by 3rd party applications/websites</key>
   </area>
 </language>
