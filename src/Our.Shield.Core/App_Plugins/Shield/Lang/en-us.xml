@@ -93,7 +93,7 @@
 
   <area alias="Shield.Environment.Properties.Validation">
     <key alias="DomainInvalid">Domain is invalid</key>
-    <key alias="ColorIndicatorInvalid">Invalid hexedecimal color</key>
+    <key alias="ColorIndicatorInvalid">Invalid hexadecimal color</key>
   </area>
 
   <area alias="Shield.Dashboard.Environment.Table">
