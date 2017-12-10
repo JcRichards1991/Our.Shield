@@ -1,4 +1,5 @@
-﻿using Our.Shield.Core.Attributes;
+﻿using System;
+using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
@@ -47,6 +48,13 @@ namespace Our.Shield.FrontendAccess.Models
                 }
             }
         };
+
+        private readonly string _allowKey = Guid.NewGuid().ToString();
+        private readonly IpAccessControlService _ipAccessControlService;
+        public FrontendAccessApp()
+        {
+            _ipAccessControlService = new IpAccessControlService();
+        }
         
         /// <inheritdoc />
         public override bool Execute(IJob job, IConfiguration c)
@@ -74,15 +82,33 @@ namespace Our.Shield.FrontendAccess.Models
             }
 
 			job.ExceptionWebRequest(config.Unauthorized.Url);
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 10000, (count, httpApp) =>
+
+            if (config.IpAccessRules.Exceptions.Any())
             {
-                if (config.UmbracoUserEnable && !AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)
-                    || !new IpAccessControlService().IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
+                job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 10000, (count, httpApp) =>
                 {
-                    return new WatchResponse(config.Unauthorized);
+                    if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
+                    {
+                        httpApp.Context.Items.Add(_allowKey, true);
+                    }
+                    return new WatchResponse(WatchResponse.Cycles.Continue);
+                });
+            }
+
+            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 10500, (count, httpApp) =>
+            {
+                if ((bool?)httpApp.Context.Items[_allowKey] == true
+                    || config.UmbracoUserEnable && AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
+                {
+                    return new WatchResponse(WatchResponse.Cycles.Continue);
                 }
 
-                return new WatchResponse(WatchResponse.Cycles.Continue);
+                if (!httpApp.Context.Request.Url.LocalPath.Equals(config.Unauthorized.Url.Value))
+                {
+                    job.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access the Page: {httpApp.Context.Request.Url}. Access was denied"));
+                }
+
+                return new WatchResponse(config.Unauthorized);
             });
 
             return true;

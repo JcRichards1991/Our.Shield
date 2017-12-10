@@ -190,18 +190,8 @@ namespace Our.Shield.BackofficeAccess.Models
                 //Check if request has our access token, if so, we're
                 //rewriting the user to the hard location, so let 
                 //the request continue
-                if ((bool?)httpApp.Context.Items[_allowKey] == true)
-                {
-                    return new WatchResponse(WatchResponse.Cycles.Continue);
-                }
-
-                //Check if requesting a physical file, as the user may have
-                //logged into umbraco on the custom configured url and is
-                //now requesting the assets (i.e. *.css, *.js) or is running
-                //some action (i.e. /umbraco/dialogs/republish.aspx) which
-                //wouldn't have our access token! Our user IP checking Watch will
-                //handle if the request can gain access to what is being requested
-                if (!string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension))
+                if ((bool?)httpApp.Context.Items[_allowKey] == true
+                    || !string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension))
                 {
                     return new WatchResponse(WatchResponse.Cycles.Continue);
                 }
