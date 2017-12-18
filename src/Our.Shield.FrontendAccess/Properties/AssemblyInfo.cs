@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Our.Shield.FrontendLocker")]
+[assembly: AssemblyTitle("Our.Shield.FrontendAccess")]
 [assembly: AssemblyDescription("An app plugin to Our.Shield.Core Umbraco Cms package to handle restricting access to the frontend")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Our.Shield.FrontendLocker")]
+[assembly: AssemblyProduct("Our.Shield.FrontendAccess")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
