@@ -80,19 +80,19 @@ angular.module('umbraco').controller('Shield.Editors.Edit',
                                     {
                                         id: '0',
                                         label: 'Apps',
-                                        view: '/App_Plugins/Shield/Backoffice/Views/Environment.html?version=1.0.4',
+                                        view: '/App_Plugins/Shield/Backoffice/Views/Environment.html?version=1.0.5',
                                         active: true
                                     },
                                     {
                                         id: '1',
                                         label: 'Settings',
-                                        view: '/App_Plugins/Shield/Backoffice/Views/EditEnvironment.html?version=1.0.4',
+                                        view: '/App_Plugins/Shield/Backoffice/Views/EditEnvironment.html?version=1.0.5',
                                         active: false
                                     },
                                     {
                                         id: '2',
                                         label: 'Journal',
-                                        view: '/App_Plugins/Shield/Backoffice/Dashboards/Journal.html?version=1.0.4',
+                                        view: '/App_Plugins/Shield/Backoffice/Dashboards/Journal.html?version=1.0.5',
                                         active: false
                                     }
                                 ];

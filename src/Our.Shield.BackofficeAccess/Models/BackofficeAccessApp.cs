@@ -17,7 +17,7 @@ namespace Our.Shield.BackofficeAccess.Models
     /// <inheritdoc />
     /// <summary>
     /// </summary>
-    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.4")]
+    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.5")]
     [AppJournal]
     [AppMigration(typeof(Persistence.Migrations.Migration104))]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>

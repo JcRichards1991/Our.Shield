@@ -8,8 +8,8 @@
     * Edit Controller for the Backoffice Access Edit view
     */
     angular.module('umbraco').controller('Shield.Editors.BackofficeAccess.Edit',
-        ['$scope', 'localizationService',
-        function ($scope, localizationService) {
+        ['$scope',
+        function ($scope) {
 
             var vm = this;
 

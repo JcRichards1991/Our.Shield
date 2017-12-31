@@ -12,7 +12,7 @@ using System.Globalization;
 namespace Our.Shield.Elmah.Models
 {
     [ReportingTab]
-    [AppEditor("/App_Plugins/Shield.Elmah/Views/Elmah.html?version=1.0.4", sortOrder: 1)]
+    [AppEditor("/App_Plugins/Shield.Elmah/Views/Elmah.html?version=1.0.5", sortOrder: 1)]
     [AppJournal(sortOrder: 2)]
     public class ElmahApp : App<ElmahConfiguration>
     {

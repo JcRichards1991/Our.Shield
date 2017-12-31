@@ -10,7 +10,7 @@ using System.Globalization;
 
 namespace Our.Shield.SiteMaintenance.Models
 {
-    [AppEditor("/App_Plugins/Shield.SiteMaintenance/Views/SiteMaintenance.html?version=1.0.4")]
+    [AppEditor("/App_Plugins/Shield.SiteMaintenance/Views/SiteMaintenance.html?version=1.0.5")]
     [AppJournal]
     public class SiteMaintenanceApp : App<SiteMaintenanceConfiguration>
     {

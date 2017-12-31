@@ -6,7 +6,7 @@ namespace Our.Shield.Core.Attributes
     public class AppJournalAttribute : AppTabAttribute
     {
         /// <inheritdoc />
-        public AppJournalAttribute(string caption = "Journal", int sortOrder = 1, string filePath = "/App_Plugins/Shield/Backoffice/Dashboards/Journal.html?version=1.0.4") : base(caption, sortOrder, filePath)
+        public AppJournalAttribute(string caption = "Journal", int sortOrder = 1, string filePath = "/App_Plugins/Shield/Backoffice/Dashboards/Journal.html?version=1.0.5") : base(caption, sortOrder, filePath)
         {
         }
     }
