@@ -3,7 +3,73 @@
 
     <umb-editor-view ng-if="!vm.loading">
         <umb-editor-container>
+            <div class="umb-pane" ng-if="vm.selectedError === null">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Host</th>
+                            <th>Code</th>
+                            <th>Type</th>
+                            <th>Error</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="animate-repeat" ng-repeat="error in vm.errors" ng-click="vm.showDetails(error.id)" style="cursor: pointer;">
+                            <td>{{ error.error._hostName }}</td>
+                            <td>{{ error.error._statusCode }}</td>
+                            <td>{{ error.error._typeName }}</td>
+                            <td>{{ error.error._message }}</td>
+                            <td>{{ error.error._time | date:'dd/MM/yyyy' }}</td>
+                            <td>{{ error.error._time | date:'HH:mm' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="flex justify-center">
+                    <umb-pagination ng-if="vm.totalPages > 1"
+                                    page-number="vm.pageNumber"
+                                    total-pages="vm.totalPages"
+                                    on-next="vm.nextPage"
+                                    on-prev="vm.prevPage"
+                                    on-go-to-page="vm.gotoPage">
+                    </umb-pagination>
+                </div>
+            </div>
 
+            <div class="umb-pane" ng-if="vm.selectedError !== null">
+                <a ng-click="vm.backToList()" style="color: blue; cursor: pointer;">Go Back</a>
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th>Host</th>
+                        <td>{{ vm.selectedError.error._hostName }}</td>
+                    </tr>
+                    <tr>
+                        <th>Code</th>
+                        <td>{{ vm.selectedError.error._statusCode }}</td>
+                    </tr>
+                    <tr>
+                        <th>Type</th>
+                        <td>{{ vm.selectedError.error._typeName }}</td>
+                    </tr>
+                    <tr>
+                        <th>Error</th>
+                        <td>{{ vm.selectedError.error._message }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date</th>
+                        <td>{{ vm.selectedError.error._time | date:'yyyy-MM-dd' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Time</th>
+                        <td>{{ vm.selectedError.error._time | date:'HH:mm' }}</td>
+                    </tr>
+                    <tr>
+                        <th rowspan="2">StackTrace</th>
+                        <td rowspan="2">{{ vm.selectedError.error._detail }}</td>
+                    </tr>
+                </table>
+            </div>
         </umb-editor-container>
     </umb-editor-view>
 </div>

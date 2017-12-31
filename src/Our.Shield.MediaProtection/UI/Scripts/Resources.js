@@ -6,13 +6,16 @@
     * @description
     * Api resource for the Media Protection App
 */
-angular.module('umbraco.resources').factory('shieldMediaProtectionResource', ['$http', function ($http) {
+angular.module('umbraco.resources').factory('shieldMediaProtectionResource',
+    ['$http',
+        function ($http) {
+            var apiRoot = 'backoffice/Shield/MediaProtectionApi/';
 
-    var apiRoot = 'backoffice/Shield/MediaProtectionApi/';
-
-    return {
-        getDirectories: function () {
-            return $http.get(apiRoot + 'GetDirectories');
+            return {
+                getDirectories: function () {
+                    return $http.get(apiRoot + 'GetDirectories');
+                }
+            };
         }
-    };
-}]);
+    ]
+);

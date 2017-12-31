@@ -15,9 +15,10 @@
     <tags>Umbraco UmbracoCms Security Elmah</tags>
     <dependencies>
       <dependency id="Our.Shield.Core" version="1.0.5" />
+      <dependency id="elmah" version="1.2.2" />
     </dependencies>
   </metadata>
   <files>
-    <file src="App_Plugins\Shield.Elmah\package.manifest" target="Content\App_Plugins\Shield.Elmah" />
+    <file src="App_Plugins\Shield.Elmah\package.manifest" target="Content\App_Plugins\Shield.Elmah" exclude="UI/**/**.*" />
   </files>
 </package>

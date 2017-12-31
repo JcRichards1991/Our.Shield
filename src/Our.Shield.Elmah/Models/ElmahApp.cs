@@ -29,7 +29,7 @@ namespace Our.Shield.Elmah.Models
         public override string Description => ApplicationContext.Current.Services.TextService.Localize("Shield.Elmah.General/Description", CultureInfo.CurrentCulture);
 
         /// <inheritdoc />
-        public override string Icon => "icon-combination-lock red";
+        public override string Icon => "icon-combination-lock orange";
         /// <inheritdoc />
         public override IConfiguration DefaultConfiguration => new ElmahConfiguration
         {

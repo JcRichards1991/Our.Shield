@@ -593,6 +593,8 @@
     <Content Include="App_Plugins\Vorto\views\vorto.mandatoryBehaviourPicker.html" />
     <Content Include="App_Plugins\Vorto\views\vorto.propertyEditorPicker.html" />
     <Content Include="App_Plugins\Vorto\views\vorto.rtlBehaviourPicker.html" />
+    <Content Include="App_Readme\Elmah.SqlServer.sql" />
+    <Content Include="App_Readme\Elmah.SqlServer.txt" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Config\grid.editors.config.js" />
     <Content Include="Config\Lang\cs-CZ.user.xml" />

@@ -277,15 +277,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ReportingTabAttribute.cs" />
+    <Compile Include="Models\ElmahApiJsonModel.cs" />
     <Compile Include="Models\ElmahApp.cs" />
     <Compile Include="Models\ElmahConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\ElmahApiController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield.Elmah\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.Elmah\Scripts\Elmah.js" />
     <Content Include="App_Plugins\Shield.Elmah\Views\Elmah.html" />
     <Content Include="App_Plugins\Shield.Elmah\Views\Reporting.html" />
+    <Content Include="UI\Scripts\Controllers.js" />
+    <Content Include="UI\Scripts\Resources.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -299,6 +303,7 @@
       <Name>Our.Shield.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
