@@ -31,7 +31,7 @@ angular.module('umbraco').controller('Shield.Editors.Elmah.Reporting',
             angular.extend(vm, {
                 loading: true,
                 pageNumber: 1,
-                resultsPerPage: 2,
+                resultsPerPage: 100,
                 totalPages: 0,
                 errors: [],
                 selectedError: null,

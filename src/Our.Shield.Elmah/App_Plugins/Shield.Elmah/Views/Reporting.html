@@ -38,8 +38,10 @@
             </div>
 
             <div class="umb-pane" ng-if="vm.selectedError !== null">
-                <a ng-click="vm.backToList()" style="color: blue; cursor: pointer;">Go Back</a>
-                <table class="table table-bordered table-hover">
+                
+                <span ng-click="vm.selectedError = null" class="btn" stlye="margin-bottom: 20px; float: right;">Back to listing</span>
+
+                <table class="table table-bordered">
                     <tr>
                         <th>Host</th>
                         <td>{{ vm.selectedError.error._hostName }}</td>
@@ -65,8 +67,10 @@
                         <td>{{ vm.selectedError.error._time | date:'HH:mm' }}</td>
                     </tr>
                     <tr>
-                        <th rowspan="2">StackTrace</th>
-                        <td rowspan="2">{{ vm.selectedError.error._detail }}</td>
+                        <th colspan="2">StackTrace</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">{{ vm.selectedError.error._detail }}</td>
                     </tr>
                 </table>
             </div>
