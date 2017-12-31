@@ -74,14 +74,29 @@ namespace Our.Shield.Elmah.Models
                 job.WriteJournal(
                     new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
 
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, new Regex("^/elmah.axd$", RegexOptions.IgnoreCase), 400000, (count, httpApp) =>
-            {
-                if (config.UmbracoUserEnable && !AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)
-                    || !_ipAccessControlService.IsValid(config.IpAccessRules,
-                        httpApp.Context.Request.UserHostAddress))
-                    return new WatchResponse(config.Unauthorized);
+            var regex = new Regex("^/elmah\\.axd$", RegexOptions.IgnoreCase);
 
-                return new WatchResponse(WatchResponse.Cycles.Continue);
+            if (config.IpAccessRules.Exceptions.Any())
+            {
+                job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400000, (count, httpApp) =>
+                {
+                    if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
+                    {
+                        httpApp.Context.Items.Add(_allowKey, true);
+                    }
+                    return new WatchResponse(WatchResponse.Cycles.Continue);
+                });
+            }
+
+            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400500, (count, httpApp) =>
+            {
+                if ((bool?)httpApp.Context.Items[_allowKey] == true
+                    || config.UmbracoUserEnable && AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
+                {
+                    return new WatchResponse(WatchResponse.Cycles.Continue);
+                }
+
+                return new WatchResponse(config.Unauthorized);
             });
 
             return true;
