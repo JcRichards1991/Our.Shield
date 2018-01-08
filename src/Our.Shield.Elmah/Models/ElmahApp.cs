@@ -74,7 +74,7 @@ namespace Our.Shield.Elmah.Models
                 job.WriteJournal(
                     new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
 
-            var regex = new Regex("^/elmah\\.axd$", RegexOptions.IgnoreCase);
+            var regex = new Regex("^/elmah\\.axd", RegexOptions.IgnoreCase);
 
             if (config.IpAccessRules.Exceptions.Any())
             {
@@ -95,6 +95,8 @@ namespace Our.Shield.Elmah.Models
                 {
                     return new WatchResponse(WatchResponse.Cycles.Continue);
                 }
+
+                job.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access {httpApp.Context.Request.Url} Access was denied"));
 
                 return new WatchResponse(config.Unauthorized);
             });
