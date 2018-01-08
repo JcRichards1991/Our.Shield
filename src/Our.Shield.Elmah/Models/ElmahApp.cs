@@ -12,7 +12,7 @@ using System.Globalization;
 namespace Our.Shield.Elmah.Models
 {
     [ReportingTab]
-    [AppEditor("/App_Plugins/Shield.Elmah/Views/Elmah.html?version=1.0.4", sortOrder: 1)]
+    [AppEditor("/App_Plugins/Shield.Elmah/Views/Elmah.html?version=1.0.5", sortOrder: 1)]
     [AppJournal(sortOrder: 2)]
     public class ElmahApp : App<ElmahConfiguration>
     {
@@ -29,7 +29,7 @@ namespace Our.Shield.Elmah.Models
         public override string Description => ApplicationContext.Current.Services.TextService.Localize("Shield.Elmah.General/Description", CultureInfo.CurrentCulture);
 
         /// <inheritdoc />
-        public override string Icon => "icon-combination-lock red";
+        public override string Icon => "icon-combination-lock orange";
         /// <inheritdoc />
         public override IConfiguration DefaultConfiguration => new ElmahConfiguration
         {
@@ -74,14 +74,31 @@ namespace Our.Shield.Elmah.Models
                 job.WriteJournal(
                     new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
 
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, new Regex("^/elmah.axd$", RegexOptions.IgnoreCase), 400000, (count, httpApp) =>
-            {
-                if (config.UmbracoUserEnable && !AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)
-                    || !_ipAccessControlService.IsValid(config.IpAccessRules,
-                        httpApp.Context.Request.UserHostAddress))
-                    return new WatchResponse(config.Unauthorized);
+            var regex = new Regex("^/elmah\\.axd", RegexOptions.IgnoreCase);
 
-                return new WatchResponse(WatchResponse.Cycles.Continue);
+            if (config.IpAccessRules.Exceptions.Any())
+            {
+                job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400000, (count, httpApp) =>
+                {
+                    if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
+                    {
+                        httpApp.Context.Items.Add(_allowKey, true);
+                    }
+                    return new WatchResponse(WatchResponse.Cycles.Continue);
+                });
+            }
+
+            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400500, (count, httpApp) =>
+            {
+                if ((bool?)httpApp.Context.Items[_allowKey] == true
+                    || config.UmbracoUserEnable && AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
+                {
+                    return new WatchResponse(WatchResponse.Cycles.Continue);
+                }
+
+                job.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access {httpApp.Context.Request.Url} Access was denied"));
+
+                return new WatchResponse(config.Unauthorized);
             });
 
             return true;

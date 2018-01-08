@@ -10,7 +10,7 @@ var concat = require("gulp-concat");
 var uglify = require('gulp-uglify');
 var insert = require('gulp-insert');
 
-var src = 'src/Our.Shield'
+var src = 'src/Our.Shield';
 
 var jsOutput = '/App_Plugins/Shield';
 var jsFiles = [
@@ -23,6 +23,11 @@ var jsFiles = [
         subFiles: src + '.MediaProtection/UI/Scripts/*.js',
         output: src + '.MediaProtection' + jsOutput + '.MediaProtection/Scripts',
         name: 'MediaProtection.js'
+    },
+    {
+        subFiles: src + '.Elmah/UI/Scripts/*.js',
+        output: src + '.Elmah' + jsOutput + '.Elmah/Scripts',
+        name: 'Elmah.js'
     }
 ];
 

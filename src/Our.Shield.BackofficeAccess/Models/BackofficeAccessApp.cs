@@ -17,7 +17,7 @@ namespace Our.Shield.BackofficeAccess.Models
     /// <inheritdoc />
     /// <summary>
     /// </summary>
-    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.4")]
+    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.5")]
     [AppJournal]
     [AppMigration(typeof(Persistence.Migrations.Migration104))]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
@@ -67,7 +67,7 @@ namespace Our.Shield.BackofficeAccess.Models
         private void SoftWatcher(IJob job, Regex regex, int priority, string hardLocation, string softLocation, bool rewrite = true, bool addHardReseterFile = false)
         {
             //Add watch on the soft location
-            job.WatchWebRequests(PipeLineStages.BeginRequest, regex, priority, (count, httpApp) =>
+            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, priority, (count, httpApp) =>
             {
                 if (addHardReseterFile && Interlocked.CompareExchange(ref _resetterLock, 0, 1) == 0)
                 {
@@ -185,7 +185,7 @@ namespace Our.Shield.BackofficeAccess.Models
 			}
 
             //Add watch on the hard location
-            job.WatchWebRequests(PipeLineStages.BeginRequest, new Regex("^((" + hardLocation.TrimEnd('/') + "(/)?)|(" + hardLocation + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase), 20020, (count, httpApp) =>
+            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, new Regex("^((" + hardLocation.TrimEnd('/') + "(/)?)|(" + hardLocation + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase), 20020, (count, httpApp) =>
             {
                 //Check if request has our access token, if so, we're
                 //rewriting the user to the hard location, so let 
@@ -242,7 +242,7 @@ namespace Our.Shield.BackofficeAccess.Models
 
             //Add watch on the on-disk UmbracoPath location to do the security checking of the user's ip
 			job.ExceptionWebRequest(config.Unauthorized.Url);
-            job.WatchWebRequests(PipeLineStages.BeginRequest, hardLocationRegex, 21000, (count, httpApp) =>
+            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, hardLocationRegex, 21000, (count, httpApp) =>
             {
                 if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
                 {

@@ -10,7 +10,7 @@ using Umbraco.Core;
 
 namespace Our.Shield.FrontendAccess.Models
 {
-    [AppEditor("/App_Plugins/Shield.FrontendAccess/Views/FrontendAccess.html?version=1.0.4")]
+    [AppEditor("/App_Plugins/Shield.FrontendAccess/Views/FrontendAccess.html?version=1.0.5")]
     [AppJournal]
     [AppMigration(typeof(Persistence.Migrations.Migration104))]
     public class FrontendAccessApp : App<FrontendAccessConfiguration>
@@ -105,7 +105,7 @@ namespace Our.Shield.FrontendAccess.Models
 
                 if (!httpApp.Context.Request.Url.LocalPath.Equals(config.Unauthorized.Url.Value))
                 {
-                    job.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access the Page: {httpApp.Context.Request.Url}. Access was denied"));
+                    job.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access Page: {httpApp.Context.Request.Url}. Access was denied"));
                 }
 
                 return new WatchResponse(config.Unauthorized);

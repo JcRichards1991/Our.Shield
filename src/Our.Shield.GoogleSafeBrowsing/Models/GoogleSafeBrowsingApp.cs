@@ -6,7 +6,7 @@ using Umbraco.Core.Services;
 
 namespace Our.Shield.GoogleSafeBrowsing.Models
 {
-    [AppEditor("/App_Plugins/Shield.GoogleSafeBrowsing/Views/GoogleSafeBrowsing.html?version=1.0.4")]
+    [AppEditor("/App_Plugins/Shield.GoogleSafeBrowsing/Views/GoogleSafeBrowsing.html?version=1.0.5")]
     [AppJournal]
     public class GoogleSafeBrowsingApp : App<GoogleSafeBrowsingConfiguration>
     {
