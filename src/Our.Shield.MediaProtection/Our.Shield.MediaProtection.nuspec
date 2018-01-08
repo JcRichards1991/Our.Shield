@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Updates to work with Shield Core changes</releaseNotes>
+    <releaseNotes>Updating version number to keep in sync with Our.Shield.Core</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security MediaProtection Media Protection</tags>
     <dependencies>

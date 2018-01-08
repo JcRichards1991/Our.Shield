@@ -227,6 +227,7 @@
     <Compile Include="Attributes\AppJournalAttribute.cs" />
     <Compile Include="Attributes\AppMigrationAttribute.cs" />
     <Compile Include="Attributes\AppTabAttribute.cs" />
+    <Compile Include="Attributes\CustomAppTabAttribute.cs" />
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
     <Compile Include="Models\IpAccessControl.cs" />
     <Compile Include="Models\ApplicationSettings.cs" />

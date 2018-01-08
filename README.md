@@ -30,6 +30,10 @@ PM> Install-Package Our.Shield.Core
 	```
 	PM> Install-Package Our.Shield.FrontendAccess
 	```
+	* https://www.nuget.org/packages/Our.Shield.Elmah/
+	```
+	PM> Install-Package Our.Shield.Elmah
+	```
 ---
 
 ### Documentation ###
@@ -47,6 +51,20 @@ After upgrading, you will need to re-save the configurations of the installed ap
 ---
 
 ### Log ###
+**1.0.5 - 08/01/2018**
+* Release of new app Elmah. Adds the popular error logging library ELMAH to umbraco with the ability to add security restrictions to ~/elmah.axd
+
+* Shield.Core: Added the ability for an app to have custom tabs for displaying additional information
+
+**1.0.4 - 03/09/2017**
+* Shield Core: Added the ability to subscribe to more of the http application cycle 
+* Shield Core: UI improvements of shared assets/functionality between apps
+
+* Backoffice Access: UI Improvements and added ability to add IP Address ranges as exception rules to the white or black list of access to the backoffice access url
+
+* Frontend Access: UI Improvements and added ability to add IP Address ranges as exception rules to the white or black list of access to the front end
+
+* Media Protection: Updates to work with Shield Core changes
 
 **1.0.3 - 03/09/2017**
 

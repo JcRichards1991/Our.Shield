@@ -10,8 +10,7 @@
     <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes><![CDATA[- Added the ability to subscribe to more of the http application cycle
-    - UI improvements of shared assets/functionality between apps]]></releaseNotes>
+    <releaseNotes>Added the ability for an app to have custom tabs for displaying additional information</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security</tags>
     <dependencies>

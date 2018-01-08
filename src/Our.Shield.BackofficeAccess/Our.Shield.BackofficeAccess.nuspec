@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>UI Improvements and added ability to add IP Address ranges as exception rules to the white or black list of access to the backoffice access url</releaseNotes>
+    <releaseNotes>Changed from subscribing on Begin Request to Authenticate Request for shields http module</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security BackofficeAccess Access Backoffice</tags>
     <dependencies>
