@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="App_Plugins\Shield.Elmah\package.manifest" target="Content\App_Plugins\Shield.Elmah" exclude="UI/**/**.*" />
+    <file src="App_Plugins\Shield.Elmah\package.manifest" target="Content\App_Plugins\Shield.Elmah" />
   </files>
 </package>

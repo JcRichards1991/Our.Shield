@@ -219,7 +219,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\ReportingTabAttribute.cs" />
     <Compile Include="Models\ElmahApiJsonModel.cs" />
     <Compile Include="Models\ElmahApp.cs" />
     <Compile Include="Models\ElmahConfiguration.cs" />

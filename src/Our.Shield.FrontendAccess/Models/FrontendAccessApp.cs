@@ -24,7 +24,7 @@ namespace Our.Shield.FrontendAccess.Models
 
         /// <inheritdoc />
         public override string Description =>
-            ApplicationContext.Current.Services.TextService.Localize("Shield.BackofficeAccess.General/Description", CultureInfo.CurrentCulture);
+            ApplicationContext.Current.Services.TextService.Localize("Shield.FrontendAccess.General/Description", CultureInfo.CurrentCulture);
 
         /// <inheritdoc />
         public override string Icon => "icon-combination-lock red";

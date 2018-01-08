@@ -6,7 +6,7 @@
 
   <area alias="Shield.Elmah.General">
     <key alias="Name">Elmah</key>
-    <key alias="Description">Lock down access to Elmah reporting page to only be viewed by Authenticated Umbraco Users and/or secure via IP restrictions</key>
+    <key alias="Description">Restrict access to ~/elmah.axd to Authenticated Umbraco Users and/or secure via IP restrictions</key>
   </area>
 
   <area alias="Shield.Elmah.Properties">

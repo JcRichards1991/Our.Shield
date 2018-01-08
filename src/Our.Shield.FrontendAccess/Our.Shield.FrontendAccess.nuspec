@@ -10,11 +10,11 @@
     <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>$version$ release</releaseNotes>
+    <releaseNotes>Updating version number to keep in sync with Our.Shield.Core</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security Locker FrontendAccess Frontend Access</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="1.0.3" />
+      <dependency id="Our.Shield.Core" version="1.0.5" />
     </dependencies>
   </metadata>
   <files>
