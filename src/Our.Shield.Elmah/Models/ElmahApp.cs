@@ -10,8 +10,8 @@ using System.Globalization;
 
 namespace Our.Shield.Elmah.Models
 {
-    [CustomAppTab("Reporting", 0, "/App_Plugins/Shield.Elmah/Views/Reporting.html?version=1.0.5")]
-    [AppEditor("/App_Plugins/Shield.Elmah/Views/Elmah.html?version=1.0.5", sortOrder: 1)]
+    [CustomAppTab("Reporting", 0, "/App_Plugins/Shield.Elmah/Views/Reporting.html?version=1.0.6")]
+    [AppEditor("/App_Plugins/Shield.Elmah/Views/Elmah.html?version=1.0.6", sortOrder: 1)]
     [AppJournal(sortOrder: 2)]
     public class ElmahApp : App<ElmahConfiguration>
     {

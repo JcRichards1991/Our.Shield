@@ -14,7 +14,7 @@
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security Elmah</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="1.0.5" />
+      <dependency id="Our.Shield.Core" version="1.0.6" />
       <dependency id="elmah" version="1.2.2" />
     </dependencies>
   </metadata>

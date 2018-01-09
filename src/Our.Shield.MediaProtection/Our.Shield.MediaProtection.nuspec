@@ -14,7 +14,7 @@
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security MediaProtection Media Protection</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="1.0.5" />
+      <dependency id="Our.Shield.Core" version="1.0.6" />
     </dependencies>
   </metadata>
   <files>
