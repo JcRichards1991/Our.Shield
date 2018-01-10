@@ -38,7 +38,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                 var sql = new Sql().Where("id != 1");
                 _database.Delete<Dto.Environment.Environment100>(sql);
 
-                Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.SortOrder)).AsInt32().NotNullable().WithDefaultValue(999999);
+                Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.SortOrder)).AsInt32().NotNullable().WithDefaultValue(Constants.Tree.DefaultEnvironmentSortOrder);
                 Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.Enable)).AsBoolean().NotNullable().WithDefaultValue(true);
                 Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.ContinueProcessing)).AsBoolean().NotNullable().WithDefaultValue(true);
                 Alter.Table<Dto.Environment.Environment103>().AddColumn(nameof(Dto.Environment.Environment103.ColorIndicator)).AsString(7).NotNullable().WithDefaultValue("#df7f48");
@@ -52,7 +52,7 @@ namespace Our.Shield.Core.Persistance.Data.Migrations.Versions
                     Icon = "icon-firewall red",
                     Enable = true,
                     ContinueProcessing = true,
-                    SortOrder = Constants.Tree.DefaultEnvironmentId,
+                    SortOrder = Constants.Tree.DefaultEnvironmentSortOrder,
                     ColorIndicator = "#df7f48"
                 });
             }

@@ -30,7 +30,7 @@ namespace Our.Shield.Core.UI
         {
             var environments = Operation.JobService.Instance.Environments.OrderBy(x => x.Key.SortOrder).ToDictionary(x => x.Key, v => v.Value);
 
-            if (id == Constants.Tree.EnvironmentsRootId)
+            if (id == Constants.Dashboard.EnvironmentsDashboardId)
             {
                 //  The environments Dashboard
                 return new TreeView
@@ -38,7 +38,16 @@ namespace Our.Shield.Core.UI
                     Description = "List of the different environments your Umbraco instance operates under",
                     Environments = environments.Keys,
                     Type = TreeViewType.Environments
-                    
+                };
+            }
+
+            if (id == Constants.Tree.CreateEnvironmentId)
+            {
+                return new TreeView
+                {
+                    Environments = environments.Keys,
+                    Type = TreeViewType.Environment,
+                    Environment = new Models.Environment()
                 };
             }
 
