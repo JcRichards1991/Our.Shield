@@ -7,7 +7,7 @@ namespace Our.Shield.Core.Operation
 {
 	public class Locker
 	{
-#if TRACE
+#if TRACE2
         private const int LockWait = 1000000;
 #else
         private const int LockWait = 1000;
@@ -15,13 +15,13 @@ namespace Our.Shield.Core.Operation
 		private readonly ReaderWriterLockSlim _slim = new ReaderWriterLockSlim();
 
 		public bool Read(Action execute
-#if TRACE
+#if TRACE2
 			,[CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0
 #endif
 			)
 
 		{
-#if TRACE
+#if TRACE2
 			var callingMethodDebug = sourceFilePath + ":" + sourceLineNumber + " Locker.Read() = ";
 #endif
 			var hasLocked = false;
@@ -29,12 +29,12 @@ namespace Our.Shield.Core.Operation
 			{
 				if (!_slim.TryEnterReadLock(LockWait))
 				{
-#if TRACE
+#if TRACE2
 					Debug.WriteLine(callingMethodDebug + "failed to require lock");
 #endif
 					return false;
 				}
-#if TRACE
+#if TRACE2
 				Debug.WriteLine(callingMethodDebug + "required lock");
 #endif
 				hasLocked = true;
@@ -45,7 +45,7 @@ namespace Our.Shield.Core.Operation
 			{
 				if (hasLocked)
 				{
-#if TRACE
+#if TRACE2
 					Debug.WriteLine(callingMethodDebug + "released lock");
 #endif
 					_slim.ExitReadLock();
@@ -54,13 +54,13 @@ namespace Our.Shield.Core.Operation
 		}
 
 		public T Read<T>(Func<T> execute
-#if TRACE
+#if TRACE2
 		, [CallerMemberName] string memberName = "", 
 			[CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0
 #endif			
 			)
 		{
-#if TRACE
+#if TRACE2
 			var callingMethodDebug = sourceFilePath + ":" + sourceLineNumber + " Locker.Read<T>() = ";
 #endif
 			var hasLocked = false;
@@ -68,12 +68,12 @@ namespace Our.Shield.Core.Operation
 			{
 				if (!_slim.TryEnterReadLock(LockWait))
 				{
-#if TRACE
+#if TRACE2
 					Debug.WriteLine(callingMethodDebug + "failed to require lock");
 #endif
 					return default(T);
 				}
-#if TRACE
+#if TRACE2
 				Debug.WriteLine(callingMethodDebug + "required lock");
 #endif
 				hasLocked = true;
@@ -83,7 +83,7 @@ namespace Our.Shield.Core.Operation
 			{
 				if (hasLocked)
 				{
-#if TRACE
+#if TRACE2
 					Debug.WriteLine(callingMethodDebug + "released lock");
 #endif
 					_slim.ExitReadLock();
@@ -92,13 +92,13 @@ namespace Our.Shield.Core.Operation
 		}
 
 		public bool Write(Action execute
-#if TRACE
+#if TRACE2
 		, [CallerMemberName] string memberName = "", 
 			[CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0
 #endif
 			)
 		{
-#if TRACE
+#if TRACE2
 			var callingMethodDebug = sourceFilePath + ":" + sourceLineNumber + " Locker.Write() = ";
 #endif
 			var hasLocked = false;
@@ -106,12 +106,12 @@ namespace Our.Shield.Core.Operation
 			{
 				if (!_slim.TryEnterWriteLock(LockWait))
 				{
-#if TRACE
+#if TRACE2
 					Debug.WriteLine(callingMethodDebug + "failed to require lock");
 #endif
 					return false;
 				}
-#if TRACE
+#if TRACE2
 				Debug.WriteLine(callingMethodDebug + "required lock");
 #endif
 				hasLocked = true;
@@ -122,7 +122,7 @@ namespace Our.Shield.Core.Operation
 			{
 				if (hasLocked)
 				{
-#if TRACE
+#if TRACE2
 					Debug.WriteLine(callingMethodDebug + "released lock");
 #endif
 					_slim.ExitWriteLock();
@@ -131,13 +131,13 @@ namespace Our.Shield.Core.Operation
 		}
 
 		public T Write<T>(Func<T> execute
-#if TRACE
+#if TRACE2
 		, [CallerMemberName] string memberName = "", 
 			[CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0
 #endif			
 			)
 		{
-#if TRACE
+#if TRACE2
 			var callingMethodDebug = sourceFilePath + ":" + sourceLineNumber + " Locker.Write<T>() = ";
 #endif
 			var hasLocked = false;
@@ -145,12 +145,12 @@ namespace Our.Shield.Core.Operation
 			{
 				if (!_slim.TryEnterWriteLock(LockWait))
 				{
-#if TRACE
+#if TRACE2
 					Debug.WriteLine(callingMethodDebug + "failed to require lock");
 #endif
 					return default(T);
 				}
-#if TRACE
+#if TRACE2
 				Debug.WriteLine(callingMethodDebug + "required lock");
 #endif
 				hasLocked = true;
@@ -160,7 +160,7 @@ namespace Our.Shield.Core.Operation
 			{
 				if (hasLocked)
 				{
-#if TRACE
+#if TRACE2
 					Debug.WriteLine(callingMethodDebug + "released lock");
 #endif
 					_slim.ExitWriteLock();
