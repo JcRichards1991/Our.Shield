@@ -3,4 +3,4 @@
     Layout = "Master.cshtml";
 }
 
-@CurrentPage.GetGridHtml("content", "fanoe")
+@Html.Raw(Model.Content.GetPropertyValue("BodyText"))
