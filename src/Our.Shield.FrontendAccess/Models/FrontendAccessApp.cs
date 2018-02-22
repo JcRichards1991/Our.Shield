@@ -83,17 +83,14 @@ namespace Our.Shield.FrontendAccess.Models
 
 			job.ExceptionWebRequest(config.Unauthorized.Url);
 
-            if (config.IpAccessRules.Exceptions.Any())
+            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400000, (count, httpApp) =>
             {
-                job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 10000, (count, httpApp) =>
+                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
                 {
-                    if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
-                    {
-                        httpApp.Context.Items.Add(_allowKey, true);
-                    }
-                    return new WatchResponse(WatchResponse.Cycles.Continue);
-                });
-            }
+                    httpApp.Context.Items.Add(_allowKey, true);
+                }
+                return new WatchResponse(WatchResponse.Cycles.Continue);
+            });
 
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 10500, (count, httpApp) =>
             {
