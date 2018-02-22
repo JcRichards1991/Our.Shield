@@ -15,7 +15,7 @@ angular.module('umbraco.directives').directive('shieldApp',
                 view: '=',
                 configuration: '='
             },
-            link: function (scope, element, attr) {
+            link: function (scope, element) {
                 if (scope.view) {
                     var template = $templateCache.get(scope.view);
                     if (template) {
@@ -107,7 +107,7 @@ angular.module('umbraco.directives').directive('shieldIpaddressvalid', function 
 
                 ctrl.$setValidity('shieldIpaddressvalid', pattern.test(modelValue));
 
-                return modelValue
+                return modelValue;
             });
         }
     };
@@ -127,7 +127,7 @@ angular.module('umbraco.directives').directive('shieldIpaddressduplicate', funct
         restrict: 'A',
         require: 'ngModel',
         link: function (scope, elm, attr, ctrl) {
-            ctrl.$parsers.push(function (modelValue) {
+            ctrl.$parsers.push(function(modelValue) {
                 if (modelValue === '' || modelValue === undefined) {
                     ctrl.$setValidity('shieldIpaddressduplicate', true);
                     return modelValue;
@@ -141,8 +141,8 @@ angular.module('umbraco.directives').directive('shieldIpaddressduplicate', funct
                 }
 
                 ctrl.$setValidity('shieldIpaddressduplicate', true);
-                return modelValue
-            })
+                return modelValue;
+            });
         }
     };
 });
@@ -189,7 +189,7 @@ angular.module('umbraco.directives').directive('shieldIpAccessControlRanges', fu
                     $scope.openDialog(-1);
                 },
                 edit: function ($index) {
-                    $scope.openDialog($index)
+                    $scope.openDialog($index);
                 },
                 openDialog: function ($index) {
                     var dialogData = null;
@@ -255,7 +255,7 @@ angular.module('umbraco.directives').directive('shieldUmbracoUrl', function () {
         scope: {
             model: '='
         },
-        link: function (scope, elm, attr) {
+        link: function (scope) {
             angular.extend(scope.model, {
 
                 contentPickerProperty: {
@@ -277,7 +277,7 @@ angular.module('umbraco.directives').directive('shieldUmbracoUrl', function () {
                 }
             });
 
-            scope.$watch('model.contentPickerProperty.value', function (newVal, oldVal) {
+            scope.$watch('model.contentPickerProperty.value', function (newVal) {
                 scope.model.value = newVal;
             });
         }
@@ -295,7 +295,7 @@ angular.module('umbraco.directives').directive('shieldUmbracoUrl', function () {
 angular.module('umbraco.directives').directive('shieldTransferUrl', function () {
     return {
         restrict: 'E',
-        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/TransferUrl.html',
+        templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/TransferUrl.html?version=1.0.6',
         scope: {
             model: '='
         }
