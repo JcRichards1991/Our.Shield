@@ -10,7 +10,8 @@
     <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes><![CDATA[- Fixes hanging state when creating a new environment]]></releaseNotes>
+    <releaseNotes><![CDATA[- Fixes hanging state when creating a new environment
+    - Fixes issue with matching domains to a request for custom environments]]></releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security</tags>
     <dependencies>
