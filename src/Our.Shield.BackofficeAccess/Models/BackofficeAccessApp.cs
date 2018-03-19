@@ -249,7 +249,7 @@ namespace Our.Shield.BackofficeAccess.Models
                     return new WatchResponse(WatchResponse.Cycles.Continue);
                 }
                 
-                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
+                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
                     return new WatchResponse(WatchResponse.Cycles.Continue);
                 
                 var url = new UmbracoUrlService().Url(config.Unauthorized.Url);

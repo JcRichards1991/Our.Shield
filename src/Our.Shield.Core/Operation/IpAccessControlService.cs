@@ -3,6 +3,7 @@ using Our.Shield.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Web;
 
 namespace Our.Shield.Core.Operation
 {
@@ -33,20 +34,38 @@ namespace Our.Shield.Core.Operation
             return errors;
         }
 
+        private const string CloudFlareIpAddressHeader = "CF-Connecting-IP";
+        private const string ForwardedForHeader = "X-Forwarded-For";
+
         /// <summary>
         /// States whether a specific ip address is valid within the rules of client access control
         /// </summary>
-        /// <param name="rule"></param>
-        /// <param name="ipAddress"></param>
+        /// <param name="rule">The Ip Access Control to determine whether to grant access or not</param>
+        /// <param name="request">The current HttpContext Request</param>
         /// <returns></returns>
-        public bool IsValid(IpAccessControl rule, string ipAddress)
+        public bool IsValid(IpAccessControl rule, HttpRequest request)
         {
+            var ips = new List<string>
+            {
+                request.UserHostAddress
+            };
+
+            if (!string.IsNullOrWhiteSpace(request.Headers[CloudFlareIpAddressHeader]))
+            {
+                ips.Add(request.Headers[CloudFlareIpAddressHeader]);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.Headers[ForwardedForHeader]))
+            {
+                ips.Add(request.Headers[ForwardedForHeader]);
+            }
+
             IPAddressRange clientRange;
-            if (ipAddress.Equals(IPAddress.IPv6Loopback.ToString()))
+            if (request.UserHostAddress.Equals(IPAddress.IPv6Loopback.ToString()))
             {
                 clientRange = new IPAddressRange(IPAddress.Loopback);
             }
-            else if (!IPAddressRange.TryParse(ipAddress, out clientRange))
+            else if (!IPAddressRange.TryParse(request.UserHostAddress, out clientRange))
             { 
                 return false;
             }

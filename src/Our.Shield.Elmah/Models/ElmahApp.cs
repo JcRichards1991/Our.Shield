@@ -77,7 +77,7 @@ namespace Our.Shield.Elmah.Models
 
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400000, (count, httpApp) =>
             {
-                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
+                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
                 {
                     httpApp.Context.Items.Add(_allowKey, true);
                 }

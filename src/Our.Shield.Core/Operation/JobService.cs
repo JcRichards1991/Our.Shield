@@ -18,9 +18,9 @@ namespace Our.Shield.Core.Operation
     internal class JobService
     {
 #if DEBUG
-        private const int PollSecs = 60000;                    //  in secs
+        private const int PollSecs = 300;                    //  5 mins in secs
 #else
-        private const int PollSecs = 60 * 10;               //in secs
+        private const int PollSecs = 600;               //  10 mins in secs
 #endif
 
         private const int JobIdStart = 1000;             //  Starting id for Jobs

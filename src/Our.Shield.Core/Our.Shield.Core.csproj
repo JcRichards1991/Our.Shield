@@ -229,6 +229,7 @@
     <Compile Include="Attributes\AppTabAttribute.cs" />
     <Compile Include="Attributes\CustomAppTabAttribute.cs" />
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
+    <Compile Include="Settings\IpAddressValidationConfiguration.cs" />
     <Compile Include="Models\IpAccessControl.cs" />
     <Compile Include="Models\ApplicationSettings.cs" />
     <Compile Include="Models\JournalMessage.cs" />
@@ -255,6 +256,8 @@
     <Compile Include="Persistance\Data\Migrations\MigrationExtensions.cs" />
     <Compile Include="Persistance\Data\Migrations\Versions\Migration103Create.cs" />
     <Compile Include="Persistance\Data\Migrations\Versions\Migration103.cs" />
+    <Compile Include="Settings\ShieldSection.cs" />
+    <Compile Include="Settings\IConfiguration.cs" />
     <Compile Include="UI\AppAssest.cs" />
     <Compile Include="UI\Constants.cs" />
     <Compile Include="Models\Configuration.cs" />
@@ -295,8 +298,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="App_Plugins\Shield\Backoffice\Dashboards\Dashboard.config.install.xdt" />
-    <None Include="App_Plugins\Shield\Backoffice\Dashboards\Dashboard.config.uninstall.xdt" />
+    <None Include="UI\Transforms\Config\Dashboard.config.install.xdt" />
+    <None Include="UI\Transforms\Config\Dashboard.config.uninstall.xdt" />
     <None Include="App_Plugins\Shield\package.manifest" />
     <None Include="Our.Shield.Core.nuspec">
       <SubType>Designer</SubType>
@@ -310,6 +313,8 @@
     <None Include="UI\Scss\Partials\_umb-table.scss" />
     <None Include="UI\Scss\Partials\_transfer-url.scss" />
     <None Include="UI\Scss\Styles.scss" />
+    <None Include="UI\Transforms\Web.config.uninstall.xdt" />
+    <None Include="UI\Transforms\Web.config.install.xdt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield\Backoffice\Css\Shield.css" />

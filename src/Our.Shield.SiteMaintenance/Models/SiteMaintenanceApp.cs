@@ -83,7 +83,7 @@ namespace Our.Shield.SiteMaintenance.Models
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 5000, (count, httpApp) =>
             {
                 if (config.UmbracoUserEnable && !AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)
-                    || !_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
+                    || !_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
                 {
                     return new WatchResponse(config.Unauthorized);
                 }
