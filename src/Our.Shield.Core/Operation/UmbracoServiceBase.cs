@@ -68,7 +68,10 @@ namespace Our.Shield.Core.Operation
             }
 
             published = GetPublished<T>(id);
-            SetPublished<T>(cacheKeyId, published);
+            if (published != null)
+	    {
+		SetPublished<T>(cacheKeyId, published);
+	    }
             return published;
         }
 
