@@ -36,22 +36,8 @@ angular.module('umbraco').controller('Shield.Editors.Elmah.Reporting',
                 totalPages: 0,
                 errors: [],
                 selectedError: null,
-                init: function() {
-                    vm.getErrors();
-                },
-                showDetails: function(id) {
-                    vm.loading = true;
-                    shieldElmahResource.getError(id).then(function(response) {
-                        vm.selectedError = response.data;
-                        vm.loading = false;
-                    });
-                },
-                backToList: function() {
-                    vm.selectedError = null;
-                },
                 getErrors: function() {
                     vm.loading = true;
-
                     shieldElmahResource.getErrors(vm.pageNumber, vm.resultsPerPage).then(function(response) {
                         vm.errors = response.data.errors;
                         vm.totalPages = response.data.totalPages;
@@ -69,6 +55,13 @@ angular.module('umbraco').controller('Shield.Editors.Elmah.Reporting',
                 gotoPage: function(page) {
                     vm.pageNumber = page;
                     vm.getErrors();
+                },
+                generateTestException: function () {
+                    vm.loading = true;
+                    shieldElmahResource.generateTestException().then(function() {
+                        vm.getErrors();
+                        vm.loading = false;
+                    });
                 }
             });
         }]
@@ -90,8 +83,11 @@ angular.module('umbraco.resources').factory('shieldElmahResource',
                 getErrors: function (page, resultsPerPage) {
                     return $http.get(apiRoot + 'GetErrors?page=' + page + '&resultsPerPage=' + resultsPerPage);
                 },
-                getError: function(id) {
-                    return $http.get(apiRoot + 'GetError?id=' + id);
+                generateTestException: function () {
+                    return $http({
+                        method: 'POST',
+                        url: apiRoot + 'GenerateTestException'
+                    });
                 }
             };
         }
