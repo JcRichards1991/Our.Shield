@@ -46,14 +46,16 @@ namespace Our.Shield.Core.Operation
 
         private IPublishedContent GetPublished<T>(int id)
         {
-            switch (typeof(T))
-            {
-                case IPublishedMediaCache _:
-                    return UmbContext.MediaCache.GetById(id);
-                case IPublishedContentCache _:
-                    return UmbContext.ContentCache.GetById(id);
-            }
-            return null;
+            if (typeof(T) == typeof(IPublishedMediaCache))
+			{
+				return UmbContext.MediaCache.GetById(id);
+			}
+			if (typeof(T) == typeof(IPublishedContentCache))
+			{
+				return UmbContext.ContentCache.GetById(id);
+			}
+
+			return null;
         }
 
         internal IPublishedContent GetPublished<T>(string cacheKeyId, int id)
@@ -66,7 +68,10 @@ namespace Our.Shield.Core.Operation
             }
 
             published = GetPublished<T>(id);
-            SetPublished<T>(cacheKeyId, published);
+            if (published != null)
+	    {
+		SetPublished<T>(cacheKeyId, published);
+	    }
             return published;
         }
 
