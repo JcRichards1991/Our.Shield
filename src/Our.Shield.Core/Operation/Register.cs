@@ -1,4 +1,5 @@
-﻿using Umbraco.Core;
+﻿using Our.Shield.Core.Services;
+using Umbraco.Core;
 
 namespace Our.Shield.Core.Operation
 {

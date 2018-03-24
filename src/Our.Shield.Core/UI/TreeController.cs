@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Net.Http.Formatting;
+using Our.Shield.Core.Services;
 using umbraco.BusinessLogic.Actions;
 using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Mvc;
@@ -40,7 +41,7 @@ namespace Our.Shield.Core.UI
                     return menu;
 
                 default:
-                    var environments = Operation.JobService.Instance.Environments;
+                    var environments = JobService.Instance.Environments;
                     if (!environments.Any(x => x.Key.Id.Equals(id)))
                         return menu;
 
@@ -61,7 +62,7 @@ namespace Our.Shield.Core.UI
         {
             var id = int.Parse(idText);
             var treeNodeCollection = new TreeNodeCollection();
-            var environments = Operation.JobService.Instance.Environments.OrderBy(x => x.Key.SortOrder).ToList();
+            var environments = JobService.Instance.Environments.OrderBy(x => x.Key.SortOrder).ToList();
             
             if (id == global::Umbraco.Core.Constants.System.Root)
             {

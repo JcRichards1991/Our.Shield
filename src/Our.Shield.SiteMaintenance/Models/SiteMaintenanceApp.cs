@@ -7,6 +7,7 @@ using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using Umbraco.Core;
 using System.Globalization;
+using Our.Shield.Core.Services;
 
 namespace Our.Shield.SiteMaintenance.Models
 {

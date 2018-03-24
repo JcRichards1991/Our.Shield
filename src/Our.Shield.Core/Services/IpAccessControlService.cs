@@ -1,11 +1,11 @@
-﻿using NetTools;
-using Our.Shield.Core.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web;
+using NetTools;
+using Our.Shield.Core.Models;
 
-namespace Our.Shield.Core.Operation
+namespace Our.Shield.Core.Services
 {
     public class IpAccessControlService
     {

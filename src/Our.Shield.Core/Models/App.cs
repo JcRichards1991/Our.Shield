@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using Our.Shield.Core.Services;
 using Umbraco.Core.Persistence.Migrations;
 
 namespace Our.Shield.Core.Models
@@ -71,35 +72,35 @@ namespace Our.Shield.Core.Models
 
         /// <inheritdoc />
         public bool WriteConfiguration(IJob job, IConfiguration config) =>
-            Operation.JobService.Instance.WriteConfiguration(job, config);
+            JobService.Instance.WriteConfiguration(job, config);
 
         /// <inheritdoc />
         public bool WriteConfiguration(int jobId, IConfiguration config) =>
-            WriteConfiguration(Operation.JobService.Instance.Job(jobId), config);
+            WriteConfiguration(JobService.Instance.Job(jobId), config);
 
         /// <inheritdoc />
         public IConfiguration ReadConfiguration(IJob job) =>
-            Operation.JobService.Instance.ReadConfiguration(job, DefaultConfiguration);
+            JobService.Instance.ReadConfiguration(job, DefaultConfiguration);
 
         /// <inheritdoc />
         public IConfiguration ReadConfiguration(int jobId) =>
-            ReadConfiguration(Operation.JobService.Instance.Job(jobId));
+            ReadConfiguration(JobService.Instance.Job(jobId));
 
         /// <inheritdoc />
         public bool WriteJournal(IJob job, IJournal journal) =>
-            Operation.JobService.Instance.WriteJournal(job, journal);
+            JobService.Instance.WriteJournal(job, journal);
 
         /// <inheritdoc />
         public bool WriteJournal(int jobId, IJournal journal) =>
-            WriteJournal(Operation.JobService.Instance.Job(jobId), journal);
+            WriteJournal(JobService.Instance.Job(jobId), journal);
 
         /// <inheritdoc />
         public IEnumerable<T> ListJournals<T>(IJob job, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
-            Operation.JobService.Instance.ListJournals<T>(job, page, itemsPerPage, out totalPages);
+            JobService.Instance.ListJournals<T>(job, page, itemsPerPage, out totalPages);
 
         /// <inheritdoc />
         public IEnumerable<T> ListJournals<T>(int jobId, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
-            ListJournals<T>(Operation.JobService.Instance.Job(jobId), page, itemsPerPage, out totalPages);
+            ListJournals<T>(JobService.Instance.Job(jobId), page, itemsPerPage, out totalPages);
 
         /// <summary>
         /// Checks whether or not two Apps are the same

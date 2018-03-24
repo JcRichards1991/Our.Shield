@@ -6,6 +6,7 @@ using Our.Shield.Core.Operation;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Our.Shield.Core.Services;
 using Umbraco.Core;
 
 namespace Our.Shield.FrontendAccess.Models

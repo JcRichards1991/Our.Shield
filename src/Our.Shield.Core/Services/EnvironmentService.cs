@@ -1,10 +1,11 @@
-﻿using Our.Shield.Core.Models;
-using Our.Shield.Core.Persistance.Business;
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Our.Shield.Core.Models;
+using Our.Shield.Core.Operation;
+using Our.Shield.Core.Persistance.Business;
 
-namespace Our.Shield.Core.Operation
+namespace Our.Shield.Core.Services
 {
     internal class EnvironmentService
     {

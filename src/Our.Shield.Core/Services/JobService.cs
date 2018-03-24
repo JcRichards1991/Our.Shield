@@ -1,5 +1,6 @@
 ﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
+using Our.Shield.Core.Operation;
 using Our.Shield.Core.Persistance.Business;
 using Semver;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 using Umbraco.Core;
 using Umbraco.Core.Persistence.Migrations;
 
-namespace Our.Shield.Core.Operation
+namespace Our.Shield.Core.Services
 {
     /// <summary>
     /// 

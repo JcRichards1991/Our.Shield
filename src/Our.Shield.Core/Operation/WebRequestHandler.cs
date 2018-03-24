@@ -9,6 +9,7 @@ using System.Net;
 using Umbraco.Core.Logging;
 using System.Text;
 using System.Diagnostics;
+using Our.Shield.Core.Services;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.Core.Operation.WebRequestHandler), nameof(Our.Shield.Core.Operation.WebRequestHandler.Register))]
 namespace Our.Shield.Core.Operation

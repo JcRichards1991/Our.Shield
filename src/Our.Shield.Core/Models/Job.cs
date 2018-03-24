@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using Our.Shield.Core.Services;
 
 namespace Our.Shield.Core.Models
 {

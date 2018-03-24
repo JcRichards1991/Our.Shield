@@ -11,6 +11,7 @@ using System.Web;
 using Umbraco.Core;
 using System.Diagnostics;
 using System.Globalization;
+using Our.Shield.Core.Services;
 
 namespace Our.Shield.BackofficeAccess.Models
 {
