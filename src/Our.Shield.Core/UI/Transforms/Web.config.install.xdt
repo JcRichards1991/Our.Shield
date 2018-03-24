@@ -4,7 +4,7 @@
 
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
   <configSections>
-    <section name="shieldConfiguration" type="Our.Shield.Core.Settings.ShieldSection, Our.Shield.Core" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+    <section name="shieldConfiguration" type="Our.Shield.Core.Settings.ShieldSection, Our.Shield.Core" requirePermission="false" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
   </configSections>
 
   <shieldConfiguration pollTimer="600" xdt:Transform="InsertIfMissing">
