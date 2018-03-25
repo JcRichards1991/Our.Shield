@@ -10,7 +10,11 @@
     <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes><![CDATA[- Updated to take advantage of the configuration settings added to the core]]></releaseNotes>
+    <releaseNotes>
+      <![CDATA[
+      - Updated to take advantage of the configuration settings added to the core
+      ]]>
+    </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security BackofficeAccess Access Backoffice</tags>
     <dependencies>
