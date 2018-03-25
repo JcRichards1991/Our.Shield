@@ -229,9 +229,11 @@
     <Compile Include="Attributes\AppTabAttribute.cs" />
     <Compile Include="Attributes\CustomAppTabAttribute.cs" />
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
+    <Compile Include="Settings\Configuration.cs" />
     <Compile Include="Settings\IpAddressValidation.cs" />
+    <Compile Include="Settings\IpAddressValidationElement.cs" />
     <Compile Include="Models\IpAccessControl.cs" />
-    <Compile Include="Models\ApplicationSettings.cs" />
+    <Compile Include="Settings\ApplicationSettings.cs" />
     <Compile Include="Models\JournalMessage.cs" />
     <Compile Include="Models\UmbracoUrl.cs" />
     <Compile Include="Models\TransferUrl.cs" />
@@ -256,7 +258,11 @@
     <Compile Include="Persistance\Data\Migrations\MigrationExtensions.cs" />
     <Compile Include="Persistance\Data\Migrations\Versions\Migration103Create.cs" />
     <Compile Include="Persistance\Data\Migrations\Versions\Migration103.cs" />
+    <Compile Include="Settings\IShieldSettings.cs" />
+    <Compile Include="Settings\RequestHeaderElement.cs" />
+    <Compile Include="Settings\RequestHeaderElementCollection.cs" />
     <Compile Include="Settings\ShieldSection.cs" />
+    <Compile Include="Settings\ShieldSettings.cs" />
     <Compile Include="UI\AppAssest.cs" />
     <Compile Include="UI\Constants.cs" />
     <Compile Include="Models\AppConfiguration.cs" />

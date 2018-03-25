@@ -3,6 +3,7 @@ using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using Our.Shield.Core.Services;
+using Our.Shield.Core.Settings;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -144,7 +145,7 @@ namespace Our.Shield.BackofficeAccess.Models
         private void AddSoftWatches(IJob job, BackofficeAccessConfiguration config)
         {
             var umbracoLocation = ((BackofficeAccessConfiguration)DefaultConfiguration).BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/');
-            var hardLocation = ApplicationSettings.UmbracoPath;
+            var hardLocation = Configuration.UmbracoPath;
             var softLocation = (config.Enable && job.Environment.Enable)
                 ? config.BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/')
                 : umbracoLocation;
@@ -234,7 +235,7 @@ namespace Our.Shield.BackofficeAccess.Models
 
         private void AddHardWatch(IJob job, BackofficeAccessConfiguration config)
         {
-            var hardLocationRegex = new Regex("^((" + ApplicationSettings.UmbracoPath.TrimEnd('/') + "(/)?)|(" + ApplicationSettings.UmbracoPath + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase);
+            var hardLocationRegex = new Regex("^((" + Configuration.UmbracoPath.TrimEnd('/') + "(/)?)|(" + Configuration.UmbracoPath + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase);
 
             foreach (var error in _ipAccessControlService.InitIpAccessControl(config.IpAccessRules))
             {

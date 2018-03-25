@@ -3,91 +3,26 @@ using System.Configuration;
 
 namespace Our.Shield.Core.Settings
 {
-    public class IpAddressValidation : ConfigurationElement
+    public class IpAddressValidation : IIpAddressValidation
     {
-        [ConfigurationProperty("checkUserHostAddress", DefaultValue = "true", IsRequired = false)]
-        public bool CheckUserHostAddress
+        internal IpAddressValidation(ShieldSection shieldSection)
         {
-            get => (bool)this["checkUserHostAddress"];
-            set => this["checkUserHostAddress"] = value;
-        }
+            CheckUserHostAddress = shieldSection.IpAddressValidation.CheckUserHostAddress;
 
-        [ConfigurationProperty("requestHeaders", DefaultValue = default(RequestHeaders), IsRequired = false)]
-        [ConfigurationCollection(typeof(RequestHeaders))]
-        public RequestHeaders RequestHeaders
-        {
-            get
+            var requestHeaders = new List<string>();
+            using (var enumerator = shieldSection.IpAddressValidation.RequestHeadersCollection.GetEnumerator())
             {
-                var o = this["requestHeaders"];
-                return o as RequestHeaders;
-            }
-        }
-
-        public IEnumerable<RequestHeader> RequestHeadersCollection
-        {
-            get
-            {
-                using (var enumerator = RequestHeaders.GetEnumerator())
+                while (enumerator.MoveNext())
                 {
-                    while (enumerator.MoveNext())
-                    {
-                        yield return enumerator.Current;
-                    }
+                    if (enumerator.Current != null)
+                        requestHeaders.Add(enumerator.Current.Header);
                 }
             }
-        }
-    }
-
-    public class RequestHeaders : ConfigurationElementCollection
-    {
-        public RequestHeader this[int index]
-        {
-            get => BaseGet(index) as RequestHeader;
-            set
-            {
-                if (BaseGet(index) != null)
-                {
-                    BaseRemoveAt(index);
-                }
-                BaseAdd(index, value);
-            }
+            RequestHeaders = requestHeaders;
         }
 
-        public new RequestHeader this[string header]
-        {
-            get => (RequestHeader)BaseGet(header);
-            set
-            {
-                if (BaseGet(header) != null)
-                {
-                    BaseRemoveAt(BaseIndexOf(BaseGet(header)));
-                }
-                BaseAdd(value);
-            }
-        }
+        public bool CheckUserHostAddress { get; }
 
-        protected override ConfigurationElement CreateNewElement()
-        {
-            return new RequestHeader();
-        }
-
-        protected override object GetElementKey(ConfigurationElement element)
-        {
-            return ((RequestHeader)element).Header;
-        }
-
-        public new IEnumerator<RequestHeader> GetEnumerator()
-        {
-            for (var i = 0; i < Count; i++)
-            {
-                yield return this[i];
-            }
-        }
-    }
-
-    public class RequestHeader : ConfigurationElement
-    {
-        [ConfigurationProperty("header", IsRequired = true, IsKey = true)]
-        public string Header => this["header"] as string;
+        public IEnumerable<string> RequestHeaders { get; }
     }
 }

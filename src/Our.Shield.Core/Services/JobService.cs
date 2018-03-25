@@ -6,7 +6,6 @@ using Our.Shield.Core.Settings;
 using Semver;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,12 +22,6 @@ namespace Our.Shield.Core.Services
         private const int JobIdStart = 1000;             //  Starting id for Jobs
 
         private static readonly Lazy<JobService> JobServiceInstance = new Lazy<JobService>(() => new JobService());
-        private static ShieldSection _configuration;
-
-        private JobService()
-        {
-            _configuration = (ShieldSection) ConfigurationManager.GetSection("shieldConfiguration");
-        }
 
         /// <summary>
         /// Accessor for instance
@@ -246,7 +239,7 @@ namespace Our.Shield.Core.Services
 					{
 						if (Interlocked.CompareExchange(ref _ranTick, RanRepeat, RanNow) != RanRepeat)
 						{
-							_ranTick = DateTime.UtcNow.AddSeconds(_configuration.PollTimer).Ticks;
+							_ranTick = DateTime.UtcNow.AddSeconds(Configuration.PollTimer).Ticks;
 						}
 					}
 				}

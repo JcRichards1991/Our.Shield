@@ -1,12 +1,12 @@
 ﻿using System.Configuration;
 using Umbraco.Core;
 
-namespace Our.Shield.Core.Models
+namespace Our.Shield.Core.Settings
 {
     /// <summary>
     /// Class for returning values from the app settings section of the web.config
     /// </summary>
-    public static class ApplicationSettings
+    internal static class ApplicationSettings
     {
         private static string GetAppKeyValue(string key, string fallback = null)
         {

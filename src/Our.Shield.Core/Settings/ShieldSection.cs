@@ -13,9 +13,9 @@ namespace Our.Shield.Core.Settings
         }
 
         [ConfigurationProperty("ipAddressValidation", IsRequired = false)]
-        public IpAddressValidation IpAddressValidation
+        public IpAddressValidationElement IpAddressValidation
         {
-            get => base["ipAddressValidation"] as IpAddressValidation;
+            get => base["ipAddressValidation"] as IpAddressValidationElement;
             set => base["ipAddressValidation"] = value;
         }
     }

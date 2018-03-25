@@ -1,8 +1,8 @@
 ﻿using NetTools;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Settings;
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -11,13 +11,6 @@ namespace Our.Shield.Core.Services
 {
     public class IpAccessControlService
     {
-        private static ShieldSection _configuration;
-
-        public IpAccessControlService()
-        {
-            _configuration = (ShieldSection) ConfigurationManager.GetSection("//configuration/shieldConfiguration");
-        }
-
         /// <summary>
         /// Return a list of ranges that contain invalid ranges
         /// </summary>
@@ -53,17 +46,26 @@ namespace Our.Shield.Core.Services
         {
             var ips = new List<IPAddress>();
 
-            if (_configuration.IpAddressValidation.CheckUserHostAddress)
+            if (Configuration.IpAddressValidation.CheckUserHostAddress)
             {
                 ips.Add(GetIpAddressRange(request.UserHostAddress).Begin.MapToIPv6());
             }
 
-            foreach (var requestHeader in _configuration.IpAddressValidation.RequestHeadersCollection)
+            foreach (var requestHeader in Configuration.IpAddressValidation.RequestHeaders)
             {
-                var headerValue = request.Headers[requestHeader.Header];
-                if (!string.IsNullOrEmpty(headerValue))
+                var headerValue = request.Headers[requestHeader];
+
+                if (string.IsNullOrEmpty(headerValue))
+                    continue;
+
+                var headerIps = headerValue.Split(new [] {','}, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var headerIp in headerIps)
                 {
-                    ips.Add(GetIpAddressRange(headerValue).Begin.MapToIPv6());
+                    var clientRange = GetIpAddressRange(headerIp);
+
+                    if (clientRange != null)
+                        ips.Add(clientRange.Begin.MapToIPv6());
                 }
             }
 
@@ -82,12 +84,9 @@ namespace Our.Shield.Core.Services
                 return new IPAddressRange(IPAddress.Loopback);
             }
 
-            if (IPAddressRange.TryParse(ipAddress, out IPAddressRange clientRange))
-            {
-                return clientRange;
-            }
-
-            return null;
+            return IPAddressRange.TryParse(ipAddress, out IPAddressRange range)
+                ? range 
+                : null;
         }
     }
 

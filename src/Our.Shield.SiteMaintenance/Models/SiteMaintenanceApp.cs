@@ -3,6 +3,7 @@ using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using Our.Shield.Core.Services;
+using Our.Shield.Core.Settings;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -73,7 +74,7 @@ namespace Our.Shield.SiteMaintenance.Models
             var config = c as SiteMaintenanceConfiguration
                 ?? (SiteMaintenanceConfiguration)DefaultConfiguration;
 
-            var hardUmbracoLocation = ApplicationSettings.UmbracoPath;
+            var hardUmbracoLocation = Configuration.UmbracoPath;
             var regex = new Regex("^/$|^(/(?!" + hardUmbracoLocation.Trim('/') + ")[\\w-/_]+?)$", RegexOptions.IgnoreCase);
 
             foreach (var error in _ipAccessControlService.InitIpAccessControl(config.IpAccessRules))
