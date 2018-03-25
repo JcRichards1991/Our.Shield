@@ -229,6 +229,7 @@
     <Compile Include="Attributes\AppTabAttribute.cs" />
     <Compile Include="Attributes\CustomAppTabAttribute.cs" />
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
+    <Compile Include="PackageActions\AddShieldConfigurationSection.cs" />
     <Compile Include="Settings\Configuration.cs" />
     <Compile Include="Settings\IpAddressValidation.cs" />
     <Compile Include="Settings\IpAddressValidationElement.cs" />
