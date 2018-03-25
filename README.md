@@ -51,6 +51,27 @@ After upgrading, you will need to re-save the configurations of the installed ap
 ---
 
 ### Log ###
+**1.0.6 - 25/03/2018**
+* Shield Core: Fixes hanging state when creating a new environment
+* Shield Core: Fixes issue with matching domain(s) to a request for custom environment(s)
+* Shield core: Added custom configuration section to:
+			   1) define request Headers for IP address checking to determine whether to grant or deny access
+               2) Allows the ability to set the polling time for when shield checks it's app's configuration for changes.
+                  This allows for a load balanced setup to keep slave server(s) in sync with the master server
+				  
+* Backoffice Access: Updated to take advantage of the custom configuration section added to the core
+
+* Elmah: Fixes issues with allowing access for all IP Address
+* Elmah: Localized the Reporting tab
+* Elmah: Added Refresh Errors button to Reporting Tab
+* Elmah: Added Generate Test Error button to Reporting Tab
+* Elmah: Updated to take advantage of the custom configuration section added to the core
+
+* Frontend Access: Fixes issues with allowing access for all IP Address
+* Frontend Access: Updated to take advantage of the custom configuration section added to the core
+
+* Media Protection: Updated to take advantage of the custom configuration section added to the core 
+
 **1.0.5 - 08/01/2018**
 * Release of new app Elmah. Adds the popular error logging library ELMAH to umbraco with the ability to add security restrictions to ~/elmah.axd
 
