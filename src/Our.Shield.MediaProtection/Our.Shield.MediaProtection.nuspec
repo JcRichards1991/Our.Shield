@@ -12,7 +12,7 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Updated to take advantage of the configuration settings added to the core
+      - Updated to take advantage of the custom configuration section added to the core 
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
