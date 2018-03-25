@@ -1,10 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Configuration;
 
 namespace Our.Shield.Core.Settings
 {
     public class IpAddressValidation : IIpAddressValidation
     {
+        internal IpAddressValidation()
+        {
+            CheckUserHostAddress = true;
+            RequestHeaders = new List<string> { "X-Forwarded-For" };
+        }
+
         internal IpAddressValidation(ShieldSection shieldSection)
         {
             CheckUserHostAddress = shieldSection.IpAddressValidation.CheckUserHostAddress;

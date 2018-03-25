@@ -8,8 +8,16 @@ namespace Our.Shield.Core.Settings
         {
             var shieldSection = (ShieldSection) ConfigurationManager.GetSection("shieldConfiguration");
 
-            PollTimer = shieldSection.PollTimer;
-            IpAddressValidation = new IpAddressValidation(shieldSection);
+            if (shieldSection != null)
+            {
+                PollTimer = shieldSection.PollTimer;
+                IpAddressValidation = new IpAddressValidation(shieldSection);
+            }
+            else
+            {
+                PollTimer = 600;
+                IpAddressValidation = new IpAddressValidation();
+            }
         }
 
         public int PollTimer { get; }

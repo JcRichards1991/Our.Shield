@@ -12,7 +12,7 @@ namespace Our.Shield.Core.Settings
             set => this["checkUserHostAddress"] = value;
         }
 
-        [ConfigurationProperty("requestHeaders", DefaultValue = default(RequestHeaderElementCollection), IsRequired = false)]
+        [ConfigurationProperty("requestHeaders", IsRequired = false)]
         [ConfigurationCollection(typeof(RequestHeaderElementCollection))]
         public RequestHeaderElementCollection RequestHeaders
         {
