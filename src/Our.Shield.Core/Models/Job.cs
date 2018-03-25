@@ -1,11 +1,11 @@
 ﻿using Our.Shield.Core.Operation;
+using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using Our.Shield.Core.Services;
 
 namespace Our.Shield.Core.Models
 {
@@ -32,7 +32,7 @@ namespace Our.Shield.Core.Models
 
         internal IJob DeepCopy()
         {
-            var app = App<IConfiguration>.Create(App.Id);
+            var app = App<IAppConfiguration>.Create(App.Id);
             app.Migrations = App.Migrations;
 
             return new Job
@@ -48,7 +48,7 @@ namespace Our.Shield.Core.Models
         }
 
         /// <inheritdoc />
-        public bool WriteConfiguration(IConfiguration config) =>
+        public bool WriteConfiguration(IAppConfiguration config) =>
             JobService.Instance.WriteConfiguration(this, config);
 
         /// <inheritdoc />
@@ -56,7 +56,7 @@ namespace Our.Shield.Core.Models
             JobService.Instance.WriteJournal(this, journal);
 
         /// <inheritdoc />
-        public IConfiguration ReadConfiguration() =>
+        public IAppConfiguration ReadConfiguration() =>
             JobService.Instance.ReadConfiguration(this);
 
         /// <inheritdoc />

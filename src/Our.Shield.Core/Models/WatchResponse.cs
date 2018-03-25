@@ -1,6 +1,4 @@
-﻿using Our.Shield.Core.Models;
-
-namespace Our.Shield.Core.Operation
+﻿namespace Our.Shield.Core.Models
 {
     public class WatchResponse
     {

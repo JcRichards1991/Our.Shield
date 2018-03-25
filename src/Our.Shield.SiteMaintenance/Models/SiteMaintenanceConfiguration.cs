@@ -4,7 +4,7 @@ using Our.Shield.Core.Models;
 namespace Our.Shield.SiteMaintenance.Models
 {
     /// <inheritdoc />
-    public class SiteMaintenanceConfiguration : Configuration
+    public class SiteMaintenanceConfiguration : AppConfiguration
     {
         /// <summary>
         /// Whether or not the Frontend can be accessed when the request is coming from an authenticated umbraco user

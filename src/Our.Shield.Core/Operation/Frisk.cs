@@ -15,7 +15,7 @@ namespace Our.Shield.Core.Operation
 
         private static readonly Type[] Interests =
         {
-            typeof(App<IConfiguration>)
+            typeof(App<IAppConfiguration>)
         };
 
         private static void RegisterAssembly(Assembly currAssembly, ref Dictionary<string, Dictionary<string, Type>> installed)

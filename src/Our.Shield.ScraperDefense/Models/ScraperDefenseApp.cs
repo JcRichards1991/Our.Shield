@@ -24,10 +24,10 @@ namespace Our.Shield.ScraperDefense.Models
         public override string Icon => "";
 
         /// <inheritdoc />
-        public override IConfiguration DefaultConfiguration => new ScraperDefenseConfiguration();
+        public override IAppConfiguration DefaultConfiguration => new ScraperDefenseConfiguration();
 
         /// <inheritdoc />
-        public override bool Execute(IJob job, IConfiguration c)
+        public override bool Execute(IJob job, IAppConfiguration c)
         {
             job.UnwatchWebRequests();
 

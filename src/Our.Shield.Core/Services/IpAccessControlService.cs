@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using NetTools;
+using Our.Shield.Core.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web;
-using NetTools;
-using Our.Shield.Core.Models;
 
 namespace Our.Shield.Core.Services
 {
@@ -18,9 +18,9 @@ namespace Our.Shield.Core.Services
             var errors = new List<string>();
             foreach (var exception in rule.Exceptions)
             {
-                var ipAddressRange = exception.IPAddressType == IpAccessControl.IPAddressType.Single
-                    ? exception.FromIPAddress
-                    : $"{exception.FromIPAddress}-{exception.ToIpAddress}";
+                var ipAddressRange = exception.IpAddressType == IpAccessControl.IpAddressType.Single
+                    ? exception.FromIpAddress
+                    : $"{exception.FromIpAddress}-{exception.ToIpAddress}";
 
 
                 if (!IPAddressRange.TryParse(ipAddressRange, out var range))

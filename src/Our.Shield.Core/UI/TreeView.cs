@@ -35,7 +35,7 @@ namespace Our.Shield.Core.UI
         public IApp App;
         
         [JsonProperty("configuration")]
-        public IConfiguration Configuration;
+        public IAppConfiguration Configuration;
         
         [JsonProperty("journalListing")]
         public JournalListing JournalListing { get; set; }

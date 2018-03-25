@@ -3,11 +3,11 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
+using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-using Our.Shield.Core.Services;
 using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
 
@@ -147,11 +147,11 @@ namespace Our.Shield.Core.UI
                 return false;
             }
 
-            if (!(json.ToObject(((Job)job).ConfigType) is IConfiguration configuration))
+            if (!(json.ToObject(((Job)job).ConfigType) is IAppConfiguration configuration))
             {
                 return false;
             }
-            configuration.Enable = json.GetValue(nameof(IConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase).Value<bool>();
+            configuration.Enable = json.GetValue(nameof(IAppConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase).Value<bool>();
 
             if (Security.CurrentUser == null)
             {

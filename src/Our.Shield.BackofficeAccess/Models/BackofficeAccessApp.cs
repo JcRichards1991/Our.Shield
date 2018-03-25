@@ -2,16 +2,16 @@
 using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
+using Our.Shield.Core.Services;
 using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using Umbraco.Core;
-using System.Diagnostics;
-using System.Globalization;
-using Our.Shield.Core.Services;
 
 namespace Our.Shield.BackofficeAccess.Models
 {
@@ -37,7 +37,7 @@ namespace Our.Shield.BackofficeAccess.Models
         public override string Icon => "icon-stop-hand red";
 
         /// <inheritdoc />
-        public override IConfiguration DefaultConfiguration => new BackofficeAccessConfiguration
+        public override IAppConfiguration DefaultConfiguration => new BackofficeAccessConfiguration
         {
             BackendAccessUrl = "umbraco",
             IpAccessRules = new IpAccessControl
@@ -291,7 +291,7 @@ namespace Our.Shield.BackofficeAccess.Models
         /// <param name="job"></param>
         /// <param name="c"></param>
         /// <returns></returns>
-        public override bool Execute(IJob job, IConfiguration c)
+        public override bool Execute(IJob job, IAppConfiguration c)
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(_allowKey);
             job.UnwatchWebRequests();

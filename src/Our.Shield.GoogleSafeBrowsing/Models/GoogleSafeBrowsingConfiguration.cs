@@ -2,7 +2,7 @@
 
 namespace Our.Shield.GoogleSafeBrowsing.Models
 {
-    public class GoogleSafeBrowsingConfiguration : Configuration
+    public class GoogleSafeBrowsingConfiguration : AppConfiguration
     {
 
     }

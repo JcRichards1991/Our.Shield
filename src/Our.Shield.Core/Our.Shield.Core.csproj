@@ -243,7 +243,7 @@
     <Compile Include="Services\UmbracoMediaService.cs" />
     <Compile Include="Services\UmbracoUrlService.cs" />
     <Compile Include="Services\UmbracoContentService.cs" />
-    <Compile Include="Operation\WatchResponse.cs" />
+    <Compile Include="Models\WatchResponse.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration100.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration101.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration103.cs" />
@@ -260,11 +260,11 @@
     <Compile Include="Settings\IConfiguration.cs" />
     <Compile Include="UI\AppAssest.cs" />
     <Compile Include="UI\Constants.cs" />
-    <Compile Include="Models\Configuration.cs" />
+    <Compile Include="Models\AppConfiguration.cs" />
     <Compile Include="Models\Domain.cs" />
     <Compile Include="Models\Environment.cs" />
     <Compile Include="Models\Job.cs" />
-    <Compile Include="Models\IConfiguration.cs" />
+    <Compile Include="Models\IAppConfiguration.cs" />
     <Compile Include="Models\IDomain.cs" />
     <Compile Include="Models\IEnvironment.cs" />
     <Compile Include="Models\IJob.cs" />

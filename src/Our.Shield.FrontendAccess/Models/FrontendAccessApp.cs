@@ -1,12 +1,12 @@
-﻿using System;
-using Our.Shield.Core.Attributes;
+﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
+using Our.Shield.Core.Services;
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Our.Shield.Core.Services;
 using Umbraco.Core;
 
 namespace Our.Shield.FrontendAccess.Models
@@ -31,7 +31,7 @@ namespace Our.Shield.FrontendAccess.Models
         public override string Icon => "icon-combination-lock red";
 
         /// <inheritdoc />
-        public override IConfiguration DefaultConfiguration => new FrontendAccessConfiguration
+        public override IAppConfiguration DefaultConfiguration => new FrontendAccessConfiguration
         {
             UmbracoUserEnable = true,
             IpAccessRules = new IpAccessControl
@@ -58,7 +58,7 @@ namespace Our.Shield.FrontendAccess.Models
         }
         
         /// <inheritdoc />
-        public override bool Execute(IJob job, IConfiguration c)
+        public override bool Execute(IJob job, IAppConfiguration c)
         {
             job.UnwatchWebRequests();
             job.UnexceptionWebRequest();

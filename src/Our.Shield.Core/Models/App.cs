@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
+using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
-using Our.Shield.Core.Services;
 using Umbraco.Core.Persistence.Migrations;
 
 namespace Our.Shield.Core.Models
@@ -11,7 +11,7 @@ namespace Our.Shield.Core.Models
     /// Definition of an App to plugin to Our.Shield custom umbraco section
     /// </summary>
     /// <typeparam name="TC">The type of configuration for the app</typeparam>
-    public abstract class App<TC> : IApp where TC : IConfiguration
+    public abstract class App<TC> : IApp where TC : IAppConfiguration
     {
         /// <inheritdoc />
         [JsonProperty("id")]
@@ -41,7 +41,7 @@ namespace Our.Shield.Core.Models
 
         /// <inheritdoc />
         [JsonIgnore]
-        public virtual IConfiguration DefaultConfiguration =>
+        public virtual IAppConfiguration DefaultConfiguration =>
             default(TC);
 
         /// <summary>
@@ -67,23 +67,23 @@ namespace Our.Shield.Core.Models
             Activator.CreateInstance(type) as IApp;
 
         /// <inheritdoc />
-        public virtual bool Execute(IJob job, IConfiguration config) =>
+        public virtual bool Execute(IJob job, IAppConfiguration config) =>
             true;
 
         /// <inheritdoc />
-        public bool WriteConfiguration(IJob job, IConfiguration config) =>
+        public bool WriteConfiguration(IJob job, IAppConfiguration config) =>
             JobService.Instance.WriteConfiguration(job, config);
 
         /// <inheritdoc />
-        public bool WriteConfiguration(int jobId, IConfiguration config) =>
+        public bool WriteConfiguration(int jobId, IAppConfiguration config) =>
             WriteConfiguration(JobService.Instance.Job(jobId), config);
 
         /// <inheritdoc />
-        public IConfiguration ReadConfiguration(IJob job) =>
+        public IAppConfiguration ReadConfiguration(IJob job) =>
             JobService.Instance.ReadConfiguration(job, DefaultConfiguration);
 
         /// <inheritdoc />
-        public IConfiguration ReadConfiguration(int jobId) =>
+        public IAppConfiguration ReadConfiguration(int jobId) =>
             ReadConfiguration(JobService.Instance.Job(jobId));
 
         /// <inheritdoc />
@@ -109,7 +109,7 @@ namespace Our.Shield.Core.Models
         /// <returns>True if equals; Otherwise False</returns>
         public override bool Equals(object other)
         {
-            if (!(other is App<IConfiguration> otherApp))
+            if (!(other is App<IAppConfiguration> otherApp))
             {
                 return false;
             }

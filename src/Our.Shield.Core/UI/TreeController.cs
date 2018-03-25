@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using Our.Shield.Core.Services;
+using System.Linq;
 using System.Net.Http.Formatting;
-using Our.Shield.Core.Services;
 using umbraco.BusinessLogic.Actions;
 using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Mvc;

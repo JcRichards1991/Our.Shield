@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Our.Shield.Core.Models;
+using Our.Shield.Core.Persistance.Business;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Our.Shield.Core.Models;
-using Our.Shield.Core.Operation;
-using Our.Shield.Core.Persistance.Business;
 
 namespace Our.Shield.Core.Services
 {

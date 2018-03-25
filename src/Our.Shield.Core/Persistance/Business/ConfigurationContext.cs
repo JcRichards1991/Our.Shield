@@ -21,8 +21,8 @@ namespace Our.Shield.Core.Persistance.Business
             {
                 var property = base.CreateProperty(member, memberSerialization);
  
-                if (property.PropertyName.Equals(nameof(IConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase) || 
-                    property.PropertyName.Equals(nameof(IConfiguration.LastModified), StringComparison.InvariantCultureIgnoreCase))
+                if (property.PropertyName.Equals(nameof(IAppConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase) || 
+                    property.PropertyName.Equals(nameof(IAppConfiguration.LastModified), StringComparison.InvariantCultureIgnoreCase))
                 {
                     property.ShouldSerialize = instance => false;
                 }
@@ -30,7 +30,7 @@ namespace Our.Shield.Core.Persistance.Business
             }
         }
 
-        private void SetDefaultConfigurationSingleEnvironmentValues(string appId, IConfiguration configuration)
+        private void SetDefaultConfigurationSingleEnvironmentValues(string appId, IAppConfiguration configuration)
         {
             var configurationType = configuration.GetType();
             var properties = configurationType.GetProperties().Where(x => x.GetCustomAttribute<Attributes.SingleEnvironmentAttribute>() != null).ToArray();
@@ -50,7 +50,7 @@ namespace Our.Shield.Core.Persistance.Business
             if (record == null)
                 return;
 
-            var config = JsonConvert.DeserializeObject(record.Value, configurationType) as Configuration;
+            var config = JsonConvert.DeserializeObject(record.Value, configurationType) as AppConfiguration;
 
             foreach (var property in properties)
             {
@@ -66,9 +66,9 @@ namespace Our.Shield.Core.Persistance.Business
         /// <param name="type"></param>
         /// <param name="defaultConfiguration"></param>
         /// <returns></returns>
-        public IConfiguration Read(int environmentId, string appId, Type type, IConfiguration defaultConfiguration)
+        public IAppConfiguration Read(int environmentId, string appId, Type type, IAppConfiguration defaultConfiguration)
         {
-            if (!(JsonConvert.DeserializeObject(JsonConvert.SerializeObject(defaultConfiguration), type) is Configuration defaultConfig))
+            if (!(JsonConvert.DeserializeObject(JsonConvert.SerializeObject(defaultConfiguration), type) is AppConfiguration defaultConfig))
                 return null;
 
             SetDefaultConfigurationSingleEnvironmentValues(appId, defaultConfig);
@@ -86,7 +86,7 @@ namespace Our.Shield.Core.Persistance.Business
                 if (string.IsNullOrEmpty(record?.Value))
                     return defaultConfig;
 
-                if (!(JsonConvert.DeserializeObject(record.Value, type) is Configuration config))
+                if (!(JsonConvert.DeserializeObject(record.Value, type) is AppConfiguration config))
                     return defaultConfig;
 
                 config.LastModified = record.LastModified;
@@ -114,12 +114,12 @@ namespace Our.Shield.Core.Persistance.Business
         /// <param name="appId"></param>
         /// <param name="defaultConfiguration"></param>
         /// <returns></returns>
-        public T Read<T>(int environmentId, string appId, T defaultConfiguration) where T : IConfiguration
+        public T Read<T>(int environmentId, string appId, T defaultConfiguration) where T : IAppConfiguration
         {
             return (T)Read(environmentId, appId, typeof(T), defaultConfiguration);
         }
 
-        private void SetSingleEnvironmentValues(IConfiguration configuration, int environmentId, string appId)
+        private void SetSingleEnvironmentValues(IAppConfiguration configuration, int environmentId, string appId)
         {
             var configurationType = configuration.GetType();
             var properties = configurationType.GetProperties().Where(x => x.GetCustomAttribute<Attributes.SingleEnvironmentAttribute>() != null).ToArray();
@@ -134,7 +134,7 @@ namespace Our.Shield.Core.Persistance.Business
 
             foreach (var record in records)
             {
-                var config = JsonConvert.DeserializeObject(record.Value, configurationType) as Configuration;
+                var config = JsonConvert.DeserializeObject(record.Value, configurationType) as AppConfiguration;
 
                 if (config == null)
                     continue;
@@ -159,7 +159,7 @@ namespace Our.Shield.Core.Persistance.Business
         /// <param name="appId"></param>
         /// <param name="config"></param>
         /// <returns></returns>
-        public bool Write(int environmentId, string appId, IConfiguration config)
+        public bool Write(int environmentId, string appId, IAppConfiguration config)
         {
             try
             {

@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Our.Shield.Core.Attributes;
+﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
-using Umbraco.Core;
-using System.Globalization;
 using Our.Shield.Core.Services;
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Umbraco.Core;
 
 namespace Our.Shield.SiteMaintenance.Models
 {
@@ -31,7 +31,7 @@ namespace Our.Shield.SiteMaintenance.Models
             "icon-combination-lock blue";
 
         /// <inheritdoc />
-        public override IConfiguration DefaultConfiguration =>
+        public override IAppConfiguration DefaultConfiguration =>
             new SiteMaintenanceConfiguration
             {
                 UmbracoUserEnable = true,
@@ -60,7 +60,7 @@ namespace Our.Shield.SiteMaintenance.Models
         private readonly string _allowKey = Guid.NewGuid().ToString();
         
         /// <inheritdoc />
-        public override bool Execute(IJob job, IConfiguration c)
+        public override bool Execute(IJob job, IAppConfiguration c)
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(_allowKey);
             job.UnwatchWebRequests();

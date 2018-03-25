@@ -3,7 +3,7 @@ using Our.Shield.Core.Models;
 
 namespace Our.Shield.FrontendAccess.Models
 {
-    public class FrontendAccessConfiguration : Configuration
+    public class FrontendAccessConfiguration : AppConfiguration
     {
         /// <summary>
         /// Whether or not the Frontend can be accessed when the request is coming from an authenticated umbraco user

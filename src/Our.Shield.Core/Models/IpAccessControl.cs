@@ -16,7 +16,7 @@ namespace Our.Shield.Core.Models
             AllowNone = 1
         }
 
-        public enum IPAddressType
+        public enum IpAddressType
         {
             [Description("The Value is an IP Address")]
             Single,
@@ -34,13 +34,13 @@ namespace Our.Shield.Core.Models
             /// The Type of the IP addresses
             /// </summary>
             [JsonProperty("ipAddressType")]
-            public IPAddressType IPAddressType { get; set; }
+            public IpAddressType IpAddressType { get; set; }
 
             /// <summary>
             /// Range or Ip Address with optional Cidr
             /// </summary>
             [JsonProperty("fromIpAddress")]
-            public string FromIPAddress { get; set; }
+            public string FromIpAddress { get; set; }
 
             /// <summary>
             /// Range or Ip Address with optional Cidr

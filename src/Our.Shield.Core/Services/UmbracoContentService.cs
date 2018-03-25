@@ -1,5 +1,4 @@
-﻿using Our.Shield.Core.Operation;
-using Umbraco.Core.Models;
+﻿using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.PublishedCache;
 
