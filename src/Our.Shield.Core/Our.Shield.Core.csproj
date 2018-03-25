@@ -229,7 +229,7 @@
     <Compile Include="Attributes\AppTabAttribute.cs" />
     <Compile Include="Attributes\CustomAppTabAttribute.cs" />
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
-    <Compile Include="Settings\IpAddressValidationConfiguration.cs" />
+    <Compile Include="Settings\IpAddressValidation.cs" />
     <Compile Include="Models\IpAccessControl.cs" />
     <Compile Include="Models\ApplicationSettings.cs" />
     <Compile Include="Models\JournalMessage.cs" />
@@ -257,7 +257,6 @@
     <Compile Include="Persistance\Data\Migrations\Versions\Migration103Create.cs" />
     <Compile Include="Persistance\Data\Migrations\Versions\Migration103.cs" />
     <Compile Include="Settings\ShieldSection.cs" />
-    <Compile Include="Settings\IConfiguration.cs" />
     <Compile Include="UI\AppAssest.cs" />
     <Compile Include="UI\Constants.cs" />
     <Compile Include="Models\AppConfiguration.cs" />
@@ -282,6 +281,9 @@
     <Compile Include="Attributes\AppAssetAttribute.cs" />
     <Compile Include="UI\ShieldApiController.cs" />
     <Compile Include="UI\Register.cs" />
+    <None Include="UI\Transforms\Config\shield.config">
+      <SubType>Designer</SubType>
+    </None>
     <Compile Include="UI\TreeController.cs" />
     <Compile Include="Operation\Register.cs" />
     <Compile Include="Services\JobService.cs" />

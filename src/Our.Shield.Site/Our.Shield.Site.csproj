@@ -584,6 +584,9 @@
     <Content Include="Config\uSyncCore.Config" />
     <Content Include="Config\uSyncBackOffice.Config" />
     <Content Include="App_Plugins\uSync\package.manifest" />
+    <Content Include="Config\shield.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="packages.config" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />

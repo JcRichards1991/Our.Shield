@@ -2,9 +2,11 @@
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using Our.Shield.Core.Persistance.Business;
+using Our.Shield.Core.Settings;
 using Semver;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,18 +20,14 @@ namespace Our.Shield.Core.Services
     /// </summary>
     internal class JobService
     {
-#if DEBUG
-        private const int PollSecs = 300;                    //  5 mins in secs
-#else
-        private const int PollSecs = 600;               //  10 mins in secs
-#endif
-
         private const int JobIdStart = 1000;             //  Starting id for Jobs
 
         private static readonly Lazy<JobService> JobServiceInstance = new Lazy<JobService>(() => new JobService());
+        private static ShieldSection _configuration;
 
         private JobService()
         {
+            _configuration = (ShieldSection) ConfigurationManager.GetSection("shieldConfiguration");
         }
 
         /// <summary>
@@ -248,7 +246,7 @@ namespace Our.Shield.Core.Services
 					{
 						if (Interlocked.CompareExchange(ref _ranTick, RanRepeat, RanNow) != RanRepeat)
 						{
-							_ranTick = DateTime.UtcNow.AddSeconds(PollSecs).Ticks;
+							_ranTick = DateTime.UtcNow.AddSeconds(_configuration.PollTimer).Ticks;
 						}
 					}
 				}

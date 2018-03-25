@@ -7,21 +7,5 @@
     <section name="shieldConfiguration" type="Our.Shield.Core.Settings.ShieldSection, Our.Shield.Core" requirePermission="false" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
   </configSections>
 
-  <shieldConfiguration pollTimer="600" xdt:Transform="InsertIfMissing">
-    <!--
-      pollTimer:  How often should shield poll to check for updated app configurations.
-                  This is used to keep load balanced setups in sync
-    -->
-    
-    <ipAddressValidation checkUserHostAddress="true">
-      <ipAddressHeaders>
-        <!-- 
-          Allows the ability to specify addtional Header(s) to check to determine IP Address access can be granted or denied
-          
-          <ipAddressHeader header="X-Forwarded-For" />
-          <ipAddressHeader header="CF-Connecting-IP" />
-        -->
-      </ipAddressHeaders>
-    </ipAddressValidation>
-  </shieldConfiguration>
+  <shieldConfiguration configSource="config\shield.config" xdt:Transform="InsertIfMissing" />
 </configuration>

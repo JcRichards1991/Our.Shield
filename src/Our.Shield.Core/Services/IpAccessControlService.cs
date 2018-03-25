@@ -1,6 +1,8 @@
 ﻿using NetTools;
 using Our.Shield.Core.Models;
+using Our.Shield.Core.Settings;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -9,6 +11,13 @@ namespace Our.Shield.Core.Services
 {
     public class IpAccessControlService
     {
+        private static ShieldSection _configuration;
+
+        public IpAccessControlService()
+        {
+            _configuration = (ShieldSection) ConfigurationManager.GetSection("//configuration/shieldConfiguration");
+        }
+
         /// <summary>
         /// Return a list of ranges that contain invalid ranges
         /// </summary>
@@ -34,9 +43,6 @@ namespace Our.Shield.Core.Services
             return errors;
         }
 
-        private const string CloudFlareIpAddressHeader = "CF-Connecting-IP";
-        private const string ForwardedForHeader = "X-Forwarded-For";
-
         /// <summary>
         /// States whether a specific ip address is valid within the rules of client access control
         /// </summary>
@@ -45,38 +51,51 @@ namespace Our.Shield.Core.Services
         /// <returns></returns>
         public bool IsValid(IpAccessControl rule, HttpRequest request)
         {
-            var ips = new List<string>
-            {
-                request.UserHostAddress
-            };
+            var ips = new List<IPAddress>();
 
-            if (!string.IsNullOrWhiteSpace(request.Headers[CloudFlareIpAddressHeader]))
+            if (_configuration.IpAddressValidation.CheckUserHostAddress)
             {
-                ips.Add(request.Headers[CloudFlareIpAddressHeader]);
+                ips.Add(GetIpAddressRange(request.UserHostAddress).Begin.MapToIPv6());
             }
 
-            if (!string.IsNullOrWhiteSpace(request.Headers[ForwardedForHeader]))
+            foreach (var requestHeader in _configuration.IpAddressValidation.RequestHeadersCollection)
             {
-                ips.Add(request.Headers[ForwardedForHeader]);
+                var headerValue = request.Headers[requestHeader.Header];
+                if (!string.IsNullOrEmpty(headerValue))
+                {
+                    ips.Add(GetIpAddressRange(headerValue).Begin.MapToIPv6());
+                }
             }
 
-            IPAddressRange clientRange;
-            if (request.UserHostAddress.Equals(IPAddress.IPv6Loopback.ToString()))
-            {
-                clientRange = new IPAddressRange(IPAddress.Loopback);
-            }
-            else if (!IPAddressRange.TryParse(request.UserHostAddress, out clientRange))
-            { 
-                return false;
-            }
-
-            var ip6 = clientRange.Begin.MapToIPv6();
-
-            if (rule.Exceptions.Where(x => x.Range != null).Any(exception => exception.Range.Contains(ip6)))
+            if (rule.Exceptions.Where(x => x.Range != null).Any(exception => exception.Range.Contains(ips)))
             {
                 return rule.AccessType != IpAccessControl.AccessTypes.AllowAll;
             }
+
             return rule.AccessType == IpAccessControl.AccessTypes.AllowAll;
+        }
+
+        private IPAddressRange GetIpAddressRange(string ipAddress)
+        {
+            if (ipAddress.Equals(IPAddress.IPv6Loopback.ToString()))
+            {
+                return new IPAddressRange(IPAddress.Loopback);
+            }
+
+            if (IPAddressRange.TryParse(ipAddress, out IPAddressRange clientRange))
+            {
+                return clientRange;
+            }
+
+            return null;
+        }
+    }
+
+    public static class IpAddressRangeExtensions
+    {
+        public static bool Contains(this IPAddressRange addressRange, IEnumerable<IPAddress> ips)
+        {
+            return ips.Any(addressRange.Contains);
         }
     }
 }
