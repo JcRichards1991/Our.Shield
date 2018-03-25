@@ -1,14 +1,15 @@
 ﻿using Our.Shield.Core.Models;
+using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
-using System.Net;
 using Umbraco.Core.Logging;
-using System.Text;
-using System.Diagnostics;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.Core.Operation.WebRequestHandler), nameof(Our.Shield.Core.Operation.WebRequestHandler.Register))]
 namespace Our.Shield.Core.Operation
@@ -118,10 +119,11 @@ namespace Our.Shield.Core.Operation
 
             foreach (var domain in domainsArrary)
             {
-                UriBuilder url;
+                UriBuilder urlwithPort, urlWithoutPort;
                 try
                 {
-                    url = new UriBuilder(domain.Name);
+                    urlwithPort = urlWithoutPort = new UriBuilder(domain.Name);
+
                 }
                 catch (Exception ex)
                 {
@@ -130,18 +132,22 @@ namespace Our.Shield.Core.Operation
                 }
 
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (url.Scheme == null)
+                if (urlwithPort.Scheme == null)
                     // ReSharper disable once HeuristicUnreachableCode
                 {
                     // ReSharper disable once HeuristicUnreachableCode
-                    url.Scheme = Uri.UriSchemeHttp;
-                    var urlHttps = new UriBuilder(domain.Name)
-                        {
-                            Scheme = Uri.UriSchemeHttps
-                        };
-                    results.Add(urlHttps.ToString());
+                    urlwithPort.Scheme = Uri.UriSchemeHttp;
+                    UriBuilder urlHttpsWithoutPort;
+                    var urlHttpsWithPort = urlHttpsWithoutPort = new UriBuilder(domain.Name)
+                    {
+                        Scheme = Uri.UriSchemeHttps
+                    };
+
+                    results.Add(urlHttpsWithoutPort.ToString().Replace($":{urlHttpsWithPort.Port}", string.Empty));
+                    results.Add(urlHttpsWithPort.ToString());
                 }
-                results.Add(url.ToString());
+                results.Add(urlWithoutPort.ToString().Replace($":{urlwithPort.Port}", string.Empty));
+                results.Add(urlwithPort.ToString());
             }
             return results;
         }

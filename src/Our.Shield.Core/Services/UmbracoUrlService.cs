@@ -2,7 +2,7 @@
 using Umbraco.Core.Logging;
 using Umbraco.Web;
 
-namespace Our.Shield.Core.Operation
+namespace Our.Shield.Core.Services
 {
     public class UmbracoUrlService
     {

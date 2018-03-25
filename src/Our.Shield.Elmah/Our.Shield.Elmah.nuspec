@@ -10,11 +10,18 @@
     <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>$version$ release</releaseNotes>
+    <releaseNotes>
+      <![CDATA[
+      - Fixes issues with allowing access for all IP Address
+      - Localized the Reporting tab
+      - Added Refresh Errors button & Generate Test Error button to Reporting tab
+      - Updated to take advantage of the configuration settings added to the core
+      ]]>
+    </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security Elmah</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="1.0.5" />
+      <dependency id="Our.Shield.Core" version="1.0.6" />
       <dependency id="elmah" version="1.2.2" />
     </dependencies>
   </metadata>

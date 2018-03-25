@@ -1,6 +1,7 @@
 ﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
+using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,12 +10,15 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
 using Umbraco.Core;
+using Umbraco.Core.Configuration;
 using Umbraco.Core.Models;
 using Umbraco.Core.Security;
+using Umbraco.Web;
+using Umbraco.Web.Routing;
 
 namespace Our.Shield.MediaProtection.Models
 {
-    [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?version=1.0.5")]
+    [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?version=1.0.6")]
     [AppJournal]
     [AppMigration(typeof(MediaProtectionMigration))]
     public class MediaProtectionApp : App<MediaProtectionConfiguration>
@@ -49,7 +53,7 @@ namespace Our.Shield.MediaProtection.Models
         public override string Icon => "icon-picture red";
 
         /// <inheritdoc />
-        public override IConfiguration DefaultConfiguration =>
+        public override IAppConfiguration DefaultConfiguration =>
             new MediaProtectionConfiguration
             {
                 EnableHotLinkingProtection = true,
@@ -58,7 +62,7 @@ namespace Our.Shield.MediaProtection.Models
             };
 
         /// <inheritdoc />
-        public override bool Execute(IJob job, IConfiguration c)
+        public override bool Execute(IJob job, IAppConfiguration c)
         {
             AddMediaTypes();
             job.UnwatchWebRequests();
@@ -134,7 +138,21 @@ namespace Our.Shield.MediaProtection.Models
                    
                 var secureMedia = ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(CacheKey + "F" + filename, () =>
                 {
-                    var mediaService = new UmbracoMediaService(Umbraco.Web.UmbracoContext.Current);
+                    var umbracoContext = Umbraco.Web.UmbracoContext.Current;
+
+					if (umbracoContext == null)
+					{
+						var newHttpContext = new HttpContextWrapper(HttpContext.Current);
+						umbracoContext = UmbracoContext.EnsureContext(
+							newHttpContext,
+							ApplicationContext.Current,
+							new Umbraco.Web.Security.WebSecurity(newHttpContext, ApplicationContext.Current),
+							UmbracoConfig.For.UmbracoSettings(),
+							UrlProviderResolver.Current.Providers,
+							true);
+					}
+
+					var mediaService = new UmbracoMediaService(umbracoContext);
                     var mediaId = mediaService.Id(filename);
 
                     if (mediaId == null)

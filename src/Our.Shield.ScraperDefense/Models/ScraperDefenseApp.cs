@@ -5,7 +5,7 @@ using Umbraco.Core;
 
 namespace Our.Shield.ScraperDefense.Models
 {
-    [AppEditor("/App_Plugins/Shield.ScraperDefense/Views/ScraperDefense.html?version=1.0.5")]
+    [AppEditor("/App_Plugins/Shield.ScraperDefense/Views/ScraperDefense.html?version=1.0.6")]
     [AppJournal]
     public class ScraperDefenseApp : App<ScraperDefenseConfiguration>
     {
@@ -24,10 +24,10 @@ namespace Our.Shield.ScraperDefense.Models
         public override string Icon => "";
 
         /// <inheritdoc />
-        public override IConfiguration DefaultConfiguration => new ScraperDefenseConfiguration();
+        public override IAppConfiguration DefaultConfiguration => new ScraperDefenseConfiguration();
 
         /// <inheritdoc />
-        public override bool Execute(IJob job, IConfiguration c)
+        public override bool Execute(IJob job, IAppConfiguration c)
         {
             job.UnwatchWebRequests();
 

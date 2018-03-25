@@ -3,7 +3,7 @@ using Our.Shield.Core.Models;
 
 namespace Our.Shield.ScraperDefense.Models
 {
-    public class ScraperDefenseConfiguration : Configuration
+    public class ScraperDefenseConfiguration : AppConfiguration
     {
         [JsonProperty("requestPerMinute")]
         public int RequestPerMinute { get; set; }

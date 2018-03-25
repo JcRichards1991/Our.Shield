@@ -1,5 +1,4 @@
-﻿using Elmah;
-using Our.Shield.Elmah.Models;
+﻿using Our.Shield.Elmah.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
+using ElmahCore = Elmah;
 
 namespace Our.Shield.Elmah.UI
 {
@@ -16,8 +16,8 @@ namespace Our.Shield.Elmah.UI
         [HttpGet]
         public ElmahApiJsonModel GetErrors(int page, int resultsPerPage)
         {
-            var errors = new List<ErrorLogEntry>();
-            var totalErrorCount = ErrorLog.GetDefault(HttpContext.Current).GetErrors(page - 1, resultsPerPage, errors);
+            var errors = new List<ElmahCore.ErrorLogEntry>();
+            var totalErrorCount = ElmahCore.ErrorLog.GetDefault(HttpContext.Current).GetErrors(page - 1, resultsPerPage, errors);
             var totalPages = (int) Math.Ceiling((double) totalErrorCount / resultsPerPage);
         
             return new ElmahApiJsonModel
@@ -31,15 +31,11 @@ namespace Our.Shield.Elmah.UI
             };
         }
 
-        [HttpGet]
-        public ElmahErrorJsonModel GetError(string id)
+        [HttpPost]
+        public void GenerateTestException()
         {
-            var error = ErrorLog.GetDefault(HttpContext.Current).GetError(id);
-            return new ElmahErrorJsonModel
-            {
-                Id = error.Id,
-                Error = error.Error
-            };
+            var exception = new Exception("This is a test exception and can be safely ignored");
+            ElmahCore.ErrorSignal.FromCurrentContext().Raise(exception);
         }
     }
 }

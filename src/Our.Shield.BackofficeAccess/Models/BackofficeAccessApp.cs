@@ -2,22 +2,24 @@
 using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
+using Our.Shield.Core.Services;
+using Our.Shield.Core.Settings;
 using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using Umbraco.Core;
-using System.Diagnostics;
-using System.Globalization;
 
 namespace Our.Shield.BackofficeAccess.Models
 {
     /// <inheritdoc />
     /// <summary>
     /// </summary>
-    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.5")]
+    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.6")]
     [AppJournal]
     [AppMigration(typeof(Persistence.Migrations.Migration104))]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
@@ -36,7 +38,7 @@ namespace Our.Shield.BackofficeAccess.Models
         public override string Icon => "icon-stop-hand red";
 
         /// <inheritdoc />
-        public override IConfiguration DefaultConfiguration => new BackofficeAccessConfiguration
+        public override IAppConfiguration DefaultConfiguration => new BackofficeAccessConfiguration
         {
             BackendAccessUrl = "umbraco",
             IpAccessRules = new IpAccessControl
@@ -143,7 +145,7 @@ namespace Our.Shield.BackofficeAccess.Models
         private void AddSoftWatches(IJob job, BackofficeAccessConfiguration config)
         {
             var umbracoLocation = ((BackofficeAccessConfiguration)DefaultConfiguration).BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/');
-            var hardLocation = ApplicationSettings.UmbracoPath;
+            var hardLocation = Configuration.UmbracoPath;
             var softLocation = (config.Enable && job.Environment.Enable)
                 ? config.BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/')
                 : umbracoLocation;
@@ -233,7 +235,7 @@ namespace Our.Shield.BackofficeAccess.Models
 
         private void AddHardWatch(IJob job, BackofficeAccessConfiguration config)
         {
-            var hardLocationRegex = new Regex("^((" + ApplicationSettings.UmbracoPath.TrimEnd('/') + "(/)?)|(" + ApplicationSettings.UmbracoPath + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase);
+            var hardLocationRegex = new Regex("^((" + Configuration.UmbracoPath.TrimEnd('/') + "(/)?)|(" + Configuration.UmbracoPath + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase);
 
             foreach (var error in _ipAccessControlService.InitIpAccessControl(config.IpAccessRules))
             {
@@ -249,7 +251,7 @@ namespace Our.Shield.BackofficeAccess.Models
                     return new WatchResponse(WatchResponse.Cycles.Continue);
                 }
                 
-                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
+                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
                     return new WatchResponse(WatchResponse.Cycles.Continue);
                 
                 var url = new UmbracoUrlService().Url(config.Unauthorized.Url);
@@ -290,7 +292,7 @@ namespace Our.Shield.BackofficeAccess.Models
         /// <param name="job"></param>
         /// <param name="c"></param>
         /// <returns></returns>
-        public override bool Execute(IJob job, IConfiguration c)
+        public override bool Execute(IJob job, IAppConfiguration c)
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(_allowKey);
             job.UnwatchWebRequests();

@@ -1,16 +1,18 @@
-﻿using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Our.Shield.Core.Attributes;
+﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
-using Umbraco.Core;
+using Our.Shield.Core.Services;
+using Our.Shield.Core.Settings;
+using System;
 using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Umbraco.Core;
 
 namespace Our.Shield.SiteMaintenance.Models
 {
-    [AppEditor("/App_Plugins/Shield.SiteMaintenance/Views/SiteMaintenance.html?version=1.0.5")]
+    [AppEditor("/App_Plugins/Shield.SiteMaintenance/Views/SiteMaintenance.html?version=1.0.6")]
     [AppJournal]
     public class SiteMaintenanceApp : App<SiteMaintenanceConfiguration>
     {
@@ -30,7 +32,7 @@ namespace Our.Shield.SiteMaintenance.Models
             "icon-combination-lock blue";
 
         /// <inheritdoc />
-        public override IConfiguration DefaultConfiguration =>
+        public override IAppConfiguration DefaultConfiguration =>
             new SiteMaintenanceConfiguration
             {
                 UmbracoUserEnable = true,
@@ -59,7 +61,7 @@ namespace Our.Shield.SiteMaintenance.Models
         private readonly string _allowKey = Guid.NewGuid().ToString();
         
         /// <inheritdoc />
-        public override bool Execute(IJob job, IConfiguration c)
+        public override bool Execute(IJob job, IAppConfiguration c)
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(_allowKey);
             job.UnwatchWebRequests();
@@ -72,7 +74,7 @@ namespace Our.Shield.SiteMaintenance.Models
             var config = c as SiteMaintenanceConfiguration
                 ?? (SiteMaintenanceConfiguration)DefaultConfiguration;
 
-            var hardUmbracoLocation = ApplicationSettings.UmbracoPath;
+            var hardUmbracoLocation = Configuration.UmbracoPath;
             var regex = new Regex("^/$|^(/(?!" + hardUmbracoLocation.Trim('/') + ")[\\w-/_]+?)$", RegexOptions.IgnoreCase);
 
             foreach (var error in _ipAccessControlService.InitIpAccessControl(config.IpAccessRules))
@@ -83,7 +85,7 @@ namespace Our.Shield.SiteMaintenance.Models
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 5000, (count, httpApp) =>
             {
                 if (config.UmbracoUserEnable && !AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)
-                    || !_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
+                    || !_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
                 {
                     return new WatchResponse(config.Unauthorized);
                 }

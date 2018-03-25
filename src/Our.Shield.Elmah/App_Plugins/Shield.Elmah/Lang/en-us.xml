@@ -7,6 +7,19 @@
   <area alias="Shield.Elmah.General">
     <key alias="Name">Elmah</key>
     <key alias="Description">Restrict access to ~/elmah.axd to Authenticated Umbraco Users and/or secure via IP restrictions</key>
+    <key alias="TestExceptionButtonText">Generate Test Error</key>
+    <key alias="ListingButtonText">Return to Errors</key>
+    <key alias="RefreshListingButtonText">Refresh Errors</key>
+  </area>
+  
+  <area alias="Shield.Elmah.General.Table">
+    <key alias="HostHeader">Host</key>
+    <key alias="CodeHeader">Code</key>
+    <key alias="TypeHeader">Type</key>
+    <key alias="ErrorHeader">Error</key>
+    <key alias="DateHeader">Date</key>
+    <key alias="TimeHeader">Time</key>
+    <key alias="StackTraceHeader">StackTrace</key>
   </area>
 
   <area alias="Shield.Elmah.Properties">

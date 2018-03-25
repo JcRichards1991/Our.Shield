@@ -6,7 +6,7 @@ using Umbraco.Core.Services;
 
 namespace Our.Shield.GoogleSafeBrowsing.Models
 {
-    [AppEditor("/App_Plugins/Shield.GoogleSafeBrowsing/Views/GoogleSafeBrowsing.html?version=1.0.5")]
+    [AppEditor("/App_Plugins/Shield.GoogleSafeBrowsing/Views/GoogleSafeBrowsing.html?version=1.0.6")]
     [AppJournal]
     public class GoogleSafeBrowsingApp : App<GoogleSafeBrowsingConfiguration>
     {
@@ -25,10 +25,10 @@ namespace Our.Shield.GoogleSafeBrowsing.Models
         public override string Icon => "icon-alert red";
 
         /// <inheritdoc />
-        public override IConfiguration DefaultConfiguration => new GoogleSafeBrowsingConfiguration();
+        public override IAppConfiguration DefaultConfiguration => new GoogleSafeBrowsingConfiguration();
 
         /// <inheritdoc />
-        public override bool Execute(IJob job, IConfiguration c)
+        public override bool Execute(IJob job, IAppConfiguration c)
         {
             if (!(c is GoogleSafeBrowsingConfiguration config))
             {

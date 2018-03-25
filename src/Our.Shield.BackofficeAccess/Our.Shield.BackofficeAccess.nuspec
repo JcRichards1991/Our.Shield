@@ -10,11 +10,15 @@
     <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Changed from subscribing on Begin Request to Authenticate Request for shields http module</releaseNotes>
+    <releaseNotes>
+      <![CDATA[
+      - Updated to take advantage of the configuration settings added to the core
+      ]]>
+    </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security BackofficeAccess Access Backoffice</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="1.0.5" />
+      <dependency id="Our.Shield.Core" version="1.0.6" />
     </dependencies>
   </metadata>
   <files>

@@ -3,12 +3,12 @@
     /// <summary>
     /// Container class for categories of constants
     /// </summary>
-    public static class Constants
+    public class Constants
     {
         /// <summary>
         /// Constants for the application
         /// </summary>
-        public static class App
+        public class App
         {
             /// <summary>
             /// Custom section Name
@@ -27,19 +27,29 @@
         }
 
         /// <summary>
-        /// Constants for the tree controller
+        /// Constants relating to the dashboards of shield
         /// </summary>
-        public static class Tree
+        public class Dashboard
         {
             /// <summary>
             /// The Environment Node Root Id
             /// </summary>
-            public const int EnvironmentsRootId = 0;
+            public const int EnvironmentsDashboardId = 0;
+        }
 
+        /// <summary>
+        /// Constants for the tree controller
+        /// </summary>
+        public class Tree
+        {
             /// <summary>
             /// The default environment id
             /// </summary>
-            public const int DefaultEnvironmentId = 999999;
+            public const int DefaultEnvironmentSortOrder = 999999;
+
+            public const int DefaultEnvironmentId = 1;
+
+            public const int CreateEnvironmentId = -100;
         }
     }
 }

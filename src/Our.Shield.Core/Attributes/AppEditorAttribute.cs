@@ -17,7 +17,7 @@ namespace Our.Shield.Core.Attributes
         /// <param name="filePath">location of the app's configuration html file</param>
         /// <param name="caption"></param>
         /// <param name="sortOrder"></param>
-        public AppEditorAttribute(string filePath, string caption = "Configuration", int sortOrder = 0) : base(caption, sortOrder, "/App_Plugins/Shield/Backoffice/Views/EditApp.html?version=1.0.5")
+        public AppEditorAttribute(string filePath, string caption = "Configuration", int sortOrder = 0) : base(caption, sortOrder, "/App_Plugins/Shield/Backoffice/Views/EditApp.html?version=1.0.6")
         {
             AppView = filePath;
         }
