@@ -32,7 +32,7 @@ namespace Our.Shield.Core.Models
         /// The default configuration for the App
         /// </summary>
         [JsonIgnore]
-        IConfiguration DefaultConfiguration { get; }
+        IAppConfiguration DefaultConfiguration { get; }
 
         /// <summary>
         /// The Migrations for the App
@@ -52,7 +52,7 @@ namespace Our.Shield.Core.Models
         /// <param name="job">The job to to execute the config</param>
         /// <param name="config">The current config to execute</param>
         /// <returns>True, if successfully executed; Otherwise, False</returns>
-        bool Execute(IJob job, IConfiguration config);
+        bool Execute(IJob job, IAppConfiguration config);
 
         /// <summary>
         /// Writes a configuration to the database
@@ -60,7 +60,7 @@ namespace Our.Shield.Core.Models
         /// <param name="job">The job to write the configuration for</param>
         /// <param name="config">The config to write</param>
         /// <returns>Whether or not was successfully written to the database</returns>
-        bool WriteConfiguration(IJob job, IConfiguration config);
+        bool WriteConfiguration(IJob job, IAppConfiguration config);
 
         /// <summary>
         /// Writes a configuration to the database.
@@ -68,7 +68,7 @@ namespace Our.Shield.Core.Models
         /// <param name="jobId">The job Id to write the configuration for</param>
         /// <param name="config">The config to write</param>
         /// <returns>Whether or not was successfully written to the database</returns>
-        bool WriteConfiguration(int jobId, IConfiguration config);
+        bool WriteConfiguration(int jobId, IAppConfiguration config);
 
         /// <summary>
         /// Writes a journal entry to the database
@@ -91,14 +91,14 @@ namespace Our.Shield.Core.Models
         /// </summary>
         /// <param name="job">The job to get the configuration for</param>
         /// <returns>The configuration</returns>
-        IConfiguration ReadConfiguration(IJob job);
+        IAppConfiguration ReadConfiguration(IJob job);
 
         /// <summary>
         /// Reads a configuration from the database
         /// </summary>
         /// <param name="jobId">The job id to get the configuration for</param>
         /// <returns>The configuration</returns>
-        IConfiguration ReadConfiguration(int jobId);
+        IAppConfiguration ReadConfiguration(int jobId);
 
         /// <summary>
         /// Gets all Journals from the database for the given Job

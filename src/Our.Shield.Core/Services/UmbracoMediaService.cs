@@ -3,7 +3,7 @@ using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.PublishedCache;
 
-namespace Our.Shield.Core.Operation
+namespace Our.Shield.Core.Services
 {
     public class UmbracoMediaService : UmbracoServiceBase
     {

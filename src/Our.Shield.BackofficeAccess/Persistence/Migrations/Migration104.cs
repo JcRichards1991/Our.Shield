@@ -1,10 +1,9 @@
-﻿using System.Linq;
+﻿using Our.Shield.BackofficeAccess.Models;
 using Our.Shield.Core.Models;
+using System.Linq;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence.Migrations;
 using Umbraco.Core.Persistence.SqlSyntax;
-using Our.Shield.BackofficeAccess.Models;
-using System.Collections.Generic;
 
 namespace Our.Shield.BackofficeAccess.Persistence.Migrations
 {
@@ -27,7 +26,7 @@ namespace Our.Shield.BackofficeAccess.Persistence.Migrations
                     IpAccessRules = new IpAccessControl
                     {
                         AccessType = oldData.IpAddressesAccess == 0 ? IpAccessControl.AccessTypes.AllowAll : IpAccessControl.AccessTypes.AllowNone,
-                        Exceptions = oldData.IpAddresses.Select(x => new IpAccessControl.Entry { FromIPAddress = x.IpAddress, Description = x.Description, IPAddressType = IpAccessControl.IPAddressType.Single })
+                        Exceptions = oldData.IpAddresses.Select(x => new IpAccessControl.Entry { FromIpAddress = x.IpAddress, Description = x.Description, IpAddressType = IpAccessControl.IpAddressType.Single })
                     },
                     Unauthorized = new TransferUrl
                     {

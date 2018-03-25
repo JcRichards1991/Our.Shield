@@ -3,6 +3,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
+using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Our.Shield.Core.UI
         [HttpGet]
         public TreeView View(int id)
         {
-            var environments = Operation.JobService.Instance.Environments.OrderBy(x => x.Key.SortOrder).ToDictionary(x => x.Key, v => v.Value);
+            var environments = JobService.Instance.Environments.OrderBy(x => x.Key.SortOrder).ToDictionary(x => x.Key, v => v.Value);
 
             if (id == Constants.Dashboard.EnvironmentsDashboardId)
             {
@@ -139,18 +140,18 @@ namespace Our.Shield.Core.UI
                 return false;
             }
 
-            var job = Operation.JobService.Instance.Job(id);
+            var job = JobService.Instance.Job(id);
             if (job == null)
             {
                 //  Invalid id
                 return false;
             }
 
-            if (!(json.ToObject(((Job)job).ConfigType) is IConfiguration configuration))
+            if (!(json.ToObject(((Job)job).ConfigType) is IAppConfiguration configuration))
             {
                 return false;
             }
-            configuration.Enable = json.GetValue(nameof(IConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase).Value<bool>();
+            configuration.Enable = json.GetValue(nameof(IAppConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase).Value<bool>();
 
             if (Security.CurrentUser == null)
             {
@@ -174,7 +175,7 @@ namespace Our.Shield.Core.UI
         [HttpGet]
         public JournalListing Journals(int? id, int page, string orderBy, string orderByDirection)
         {
-            var environments = Operation.JobService.Instance.Environments;
+            var environments = JobService.Instance.Environments;
             int totalPages;
 
             if (!id.HasValue)
@@ -203,7 +204,7 @@ namespace Our.Shield.Core.UI
                 {
                     return new JournalListing
                     {
-                        Journals = Operation.EnvironmentService.Instance.JournalListing<JournalMessage>(id.Value, page, 100, out totalPages).Select(x => new JournalListingItem
+                        Journals = EnvironmentService.Instance.JournalListing<JournalMessage>(id.Value, page, 100, out totalPages).Select(x => new JournalListingItem
                         {
                             Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
                             App = new AppListingItem(environment.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
@@ -262,7 +263,7 @@ namespace Our.Shield.Core.UI
 
             var environment = JsonConvert.DeserializeObject<Models.Environment>(json.ToString(), new DomainConverter());
 
-            return Operation.EnvironmentService.Instance.Write(environment);
+            return EnvironmentService.Instance.Write(environment);
         }
 
         /// <summary>
@@ -273,9 +274,9 @@ namespace Our.Shield.Core.UI
         [HttpPost]
         public bool DeleteEnvironment(int id)
         {
-            var environment = (Models.Environment)Operation.JobService.Instance.Environments.FirstOrDefault(x => x.Key.Id.Equals(id)).Key;
+            var environment = (Models.Environment)JobService.Instance.Environments.FirstOrDefault(x => x.Key.Id.Equals(id)).Key;
 
-            return environment != null && Operation.EnvironmentService.Instance.Delete(environment);
+            return environment != null && EnvironmentService.Instance.Delete(environment);
         }
 
         /// <summary>
@@ -285,7 +286,7 @@ namespace Our.Shield.Core.UI
         [HttpGet]
         public IEnumerable<IEnvironment> GetEnvironments()
         {
-            return Operation.JobService.Instance.Environments.Select(x => x.Key).OrderBy(x => x.SortOrder);
+            return JobService.Instance.Environments.Select(x => x.Key).OrderBy(x => x.SortOrder);
         }
 
         /// <summary>
@@ -303,24 +304,24 @@ namespace Our.Shield.Core.UI
             }
 
             var environments = json.Select(x => JsonConvert.DeserializeObject<Models.Environment>(x.ToString(), new DomainConverter()));
-            var oldEnvironments = Operation.JobService.Instance.Environments.Keys;
+            var oldEnvironments = JobService.Instance.Environments.Keys;
 
             foreach (var environment in environments)
             {
                 if (!oldEnvironments.Any(x => x.Id.Equals(environment.Id) && !x.SortOrder.Equals(environment.SortOrder)))
                     continue;
 
-                if (!Operation.EnvironmentService.Instance.Write(environment))
+                if (!EnvironmentService.Instance.Write(environment))
                 {
                     return false;
                 }
 
-                if (!Operation.JobService.Instance.Unregister(environment))
+                if (!JobService.Instance.Unregister(environment))
                 {
                     return false;
                 }
 
-                Operation.JobService.Instance.Register(environment);
+                JobService.Instance.Register(environment);
             }
             return true;
         }

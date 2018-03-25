@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Our.Shield.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Our.Shield.Core.Models;
 using Umbraco.Core.Logging;
 
 namespace Our.Shield.Core.Persistance.Business

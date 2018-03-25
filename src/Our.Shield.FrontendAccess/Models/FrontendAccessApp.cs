@@ -1,8 +1,10 @@
-﻿using System;
-using Our.Shield.Core.Attributes;
+﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
+using Our.Shield.Core.Services;
+using Our.Shield.Core.Settings;
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -30,7 +32,7 @@ namespace Our.Shield.FrontendAccess.Models
         public override string Icon => "icon-combination-lock red";
 
         /// <inheritdoc />
-        public override IConfiguration DefaultConfiguration => new FrontendAccessConfiguration
+        public override IAppConfiguration DefaultConfiguration => new FrontendAccessConfiguration
         {
             UmbracoUserEnable = true,
             IpAccessRules = new IpAccessControl
@@ -57,7 +59,7 @@ namespace Our.Shield.FrontendAccess.Models
         }
         
         /// <inheritdoc />
-        public override bool Execute(IJob job, IConfiguration c)
+        public override bool Execute(IJob job, IAppConfiguration c)
         {
             job.UnwatchWebRequests();
             job.UnexceptionWebRequest();
@@ -73,7 +75,7 @@ namespace Our.Shield.FrontendAccess.Models
                 return false;
             }
 
-            var hardUmbracoLocation = ApplicationSettings.UmbracoPath;
+            var hardUmbracoLocation = Configuration.UmbracoPath;
             var regex = new Regex("^/$|^(/(?!" + hardUmbracoLocation.Trim('/') + ")[\\w-/_]+?)$", RegexOptions.IgnoreCase);
 
             foreach (var error in new IpAccessControlService().InitIpAccessControl(config.IpAccessRules))
@@ -85,7 +87,7 @@ namespace Our.Shield.FrontendAccess.Models
 
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400000, (count, httpApp) =>
             {
-                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
+                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
                 {
                     httpApp.Context.Items.Add(_allowKey, true);
                 }

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Our.Shield.Core.Attributes;
+﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
-using Umbraco.Core;
+using Our.Shield.Core.Services;
+using System;
 using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Umbraco.Core;
 
 namespace Our.Shield.Elmah.Models
 {
@@ -30,7 +31,7 @@ namespace Our.Shield.Elmah.Models
         /// <inheritdoc />
         public override string Icon => "icon-combination-lock orange";
         /// <inheritdoc />
-        public override IConfiguration DefaultConfiguration => new ElmahConfiguration
+        public override IAppConfiguration DefaultConfiguration => new ElmahConfiguration
         {
             UmbracoUserEnable = true,
             IpAccessRules = new IpAccessControl
@@ -55,7 +56,7 @@ namespace Our.Shield.Elmah.Models
             _ipAccessControlService = new IpAccessControlService();
         }
 
-        public override bool Execute(IJob job, IConfiguration c)
+        public override bool Execute(IJob job, IAppConfiguration c)
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(_allowKey);
             job.UnwatchWebRequests();
@@ -77,7 +78,7 @@ namespace Our.Shield.Elmah.Models
 
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400000, (count, httpApp) =>
             {
-                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request.UserHostAddress))
+                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
                 {
                     httpApp.Context.Items.Add(_allowKey, true);
                 }

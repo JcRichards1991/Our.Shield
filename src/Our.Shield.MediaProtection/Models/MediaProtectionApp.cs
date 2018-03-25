@@ -1,6 +1,7 @@
 ﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
+using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -52,7 +53,7 @@ namespace Our.Shield.MediaProtection.Models
         public override string Icon => "icon-picture red";
 
         /// <inheritdoc />
-        public override IConfiguration DefaultConfiguration =>
+        public override IAppConfiguration DefaultConfiguration =>
             new MediaProtectionConfiguration
             {
                 EnableHotLinkingProtection = true,
@@ -61,7 +62,7 @@ namespace Our.Shield.MediaProtection.Models
             };
 
         /// <inheritdoc />
-        public override bool Execute(IJob job, IConfiguration c)
+        public override bool Execute(IJob job, IAppConfiguration c)
         {
             AddMediaTypes();
             job.UnwatchWebRequests();

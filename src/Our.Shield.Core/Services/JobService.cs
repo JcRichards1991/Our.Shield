@@ -1,6 +1,8 @@
 ﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
+using Our.Shield.Core.Operation;
 using Our.Shield.Core.Persistance.Business;
+using Our.Shield.Core.Settings;
 using Semver;
 using System;
 using System.Collections.Generic;
@@ -10,26 +12,16 @@ using System.Threading.Tasks;
 using Umbraco.Core;
 using Umbraco.Core.Persistence.Migrations;
 
-namespace Our.Shield.Core.Operation
+namespace Our.Shield.Core.Services
 {
     /// <summary>
     /// 
     /// </summary>
     internal class JobService
     {
-#if DEBUG
-        private const int PollSecs = 60000;                    //  in secs
-#else
-        private const int PollSecs = 60 * 10;               //in secs
-#endif
-
         private const int JobIdStart = 1000;             //  Starting id for Jobs
 
         private static readonly Lazy<JobService> JobServiceInstance = new Lazy<JobService>(() => new JobService());
-
-        private JobService()
-        {
-        }
 
         /// <summary>
         /// Accessor for instance
@@ -173,10 +165,10 @@ namespace Our.Shield.Core.Operation
 
         public void Register(IEnvironment environment, ApplicationContext applicationContext = null)
         {
-            var appIds = App<IConfiguration>.Register;
+            var appIds = App<IAppConfiguration>.Register;
             foreach(var appId in appIds)
             {
-                var app = App<IConfiguration>.Create(appId.Key);
+                var app = App<IAppConfiguration>.Create(appId.Key);
 
                 if(applicationContext != null)
                 {
@@ -247,7 +239,7 @@ namespace Our.Shield.Core.Operation
 					{
 						if (Interlocked.CompareExchange(ref _ranTick, RanRepeat, RanNow) != RanRepeat)
 						{
-							_ranTick = DateTime.UtcNow.AddSeconds(PollSecs).Ticks;
+							_ranTick = DateTime.UtcNow.AddSeconds(Configuration.PollTimer).Ticks;
 						}
 					}
 				}
@@ -293,7 +285,7 @@ namespace Our.Shield.Core.Operation
         /// <param name="job">the job handling the write</param>
         /// <param name="config">the configuration to write</param>
         /// <returns>True if successfully written; otherwise, False</returns>
-        public bool WriteConfiguration(IJob job, IConfiguration config)
+        public bool WriteConfiguration(IJob job, IAppConfiguration config)
         {
             if (!DbContext.Instance.Configuration.Write(job.Environment.Id, job.App.Id, config))
             {
@@ -322,17 +314,17 @@ namespace Our.Shield.Core.Operation
         /// <param name="job">the job handling the read</param>
         /// <param name="defaultConfiguration">the default configuration for the app</param>
         /// <returns>Default configuration if not stored within the database; otherwised the configuration</returns>
-        public IConfiguration ReadConfiguration(IJob job, IConfiguration defaultConfiguration = null)
+        public IAppConfiguration ReadConfiguration(IJob job, IAppConfiguration defaultConfiguration = null)
         {
             return DbContext.Instance.Configuration.Read(job.Environment.Id, job.App.Id, ((Job) job).ConfigType, 
-                defaultConfiguration ?? App<IConfiguration>.Create(job.App.Id).DefaultConfiguration);
+                defaultConfiguration ?? App<IAppConfiguration>.Create(job.App.Id).DefaultConfiguration);
         }
 
-        public IConfiguration ReadConfiguration(int environmentId, string appId, IConfiguration defaultConfiguration = null)
+        public IAppConfiguration ReadConfiguration(int environmentId, string appId, IAppConfiguration defaultConfiguration = null)
         {
             if (defaultConfiguration == null)
             {
-                defaultConfiguration = App<IConfiguration>.Create(appId).DefaultConfiguration;
+                defaultConfiguration = App<IAppConfiguration>.Create(appId).DefaultConfiguration;
             }
 
             return DbContext.Instance.Configuration.Read(environmentId, appId, defaultConfiguration.GetType(),

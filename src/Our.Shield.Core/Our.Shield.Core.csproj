@@ -229,20 +229,23 @@
     <Compile Include="Attributes\AppTabAttribute.cs" />
     <Compile Include="Attributes\CustomAppTabAttribute.cs" />
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
+    <Compile Include="Settings\Configuration.cs" />
+    <Compile Include="Settings\IpAddressValidation.cs" />
+    <Compile Include="Settings\IpAddressValidationElement.cs" />
     <Compile Include="Models\IpAccessControl.cs" />
-    <Compile Include="Models\ApplicationSettings.cs" />
+    <Compile Include="Settings\ApplicationSettings.cs" />
     <Compile Include="Models\JournalMessage.cs" />
     <Compile Include="Models\UmbracoUrl.cs" />
     <Compile Include="Models\TransferUrl.cs" />
-    <Compile Include="Operation\IpAccessControlService.cs" />
-    <Compile Include="Operation\EnvironmentService.cs" />
+    <Compile Include="Services\IpAccessControlService.cs" />
+    <Compile Include="Services\EnvironmentService.cs" />
     <Compile Include="Helpers\AccessHelper.cs" />
     <Compile Include="Operation\Locker.cs" />
-    <Compile Include="Operation\UmbracoServiceBase.cs" />
-    <Compile Include="Operation\UmbracoMediaService.cs" />
-    <Compile Include="Operation\UmbracoUrlService.cs" />
-    <Compile Include="Operation\UmbracoContentService.cs" />
-    <Compile Include="Operation\WatchResponse.cs" />
+    <Compile Include="Services\UmbracoServiceBase.cs" />
+    <Compile Include="Services\UmbracoMediaService.cs" />
+    <Compile Include="Services\UmbracoUrlService.cs" />
+    <Compile Include="Services\UmbracoContentService.cs" />
+    <Compile Include="Models\WatchResponse.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration100.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration101.cs" />
     <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration103.cs" />
@@ -255,13 +258,18 @@
     <Compile Include="Persistance\Data\Migrations\MigrationExtensions.cs" />
     <Compile Include="Persistance\Data\Migrations\Versions\Migration103Create.cs" />
     <Compile Include="Persistance\Data\Migrations\Versions\Migration103.cs" />
+    <Compile Include="Settings\IShieldSettings.cs" />
+    <Compile Include="Settings\RequestHeaderElement.cs" />
+    <Compile Include="Settings\RequestHeaderElementCollection.cs" />
+    <Compile Include="Settings\ShieldSection.cs" />
+    <Compile Include="Settings\ShieldSettings.cs" />
     <Compile Include="UI\AppAssest.cs" />
     <Compile Include="UI\Constants.cs" />
-    <Compile Include="Models\Configuration.cs" />
+    <Compile Include="Models\AppConfiguration.cs" />
     <Compile Include="Models\Domain.cs" />
     <Compile Include="Models\Environment.cs" />
     <Compile Include="Models\Job.cs" />
-    <Compile Include="Models\IConfiguration.cs" />
+    <Compile Include="Models\IAppConfiguration.cs" />
     <Compile Include="Models\IDomain.cs" />
     <Compile Include="Models\IEnvironment.cs" />
     <Compile Include="Models\IJob.cs" />
@@ -279,9 +287,12 @@
     <Compile Include="Attributes\AppAssetAttribute.cs" />
     <Compile Include="UI\ShieldApiController.cs" />
     <Compile Include="UI\Register.cs" />
+    <None Include="UI\Transforms\Config\shield.config">
+      <SubType>Designer</SubType>
+    </None>
     <Compile Include="UI\TreeController.cs" />
     <Compile Include="Operation\Register.cs" />
-    <Compile Include="Operation\JobService.cs" />
+    <Compile Include="Services\JobService.cs" />
     <Compile Include="Models\IApp.cs" />
     <Compile Include="Models\App.cs" />
     <Compile Include="Operation\Frisk.cs" />
@@ -295,8 +306,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="App_Plugins\Shield\Backoffice\Dashboards\Dashboard.config.install.xdt" />
-    <None Include="App_Plugins\Shield\Backoffice\Dashboards\Dashboard.config.uninstall.xdt" />
+    <None Include="UI\Transforms\Config\Dashboard.config.install.xdt" />
+    <None Include="UI\Transforms\Config\Dashboard.config.uninstall.xdt" />
     <None Include="App_Plugins\Shield\package.manifest" />
     <None Include="Our.Shield.Core.nuspec">
       <SubType>Designer</SubType>
@@ -310,6 +321,8 @@
     <None Include="UI\Scss\Partials\_umb-table.scss" />
     <None Include="UI\Scss\Partials\_transfer-url.scss" />
     <None Include="UI\Scss\Styles.scss" />
+    <None Include="UI\Transforms\Web.config.uninstall.xdt" />
+    <None Include="UI\Transforms\Web.config.install.xdt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield\Backoffice\Css\Shield.css" />

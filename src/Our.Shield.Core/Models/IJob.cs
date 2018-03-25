@@ -31,7 +31,7 @@ namespace Our.Shield.Core.Models
         /// </summary>
         /// <param name="config">The configuration to write</param>
         /// <returns>True, if successfully written the config to the database; Otherwise, False</returns>
-        bool WriteConfiguration(IConfiguration config);
+        bool WriteConfiguration(IAppConfiguration config);
 
         /// <summary>
         /// Writes a journal to the database
@@ -44,7 +44,7 @@ namespace Our.Shield.Core.Models
         /// Reads the configuration from the database
         /// </summary>
         /// <returns>The configuration for the App</returns>
-        IConfiguration ReadConfiguration();
+        IAppConfiguration ReadConfiguration();
 
         /// <summary>
         /// Reads a list of Journals fro the database

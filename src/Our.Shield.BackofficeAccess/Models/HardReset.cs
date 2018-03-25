@@ -1,13 +1,13 @@
-﻿using Our.Shield.Core.Models;
-using System;
+﻿using System;
 using System.Configuration;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Umbraco.Core.Logging;
-using System.Threading;
+using Configuration = Our.Shield.Core.Settings.Configuration;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.BackofficeAccess.Models.HardReset), nameof(Our.Shield.BackofficeAccess.Models.HardReset.Start))]
 namespace Our.Shield.BackofficeAccess.Models
@@ -25,7 +25,7 @@ namespace Our.Shield.BackofficeAccess.Models
 
             var curUmbVersion = Umbraco.Core.Configuration.UmbracoVersion.GetSemanticVersion().ToString();
 
-            if(!curUmbVersion.Equals(ApplicationSettings.UmbracoVersion, StringComparison.InvariantCultureIgnoreCase))
+            if(!curUmbVersion.Equals(Configuration.UmbracoVersion, StringComparison.InvariantCultureIgnoreCase))
             {
                 return;
             }

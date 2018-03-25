@@ -9,7 +9,7 @@ namespace Our.Shield.BackofficeAccess.Models
     /// The Backofffice Access Configuration
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    public class BackofficeAccessConfiguration : Configuration
+    public class BackofficeAccessConfiguration : AppConfiguration
     {
         /// <summary>
         /// The desired backoffice access url

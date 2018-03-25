@@ -5,7 +5,7 @@ namespace Our.Shield.MediaProtection.Models
 {
     /// <inheritdoc />
     [JsonObject(MemberSerialization.OptIn)]
-    public class MediaProtectionConfiguration : Configuration
+    public class MediaProtectionConfiguration : AppConfiguration
     {
         /// <summary>
         /// HotLinking Protection
