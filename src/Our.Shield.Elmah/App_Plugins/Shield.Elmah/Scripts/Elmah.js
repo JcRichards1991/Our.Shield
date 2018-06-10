@@ -44,6 +44,13 @@ angular.module('umbraco').controller('Shield.Editors.Elmah.Reporting',
                         vm.loading = false;
                     });
                 },
+                viewError: function(id) {
+                    vm.loading = true;
+                    shieldElmahResource.getError(id).then(function(response) {
+                        vm.selectedError = response.data;
+                        vm.loading = false;
+                    });
+                },
                 prevPage: function () {
                     vm.pageNumber--;
                     vm.getErrors();
@@ -82,6 +89,9 @@ angular.module('umbraco.resources').factory('shieldElmahResource',
             return {
                 getErrors: function (page, resultsPerPage) {
                     return $http.get(apiRoot + 'GetErrors?page=' + page + '&resultsPerPage=' + resultsPerPage);
+                },
+                getError: function (id) {
+                    return $http.get(apiRoot + 'GetError?id=' + id);
                 },
                 generateTestException: function () {
                     return $http({

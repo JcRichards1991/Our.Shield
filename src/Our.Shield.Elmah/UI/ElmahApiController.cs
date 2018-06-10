@@ -31,6 +31,16 @@ namespace Our.Shield.Elmah.UI
             };
         }
 
+        public ElmahErrorJsonModel GetError(string id)
+        {
+            var error = ElmahCore.ErrorLog.GetDefault(HttpContext.Current).GetError(id);
+            return new ElmahErrorJsonModel
+            {
+                Id = error.Id,
+                Error = error.Error
+            };
+        }
+
         [HttpPost]
         public void GenerateTestException()
         {

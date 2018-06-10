@@ -43,6 +43,13 @@ angular.module('umbraco').controller('Shield.Editors.Elmah.Reporting',
                         vm.loading = false;
                     });
                 },
+                viewError: function(id) {
+                    vm.loading = true;
+                    shieldElmahResource.getError(id).then(function(response) {
+                        vm.selectedError = response.data;
+                        vm.loading = false;
+                    });
+                },
                 prevPage: function () {
                     vm.pageNumber--;
                     vm.getErrors();

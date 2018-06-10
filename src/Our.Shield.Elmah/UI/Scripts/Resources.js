@@ -15,6 +15,9 @@ angular.module('umbraco.resources').factory('shieldElmahResource',
                 getErrors: function (page, resultsPerPage) {
                     return $http.get(apiRoot + 'GetErrors?page=' + page + '&resultsPerPage=' + resultsPerPage);
                 },
+                getError: function (id) {
+                    return $http.get(apiRoot + 'GetError?id=' + id);
+                },
                 generateTestException: function () {
                     return $http({
                         method: 'POST',
