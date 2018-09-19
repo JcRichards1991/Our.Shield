@@ -231,12 +231,18 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="App_Plugins\Shield.FrontendAccess\package.manifest" />
+    <None Include="App_Plugins\Shield.FrontendAccess\Scripts\FrontendAccess.min.js.map">
+      <DependentUpon>FrontendAccess.min.js</DependentUpon>
+    </None>
     <None Include="Our.Shield.FrontendAccess.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield.FrontendAccess\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.FrontendAccess\Scripts\FrontendAccess.js" />
+    <Content Include="App_Plugins\Shield.FrontendAccess\Scripts\FrontendAccess.min.js">
+      <DependentUpon>FrontendAccess.js</DependentUpon>
+    </Content>
     <Content Include="App_Plugins\Shield.FrontendAccess\Views\FrontendAccess.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

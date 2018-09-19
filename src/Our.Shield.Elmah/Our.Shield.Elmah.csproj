@@ -228,14 +228,20 @@
   <ItemGroup>
     <Content Include="App_Plugins\Shield.Elmah\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.Elmah\Scripts\Elmah.js" />
+    <Content Include="App_Plugins\Shield.Elmah\Scripts\Elmah.min.js">
+      <DependentUpon>Elmah.js</DependentUpon>
+    </Content>
     <Content Include="App_Plugins\Shield.Elmah\Views\Elmah.html" />
     <Content Include="App_Plugins\Shield.Elmah\Views\Reporting.html" />
-    <Content Include="UI\Scripts\Controllers.js" />
-    <Content Include="UI\Scripts\Resources.js" />
+    <Content Include="App_Plugins\Shield.Elmah\Scripts\Controllers.js" />
+    <Content Include="App_Plugins\Shield.Elmah\Scripts\Resources.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="App_Plugins\Shield.Elmah\package.manifest" />
+    <None Include="App_Plugins\Shield.Elmah\Scripts\Elmah.min.js.map">
+      <DependentUpon>Elmah.min.js</DependentUpon>
+    </None>
     <None Include="Our.Shield.Elmah.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
