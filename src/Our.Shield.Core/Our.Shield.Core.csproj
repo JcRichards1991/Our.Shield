@@ -288,7 +288,10 @@
     <Compile Include="Attributes\AppAssetAttribute.cs" />
     <Compile Include="UI\ShieldApiController.cs" />
     <Compile Include="UI\Register.cs" />
-    <None Include="UI\Transforms\Config\shield.config">
+    <None Include="App_Plugins\Shield\Backoffice\Scripts\Shield.min.js.map">
+      <DependentUpon>Shield.min.js</DependentUpon>
+    </None>
+    <None Include="Transforms\Config\shield.config">
       <SubType>Designer</SubType>
     </None>
     <Compile Include="UI\TreeController.cs" />
@@ -307,29 +310,42 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="UI\Transforms\Config\Dashboard.config.install.xdt" />
-    <None Include="UI\Transforms\Config\Dashboard.config.uninstall.xdt" />
+    <None Include="Transforms\Config\Dashboard.config.install.xdt" />
+    <None Include="Transforms\Config\Dashboard.config.uninstall.xdt" />
     <None Include="App_Plugins\Shield\package.manifest" />
     <None Include="Our.Shield.Core.nuspec">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="UI\Scss\Partials\_ip-access-control-ranges.scss" />
-    <None Include="UI\Scss\Partials\_dashboard.scss" />
-    <None Include="UI\Scss\Partials\_domain-listing-table.scss" />
-    <None Include="UI\Scss\Partials\_editor-header.scss" />
-    <None Include="UI\Scss\Partials\_sort-panel-overview.scss" />
-    <None Include="UI\Scss\Partials\_umb-table.scss" />
-    <None Include="UI\Scss\Partials\_transfer-url.scss" />
-    <None Include="UI\Scss\Styles.scss" />
-    <None Include="UI\Transforms\Web.config.uninstall.xdt" />
-    <None Include="UI\Transforms\Web.config.install.xdt" />
+    <None Include="App_Plugins\Shield\Backoffice\Css\Partials\_ip-access-control-ranges.scss" />
+    <None Include="App_Plugins\Shield\Backoffice\Css\Partials\_dashboard.scss" />
+    <None Include="App_Plugins\Shield\Backoffice\Css\Partials\_domain-listing-table.scss" />
+    <None Include="App_Plugins\Shield\Backoffice\Css\Partials\_editor-header.scss" />
+    <None Include="App_Plugins\Shield\Backoffice\Css\Partials\_sort-panel-overview.scss" />
+    <None Include="App_Plugins\Shield\Backoffice\Css\Partials\_umb-table.scss" />
+    <None Include="App_Plugins\Shield\Backoffice\Css\Partials\_transfer-url.scss" />
+    <None Include="App_Plugins\Shield\Backoffice\Css\Shield.scss" />
+    <None Include="Transforms\Web.config.uninstall.xdt" />
+    <None Include="Transforms\Web.config.install.xdt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield\Backoffice\Css\Shield.css" />
+    <Content Include="App_Plugins\Shield\Backoffice\Css\Shield.min.css">
+      <DependentUpon>Shield.css</DependentUpon>
+    </Content>
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Journal.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Environments.html" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\ColorIndicator.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Dashboard.Controllers.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Dialog.Controllers.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Directives.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Editors.Controllers.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Resources.js" />
     <Content Include="App_Plugins\Shield\Backoffice\Scripts\Shield.js" />
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Shield.min.js">
+      <DependentUpon>Shield.js</DependentUpon>
+    </Content>
+    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Tree.Menu.Controllers.js" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Create.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Shield\Delete.html" />
     <Content Include="App_Plugins\Shield\Backoffice\Views\Dialogs\EditIpException.html" />
@@ -345,10 +361,6 @@
     <Content Include="App_Plugins\Shield\Lang\en-us.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="UI\Scripts\ColorIndicator.js" />
-    <Content Include="UI\Scripts\Controllers.js" />
-    <Content Include="UI\Scripts\Directives.js" />
-    <Content Include="UI\Scripts\Resources.js" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

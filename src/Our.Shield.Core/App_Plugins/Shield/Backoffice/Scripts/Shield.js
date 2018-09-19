@@ -232,7 +232,7 @@ angular
 
 angular
   .module('umbraco.directives')
-  .directive('shieldIpaddressvalid',
+  .directive('shieldIpddressvalid',
     [
       function () {
         return {
@@ -250,37 +250,6 @@ angular
 
               ctrl.$setValidity('shieldIpaddressvalid', pattern.test(modelValue));
 
-              return modelValue;
-            });
-          }
-        };
-      }
-    ]
-  );
-
-angular
-  .module('umbraco.directives')
-  .directive('shieldIpaddressduplicate',
-    [
-      function () {
-        return {
-          restrict: 'A',
-          require: 'ngModel',
-          link: function (scope, elm, attr, ctrl) {
-            ctrl.$parsers.push(function (modelValue) {
-              if (modelValue === '' || modelValue === undefined) {
-                ctrl.$setValidity('shieldIpaddressduplicate', true);
-                return modelValue;
-              }
-
-              var ipAddresses = angular.fromJson(attr.shieldIpaddressduplicate);
-
-              if (ipAddresses.filter((x) => x.ipAddress === modelValue)[0] !== undefined) {
-                ctrl.$setValidity('shieldIpaddressduplicate', false);
-                return modelValue;
-              }
-
-              ctrl.$setValidity('shieldIpaddressduplicate', true);
               return modelValue;
             });
           }
