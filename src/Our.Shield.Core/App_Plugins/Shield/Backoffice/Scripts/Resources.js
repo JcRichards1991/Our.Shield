@@ -53,6 +53,18 @@
           deleteEnvironment: function (id) {
             return post('DeleteEnvironment', { id: id });
           },
+          getApp: function(key) {
+            return get('GetApp',
+              {
+                key: key
+              })
+          },
+          getEnvironment: function(key) {
+            return get('GetEnvironment',
+              {
+                key: key
+              });
+          },
           getEnvironments: function () {
             return get('GetEnvironments');
           },

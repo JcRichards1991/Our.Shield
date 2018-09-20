@@ -16,8 +16,8 @@
           Environments: [],
           init: function () {
             shieldResource.getView('0').then(function (response) {
-              vm.description = response.data.description;
-              vm.environments = response.data.environments;
+              vm.description = response.description;
+              vm.environments = response.environments;
 
               vm.loading = false;
             });
@@ -119,12 +119,14 @@ angular
           },
           getListing: function () {
             vm.loading = true;
-            shieldResource.getJournals(vm.id, vm.pageNumber, vm.options.orderBy, vm.options.orderDirection).then(function (response) {
-              vm.items = response.data.items;
-              vm.totalPages = response.data.totalPages;
-              vm.type = response.data.type;
-              vm.loading = false;
-            });
+            shieldResource
+              .getJournals(vm.id, vm.pageNumber, vm.options.orderBy, vm.options.orderDirection)
+              .then(function (response) {
+                vm.items = response.items;
+                vm.totalPages = response.totalPages;
+                vm.type = response.type;
+                vm.loading = false;
+              });
           }
         });
       }

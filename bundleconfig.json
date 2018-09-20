@@ -5,7 +5,7 @@
       "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Dashboard.Controllers.js",
       "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Dialog.Controllers.js",
       "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Directives.js",
-      "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Editors.Controllers.js",
+      "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Editor.Controllers.js",
       "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Resources.js",
       "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Tree.Menu.Controllers.js"
     ],

@@ -24,11 +24,11 @@
 
 
                 if (document.getElementById(shield.colorIndicator.faviconId)) {
-                    var link = document.getElementById(shield.colorIndicator.faviconId);
-                    link.href = shield.colorIndicator.drawImage(indicatorColor);
+                    var link1 = document.getElementById(shield.colorIndicator.faviconId);
+                    link1.href = shield.colorIndicator.drawImage(indicatorColor);
 
-                    var style = document.getElementById(shield.colorIndicator.styleId);
-                    style.innerText = shield.colorIndicator.setStyle(indicatorColor);
+                    var style1 = document.getElementById(shield.colorIndicator.styleId);
+                    style1.innerText = shield.colorIndicator.setStyle(indicatorColor);
 
                     return;
                 }
