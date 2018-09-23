@@ -37,7 +37,7 @@
 
     <div class="umb-table-body">
         <div class="umb-table-row"
-             ng-repeat="app in vm.environment.apps track by $index"
+             ng-repeat="app in vm.environment.apps track by app.key"
              ng-class="{'-selected': app.enable}">
 
             <div class="umb-table-cell app-icon-cell">
@@ -46,7 +46,7 @@
                 </i>
             </div>
 
-            <div class="umb-table-cell shield-table__name" ng-click="vm.editItem(app)">
+            <div class="umb-table-cell shield-table__name" ng-click="vm.editApp(app.key)">
                 <span ng-bind-html="app.name"></span>
             </div>
 

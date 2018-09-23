@@ -95,8 +95,8 @@
                 });
               });
             },
-            editApp: function (item) {
-              $location.path('/shield/shield/App/' + vm.environment.key + '#' + item.id);
+            editApp: function (appKey) {
+              $location.path('/shield/shield/App/' + appKey);
             },
             edit: function () {
               $location.search('edit', 'true');

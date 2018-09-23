@@ -9,21 +9,17 @@
         $location,
         shieldResource) {
         var vm = this;
-
         angular.extend(vm, {
           loading: true,
-          Description: '',
-          Environments: [],
+          environments: [],
           init: function () {
-            shieldResource.getView('0').then(function (response) {
-              vm.description = response.description;
-              vm.environments = response.environments;
-
+            shieldResource.getEnvironments().then(function (response) {
+              vm.environments = response;
               vm.loading = false;
             });
           },
-          editItem: function (item) {
-            $location.path('/shield/shield/edit/' + item.id);
+          editEnvironment: function (environmentKey) {
+            $location.path('/shield/shield/environment/' + environmentKey);
           }
         });
       }

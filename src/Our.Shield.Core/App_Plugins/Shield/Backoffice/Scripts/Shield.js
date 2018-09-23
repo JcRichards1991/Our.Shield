@@ -12,18 +12,15 @@ angular
 
         angular.extend(vm, {
           loading: true,
-          Description: '',
-          Environments: [],
+          environments: [],
           init: function () {
-            shieldResource.getView('0').then(function (response) {
-              vm.description = response.description;
-              vm.environments = response.environments;
-
+            shieldResource.getEnvironments().then(function (response) {
+              vm.environments = response;
               vm.loading = false;
             });
           },
-          editItem: function (item) {
-            $location.path('/shield/shield/edit/' + item.id);
+          editItem: function (environmentKey) {
+            $location.path('/shield/shield/environment/' + environmentKey);
           }
         });
       }
@@ -507,8 +504,8 @@ angular
                 });
               });
             },
-            editApp: function (item) {
-              $location.path('/shield/shield/App/' + vm.environment.key + '#' + item.id);
+            editApp: function (appKey) {
+              $location.path('/shield/shield/App/' + appKey);
             },
             edit: function () {
               $location.search('edit', 'true');

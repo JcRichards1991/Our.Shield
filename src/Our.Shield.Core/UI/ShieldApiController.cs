@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Persistence.Business;
 using Our.Shield.Core.Services;
@@ -8,8 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-using System.Web.UI.WebControls;
-using Our.Shield.Core.Attributes;
 using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
 
