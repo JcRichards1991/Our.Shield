@@ -11,7 +11,7 @@ namespace Our.Shield.Core.Models
 {
     /// <inheritdoc />
     /// <summary>
-    /// Class that conatins each of our executions
+    /// Class that contains each of our executions
     /// </summary>
     internal class Job : IJob
     {

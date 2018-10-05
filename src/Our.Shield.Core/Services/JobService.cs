@@ -58,6 +58,11 @@ namespace Our.Shield.Core.Services
             return JobLock.Read(() => Jobs.Value[id].DeepCopy());
         }
 
+        public IJob Job(Guid key)
+        {
+            return JobLock.Read(() => Jobs.Value.FirstOrDefault(x => x.Value.Key == key).Value);
+        }
+
         private void LoadMigrations(IApp app, ApplicationContext applicationContext)
         {
             app.Migrations = new Dictionary<string, IMigration>();

@@ -218,11 +218,8 @@ angular
             save: function () {
               vm.button.state = 'busy';
               $scope.$broadcast('formSubmitting', { scope: $scope, action: 'publish' });
-              if ($scope.shieldForm.$invalid) {
-                //validation error, don't save
-
+              if ($scope.appForm.$invalid) {
                 angular.element(event.target).addClass('show-validation');
-
                 localizationService.localize('Shield.General_SaveConfigurationInvalid').then(function (value) {
                   notificationsService.error(value);
                 });
@@ -230,10 +227,10 @@ angular
                 return;
               }
 
-              $scope.app.$setPristine();
+              $scope.appForm.$setPristine();
 
-              shieldResource.postConfiguration(vm.appKey, vm.configuration).then(function (response) {
-                if (response.data === true || response.data === 'true') {
+              shieldResource.postConfiguration(vm.appKey, vm.app.configuration).then(function (response) {
+                if (response === true || response === 'true') {
                   localizationService.localize('Shield.General_SaveConfigurationSuccess').then(function (value) {
                     notificationsService.success(value);
                   });

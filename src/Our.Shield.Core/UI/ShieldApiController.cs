@@ -184,15 +184,12 @@ namespace Our.Shield.Core.UI
         }
 
         [HttpPost]
-        public bool WriteConfiguration(int id, [FromBody] JObject json)
+        public bool WriteConfiguration(Guid key, [FromBody] JObject json)
         {
-            if (json == null)
-            {
-                //  json is invalid
+            if (json == null || key == Guid.Empty)
                 return false;
-            }
 
-            var job = JobService.Instance.Job(id);
+            var job = JobService.Instance.Job(key);
             if (job == null)
             {
                 //  Invalid id

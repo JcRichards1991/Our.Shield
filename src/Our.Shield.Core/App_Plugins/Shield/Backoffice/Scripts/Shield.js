@@ -9,7 +9,6 @@ angular
         $location,
         shieldResource) {
         var vm = this;
-
         angular.extend(vm, {
           loading: true,
           environments: [],
@@ -19,7 +18,7 @@ angular
               vm.loading = false;
             });
           },
-          editItem: function (environmentKey) {
+          editEnvironment: function (environmentKey) {
             $location.path('/shield/shield/environment/' + environmentKey);
           }
         });
@@ -362,8 +361,18 @@ angular
             model: '='
           },
           link: function (scope) {
-            angular.extend(scope.model, {
 
+            var mntpValue = null;
+
+            if (scope.model === null)
+              scope.model = { value: '' };
+            else
+              mntpValue = parseInt(scope.model.value);
+
+            if (mntpValue === null || isNaN(mntpValue))
+              mntpValue = '';
+
+            angular.extend(scope.model, {
               contentPickerProperty: {
                 view: 'contentpicker',
                 alias: 'contentPicker',
@@ -379,7 +388,10 @@ angular
                   minNumber: 1,
                   maxNumber: 1
                 },
-                value: scope.model.value
+                value: '' + mntpValue
+              },
+              urlTypeChange: function() {
+                scope.model.contentPickerProperty.value = '';
               }
             });
 
@@ -627,11 +639,8 @@ angular
             save: function () {
               vm.button.state = 'busy';
               $scope.$broadcast('formSubmitting', { scope: $scope, action: 'publish' });
-              if ($scope.shieldForm.$invalid) {
-                //validation error, don't save
-
+              if ($scope.appForm.$invalid) {
                 angular.element(event.target).addClass('show-validation');
-
                 localizationService.localize('Shield.General_SaveConfigurationInvalid').then(function (value) {
                   notificationsService.error(value);
                 });
@@ -639,10 +648,10 @@ angular
                 return;
               }
 
-              $scope.app.$setPristine();
+              $scope.appForm.$setPristine();
 
-              shieldResource.postConfiguration(vm.appKey, vm.configuration).then(function (response) {
-                if (response.data === true || response.data === 'true') {
+              shieldResource.postConfiguration(vm.appKey, vm.app.configuration).then(function (response) {
+                if (response === true || response === 'true') {
                   localizationService.localize('Shield.General_SaveConfigurationSuccess').then(function (value) {
                     notificationsService.success(value);
                   });
@@ -747,9 +756,8 @@ angular
                 id: id
               });
           },
-          postConfiguration: function (id, config) {
-            config.id = id;
-            return post('WriteConfiguration', config);
+          postConfiguration: function (key, config) {
+            return post('WriteConfiguration?key=' + key, config);
           },
           postEnvironment: function (environment) {
             return post('WriteEnvironment', environment);

@@ -83,9 +83,8 @@
                 id: id
               });
           },
-          postConfiguration: function (id, config) {
-            config.id = id;
-            return post('WriteConfiguration', config);
+          postConfiguration: function (key, config) {
+            return post('WriteConfiguration?key=' + key, config);
           },
           postEnvironment: function (environment) {
             return post('WriteEnvironment', environment);
