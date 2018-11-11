@@ -1,4 +1,4 @@
-angular
+﻿angular
   .module('umbraco')
   .controller('Shield.Editors.Elmah.Edit',
     [
@@ -36,13 +36,6 @@ angular
               vm.loading = false;
             });
           },
-          viewError: function(id) {
-            vm.loading = true;
-            shieldElmahResource.getError(id).then(function(response) {
-                vm.selectedError = response.data;
-                vm.loading = false;
-            });
-          },
           prevPage: function () {
             vm.pageNumber--;
             vm.getErrors();
@@ -66,25 +59,3 @@ angular
       }
     ]
   );
-angular.module('umbraco.resources').factory('shieldElmahResource',
-    ['$http',
-        function ($http) {
-            var apiRoot = 'backoffice/Shield/ElmahApi/';
-
-            return {
-                getErrors: function (page, resultsPerPage) {
-                    return $http.get(apiRoot + 'GetErrors?page=' + page + '&resultsPerPage=' + resultsPerPage);
-                },
-                getError: function (id) {
-                    return $http.get(apiRoot + 'GetError?id=' + id);
-                },
-                generateTestException: function () {
-                    return $http({
-                        method: 'POST',
-                        url: apiRoot + 'GenerateTestException'
-                    });
-                }
-            };
-        }
-    ]
-);

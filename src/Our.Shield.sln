@@ -11,12 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{2E101591-AF0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.BackofficeAccess", "Our.Shield.BackofficeAccess\Our.Shield.BackofficeAccess.csproj", "{58FDCE32-1389-4768-882E-281CEEC508CD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gulp", "Gulp", "{25F416C7-6C9E-4928-A54D-9D65565E6E4F}"
-	ProjectSection(SolutionItems) = preProject
-		..\gulpfile.js = ..\gulpfile.js
-		..\package.json = ..\package.json
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.Core", "Our.Shield.Core\Our.Shield.Core.csproj", "{69737067-AB31-4C68-9C69-5E6CE00D1AB3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.MediaProtection", "Our.Shield.MediaProtection\Our.Shield.MediaProtection.csproj", "{3C5EDA13-8468-4386-8F74-3D5678695ABE}"
@@ -37,6 +31,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.Elmah", "Our.Shield.Elmah\Our.Shield.Elmah.csproj", "{3B3C3F82-64CE-4840-AAF5-A428B3A39CF9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.SiteMaintenance", "Our.Shield.SiteMaintenance\Our.Shield.SiteMaintenance.csproj", "{B933EB8C-A6B0-4E0A-BF09-0A3097697C29}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bunder And Minifier", "Bunder And Minifier", "{88FEA8A3-7B68-4E5B-8053-AFC671E23E08}"
+	ProjectSection(SolutionItems) = preProject
+		..\bundleconfig.json = ..\bundleconfig.json
+		..\bundleconfig.json.bindings = ..\bundleconfig.json.bindings
+		..\compilerconfig.json = ..\compilerconfig.json
+		..\compilerconfig.json.bindings = ..\compilerconfig.json.bindings
+		..\compilerconfig.json.defaults = ..\compilerconfig.json.defaults
+		..\App_Plugins\Shield\Backoffice\Scripts\Shield.js = ..\App_Plugins\Shield\Backoffice\Scripts\Shield.js
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -226,19 +226,28 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield.MediaProtection\Css\MediaProtection.css" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Css\MediaProtection.min.css">
+      <DependentUpon>MediaProtection.css</DependentUpon>
+    </Content>
     <Content Include="App_Plugins\Shield.MediaProtection\Scripts\MediaProtection.js" />
     <Content Include="App_Plugins\Shield.MediaProtection\Lang\en-us.xml" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Scripts\MediaProtection.min.js">
+      <DependentUpon>MediaProtection.js</DependentUpon>
+    </Content>
     <Content Include="App_Plugins\Shield.MediaProtection\Views\MediaProtection.html" />
-    <Content Include="UI\Scripts\Resources.js" />
-    <Content Include="UI\Scripts\Controllers.js" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Scripts\Resources.js" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Scripts\Controllers.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="App_Plugins\Shield.MediaProtection\package.manifest" />
+    <None Include="App_Plugins\Shield.MediaProtection\Scripts\MediaProtection.min.js.map">
+      <DependentUpon>MediaProtection.min.js</DependentUpon>
+    </None>
     <None Include="Our.Shield.MediaProtection.nuspec" />
     <None Include="packages.config" />
-    <None Include="UI\Scss\Partials\_hot-linking.scss" />
-    <None Include="UI\Scss\Styles.scss" />
+    <None Include="App_Plugins\Shield.MediaProtection\Css\Partials\_hot-linking.scss" />
+    <None Include="App_Plugins\Shield.MediaProtection\Css\MediaProtection.scss" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

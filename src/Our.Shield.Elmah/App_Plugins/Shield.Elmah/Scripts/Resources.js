@@ -1,12 +1,4 @@
-﻿/**
-    * @ngdoc resource
-    * @name shieldElmahResource
-    * @function
-    *
-    * @description
-    * Api resource for the Elmah App
-*/
-angular.module('umbraco.resources').factory('shieldElmahResource',
+﻿angular.module('umbraco.resources').factory('shieldElmahResource',
     ['$http',
         function ($http) {
             var apiRoot = 'backoffice/Shield/ElmahApi/';
