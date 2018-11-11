@@ -27,7 +27,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="animate-repeat" ng-repeat="error in vm.errors track by $index" ng-click="vm.viewError(vm.errors[$index].id)" style="cursor: pointer;">
+            <tr class="animate-repeat" ng-repeat="error in vm.errors track by $index" ng-click="vm.viewError(error.id)" style="cursor: pointer;">
               <td>{{ error.error._hostName }}</td>
               <td>{{ error.error._statusCode }}</td>
               <td>{{ error.error._typeName }}</td>
