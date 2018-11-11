@@ -58,11 +58,11 @@
                                 <span>{{item.datestamp}}</span>
                             </div>
 
-                            <div class="umb-table-cell shield-table__name" ng-if="vm.type === 0" ng-click="vm.editEnvironment(item.environment)">
+                            <div class="umb-table-cell shield-table__name" ng-if="vm.type === 0" ng-click="vm.editEnvironment(item.environment.key)">
                                 <span>{{item.environment.name}}</span>
                             </div>
 
-                            <div class="umb-table-cell shield-table__name" ng-if="vm.type === 0 || vm.type === 1" ng-click="vm.editApp(item.app)">
+                            <div class="umb-table-cell shield-table__name" ng-if="vm.type === 0 || vm.type === 1" ng-click="vm.editApp(item.app.key)">
                                 <span>{{item.app.name}}</span>
                             </div>
 

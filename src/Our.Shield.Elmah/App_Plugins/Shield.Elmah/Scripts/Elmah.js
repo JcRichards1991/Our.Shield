@@ -30,18 +30,22 @@ angular
           selectedError: null,
           getErrors: function () {
             vm.loading = true;
-            shieldElmahResource.getErrors(vm.pageNumber, vm.resultsPerPage).then(function (response) {
-              vm.errors = response.data.errors;
-              vm.totalPages = response.data.totalPages;
-              vm.loading = false;
-            });
+            shieldElmahResource
+              .getErrors(vm.pageNumber, vm.resultsPerPage)
+              .then(function (response) {
+                vm.errors = response.errors;
+                vm.totalPages = response.totalPages;
+                vm.loading = false;
+              });
           },
           viewError: function (id) {
             vm.loading = true;
-            shieldElmahResource.getError(id).then(function (response) {
-              vm.selectedError = response.data;
-              vm.loading = false;
-            });
+            shieldElmahResource
+              .getError(id)
+              .then(function (error) {
+                vm.selectedError = error;
+                vm.loading = false;
+              });
           },
           prevPage: function () {
             vm.pageNumber--;
@@ -57,34 +61,79 @@ angular
           },
           generateTestException: function () {
             vm.loading = true;
-            shieldElmahResource.generateTestException().then(function () {
-              vm.getErrors();
-              vm.loading = false;
-            });
+            shieldElmahResource
+              .generateTestException()
+              .then(function () {
+                vm.getErrors();
+                vm.loading = false;
+              });
           }
         });
       }
     ]
   );
-angular.module('umbraco.resources').factory('shieldElmahResource',
-    ['$http',
-        function ($http) {
-            var apiRoot = 'backoffice/Shield/ElmahApi/';
+angular
+  .module('umbraco.resources')
+  .factory('shieldElmahResource',
+    [
+      '$http',
+      '$q',
+      function ($http, $q) {
+        var apiRoot = 'backoffice/Shield/ElmahApi/';
 
-            return {
-                getErrors: function (page, resultsPerPage) {
-                    return $http.get(apiRoot + 'GetErrors?page=' + page + '&resultsPerPage=' + resultsPerPage);
-                },
-                getError: function (id) {
-                    return $http.get(apiRoot + 'GetError?id=' + id);
-                },
-                generateTestException: function () {
-                    return $http({
-                        method: 'POST',
-                        url: apiRoot + 'GenerateTestException'
-                    });
-                }
-            };
-        }
-    ]
-);
+        var get = function (url, data) {
+          var deferred = $q.defer();
+
+          data = data || {};
+
+          $http
+            .get(apiRoot + url,
+              {
+                params: data
+              })
+            .then(function (response) {
+              return deferred.resolve(response.data);
+            }, function (response) {
+              return deferred.resolve(response);
+            });
+
+          return deferred.promise;
+        };
+
+        var post = function (url, data) {
+          var deferred = $q.defer();
+
+          $http({
+            method: 'POST',
+            url: apiRoot + url,
+            data: JSON.stringify(data),
+            dataType: 'json',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(function (response) {
+            return deferred.resolve(response.data);
+          }, function (response) {
+            return deferred.resolve(response);
+          });
+
+          return deferred.promise;
+        };
+
+        return {
+          getErrors: function (page, resultsPerPage) {
+            return get('GetErrors', {
+              page: page, resultsPerPage: resultsPerPage
+            });
+          },
+          getError: function (id) {
+            return get('GetError', {
+              id: id
+            });
+          },
+          generateTestException: function () {
+            return post('GenerateTestException');
+          }
+        };
+      }
+    ]);

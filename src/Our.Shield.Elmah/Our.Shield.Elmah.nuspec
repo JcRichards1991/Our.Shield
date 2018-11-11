@@ -12,10 +12,7 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Fixes issues with allowing access for all IP Address
-      - Localized the Reporting tab
-      - Added Refresh Errors button & Generate Test Error button to Reporting tab
-      - Updated to take advantage of the custom configuration section added to the core
+      - Fixes issue with the stack trace not displaying when viewing an exception in more details with Elmah SqlServer
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>

@@ -90,11 +90,11 @@ angular
 
             vm.getListing();
           },
-          editEnvironment: function (item) {
-            $location.path('/shield/shield/environment/' + item.key);
+          editEnvironment: function (key) {
+            $location.path('/shield/shield/environment/' + key);
           },
-          editApp: function (item) {
-            $location.path('/shield/shield/app/' + item.key);
+          editApp: function (key) {
+            $location.path('/shield/shield/app/' + key);
           },
           nextPage: function (page) {
             vm.pageNumber = page;

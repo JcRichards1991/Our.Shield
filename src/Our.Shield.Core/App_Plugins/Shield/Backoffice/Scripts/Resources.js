@@ -20,10 +20,9 @@
               })
             .then(function (response) {
               return deferred.resolve(response.data);
-            },
-              function (response) {
-                return deferred.resolve(response);
-              });
+            }, function (response) {
+              return deferred.resolve(response);
+            });
 
           return deferred.promise;
         };
@@ -41,10 +40,9 @@
             }
           }).then(function (response) {
             return deferred.resolve(response.data);
-          },
-            function (response) {
-              return deferred.resolve(response);
-            });
+          }, function (response) {
+            return deferred.resolve(response);
+          });
 
           return deferred.promise;
         };
@@ -53,13 +51,13 @@
           deleteEnvironment: function (id) {
             return post('DeleteEnvironment', { id: id });
           },
-          getApp: function(key) {
+          getApp: function (key) {
             return get('GetApp',
               {
                 key: key
-              })
+              });
           },
-          getEnvironment: function(key) {
+          getEnvironment: function (key) {
             return get('GetEnvironment',
               {
                 key: key

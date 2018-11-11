@@ -90,11 +90,11 @@ angular
 
             vm.getListing();
           },
-          editEnvironment: function (item) {
-            $location.path('/shield/shield/environment/' + item.key);
+          editEnvironment: function (key) {
+            $location.path('/shield/shield/environment/' + key);
           },
-          editApp: function (item) {
-            $location.path('/shield/shield/app/' + item.key);
+          editApp: function (key) {
+            $location.path('/shield/shield/app/' + key);
           },
           nextPage: function (page) {
             vm.pageNumber = page;
@@ -482,7 +482,6 @@ angular
               state: 'init'
             },
             init: function () {
-
               if (vm.creating) {
                 vm.button.labelKey = 'general_create';
                 localizationService.localize(vm.button.labelKey).then(function (value) {
@@ -591,8 +590,28 @@ angular
             }
           });
       }
-    ]
-  );
+    ]);
+
+angular
+  .module('umbraco')
+  .controller('shield.editors.environment.create',
+    [
+      '$scope',
+      '$location',
+      'shieldResource',
+      function ($scope,
+        $location,
+        shieldResource) {
+        var vm = this;
+        angular.extend(vm,
+          {
+            environment: {
+              icon: '',
+              name: ''
+            }
+          });
+      }
+    ]);
 
 angular
   .module('umbraco')
@@ -671,8 +690,7 @@ angular
             }
           });
       }
-    ]
-  );
+    ]);
 
 angular
   .module('umbraco.resources')
@@ -696,10 +714,9 @@ angular
               })
             .then(function (response) {
               return deferred.resolve(response.data);
-            },
-              function (response) {
-                return deferred.resolve(response);
-              });
+            }, function (response) {
+              return deferred.resolve(response);
+            });
 
           return deferred.promise;
         };
@@ -717,10 +734,9 @@ angular
             }
           }).then(function (response) {
             return deferred.resolve(response.data);
-          },
-            function (response) {
-              return deferred.resolve(response);
-            });
+          }, function (response) {
+            return deferred.resolve(response);
+          });
 
           return deferred.promise;
         };
@@ -729,13 +745,13 @@ angular
           deleteEnvironment: function (id) {
             return post('DeleteEnvironment', { id: id });
           },
-          getApp: function(key) {
+          getApp: function (key) {
             return get('GetApp',
               {
                 key: key
-              })
+              });
           },
-          getEnvironment: function(key) {
+          getEnvironment: function (key) {
             return get('GetEnvironment',
               {
                 key: key
@@ -787,19 +803,17 @@ angular
         angular.extend(vm, {
           create: function () {
             navigationService.hideDialog();
-            $location.path('/shield/shield/edit/-100');
+            $location.path('/shield/shield/CreateEnvironment/');
           }
         });
       }
-    ]
-  );
+    ]);
 
 angular
   .module('umbraco')
   .controller('Shield.Editors.Overview.Delete',
     [
       '$scope',
-      '$routeParams',
       '$route',
       '$location',
       'treeService',
@@ -808,7 +822,6 @@ angular
       'notificationsService',
       'shieldResource',
       function ($scope,
-        $routeParams,
         $route,
         $location,
         treeService,
@@ -855,8 +868,7 @@ angular
           }
         });
       }
-    ]
-  );
+    ]);
 
 angular
   .module('umbraco')
@@ -904,5 +916,4 @@ angular
           }
         });
       }
-    ]
-  );
+    ]);

@@ -44,8 +44,9 @@
     <Reference Include="businesslogic, Version=1.0.6136.27244, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.5.4\lib\businesslogic.dll</HintPath>
     </Reference>
-    <Reference Include="ClientDependency.Core, Version=1.9.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ClientDependency.1.9.2\lib\net45\ClientDependency.Core.dll</HintPath>
+    <Reference Include="ClientDependency.Core, Version=1.9.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClientDependency.1.9.7\lib\net45\ClientDependency.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="ClientDependency.Core.Mvc, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClientDependency-Mvc5.1.8.0.0\lib\net45\ClientDependency.Core.Mvc.dll</HintPath>
@@ -128,8 +129,8 @@
     <Reference Include="MiniProfiler, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
       <HintPath>..\packages\MiniProfiler.2.1.0\lib\net40\MiniProfiler.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.9.10.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.10\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -332,7 +333,6 @@
     <None Include="Transforms\Web.config.install.xdt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\Shield\BackOffice\Environment\Edit.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Css\Shield.css" />
     <Content Include="App_Plugins\Shield\BackOffice\Css\Shield.min.css">
       <DependentUpon>Shield.css</DependentUpon>
@@ -354,6 +354,7 @@
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Tree.Menu.Controllers.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\Create.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\Delete.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Shield\CreateEnvironment.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Views\Dialogs\EditIpException.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Views\Directives\IpAccessControl.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Views\Directives\IpAccessControlRanges.html" />

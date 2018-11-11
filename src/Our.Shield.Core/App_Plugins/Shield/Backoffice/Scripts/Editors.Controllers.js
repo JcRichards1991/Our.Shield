@@ -58,7 +58,6 @@
               state: 'init'
             },
             init: function () {
-
               if (vm.creating) {
                 vm.button.labelKey = 'general_create';
                 localizationService.localize(vm.button.labelKey).then(function (value) {
@@ -167,8 +166,28 @@
             }
           });
       }
-    ]
-  );
+    ]);
+
+angular
+  .module('umbraco')
+  .controller('shield.editors.environment.create',
+    [
+      '$scope',
+      '$location',
+      'shieldResource',
+      function ($scope,
+        $location,
+        shieldResource) {
+        var vm = this;
+        angular.extend(vm,
+          {
+            environment: {
+              icon: '',
+              name: ''
+            }
+          });
+      }
+    ]);
 
 angular
   .module('umbraco')
@@ -247,5 +266,4 @@ angular
             }
           });
       }
-    ]
-  );
+    ]);
