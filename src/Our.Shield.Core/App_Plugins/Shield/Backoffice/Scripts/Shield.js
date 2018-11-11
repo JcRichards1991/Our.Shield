@@ -90,8 +90,11 @@ angular
 
             vm.getListing();
           },
-          editItem: function (item) {
-            $location.path('/shield/shield/edit/' + item.id);
+          editEnvironment: function (item) {
+            $location.path('/shield/shield/environment/' + item.key);
+          },
+          editApp: function (item) {
+            $location.path('/shield/shield/app/' + item.key);
           },
           nextPage: function (page) {
             vm.pageNumber = page;
@@ -230,7 +233,7 @@ angular
 
 angular
   .module('umbraco.directives')
-  .directive('shieldIpddressvalid',
+  .directive('shieldIpaddressvalid',
     [
       function () {
         return {

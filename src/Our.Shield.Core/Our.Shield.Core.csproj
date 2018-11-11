@@ -345,7 +345,7 @@
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Dashboard.Controllers.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Dialog.Controllers.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Directives.js" />
-    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Editor.Controllers.js" />
+    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Editors.Controllers.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Resources.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Shield.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Shield.min.js">

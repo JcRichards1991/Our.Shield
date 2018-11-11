@@ -78,7 +78,7 @@ angular
 
 angular
   .module('umbraco.directives')
-  .directive('shieldIpddressvalid',
+  .directive('shieldIpaddressvalid',
     [
       function () {
         return {
