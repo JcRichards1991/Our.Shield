@@ -53,6 +53,18 @@
           deleteEnvironment: function (id) {
             return post('DeleteEnvironment', { id: id });
           },
+          getApp: function(key) {
+            return get('GetApp',
+              {
+                key: key
+              })
+          },
+          getEnvironment: function(key) {
+            return get('GetEnvironment',
+              {
+                key: key
+              });
+          },
           getEnvironments: function () {
             return get('GetEnvironments');
           },
@@ -71,9 +83,8 @@
                 id: id
               });
           },
-          postConfiguration: function (id, config) {
-            config.id = id;
-            return post('WriteConfiguration', config);
+          postConfiguration: function (key, config) {
+            return post('WriteConfiguration?key=' + key, config);
           },
           postEnvironment: function (environment) {
             return post('WriteEnvironment', environment);

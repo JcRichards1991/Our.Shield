@@ -30,6 +30,6 @@
   </metadata>
   <files>
     <file src="App_Plugins\Shield\package.manifest" target="Content\App_Plugins\Shield" />
-    <file src="UI\Transforms\**\*.*" target="Content" />
+    <file src="Transforms\**\*.*" target="Content\Transforms" />
   </files>
 </package>

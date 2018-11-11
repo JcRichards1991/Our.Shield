@@ -1,4 +1,5 @@
-﻿using Our.Shield.Core.Models;
+﻿using System;
+using Our.Shield.Core.Models;
 using Umbraco.Core.Logging;
 using Umbraco.Web;
 
@@ -40,16 +41,19 @@ namespace Our.Shield.Core.Services
                         return umbracoContentService.Url((int) xpathId);
 
                     LogHelper.Error<UmbracoUrlService>($"Error: Unable to find content using xpath of '{umbracoUrl.Value}'", null);
-                    return null;
+                    break;
 
                 case UmbracoUrlTypes.ContentPicker:
                     if (int.TryParse(umbracoUrl.Value, out var id))
                         return umbracoContentService.Url(id);
 
                     LogHelper.Error<UmbracoUrlService>("Error: Unable to parse the selected unauthorized URL content picker item. Please ensure a valid content node is selected", null);
-                    return null;
+                    break;
+
+                default:
+                    LogHelper.Error<UmbracoUrlService>("Error: Unable to determine which method to use to get the unauthorized URL. Please ensure URL, XPath or Content Picker is selected", null);
+                    break;
             }
-            LogHelper.Error<UmbracoUrlService>("Error: Unable to determine which method to use to get the unauthorized URL. Please ensure URL, XPath or Content Picker is selected", null);
             return null;
         }
     }

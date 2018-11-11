@@ -151,11 +151,11 @@ namespace Our.Shield.BackofficeAccess.Models
                 : umbracoLocation;
 
 #if TRACE
-			Debug.WriteLine($"AddSoftWatches({job.Environment.Name}): hardLocation = {hardLocation}, softLocation = {softLocation}");
+            Debug.WriteLine($"AddSoftWatches({job.Environment.Name}): hardLocation = {hardLocation}, softLocation = {softLocation}");
 #endif
 
-			//Match Umbraco path for badly written Umbraco Packages, that only work with hardcoded /umbraco/backoffice
-			if (!softLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase) && !hardLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase))
+            //Match Umbraco path for badly written Umbraco Packages, that only work with hardcoded /umbraco/backoffice
+            if (!softLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase) && !hardLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase))
             {
                 SoftWatcher(job,
                     new Regex("^((" + umbracoLocation + "backoffice([\\w-/_]+))|(" + umbracoLocation + "[\\w-/_]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase),
@@ -181,10 +181,10 @@ namespace Our.Shield.BackofficeAccess.Models
                 config.Unauthorized.TransferType.Equals(TransferTypes.Rewrite),
                 true);
 
-			if (config.Enable && job.Environment.Enable)
-			{
-				job.ExceptionWebRequest(config.Unauthorized.Url);
-			}
+            if (config.Enable && job.Environment.Enable)
+            {
+                job.ExceptionWebRequest(config.Unauthorized.Url);
+            }
 
             //Add watch on the hard location
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, new Regex("^((" + hardLocation.TrimEnd('/') + "(/)?)|(" + hardLocation + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase), 20020, (count, httpApp) =>
@@ -243,24 +243,24 @@ namespace Our.Shield.BackofficeAccess.Models
             }
 
             //Add watch on the on-disk UmbracoPath location to do the security checking of the user's ip
-			job.ExceptionWebRequest(config.Unauthorized.Url);
+            job.ExceptionWebRequest(config.Unauthorized.Url);
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, hardLocationRegex, 21000, (count, httpApp) =>
             {
                 if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
                 {
                     return new WatchResponse(WatchResponse.Cycles.Continue);
                 }
-                
+
                 if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
                     return new WatchResponse(WatchResponse.Cycles.Continue);
-                
+
                 var url = new UmbracoUrlService().Url(config.Unauthorized.Url);
-                
+
                 if (url == null)
                 {
                     return new WatchResponse(WatchResponse.Cycles.Stop);
                 }
-                
+
                 if (!string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension) &&
                     (httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".css")
                      || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".map")
@@ -279,9 +279,9 @@ namespace Our.Shield.BackofficeAccess.Models
                     httpApp.Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     return new WatchResponse(WatchResponse.Cycles.Stop);
                 }
-                
+
                 job.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access the backoffice access url. Access was denied"));
-                
+
                 return new WatchResponse(config.Unauthorized);
             });
         }
@@ -296,7 +296,7 @@ namespace Our.Shield.BackofficeAccess.Models
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(_allowKey);
             job.UnwatchWebRequests();
-			job.UnexceptionWebRequest();
+            job.UnexceptionWebRequest();
 
             _resetterLock = 0;
 
