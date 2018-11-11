@@ -36,11 +36,11 @@ angular
               vm.loading = false;
             });
           },
-          viewError: function(id) {
+          viewError: function (id) {
             vm.loading = true;
-            shieldElmahResource.getError(id).then(function(response) {
-                vm.selectedError = response.data;
-                vm.loading = false;
+            shieldElmahResource.getError(id).then(function (response) {
+              vm.selectedError = response.data;
+              vm.loading = false;
             });
           },
           prevPage: function () {
