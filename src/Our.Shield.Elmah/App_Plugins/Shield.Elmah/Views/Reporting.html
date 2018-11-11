@@ -17,24 +17,24 @@
 
         <table class="table table-bordered table-hover">
           <thead>
-          <tr>
-            <th><localize key="Shield.Elmah.General.Table_HostHeader">Host</localize></th>
-            <th><localize key="Shield.Elmah.General.Table_CodeHeader">Code</localize></th>
-            <th><localize key="Shield.Elmah.General.Table_TypeHeader">Type</localize></th>
-            <th><localize key="Shield.Elmah.General.Table_ErrorHeader">Error</localize></th>
-            <th><localize key="Shield.Elmah.General.Table_DateHeader">Date</localize></th>
-            <th><localize key="Shield.Elmah.General.Table_TimeHeader">Time</localize></th>
-          </tr>
+            <tr>
+              <th><localize key="Shield.Elmah.General.Table_HostHeader">Host</localize></th>
+              <th><localize key="Shield.Elmah.General.Table_CodeHeader">Code</localize></th>
+              <th><localize key="Shield.Elmah.General.Table_TypeHeader">Type</localize></th>
+              <th><localize key="Shield.Elmah.General.Table_ErrorHeader">Error</localize></th>
+              <th><localize key="Shield.Elmah.General.Table_DateHeader">Date</localize></th>
+              <th><localize key="Shield.Elmah.General.Table_TimeHeader">Time</localize></th>
+            </tr>
           </thead>
           <tbody>
-          <tr class="animate-repeat" ng-repeat="error in vm.errors track by $index" ng-click="vm.selectedError = vm.errors[$index]" style="cursor: pointer;">
-            <td>{{ error.error._hostName }}</td>
-            <td>{{ error.error._statusCode }}</td>
-            <td>{{ error.error._typeName }}</td>
-            <td>{{ error.error._message }}</td>
-            <td>{{ error.error._time | date:'dd/MM/yyyy' }}</td>
-            <td>{{ error.error._time | date:'HH:mm' }}</td>
-          </tr>
+            <tr class="animate-repeat" ng-repeat="error in vm.errors track by $index" ng-click="vm.viewError(error.id)" style="cursor: pointer;">
+              <td>{{ error.error._hostName }}</td>
+              <td>{{ error.error._statusCode }}</td>
+              <td>{{ error.error._typeName }}</td>
+              <td>{{ error.error._message }}</td>
+              <td>{{ error.error._time | date:'dd/MM/yyyy' }}</td>
+              <td>{{ error.error._time | date:'HH:mm' }}</td>
+            </tr>
           </tbody>
         </table>
         <div class="flex justify-center">

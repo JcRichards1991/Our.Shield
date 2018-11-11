@@ -1,16 +1,16 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Our.Shield.TestSite")]
+[assembly: AssemblyTitle("Our.Shield.Site")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Our.Shield.TestSite")]
-[assembly: AssemblyCopyright("Copyright �  2016")]
+[assembly: AssemblyProduct("Our.Shield.Site")]
+[assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("bc5e53a2-8250-4179-9fce-ad51d8a8650c")]
+[assembly: Guid("9735205c-f3b7-4bde-ad97-2981acea0394")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -44,8 +44,9 @@
     <Reference Include="businesslogic, Version=1.0.6136.27244, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.5.4\lib\businesslogic.dll</HintPath>
     </Reference>
-    <Reference Include="ClientDependency.Core, Version=1.9.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ClientDependency.1.9.2\lib\net45\ClientDependency.Core.dll</HintPath>
+    <Reference Include="ClientDependency.Core, Version=1.9.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClientDependency.1.9.7\lib\net45\ClientDependency.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="ClientDependency.Core.Mvc, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClientDependency-Mvc5.1.8.0.0\lib\net45\ClientDependency.Core.Mvc.dll</HintPath>
@@ -128,8 +129,8 @@
     <Reference Include="MiniProfiler, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
       <HintPath>..\packages\MiniProfiler.2.1.0\lib\net40\MiniProfiler.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.9.10.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.10\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -230,6 +231,9 @@
     <Compile Include="Attributes\CustomAppTabAttribute.cs" />
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
     <Compile Include="PackageActions\AddShieldConfigurationSection.cs" />
+    <Compile Include="Persistence\Data\Migrations\Dto\Configuration\Configuration107.cs" />
+    <Compile Include="Persistence\Data\Migrations\Dto\Environment\Environment107.cs" />
+    <Compile Include="Persistence\Data\Migrations\Versions\Migration107.cs" />
     <Compile Include="Settings\Configuration.cs" />
     <Compile Include="Settings\IpAddressValidation.cs" />
     <Compile Include="Settings\IpAddressValidationElement.cs" />
@@ -247,18 +251,18 @@
     <Compile Include="Services\UmbracoUrlService.cs" />
     <Compile Include="Services\UmbracoContentService.cs" />
     <Compile Include="Models\WatchResponse.cs" />
-    <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration100.cs" />
-    <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration101.cs" />
-    <Compile Include="Persistance\Data\Migrations\Dto\Configuration\Configuration103.cs" />
-    <Compile Include="Persistance\Data\Migrations\Dto\Domain\Domain100.cs" />
-    <Compile Include="Persistance\Data\Migrations\Dto\Environment\Environment100.cs" />
-    <Compile Include="Persistance\Data\Migrations\Dto\Environment\Environment103.cs" />
-    <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal100.cs" />
-    <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal101.cs" />
-    <Compile Include="Persistance\Data\Migrations\Dto\Journal\Journal103.cs" />
-    <Compile Include="Persistance\Data\Migrations\MigrationExtensions.cs" />
-    <Compile Include="Persistance\Data\Migrations\Versions\Migration103Create.cs" />
-    <Compile Include="Persistance\Data\Migrations\Versions\Migration103.cs" />
+    <Compile Include="Persistence\Data\Migrations\Dto\Configuration\Configuration100.cs" />
+    <Compile Include="Persistence\Data\Migrations\Dto\Configuration\Configuration101.cs" />
+    <Compile Include="Persistence\Data\Migrations\Dto\Configuration\Configuration103.cs" />
+    <Compile Include="Persistence\Data\Migrations\Dto\Domain\Domain100.cs" />
+    <Compile Include="Persistence\Data\Migrations\Dto\Environment\Environment100.cs" />
+    <Compile Include="Persistence\Data\Migrations\Dto\Environment\Environment103.cs" />
+    <Compile Include="Persistence\Data\Migrations\Dto\Journal\Journal100.cs" />
+    <Compile Include="Persistence\Data\Migrations\Dto\Journal\Journal101.cs" />
+    <Compile Include="Persistence\Data\Migrations\Dto\Journal\Journal103.cs" />
+    <Compile Include="Persistence\Data\Migrations\MigrationExtensions.cs" />
+    <Compile Include="Persistence\Data\Migrations\Versions\Migration103Create.cs" />
+    <Compile Include="Persistence\Data\Migrations\Versions\Migration103.cs" />
     <Compile Include="Settings\IShieldSettings.cs" />
     <Compile Include="Settings\RequestHeaderElement.cs" />
     <Compile Include="Settings\RequestHeaderElementCollection.cs" />
@@ -277,18 +281,21 @@
     <Compile Include="Models\IFrisk.cs" />
     <Compile Include="Models\IJournal.cs" />
     <Compile Include="Models\Journal.cs" />
-    <Compile Include="Persistance\Business\DbContext.cs" />
-    <Compile Include="Persistance\Business\EnvironmentContext.cs" />
-    <Compile Include="Persistance\Business\DomainContext.cs" />
-    <Compile Include="Persistance\Data\Dto\Domain.cs" />
-    <Compile Include="Persistance\Data\Dto\UmbracoDomainDto.cs" />
-    <Compile Include="Persistance\Data\Dto\Environment.cs" />
-    <Compile Include="Persistance\Data\Migrations\Migration.cs" />
+    <Compile Include="Persistence\Business\DbContext.cs" />
+    <Compile Include="Persistence\Business\EnvironmentContext.cs" />
+    <Compile Include="Persistence\Business\DomainContext.cs" />
+    <Compile Include="Persistence\Data\Dto\Domain.cs" />
+    <Compile Include="Persistence\Data\Dto\UmbracoDomainDto.cs" />
+    <Compile Include="Persistence\Data\Dto\Environment.cs" />
+    <Compile Include="Persistence\Data\Migrations\Migration.cs" />
     <Compile Include="Attributes\AppEditorAttribute.cs" />
     <Compile Include="Attributes\AppAssetAttribute.cs" />
     <Compile Include="UI\ShieldApiController.cs" />
     <Compile Include="UI\Register.cs" />
-    <None Include="UI\Transforms\Config\shield.config">
+    <None Include="App_Plugins\Shield\BackOffice\Scripts\Shield.min.js.map">
+      <DependentUpon>Shield.min.js</DependentUpon>
+    </None>
+    <None Include="Transforms\Config\shield.config">
       <SubType>Designer</SubType>
     </None>
     <Compile Include="UI\TreeController.cs" />
@@ -298,57 +305,68 @@
     <Compile Include="Models\App.cs" />
     <Compile Include="Operation\Frisk.cs" />
     <Compile Include="Operation\WebRequestHandler.cs" />
-    <Compile Include="Persistance\Business\ConfigurationContext.cs" />
-    <Compile Include="Persistance\Business\JournalContext.cs" />
-    <Compile Include="Persistance\Data\Dto\Configuration.cs" />
-    <Compile Include="Persistance\Data\Dto\Journal.cs" />
+    <Compile Include="Persistence\Business\ConfigurationContext.cs" />
+    <Compile Include="Persistence\Business\JournalContext.cs" />
+    <Compile Include="Persistence\Data\Dto\Configuration.cs" />
+    <Compile Include="Persistence\Data\Dto\Journal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\TreeView.cs" />
+    <Compile Include="UI\ApiResponseModels.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="UI\Transforms\Config\Dashboard.config.install.xdt" />
-    <None Include="UI\Transforms\Config\Dashboard.config.uninstall.xdt" />
+    <None Include="Transforms\Config\Dashboard.config.install.xdt" />
+    <None Include="Transforms\Config\Dashboard.config.uninstall.xdt" />
     <None Include="App_Plugins\Shield\package.manifest" />
     <None Include="Our.Shield.Core.nuspec">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="UI\Scss\Partials\_ip-access-control-ranges.scss" />
-    <None Include="UI\Scss\Partials\_dashboard.scss" />
-    <None Include="UI\Scss\Partials\_domain-listing-table.scss" />
-    <None Include="UI\Scss\Partials\_editor-header.scss" />
-    <None Include="UI\Scss\Partials\_sort-panel-overview.scss" />
-    <None Include="UI\Scss\Partials\_umb-table.scss" />
-    <None Include="UI\Scss\Partials\_transfer-url.scss" />
-    <None Include="UI\Scss\Styles.scss" />
-    <None Include="UI\Transforms\Web.config.uninstall.xdt" />
-    <None Include="UI\Transforms\Web.config.install.xdt" />
+    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_ip-access-control-ranges.scss" />
+    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_dashboard.scss" />
+    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_domain-listing-table.scss" />
+    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_editor-header.scss" />
+    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_sort-panel-overview.scss" />
+    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_umb-table.scss" />
+    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_transfer-url.scss" />
+    <None Include="App_Plugins\Shield\BackOffice\Css\Shield.scss" />
+    <None Include="Transforms\Web.config.uninstall.xdt" />
+    <None Include="Transforms\Web.config.install.xdt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\Shield\Backoffice\Css\Shield.css" />
-    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Journal.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Dashboards\Environments.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Scripts\Shield.js" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\Create.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\Delete.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Views\Dialogs\EditIpException.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\IpAccessControl.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\IpAccessControlRanges.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\TransferUrl.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Views\Directives\UmbracoUrl.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Views\EditApp.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Views\EditEnvironment.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\Edit.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Shield\Sort.html" />
-    <Content Include="App_Plugins\Shield\Backoffice\Views\Environment.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Css\Shield.css" />
+    <Content Include="App_Plugins\Shield\BackOffice\Css\Shield.min.css">
+      <DependentUpon>Shield.css</DependentUpon>
+    </Content>
+    <Content Include="App_Plugins\Shield\BackOffice\Dashboards\Journal.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Dashboards\Environments.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Shield\App.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Shield\Environment.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Scripts\ColorIndicator.js" />
+    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Dashboard.Controllers.js" />
+    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Dialog.Controllers.js" />
+    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Directives.js" />
+    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Editors.Controllers.js" />
+    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Resources.js" />
+    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Shield.js" />
+    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Shield.min.js">
+      <DependentUpon>Shield.js</DependentUpon>
+    </Content>
+    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Tree.Menu.Controllers.js" />
+    <Content Include="App_Plugins\Shield\BackOffice\Shield\Create.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Shield\Delete.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Shield\CreateEnvironment.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Views\Dialogs\EditIpException.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Views\Directives\IpAccessControl.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Views\Directives\IpAccessControlRanges.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Views\Directives\TransferUrl.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Views\Directives\UmbracoUrl.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Views\EditApp.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Views\EditEnvironment.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Shield\Sort.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Views\AppListing.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="UI\Scripts\ColorIndicator.js" />
-    <Content Include="UI\Scripts\Controllers.js" />
-    <Content Include="UI\Scripts\Directives.js" />
-    <Content Include="UI\Scripts\Resources.js" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

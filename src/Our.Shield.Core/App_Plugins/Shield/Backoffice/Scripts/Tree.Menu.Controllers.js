@@ -13,19 +13,17 @@
         angular.extend(vm, {
           create: function () {
             navigationService.hideDialog();
-            $location.path('/shield/shield/edit/-100');
+            $location.path('/shield/shield/CreateEnvironment/');
           }
         });
       }
-    ]
-  );
+    ]);
 
 angular
   .module('umbraco')
   .controller('Shield.Editors.Overview.Delete',
     [
       '$scope',
-      '$routeParams',
       '$route',
       '$location',
       'treeService',
@@ -34,7 +32,6 @@ angular
       'notificationsService',
       'shieldResource',
       function ($scope,
-        $routeParams,
         $route,
         $location,
         treeService,
@@ -81,8 +78,7 @@ angular
           }
         });
       }
-    ]
-  );
+    ]);
 
 angular
   .module('umbraco')
@@ -130,5 +126,4 @@ angular
           }
         });
       }
-    ]
-  );
+    ]);

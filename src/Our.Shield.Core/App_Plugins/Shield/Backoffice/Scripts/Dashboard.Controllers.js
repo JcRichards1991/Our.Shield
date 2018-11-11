@@ -9,21 +9,17 @@
         $location,
         shieldResource) {
         var vm = this;
-
         angular.extend(vm, {
           loading: true,
-          Description: '',
-          Environments: [],
+          environments: [],
           init: function () {
-            shieldResource.getView('0').then(function (response) {
-              vm.description = response.data.description;
-              vm.environments = response.data.environments;
-
+            shieldResource.getEnvironments().then(function (response) {
+              vm.environments = response;
               vm.loading = false;
             });
           },
-          editItem: function (item) {
-            $location.path('/shield/shield/edit/' + item.id);
+          editEnvironment: function (environmentKey) {
+            $location.path('/shield/shield/environment/' + environmentKey);
           }
         });
       }
@@ -94,8 +90,11 @@ angular
 
             vm.getListing();
           },
-          editItem: function (item) {
-            $location.path('/shield/shield/edit/' + item.id);
+          editEnvironment: function (key) {
+            $location.path('/shield/shield/environment/' + key);
+          },
+          editApp: function (key) {
+            $location.path('/shield/shield/app/' + key);
           },
           nextPage: function (page) {
             vm.pageNumber = page;
@@ -119,12 +118,14 @@ angular
           },
           getListing: function () {
             vm.loading = true;
-            shieldResource.getJournals(vm.id, vm.pageNumber, vm.options.orderBy, vm.options.orderDirection).then(function (response) {
-              vm.items = response.data.items;
-              vm.totalPages = response.data.totalPages;
-              vm.type = response.data.type;
-              vm.loading = false;
-            });
+            shieldResource
+              .getJournals(vm.id, vm.pageNumber, vm.options.orderBy, vm.options.orderDirection)
+              .then(function (response) {
+                vm.items = response.items;
+                vm.totalPages = response.totalPages;
+                vm.type = response.type;
+                vm.loading = false;
+              });
           }
         });
       }

@@ -30,11 +30,22 @@ angular
           selectedError: null,
           getErrors: function () {
             vm.loading = true;
-            shieldElmahResource.getErrors(vm.pageNumber, vm.resultsPerPage).then(function (response) {
-              vm.errors = response.data.errors;
-              vm.totalPages = response.data.totalPages;
-              vm.loading = false;
-            });
+            shieldElmahResource
+              .getErrors(vm.pageNumber, vm.resultsPerPage)
+              .then(function (response) {
+                vm.errors = response.errors;
+                vm.totalPages = response.totalPages;
+                vm.loading = false;
+              });
+          },
+          viewError: function (id) {
+            vm.loading = true;
+            shieldElmahResource
+              .getError(id)
+              .then(function (error) {
+                vm.selectedError = error;
+                vm.loading = false;
+              });
           },
           prevPage: function () {
             vm.pageNumber--;
@@ -50,10 +61,12 @@ angular
           },
           generateTestException: function () {
             vm.loading = true;
-            shieldElmahResource.generateTestException().then(function () {
-              vm.getErrors();
-              vm.loading = false;
-            });
+            shieldElmahResource
+              .generateTestException()
+              .then(function () {
+                vm.getErrors();
+                vm.loading = false;
+              });
           }
         });
       }

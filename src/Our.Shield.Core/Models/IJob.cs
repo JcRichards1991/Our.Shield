@@ -27,6 +27,11 @@ namespace Our.Shield.Core.Models
         IApp App { get; }
 
         /// <summary>
+        /// Unique Identifier
+        /// </summary>
+        Guid Key { get; }
+
+        /// <summary>
         /// Writes a Apps configuration to the database
         /// </summary>
         /// <param name="config">The configuration to write</param>

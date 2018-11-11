@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Our.Shield.Core.Models
@@ -13,6 +14,12 @@ namespace Our.Shield.Core.Models
         /// </summary>
         [JsonProperty("id")]
         int Id { get; }
+
+        /// <summary>
+        /// Unique Identifier
+        /// </summary>
+        [JsonProperty("key")]
+        Guid Key { get; }
 
         /// <summary>
         /// The Name of the Environment
@@ -33,7 +40,7 @@ namespace Our.Shield.Core.Models
         IEnumerable<IDomain> Domains { get; }
 
         /// <summary>
-        /// The sort order of the enviornment
+        /// The sort order of the environment
         /// </summary>
         [JsonProperty("sortOrder")]
         int SortOrder { get; }
@@ -45,13 +52,13 @@ namespace Our.Shield.Core.Models
         bool Enable { get; }
 
         /// <summary>
-        /// Whether or not the environment should continue proccessing
+        /// Whether or not the environment should continue processing
         /// </summary>
         [JsonProperty("continueProcessing")]
         bool ContinueProcessing { get; }
 
         /// <summary>
-        /// The Environment Color indicator as hexedecimal
+        /// The Environment Color indicator as hexadecimal
         /// </summary>
         [JsonProperty("colorIndicator")]
         string ColorIndicator { get; }

@@ -1,60 +1,30 @@
-﻿using Newtonsoft.Json;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Our.Shield.Core.Persistence.Data.Migrations.Dto.Environment;
 
 namespace Our.Shield.Core.Models
 {
-    /// <inheritdoc />
-    /// <summary>
-    /// Environment Class
-    /// </summary>
     public class Environment : IEnvironment
     {
-        /// <inheritdoc />
-        /// <summary>
-        /// The Id of the Environment
-        /// </summary>
-        [JsonProperty("id")]
-        public int Id { get; set; }
+        public int Id { get; internal set; }
+        
+        public string Name { get; internal set; }
 
-        /// <inheritdoc />
-        /// <summary>
-        /// The Name of the Environment
-        /// </summary>
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        public Guid Key { get; internal set; }
+        
+        public string Icon { get; internal set; }
+        
+        public IEnumerable<IDomain> Domains { get; internal set; }
+        
+        public int SortOrder { get; internal set; }
+        
+        public bool Enable { get; internal set; }
+        
+        public bool ContinueProcessing { get; internal set; }
+        
+        public string ColorIndicator { get; internal set; }
 
-        /// <inheritdoc />
-        /// <summary>
-        /// The Icon of the Environment
-        /// </summary>
-        [JsonProperty("icon")]
-        public string Icon { get; set; }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// The Domains for the Environment
-        /// </summary>
-        [JsonProperty("domains")]
-        public IEnumerable<IDomain> Domains { get; set; }
-
-        [JsonProperty("sortOrder")]
-        public int SortOrder { get; set; }
-
-        [JsonProperty("enable")]
-        public bool Enable { get; set; }
-
-        [JsonProperty("continueProcessing")]
-        public bool ContinueProcessing { get; set; }
-
-        [JsonProperty("colorIndicator")]
-        public string ColorIndicator { get; set; }
-
-        /// <summary>
-        /// Checks whether or not two Environments are the same
-        /// </summary>
-        /// <param name="other">The object to test against</param>
-        /// <returns>True if equals; Otherwise, False</returns>
         public override bool Equals(object other)
         {
             switch (other)
@@ -69,31 +39,20 @@ namespace Our.Shield.Core.Models
             return false;
         }
 
-        /// <summary>
-        /// Gets the Hascode for the Environment
-        /// </summary>
-        /// <returns>The Environment Id</returns>
         public override int GetHashCode()
         {
             // ReSharper disable once NonReadonlyMemberInGetHashCode
             return Id;
         }
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
         internal Environment()
         {
         }
-
-        /// <summary>
-        /// Creates an Environment object
-        /// </summary>
-        /// <param name="data">The DTO object to create the Environment</param>
-        // ReSharper disable once SuggestBaseTypeForParameter
-        internal Environment(Persistance.Data.Dto.Environment data)
+        
+        internal Environment(Environment107 data)
         {
             Id = data.Id;
+            Key = data.Key;
             Name = data.Name;
             Icon = data.Icon;
             Domains = data.Domains.Select(x => new Domain(x));

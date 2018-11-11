@@ -106,37 +106,6 @@ angular
 
 angular
   .module('umbraco.directives')
-  .directive('shieldIpaddressduplicate',
-    [
-      function () {
-        return {
-          restrict: 'A',
-          require: 'ngModel',
-          link: function (scope, elm, attr, ctrl) {
-            ctrl.$parsers.push(function (modelValue) {
-              if (modelValue === '' || modelValue === undefined) {
-                ctrl.$setValidity('shieldIpaddressduplicate', true);
-                return modelValue;
-              }
-
-              var ipAddresses = angular.fromJson(attr.shieldIpaddressduplicate);
-
-              if (ipAddresses.filter((x) => x.ipAddress === modelValue)[0] !== undefined) {
-                ctrl.$setValidity('shieldIpaddressduplicate', false);
-                return modelValue;
-              }
-
-              ctrl.$setValidity('shieldIpaddressduplicate', true);
-              return modelValue;
-            });
-          }
-        };
-      }
-    ]
-  );
-
-angular
-  .module('umbraco.directives')
   .directive('shieldIpAccessControl',
     [
       function () {
@@ -240,8 +209,18 @@ angular
             model: '='
           },
           link: function (scope) {
-            angular.extend(scope.model, {
 
+            var mntpValue = null;
+
+            if (scope.model === null)
+              scope.model = { value: '' };
+            else
+              mntpValue = parseInt(scope.model.value);
+
+            if (mntpValue === null || isNaN(mntpValue))
+              mntpValue = '';
+
+            angular.extend(scope.model, {
               contentPickerProperty: {
                 view: 'contentpicker',
                 alias: 'contentPicker',
@@ -257,7 +236,10 @@ angular
                   minNumber: 1,
                   maxNumber: 1
                 },
-                value: scope.model.value
+                value: '' + mntpValue
+              },
+              urlTypeChange: function() {
+                scope.model.contentPickerProperty.value = '';
               }
             });
 
