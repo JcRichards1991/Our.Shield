@@ -39,7 +39,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bunder And Minifier", "Bund
 		..\compilerconfig.json = ..\compilerconfig.json
 		..\compilerconfig.json.bindings = ..\compilerconfig.json.bindings
 		..\compilerconfig.json.defaults = ..\compilerconfig.json.defaults
-		..\App_Plugins\Shield\Backoffice\Scripts\Shield.js = ..\App_Plugins\Shield\Backoffice\Scripts\Shield.js
 	EndProjectSection
 EndProject
 Global
