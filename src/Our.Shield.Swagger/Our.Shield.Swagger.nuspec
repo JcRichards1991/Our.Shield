@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Jonathan Richards</authors>
+    <owners>Jonathan Richards</owners>
+    <licenseUrl>https://raw.githubusercontent.com/JcRichards1991/Our.Shield/master/Docs/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>$version$ release</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>Umbraco UmbracoCms Security Swagger</tags>
+    <dependencies>
+      <dependency id="Our.Shield.Core" version="1.0.6" />
+      <dependency id="Swashbuckle" version="5.0.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="App_Plugins\Shield.Elmah\package.manifest" target="Content\App_Plugins\Shield.Elmah" />
+  </files>
+</package>

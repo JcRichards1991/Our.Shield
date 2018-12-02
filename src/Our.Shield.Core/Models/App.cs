@@ -2,6 +2,8 @@
 using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using Umbraco.Core;
 using Umbraco.Core.Persistence.Migrations;
 
 namespace Our.Shield.Core.Models
@@ -90,5 +92,7 @@ namespace Our.Shield.Core.Models
             get => _migrations;
             set => _migrations = value;
         }
+
+		public string Localize(string area, string key) => ApplicationContext.Current.Services.TextService.Localize($"{area}/{key}", CultureInfo.CurrentCulture);
     }
 }

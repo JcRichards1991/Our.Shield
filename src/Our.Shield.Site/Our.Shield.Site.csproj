@@ -156,6 +156,9 @@
     <Reference Include="SQLCE4Umbraco, Version=1.0.6879.21988, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.12.4\lib\net45\SQLCE4Umbraco.dll</HintPath>
     </Reference>
+    <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swashbuckle.Core.5.6.0\lib\net40\Swashbuckle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System.Collections.Immutable, Version=1.1.36.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.1.36\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
     </Reference>
@@ -247,6 +250,9 @@
     </Reference>
     <Reference Include="UmbracoExamine, Version=0.7.0.21988, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.12.4\lib\net45\UmbracoExamine.dll</HintPath>
+    </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.0\lib\net40\WebActivatorEx.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -367,6 +373,10 @@
       <Project>{b933eb8c-a6b0-4e0a-bf09-0a3097697c29}</Project>
       <Name>Our.Shield.SiteMaintenance</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Our.Shield.Swagger\Our.Shield.Swagger.csproj">
+      <Project>{ea5e50cf-3c82-4d89-98dc-04145a692811}</Project>
+      <Name>Our.Shield.Swagger</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -409,9 +419,11 @@ xcopy "$(solutiondir)Our.Shield.BackofficeAccess\App_Plugins\*.*" "$(ProjectDir)
 xcopy "$(solutiondir)Our.Shield.MediaProtection\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
 xcopy "$(solutiondir)Our.Shield.FrontendAccess\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
 xcopy "$(solutiondir)Our.Shield.GoogleSafeBrowsing\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
-xcopy "$(solutiondir)Our.Shield.ScraperDefense\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
+rem xcopy "$(solutiondir)Our.Shield.ScraperDefense\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
 xcopy "$(solutiondir)Our.Shield.Elmah\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
-xcopy "$(solutiondir)Our.Shield.SiteMaintenance\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e</PostBuildEvent>
+rem xcopy "$(solutiondir)Our.Shield.SiteMaintenance\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
+xcopy "$(solutiondir)Our.Shield.Swagger\App_Plugins\*.*" "$(ProjectDir)/App_Plugins" /Y /e
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
