@@ -17,8 +17,10 @@ angular
   .controller('Shield.Editors.Elmah.Reporting',
     [
       '$scope',
+      '$timeout',
       'shieldElmahResource',
       function ($scope,
+        $timeout,
         shieldElmahResource) {
         var vm = this;
         angular.extend(vm, {
@@ -44,6 +46,12 @@ angular
               .getError(id)
               .then(function (error) {
                 vm.selectedError = error;
+                if (vm.selectedError.error._webHostHtmlMessage) {
+                  $timeout(function() {
+                    var iframe = document.getElementById('webHostingHtmlIframe');
+                    iframe.contentWindow.document.write(vm.selectedError.error._webHostHtmlMessage);
+                  });
+                }
                 vm.loading = false;
               });
           },

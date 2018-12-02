@@ -13,6 +13,7 @@
     <releaseNotes>
       <![CDATA[
       - Fixes issue with the stack trace not displaying when viewing an exception in more details with Elmah SqlServer
+      - Update to display "Web Host Html Message" in the detailed view (if present logged)
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
