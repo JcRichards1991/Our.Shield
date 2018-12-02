@@ -1,0 +1,48 @@
+﻿<div class="shield-editor" ng-controller="shield.editors.app.edit as vm" ng-init="vm.init()">
+  <umb-load-indicator ng-show="vm.loading"></umb-load-indicator>
+
+  <form ng-hide="vm.loading"
+        name="appForm"
+        ng-submit="vm.save()"
+        novalidate
+        val-form-manager>
+
+    <umb-editor-view umb-tabs>
+
+      <umb-editor-header name="vm.app.name"
+                         tabs="vm.app.tabs"
+                         name-locked="true"
+                         hide-icon="true"
+                         hide-description="true"
+                         hide-alias="true">
+      </umb-editor-header>
+
+      <umb-editor-container>
+        
+        <umb-tabs-content class="form-horizontal" view="true">
+          <umb-tab ng-repeat="tab in vm.app.tabs track by $index" id="tab{{tab.id}}" rel="{{tab.id}}">
+            <div ng-include="tab.view"></div>
+          </umb-tab>
+        </umb-tabs-content>
+      </umb-editor-container>
+
+      <umb-editor-footer>
+        <umb-editor-footer-content-left>
+          <umb-breadcrumbs ancestors="vm.ancestors"
+                           entity-type="shield">
+          </umb-breadcrumbs>
+        </umb-editor-footer-content-left>
+
+        <umb-editor-footer-content-right>
+          <umb-button label="{{vm.button.label}}"
+                      label-key="{{vm.button.labelKey}}"
+                      type="submit"
+                      button-style="success"
+                      shortcut="ctrl+s"
+                      state="vm.button.state">
+          </umb-button>
+        </umb-editor-footer-content-right>
+      </umb-editor-footer>
+    </umb-editor-view>
+  </form>
+</div>

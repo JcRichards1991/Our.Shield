@@ -11,7 +11,7 @@ namespace Our.Shield.Core.Models
 {
     /// <inheritdoc />
     /// <summary>
-    /// Class that conatins each of our executions
+    /// Class that contains each of our executions
     /// </summary>
     internal class Job : IJob
     {
@@ -23,6 +23,8 @@ namespace Our.Shield.Core.Models
 
         /// <inheritdoc />
         public IApp App { get; set; }
+
+        public Guid Key { get; internal set; }
 
         internal Type ConfigType;
 
@@ -38,6 +40,7 @@ namespace Our.Shield.Core.Models
             return new Job
             {
                 Id = Id,
+                Key = Key,
                 Environment = Environment,
                 App = app,
                 ConfigType = ConfigType,

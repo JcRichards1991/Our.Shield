@@ -1,6 +1,6 @@
 ﻿<div class="umb-el-wrap control-group umb-control-group">
     <div>
-        <h4 ng-bind-html="vm.description"></h4>
+        <h4 ng-bind-html="vm.app.description"></h4>
     </div>
 </div>
 
@@ -14,11 +14,12 @@
         </label>
         <div class="controls">
             <div class="umb-editor umb-checkbox">
-                <input type="checkbox" id="enable" ng-model="vm.configuration.enable" />
+                <input type="checkbox" id="enable" ng-model="vm.app.configuration.enable" />
             </div>
         </div>
     </div>
 </div>
-<div ng-if="vm.configuration.enable == true">
-    <shield-app view="vm.appView" configuration="vm.configuration"></shield-app>
+
+<div ng-if="vm.app.configuration.enable == true">
+    <shield-app view="tab.configView" configuration="vm.app.configuration"></shield-app>
 </div>

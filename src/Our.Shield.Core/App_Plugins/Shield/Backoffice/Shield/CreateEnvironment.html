@@ -1,0 +1,36 @@
+﻿<div class="shield-editor" ng-controller="shield.editors.environment.create as vm" ng-init="vm.init()">
+  <umb-load-indicator ng-show="vm.loading"></umb-load-indicator>
+
+  <umb-editor-view ng-hide="vm.loading">
+    <form name="createEnvironmentForm"
+          ng-submit="vm.save(createEnvironmentForm)"
+          novalidate
+          val-form-manager>
+
+      <umb-editor-header name="vm.environment.name"
+                         name-locked="false"
+                         hide-description="true"
+                         hide-alias="true"
+                         icon="vm.environment.icon">
+      </umb-editor-header>
+
+      <umb-editor-container>
+        <div class="form-horizontal" ng-include="'/App_Plugins/Shield/Backoffice/Views/EditEnvironment.html?version=1.0.6'"></div>
+      </umb-editor-container>
+
+      <umb-editor-footer>
+        <umb-editor-footer-content-right>
+          <umb-button label="{{vm.button.label}}"
+                      label-key="{{vm.button.labelKey}}"
+                      type="submit"
+                      button-style="success"
+                      shortcut="ctrl+s"
+                      state="vm.button.state">
+          </umb-button>
+        </umb-editor-footer-content-right>
+
+      </umb-editor-footer>
+    </form>
+
+  </umb-editor-view>
+</div>

@@ -1,5 +1,5 @@
 ﻿<div class="umb-editor transfer-url-type-option">
-    <select id="urlType" name="urlType" ng-model="model.type" required shield-convert-to-number>
+    <select id="urlType" name="urlType" ng-model="model.type" ng-change="model.urlTypeChange()" required shield-convert-to-number>
         <option value="0">Url</option>
         <option value="1">XPath</option>
         <option value="2">Content Picker</option>

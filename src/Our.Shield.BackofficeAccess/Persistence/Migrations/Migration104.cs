@@ -1,5 +1,6 @@
 ﻿using Our.Shield.BackofficeAccess.Models;
 using Our.Shield.Core.Models;
+using Our.Shield.Core.Persistence.Business;
 using System.Linq;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence.Migrations;
@@ -8,7 +9,7 @@ using Umbraco.Core.Persistence.SqlSyntax;
 namespace Our.Shield.BackofficeAccess.Persistence.Migrations
 {
     [Migration("1.0.0.4", 0, nameof(Shield) + nameof(BackofficeAccess))]
-    public class Migration104 : MigrationBase
+    internal class Migration104 : MigrationBase
     {
         public Migration104(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
         {
@@ -16,7 +17,7 @@ namespace Our.Shield.BackofficeAccess.Persistence.Migrations
 
         public override void Up()
         {
-            var context = Core.Persistance.Business.DbContext.Instance.Configuration;
+            var context = DbContext.Instance.Configuration;
             context.ConfigMapper("BackofficeAccess", new Models.Configuration103(), dbData =>
             {
                 var oldData = dbData as Models.Configuration103;

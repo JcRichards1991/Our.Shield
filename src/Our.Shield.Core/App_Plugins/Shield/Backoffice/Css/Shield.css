@@ -1,4 +1,4 @@
-.shield-dashboard div.umb-table div.umb-table-body div.shield-domain-listing ul {
+﻿.shield-dashboard div.umb-table div.umb-table-body div.shield-domain-listing ul {
   margin-left: 0; }
 
 table.domains-container {
@@ -28,7 +28,7 @@ table.domains-container {
   margin-right: 20px;
   position: absolute;
   top: 24px;
-  right: 0px; }
+  right: 0; }
 
 table.ipaddress-container {
   width: 75%;
