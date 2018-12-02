@@ -216,6 +216,9 @@
   <ItemGroup>
     <Content Include="App_Plugins\Shield.Swagger\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.Swagger\Scripts\Swagger.js" />
+    <Content Include="App_Plugins\Shield.Swagger\Scripts\Swagger.min.js">
+      <DependentUpon>Swagger.js</DependentUpon>
+    </Content>
     <Content Include="App_Plugins\Shield.Swagger\Views\Swagger.html" />
   </ItemGroup>
   <ItemGroup>

@@ -1,1 +1,1 @@
-﻿///<binding BeforeBuild='src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Css/Shield.scss, src/Our.Shield.MediaProtection/App_Plugins/Shield.MediaProtection/Css/MediaProtection.scss' />
+﻿///<binding BeforeBuild='Scss' ProjectOpened='Scss' />

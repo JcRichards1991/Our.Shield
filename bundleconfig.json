@@ -40,5 +40,11 @@
       "src/Our.Shield.MediaProtection/App_Plugins/Shield.MediaProtection/Scripts/Controllers.js"
     ],
     "sourceMap": true
+  },
+  {
+    "outputFileName": "src/Our.Shield.Swagger/App_Plugins/Shield.Swagger/Scripts/Swagger.min.js",
+    "inputFiles": [
+      "src/Our.Shield.Swagger/App_Plugins/Shield.Swagger/Scripts/Swagger.js"
+    ]
   }
 ]

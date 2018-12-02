@@ -10,7 +10,7 @@ using Umbraco.Core;
 
 namespace Our.Shield.Swagger.Models
 {
-	[AppEditor("/App_Plugins/Shield.Swagger/Views/Swagger.html?version=1.0.6")]
+    [AppEditor("/App_Plugins/Shield.Swagger/Views/Swagger.html?version=1.0.6")]
     [AppJournal]
     public class SwaggerApp : App<SwaggerConfiguration>
     {
@@ -60,13 +60,10 @@ namespace Our.Shield.Swagger.Models
             var regex = new Regex("^/swagger", RegexOptions.IgnoreCase);
 
             if (!c.Enable || !job.Environment.Enable)
-			{
-                job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500000, (count, httpApp) =>
-                {
-                    return new WatchResponse(WatchResponse.Cycles.Error);
-                });
+            {
+                job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500000, (count, httpApp) => new WatchResponse(WatchResponse.Cycles.Error));
                 return true;
-			}
+            }
 
             if (!(c is SwaggerConfiguration config))
             {
@@ -75,9 +72,9 @@ namespace Our.Shield.Swagger.Models
             }
 
             foreach (var error in new IpAccessControlService().InitIpAccessControl(config.IpAccessRules))
-			{
+            {
                 job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
-			}
+            }
 
 
             if (config.IpAccessRules.Exceptions.Any())
