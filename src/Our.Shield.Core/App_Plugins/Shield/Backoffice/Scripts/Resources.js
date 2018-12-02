@@ -48,8 +48,8 @@
         };
 
         return {
-          deleteEnvironment: function (id) {
-            return post('DeleteEnvironment', { id: id });
+          deleteEnvironment: function (key) {
+            return post('DeleteEnvironment?key=' + key);
           },
           getApp: function (key) {
             return get('GetApp',

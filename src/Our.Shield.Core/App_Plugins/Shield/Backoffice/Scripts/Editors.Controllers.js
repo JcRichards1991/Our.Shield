@@ -25,7 +25,6 @@
           {
             environmentKey: $routeParams.id,
             editing: $routeParams.edit === 'true',
-            creating: $routeParams.create === 'true',
             loading: true,
             environment: {},
             path: [],
@@ -58,15 +57,6 @@
               state: 'init'
             },
             init: function () {
-              if (vm.creating) {
-                vm.button.labelKey = 'general_create';
-                localizationService.localize(vm.button.labelKey).then(function (value) {
-                  vm.button.label = value;
-                  vm.loading = false;
-                });
-                return;
-              }
-
               shieldResource.getEnvironment(vm.environmentKey).then(function (environment) {
                 vm.environment = environment;
 
@@ -91,7 +81,7 @@
                 $timeout(function () {
                   navigationService.syncTree({ tree: 'shield', path: vm.path, forceReload: true, activate: true });
                   vm.loading = false;
-                });
+                },1000);
               });
             },
             editApp: function (appKey) {
@@ -101,64 +91,40 @@
               $location.search('edit', 'true');
             },
             cancelEditing: function () {
-              $location.search('edit', 'false');
+              $location.search('edit');
             },
-            save: function () {
+            save: function ($form) {
+              if ($form.overlayForm) {
+                return;
+              }
+
               vm.button.state = 'busy';
               $scope.$broadcast('formSubmitting', { scope: $scope, action: 'publish' });
-              if ($scope.shieldForm.$invalid) {
+
+              if ($form.$invalid) {
                 //validation error, don't save
                 vm.button.state = 'error';
                 angular.element(event.target).addClass('show-validation');
 
-                var errorMsgDictionaryItem = '';
-
-                if (vm.creating) {
-                  errorMsgDictionaryItem = 'CreateEnvironmentInvalid';
-                } else {
-                  errorMsgDictionaryItem = 'SaveEnvironmentInvalid';
-                }
-
-                localizationService.localize('Shield.General_' + errorMsgDictionaryItem).then(function (value) {
+                localizationService.localize('Shield.General_SaveEnvironmentInvalid').then(function (value) {
                   notificationsService.error(value);
                 });
                 return;
               }
 
-              $scope.environmentForm.$setPristine();
+              $form.$setPristine();
 
               shieldResource.postEnvironment(vm.environment).then(function (response) {
                 if (response === true || response === 'true') {
-                  var saveMsgDictionaryItem = 'SaveEnvironmentSuccess';
-
-                  if (vm.creating) {
-                    saveMsgDictionaryItem = 'CreateEnvironmentSuccess';
-                  }
-
-                  localizationService.localize('Shield.General_' + saveMsgDictionaryItem).then(function (value) {
+                  localizationService.localize('Shield.General_SaveEnvironmentSuccess').then(function (value) {
                     notificationsService.success(value);
                   });
-
+                  
+                  navigationService.syncTree({ tree: "shield", path: vm.path, forceReload: true, activate: true });
                   vm.cancelEditing();
-
-                  if (vm.creating) {
-                    var path = ['-1', '-21'];
-                    navigationService.syncTree({ tree: "shield", path: path, forceReload: true, activate: true });
-                    $location.path('/shield');
-                  } else {
-                    $route.reload();
-                  }
-
                 } else {
                   vm.button.state = 'error';
-
-                  var errorMsgDictionaryItem = 'SaveEnvironmentError';
-
-                  if (vm.creating) {
-                    errorMsgDictionaryItem = 'CreateEnvironmentError';
-                  }
-
-                  localizationService.localize('Shield.General_' + errorMsgDictionaryItem).then(function (value) {
+                  localizationService.localize('Shield.General_SaveEnvironmentError').then(function (value) {
                     notificationsService.error(value);
                   });
                 }
@@ -174,16 +140,70 @@ angular
     [
       '$scope',
       '$location',
+      'localizationService',
+      'navigationService',
+      'notificationsService',
       'shieldResource',
       function ($scope,
         $location,
+        localizationService,
+        navigationService,
+        notificationsService,
         shieldResource) {
         var vm = this;
         angular.extend(vm,
           {
+            button: {
+              label: 'Create',
+              labelKey: 'general_create',
+              state: 'init'
+            },
             environment: {
               icon: '',
-              name: ''
+              name: '',
+              domains: [{ id: 0, name: '', umbracoDomainId: null, environmentId: 0 }],
+              enable: false,
+              continueProcessing: false
+            },
+            loading: true,
+            init: function () {
+              vm.loading = false;
+            },
+            save: function ($form) {
+              if ($form.overlayForm) {
+                return;
+              }
+
+              vm.button.state = 'busy';
+              $scope.$broadcast('formSubmitting', { scope: $scope, action: 'publish' });
+
+              if ($form.$invalid) {
+                //validation error, don't save
+                vm.button.state = 'error';
+                angular.element(event.target).addClass('show-validation');
+
+                localizationService.localize('Shield.General_CreateEnvironmentInvalid').then(function (value) {
+                  notificationsService.error(value);
+                });
+                return;
+              }
+
+              $form.$setPristine();
+
+              shieldResource.postEnvironment(vm.environment).then(function (response) {
+                if (response === true || response === 'true') {
+                  localizationService.localize('Shield.General_CreateEnvironmentSuccess').then(function (value) {
+                    notificationsService.success(value);
+                  });
+                  navigationService.syncTree({ tree: "shield", path: ['-1', '-21'], forceReload: true, activate: true });
+                  $location.path('/shield');
+                } else {
+                  vm.button.state = 'error';
+                  localizationService.localize('Shield.General_CreateEnvironmentError').then(function (value) {
+                    notificationsService.error(value);
+                  });
+                }
+              });
             }
           });
       }

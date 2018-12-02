@@ -157,7 +157,7 @@ namespace Our.Shield.Core.Persistence.Business
             
         }
         
-        public bool Write(int environmentId, string appId, IAppConfiguration config)
+        public bool Write(int environmentId, string appId, Guid key, IAppConfiguration config)
         {
             try
             {
@@ -180,7 +180,8 @@ namespace Our.Shield.Core.Persistence.Business
                         AppId = appId,
                         Enable = config.Enable,
                         LastModified = DateTime.UtcNow,
-                        Value = value
+                        Value = value,
+                        Key = key
                     };
                     Database.Insert(record);
                 }

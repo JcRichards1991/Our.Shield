@@ -262,7 +262,7 @@ namespace Our.Shield.Core.Services
         
         public bool WriteConfiguration(IJob job, IAppConfiguration config)
         {
-            if (!DbContext.Instance.Configuration.Write(job.Environment.Id, job.App.Id, config))
+            if (!DbContext.Instance.Configuration.Write(job.Environment.Id, job.App.Id, job.Key, config))
             {
                 return false;
             }

@@ -31,7 +31,7 @@ namespace Our.Shield.Core.Persistence.Business
 
                 return environments;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogHelper.Error(typeof(EnvironmentContext), "Error listing environments", ex);
                 return Enumerable.Empty<Environment>();
@@ -55,7 +55,7 @@ namespace Our.Shield.Core.Persistence.Business
                 }
                 return environment;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogHelper.Error(typeof(EnvironmentContext), $"Error reading environment with id: {id}", ex);
                 return null;
@@ -90,6 +90,7 @@ namespace Our.Shield.Core.Persistence.Business
                 else
                 {
                     ((Models.Environment)environment).Id = (int)((decimal)Database.Insert(dto));
+                    ((Models.Environment)environment).Key = dto.Key;
                 }
 
                 foreach (var domain in environment.Domains)
@@ -102,7 +103,7 @@ namespace Our.Shield.Core.Persistence.Business
 
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogHelper.Error(typeof(EnvironmentContext), $"Error writing environment with id: {environment.Id}", ex);
             }
@@ -141,7 +142,7 @@ namespace Our.Shield.Core.Persistence.Business
                     return true;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogHelper.Error(typeof(DomainContext), $"Error deleting Environment with id: {id}", ex);
             }

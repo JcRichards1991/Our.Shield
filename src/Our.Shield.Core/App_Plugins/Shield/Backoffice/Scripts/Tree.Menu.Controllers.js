@@ -52,26 +52,30 @@ angular
             vm.currentNode.loading = true;
             vm.busy = true;
 
-            shieldResource.deleteEnvironment(vm.currentNode.id).then(function (response) {
-              if (response.data === true || response.data === 'true') {
-                localizationService.localize('Shield.General_DeleteEnvironmentSuccess').then(function (value) {
-                  notificationsService.success(value);
-                  vm.currentNode.loading = false;
-                  treeService.removeNode(vm.currentNode);
+            shieldResource
+              .deleteEnvironment(vm.currentNode.id)
+              .then(function (response) {
+                if (response === true || response === 'true') {
+                  localizationService.localize('Shield.General_DeleteEnvironmentSuccess')
+                    .then(function (value) {
+                      notificationsService.success(value);
+                      vm.currentNode.loading = false;
+                      treeService.removeNode(vm.currentNode);
 
-                  if ($location.path() === '/shield') {
-                    $route.reload();
-                  } else {
-                    $location.path("/shield");
-                  }
-                });
-                navigationService.hideMenu();
-              } else {
-                localizationService.localize('Shield.General_DeleteEnvironmentError').then(function (value) {
-                  notificationsService.error(value);
-                });
-              }
-            });
+                      if ($location.path() === '/shield') {
+                        $route.reload();
+                      } else {
+                        $location.path("/shield");
+                      }
+                    });
+                  navigationService.hideMenu();
+                } else {
+                  localizationService.localize('Shield.General_DeleteEnvironmentError')
+                    .then(function (value) {
+                      notificationsService.error(value);
+                    });
+                }
+              });
           },
           cancel: function () {
             navigationService.hideDialog();
@@ -107,22 +111,29 @@ angular
             });
           },
           save: function () {
+            if (vm.sorting) {
+              return;
+            }
+
             vm.sorting = true;
 
             for (var i = 0; i < vm.environments.length; i++) {
               vm.environments[i].sortOrder = i;
             }
 
-            shieldResource.setEnvironmentsSortOrder(vm.environments).then(function (response) {
-              if (response.data === true || response.data === 'true') {
-                vm.sortingComplete = true;
-              } else {
-                localizationService.localize('Shield.General_SortEnvironmentError').then(function (value) {
-                  notificationsService.error(value);
-                });
-              }
-              vm.sorting = false;
-            });
+            shieldResource.setEnvironmentsSortOrder(vm.environments)
+              .then(function (response) {
+                if (response === true || response === 'true') {
+                  vm.sortingComplete = true;
+                  vm.sorting = false;
+                } else {
+                  localizationService.localize('Shield.General_SortEnvironmentError')
+                    .then(function (value) {
+                      notificationsService.error(value);
+                    });
+                }
+                vm.sorting = false;
+              });
           }
         });
       }

@@ -25,9 +25,9 @@ namespace Our.Shield.Core.UI
     public class ShieldApiController : UmbracoAuthorizedJsonController
     {
         [HttpPost]
-        public bool DeleteEnvironment(int id)
+        public bool DeleteEnvironment(Guid key)
         {
-            var environment = (Models.Environment)JobService.Instance.Environments.FirstOrDefault(x => x.Key.Id.Equals(id)).Key;
+            var environment = (Models.Environment)JobService.Instance.Environments.FirstOrDefault(x => x.Key.Key == key).Key;
             return environment != null && EnvironmentService.Instance.Delete(environment);
         }
 
