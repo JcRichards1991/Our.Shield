@@ -45,6 +45,7 @@ angular
 
         angular.extend(vm, {
           id: $routeParams.id,
+          method: $routeParams.method,
           loading: true,
           items: [],
           totalPages: 1,
@@ -85,8 +86,10 @@ angular
             }
           ],
           init: function () {
-            if (vm.id === undefined)
-              vm.id = null;
+            if ($routeParams.method === undefined) {
+              vm.id = '';
+              vm.method = 'Environments';
+            }
 
             vm.getListing();
           },
@@ -119,11 +122,10 @@ angular
           getListing: function () {
             vm.loading = true;
             shieldResource
-              .getJournals(vm.id, vm.pageNumber, vm.options.orderBy, vm.options.orderDirection)
+              .getJournals(vm.method, vm.id, vm.pageNumber, vm.options.orderBy, vm.options.orderDirection)
               .then(function (response) {
                 vm.items = response.items;
                 vm.totalPages = response.totalPages;
-                vm.type = response.type;
                 vm.loading = false;
               });
           }

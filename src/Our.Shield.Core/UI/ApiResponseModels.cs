@@ -7,13 +7,6 @@ using Environment = Our.Shield.Core.Models.Environment;
 
 namespace Our.Shield.Core.UI
 {
-    public enum TreeViewType
-    {
-        Environments,
-        Environment,
-        App
-    }
-
     public class AppApiResponseModel : AppListingItem
     {
         public AppApiResponseModel(IJob job) : base(job) { }
@@ -97,8 +90,8 @@ namespace Our.Shield.Core.UI
         
     public class JournalListingItem
     {
-        [JsonProperty("datestamp")]
-        public string Datestamp { get; set; }
+        [JsonProperty("dateStamp")]
+        public string DateStamp { get; set; }
         
         [JsonProperty("environment")]
         public IEnvironment Environment { get; set; }
@@ -117,9 +110,6 @@ namespace Our.Shield.Core.UI
         
         [JsonProperty("totalPages")]
         public int TotalPages { get; set; }
-
-        [JsonProperty("type")]
-        public TreeViewType Type { get; set; }
     }
 
     public class AppListingItem

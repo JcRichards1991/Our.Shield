@@ -66,9 +66,10 @@
           getEnvironments: function () {
             return get('GetEnvironments');
           },
-          getJournals: function (id, page, orderBy, orderByDirection) {
+          getJournals: function (method, id, page, orderBy, orderByDirection) {
             return get('Journals',
               {
+                method: method,
                 id: id,
                 page: page,
                 orderBy: orderBy,

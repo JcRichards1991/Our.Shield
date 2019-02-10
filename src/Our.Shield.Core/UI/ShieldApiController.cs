@@ -85,70 +85,65 @@ namespace Our.Shield.Core.UI
         }
 
         [HttpGet]
-        public JournalListing Journals(int? id, int page, string orderBy, string orderByDirection)
+        public JournalListing Journals(string method, string id, int page, string orderBy, string orderByDirection)
         {
             var environments = JobService.Instance.Environments;
-            int totalPages;
 
-            if (!id.HasValue)
+            switch (method)
             {
-                return new JournalListing
-                {
-                    Journals = DbContext.Instance.Journal.Read<JournalMessage>(page, 200, out totalPages).Select(x =>
-                    {
-                        var environment = environments.FirstOrDefault(e => e.Key.Id == x.EnvironmentId);
-                        return new JournalListingItem
-                        {
-                            Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                            App = new AppListingItem(environment.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
-                            Environment = environment.Key,
-                            Message = x.Message
-                        };
-                    }),
-                    TotalPages = totalPages,
-                    Type = TreeViewType.Environments
-                };
-            }
-
-            foreach (var environment in environments)
-            {
-                if (id == environment.Key.Id)
-                {
+                case "Environments":
                     return new JournalListing
                     {
-                        Journals = EnvironmentService.Instance.JournalListing<JournalMessage>(id.Value, page, 100, out totalPages).Select(x => new JournalListingItem
+                        Journals = DbContext.Instance.Journal.Read<JournalMessage>(page, 200, out int totalPages).Select(x =>
                         {
-                            Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                            App = new AppListingItem(environment.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
-                            Environment = environment.Key,
-                            Message = x.Message
-                        }),
-                        TotalPages = totalPages,
-                        Type = TreeViewType.Environment
-                    };
-                }
-
-                foreach (var job in environment.Value)
-                {
-                    if (id == job.Id)
-                    {
-                        return new JournalListing
-                        {
-                            Journals = job.ListJournals<JournalMessage>(page, 50, out totalPages).Select(x => new JournalListingItem
+                            var e = environments.FirstOrDefault(ev => ev.Key.Id == x.EnvironmentId);
+                            return new JournalListingItem
                             {
-                                Datestamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                                App = new AppListingItem(job),
+                                DateStamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+                                App = new AppListingItem(e.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
+                                Environment = e.Key,
+                                Message = x.Message
+                            };
+                        }),
+                        TotalPages = totalPages
+                    };
+
+                case "Environment":
+                    var envId = Guid.Parse(id);
+                    var environment = environments.FirstOrDefault(x => x.Key.Key == envId);
+                    return new JournalListing
+                    {
+                        Journals = EnvironmentService.Instance
+                            .JournalListing<JournalMessage>(environment.Key.Id, page, 100, out totalPages)
+                            .Select(x => new JournalListingItem
+                            {
+                                DateStamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+                                App = new AppListingItem(environment.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
                                 Environment = environment.Key,
                                 Message = x.Message
                             }),
-                            TotalPages = totalPages,
-                            Type = TreeViewType.App
-                        };
-                    }
-                }
-            }
+                        TotalPages = totalPages
+                    };
 
-            return null;
+                case "App":
+                    var appId = Guid.Parse(id);
+                    environment = environments.FirstOrDefault(x => x.Value.Any(j => j.Key == appId));
+                    var job = environment.Value.First(x => x.Key == appId);
+                    return new JournalListing
+                    {
+                        Journals = job.ListJournals<JournalMessage>(page, 50, out totalPages).Select(x => new JournalListingItem
+                        {
+                            DateStamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+                            App = new AppListingItem(job),
+                            Environment = environment.Key,
+                            Message = x.Message
+                        }),
+                        TotalPages = totalPages
+                    };
+
+                default:
+                    return null;
+            }
         }
 
         [HttpPost]
@@ -212,7 +207,7 @@ namespace Our.Shield.Core.UI
 
             return job.WriteConfiguration(configuration);
         }
-        
+
         [HttpPost]
         public bool WriteEnvironment([FromBody] JObject json)
         {
