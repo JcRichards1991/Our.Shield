@@ -1,12 +1,12 @@
 ﻿<div class="umb-editor transfer-url-type-option">
-    <select id="urlType" name="urlType" ng-model="model.type" ng-change="model.urlTypeChange()" required shield-convert-to-number>
+    <select id="urlType" name="urlType" ng-model="model.type" required shield-convert-to-number>
         <option value="0">Url</option>
         <option value="1">XPath</option>
         <option value="2">Content Picker</option>
     </select>
 
     <div ng-if="model.type === 0" class="transfer-url-type-option">
-        <input type="text" id="strUrl" name="strUrl" ng-model="model.value" required ng-trim="false" ng-pattern="/^\/(([\w-]+(\/)?)+([\w-]+\.[\w-]+)?(\/)?(\?[\w-]+(=[\w-]+)?((&[\w-]+(=[\w-]+)?)+)?)?(#[\w-]+)?)?$/i" />
+        <input type="text" id="strUrl" name="strUrl" ng-model="model.urlValue" required ng-trim="false" ng-pattern="/^\/(([\w-]+(\/)?)+([\w-]+\.[\w-]+)?(\/)?(\?[\w-]+(=[\w-]+)?((&[\w-]+(=[\w-]+)?)+)?)?(#[\w-]+)?)?$/i" />
         <span class="help-inline" val-msg-for="strUrl" val-toggle-msg="required">
             <localize key="Shield.Properties.Validation_Required">Required</localize>
         </span>
@@ -16,7 +16,7 @@
     </div>
 
     <div ng-if="model.type === 1" class="transfer-url-type-option">
-        <input type="text" id="xpathUrl" name="xpathUrl" ng-model="model.value" required />
+        <input type="text" id="xpathUrl" name="xpathUrl" ng-model="model.xpathValue" required />
         <span class="help-inline" val-msg-for="xpathUrl" val-toggle-msg="required">
             <localize key="Shield.Properties.Validation_Required">Required</localize>
         </span>

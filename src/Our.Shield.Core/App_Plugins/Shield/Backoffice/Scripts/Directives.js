@@ -199,6 +199,22 @@ angular
 
 angular
   .module('umbraco.directives')
+  .directive('shieldTransferUrl',
+    [
+      function () {
+        return {
+          restrict: 'E',
+          templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/TransferUrl.html?version=1.0.7',
+          scope: {
+            model: '='
+          }
+        };
+      }
+    ]
+  );
+
+angular
+  .module('umbraco.directives')
   .directive('shieldUmbracoUrl',
     [
       function () {
@@ -209,59 +225,59 @@ angular
             model: '='
           },
           link: function (scope) {
-
-            var mntpValue = null;
-
             if (scope.model === null)
-              scope.model = { value: '' };
-            else
-              mntpValue = parseInt(scope.model.value);
+              scope.model = { type: 0, value: '' };
 
-            if (mntpValue === null || isNaN(mntpValue))
-              mntpValue = '';
+            switch (scope.model.type) {
+              case 0:
+                scope.model.urlValue = scope.model.value;
+                break;
+
+              case 1:
+                scope.model.xpathValue = scope.model.value;
+                break;
+
+              case 2:
+                scope.model.mntpValue = scope.model.value || '';
+                break;
+            }
 
             angular.extend(scope.model, {
               contentPickerProperty: {
                 view: 'contentpicker',
                 alias: 'contentPicker',
+                currentNode: {
+                  path: '-1'
+                },
                 config: {
                   multiPicker: '0',
                   entityType: 'Document',
                   startNode: {
                     query: '',
                     type: 'content',
-                    id: -1
+                    id: '-1'
                   },
                   filter: '',
                   minNumber: 1,
                   maxNumber: 1
                 },
-                value: '' + mntpValue
-              },
-              urlTypeChange: function() {
-                scope.model.contentPickerProperty.value = '';
+                value: scope.model.mntpValue
               }
             });
 
-            scope.$watch('model.contentPickerProperty.value', function (newVal) {
-              scope.model.value = newVal;
+            scope.$on('formSubmitting', function () {
+              switch (scope.model.type) {
+              case 0:
+                scope.model.value = scope.model.urlValue;
+                break;
+              case 1:
+                scope.model.value = scope.model.xpathValue;
+                break;
+              case 2:
+                scope.model.value = scope.model.contentPickerProperty.value;
+                break;
+              }
             });
-          }
-        };
-      }
-    ]
-  );
-
-angular
-  .module('umbraco.directives')
-  .directive('shieldTransferUrl',
-    [
-      function () {
-        return {
-          restrict: 'E',
-          templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/TransferUrl.html?version=1.0.7',
-          scope: {
-            model: '='
           }
         };
       }
