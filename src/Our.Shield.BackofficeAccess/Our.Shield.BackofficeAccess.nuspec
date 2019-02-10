@@ -12,13 +12,13 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Updated to take advantage of the custom configuration section added to the core
+      - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+)
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security BackofficeAccess Access Backoffice</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="1.0.6" />
+      <dependency id="Our.Shield.Core" version="1.0.7" />
     </dependencies>
   </metadata>
   <files>

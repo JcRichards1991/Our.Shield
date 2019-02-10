@@ -12,14 +12,13 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Fixes issue with the stack trace not displaying when viewing an exception in more details with Elmah SqlServer
-      - Update to display "Web Host Html Message" in the detailed view (if present logged)
+      - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+)
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security Elmah</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="1.0.6" />
+      <dependency id="Our.Shield.Core" version="1.0.7" />
       <dependency id="elmah" version="1.2.2" />
     </dependencies>
   </metadata>

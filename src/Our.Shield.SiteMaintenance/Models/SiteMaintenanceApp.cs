@@ -12,7 +12,7 @@ using Umbraco.Core;
 
 namespace Our.Shield.SiteMaintenance.Models
 {
-    [AppEditor("/App_Plugins/Shield.SiteMaintenance/Views/SiteMaintenance.html?version=1.0.6")]
+    [AppEditor("/App_Plugins/Shield.SiteMaintenance/Views/SiteMaintenance.html?version=1.0.7")]
     [AppJournal]
     public class SiteMaintenanceApp : App<SiteMaintenanceConfiguration>
     {

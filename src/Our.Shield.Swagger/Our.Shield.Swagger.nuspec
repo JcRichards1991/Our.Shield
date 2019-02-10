@@ -14,11 +14,11 @@
     <copyright>Copyright 2018</copyright>
     <tags>Umbraco UmbracoCms Security Swagger</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="1.0.6" />
+      <dependency id="Our.Shield.Core" version="1.0.7" />
       <dependency id="Swashbuckle" version="5.0.0" />
     </dependencies>
   </metadata>
   <files>
-    <file src="App_Plugins\Shield.Elmah\package.manifest" target="Content\App_Plugins\Shield.Elmah" />
+    <file src="App_Plugins\Shield.Swagger\package.manifest" target="Content\App_Plugins\Shield.Swagger" />
   </files>
 </package>

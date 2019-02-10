@@ -1,19 +1,18 @@
-﻿using System;
-using System.IO;
+﻿using Swashbuckle.Application;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Web.Http;
-using Swashbuckle.Application;
 using WebActivatorEx;
 
 [assembly: PreApplicationStartMethod(typeof(Our.Shield.Swagger.Operation.SwaggerConfig), "Register")]
 
 namespace Our.Shield.Swagger.Operation
 {
-	public class SwaggerConfig
+    public class SwaggerConfig
     {
 
-		private static string GetXmlCommentsPath()
+        private static string GetXmlCommentsPath()
         {
             return $"{AppDomain.CurrentDomain.BaseDirectory}bin\\{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         }
@@ -24,18 +23,18 @@ namespace Our.Shield.Swagger.Operation
         public static void Register()
         {
             GlobalConfiguration.Configuration
-				.EnableSwagger(c =>
-				{
-					c.SingleApiVersion("v1", "Website");
-					c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-					c.DocumentFilter<FilterBuiltinUrl>();
-					//c.IncludeXmlComments(GetXmlCommentsPath());
-				})
-				.EnableSwaggerUi(c =>
-				{
-					c.DisableValidator();
+                .EnableSwagger(c =>
+                {
+                    c.SingleApiVersion("v1", "Website");
+                    c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+                    c.DocumentFilter<FilterBuiltinUrl>();
+                    //c.IncludeXmlComments(GetXmlCommentsPath());
+                })
+                .EnableSwaggerUi(c =>
+                {
+                    c.DisableValidator();
 
-				});
+                });
         }
     }
 }

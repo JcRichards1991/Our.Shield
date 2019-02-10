@@ -12,7 +12,7 @@ using Umbraco.Core;
 
 namespace Our.Shield.FrontendAccess.Models
 {
-    [AppEditor("/App_Plugins/Shield.FrontendAccess/Views/FrontendAccess.html?version=1.0.6")]
+    [AppEditor("/App_Plugins/Shield.FrontendAccess/Views/FrontendAccess.html?version=1.0.7")]
     [AppJournal]
     [AppMigration(typeof(Persistence.Migrations.Migration104))]
     public class FrontendAccessApp : App<FrontendAccessConfiguration>

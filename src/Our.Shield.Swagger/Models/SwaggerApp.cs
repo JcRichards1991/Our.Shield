@@ -10,7 +10,7 @@ using Umbraco.Core;
 
 namespace Our.Shield.Swagger.Models
 {
-    [AppEditor("/App_Plugins/Shield.Swagger/Views/Swagger.html?version=1.0.6")]
+    [AppEditor("/App_Plugins/Shield.Swagger/Views/Swagger.html?version=1.0.7")]
     [AppJournal]
     public class SwaggerApp : App<SwaggerConfiguration>
     {
