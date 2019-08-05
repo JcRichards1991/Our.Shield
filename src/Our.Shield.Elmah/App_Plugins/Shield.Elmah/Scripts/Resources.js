@@ -47,9 +47,11 @@
         };
 
         return {
-          getErrors: function (page, resultsPerPage) {
+          getErrors: function (appKey, page, resultsPerPage) {
             return get('GetErrors', {
-              page: page, resultsPerPage: resultsPerPage
+              appKey: appKey,
+              page: page,
+              resultsPerPage: resultsPerPage
             });
           },
           getError: function (id) {

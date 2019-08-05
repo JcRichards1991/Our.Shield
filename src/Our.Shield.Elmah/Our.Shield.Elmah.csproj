@@ -80,6 +80,7 @@
     <Reference Include="interfaces, Version=1.0.5750.18155, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.3.0\lib\interfaces.dll</HintPath>
     </Reference>
+    <Reference Include="IPAddressRange, Version=2.0.0.4, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.3.0\lib\log4net.dll</HintPath>
     </Reference>

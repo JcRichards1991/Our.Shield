@@ -17,9 +17,11 @@ angular
   .controller('Shield.Editors.Elmah.Reporting',
     [
       '$scope',
+      '$routeParams',
       '$timeout',
       'shieldElmahResource',
       function ($scope,
+        $routeParams,
         $timeout,
         shieldElmahResource) {
         var vm = this;
@@ -33,7 +35,7 @@ angular
           getErrors: function () {
             vm.loading = true;
             shieldElmahResource
-              .getErrors(vm.pageNumber, vm.resultsPerPage)
+              .getErrors($routeParams.id, vm.pageNumber, vm.resultsPerPage)
               .then(function (response) {
                 vm.errors = response.errors;
                 vm.totalPages = response.totalPages;
@@ -129,9 +131,11 @@ angular
         };
 
         return {
-          getErrors: function (page, resultsPerPage) {
+          getErrors: function (appKey, page, resultsPerPage) {
             return get('GetErrors', {
-              page: page, resultsPerPage: resultsPerPage
+              appKey: appKey,
+              page: page,
+              resultsPerPage: resultsPerPage
             });
           },
           getError: function (id) {

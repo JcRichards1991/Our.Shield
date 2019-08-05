@@ -250,6 +250,7 @@
     <Compile Include="Persistence\Data\Migrations\Dto\Configuration\Configuration107.cs" />
     <Compile Include="Persistence\Data\Migrations\Dto\Environment\Environment107.cs" />
     <Compile Include="Persistence\Data\Migrations\Versions\Migration107.cs" />
+    <Compile Include="Services\ShieldService.cs" />
     <Compile Include="Settings\Configuration.cs" />
     <Compile Include="Settings\IpAddressValidation.cs" />
     <Compile Include="Settings\IpAddressValidationElement.cs" />

@@ -12,8 +12,9 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Refactoring of angular
-      - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+)
+      - Refactoring of angular.
+      - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+).
+      - Added ShieldService to allow external sources to retrieve information from the core.
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>

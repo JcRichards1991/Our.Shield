@@ -57,7 +57,7 @@ namespace Our.Shield.FrontendAccess.Models
         {
             _ipAccessControlService = new IpAccessControlService();
         }
-        
+
         /// <inheritdoc />
         public override bool Execute(IJob job, IAppConfiguration c)
         {
@@ -83,20 +83,11 @@ namespace Our.Shield.FrontendAccess.Models
                 job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
             }
 
-			job.ExceptionWebRequest(config.Unauthorized.Url);
+            job.ExceptionWebRequest(config.Unauthorized.Url);
 
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400000, (count, httpApp) =>
             {
-                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
-                {
-                    httpApp.Context.Items.Add(_allowKey, true);
-                }
-                return new WatchResponse(WatchResponse.Cycles.Continue);
-            });
-
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 10500, (count, httpApp) =>
-            {
-                if ((bool?)httpApp.Context.Items[_allowKey] == true
+                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request)
                     || config.UmbracoUserEnable && AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
                 {
                     return new WatchResponse(WatchResponse.Cycles.Continue);

@@ -66,21 +66,28 @@ namespace Our.Shield.BackofficeAccess.Models
         private readonly string _allowKey = Guid.NewGuid().ToString();
         private static int _resetterLock;
 
-        private void SoftWatcher(IJob job, Regex regex, int priority, string hardLocation, string softLocation, bool rewrite = true, bool addHardReseterFile = false)
+        private void SoftWatcher(IJob job, Regex regex, int priority, string hardLocation, string softLocation, bool rewrite = true, bool addHardResetterFile = false)
         {
             //Add watch on the soft location
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, priority, (count, httpApp) =>
             {
-                if (addHardReseterFile && Interlocked.CompareExchange(ref _resetterLock, 0, 1) == 0)
+                if (addHardResetterFile && Interlocked.CompareExchange(ref _resetterLock, 0, 1) == 0)
                 {
-                    var resetter = new HardResetFileHandler();
-                    resetter.Delete();
-
                     var path = HttpRuntime.AppDomainAppPath;
+                    var hardPath = path + hardLocation.Trim('/');
+                    var softPath = path + softLocation.Trim('/');
 
-                    resetter.HardLocation = path + hardLocation.Trim('/');
-                    resetter.SoftLocation = path + softLocation.Trim('/');
-                    resetter.Save();
+                    var resetter = new HardResetFileHandler();
+
+                    if (resetter.HardLocation != hardPath || resetter.SoftLocation != softPath)
+                    {
+                        resetter.Delete();
+
+                        resetter.HardLocation = hardPath;
+                        resetter.SoftLocation = softPath;
+
+                        resetter.Save();
+                    }
                 }
 
                 //change the Url to point to the hardLocation
@@ -253,13 +260,6 @@ namespace Our.Shield.BackofficeAccess.Models
 
                 if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
                     return new WatchResponse(WatchResponse.Cycles.Continue);
-
-                var url = new UmbracoUrlService().Url(config.Unauthorized.Url);
-
-                if (url == null)
-                {
-                    return new WatchResponse(WatchResponse.Cycles.Stop);
-                }
 
                 if (!string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension) &&
                     (httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".css")

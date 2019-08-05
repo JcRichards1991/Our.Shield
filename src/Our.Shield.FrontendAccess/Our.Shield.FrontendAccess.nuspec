@@ -12,7 +12,8 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+)
+      - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+).
+      - Merged the 2 watches into 1 which was causing the frontend to always be denied access even if IP(s) are defined to be allowed.
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
