@@ -19,7 +19,7 @@ namespace Our.Shield.BackofficeAccess.Models
     /// <inheritdoc />
     /// <summary>
     /// </summary>
-    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.0.7")]
+    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.1.0")]
     [AppJournal]
     [AppMigration(typeof(Persistence.Migrations.Migration104))]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
@@ -249,8 +249,10 @@ namespace Our.Shield.BackofficeAccess.Models
                 job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
             }
 
+            if (config.Unauthorized.TransferType != TransferTypes.PlayDead)
+                job.ExceptionWebRequest(config.Unauthorized.Url);
+
             //Add watch on the on-disk UmbracoPath location to do the security checking of the user's ip
-            job.ExceptionWebRequest(config.Unauthorized.Url);
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, hardLocationRegex, 21000, (count, httpApp) =>
             {
                 if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))

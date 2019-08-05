@@ -15,12 +15,13 @@
       - Refactoring of angular.
       - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+).
       - Added ShieldService to allow external sources to retrieve information from the core.
+      - Added upper target Umbraco version to disallow installation on V8 sites and above.
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security</tags>
     <dependencies>
-      <dependency id="UmbracoCms" version="7.3.0" />
+      <dependency id="UmbracoCms" version="[7.3.0,8)" />
       <dependency id="WebActivatorEx" version="2.2.0" />
       <dependency id="IPAddressRange" version="2.0.0.3" />
     </dependencies>

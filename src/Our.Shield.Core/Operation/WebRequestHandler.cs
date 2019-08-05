@@ -304,7 +304,7 @@ namespace Our.Shield.Core.Operation
         {
             return UrlExceptionLock.Write(() =>
             {
-                foreach (var exception in UrlExceptions.Where(x => x.CalculatedUrl == false))
+                foreach (var exception in UrlExceptions.Where(x => x.CalculatedUrl == false && x.Url != null))
                 {
                     var url = new UmbracoUrlService().Url(exception.Url);
                     exception.CalculatedUrl = true;
@@ -406,7 +406,7 @@ namespace Our.Shield.Core.Operation
                     return WatchResponse.Cycles.Stop;
 
                 case TransferTypes.Rewrite:
-                    application.Context.RewritePath(url, string.Empty, string.Empty);
+                    application.Context.RewritePath(url);
                     return WatchResponse.Cycles.Restart;
             }
 
@@ -464,46 +464,46 @@ namespace Our.Shield.Core.Operation
                     }
 
                     if (environ.Value.WatchLocks[(int)stage].Read<bool?>(() =>
-                   {
-                       foreach (var watch in environ.Value.Watchers[(int)stage])
-                       {
-                           if (watch.Regex != null && !watch.Regex.IsMatch(filePath))
-                               continue;
+                    {
+                        foreach (var watch in environ.Value.Watchers[(int)stage])
+                        {
+                            if (watch.Regex != null && !watch.Regex.IsMatch(filePath))
+                                continue;
 #if TRACE
                             var debug = $"{uri}: Watcher({environ.Value.Name}, {watch.AppId}, {watch.Priority}, {watch.Regex}) returned ";
 #endif
                             switch (ExecuteResponse(environ.Value.Id, watch, watch.Request(count, application), application))
-                           {
-                               case WatchResponse.Cycles.Stop:
+                            {
+                                case WatchResponse.Cycles.Stop:
 #if TRACE
                                     Debug.WriteLine(debug + "Stop");
 #endif
                                     return false;
 
-                               case WatchResponse.Cycles.Restart:
+                                case WatchResponse.Cycles.Restart:
 #if TRACE
                                     Debug.WriteLine(debug + "Restart");
 #endif
                                     return true;
 
-                               case WatchResponse.Cycles.Error:
+                                case WatchResponse.Cycles.Error:
 #if TRACE
                                     Debug.WriteLine(debug + "Error");
 #endif
                                     application.Context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                                   application.CompleteRequest();
-                                   break;
+                                    application.CompleteRequest();
+                                    break;
 
 #if TRACE
                                 default:
-                                   Debug.WriteLine(debug + "Continue");
-                                   break;
+                                    Debug.WriteLine(debug + "Continue");
+                                    break;
 #endif
                                     //  If WatchCycle.Continue we do nothing
                             }
-                       }
-                       return false;
-                   }) == true)
+                        }
+                        return false;
+                    }) == true)
                     {
                         return true;
                     }
@@ -586,9 +586,9 @@ namespace Our.Shield.Core.Operation
 
                 return UrlExceptions.RemoveAll(x =>
                     (environmentId == null || x.EnvironmentId == environmentId) &&
-                    (appId == null || x.AppId == appId) ||
-                    regex == null || x.Regex.ToString() == regy ||
-                    url == null || x.Url.Equals(url));
+                    (appId == null || x.AppId == appId) &&
+                    (regex == null || x.Regex.ToString() == regy) &&
+                    (url == null || x.Url.Equals(url)));
             });
         }
     }

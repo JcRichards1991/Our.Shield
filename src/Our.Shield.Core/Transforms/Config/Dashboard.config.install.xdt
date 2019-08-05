@@ -7,7 +7,7 @@
       <area>shield</area>
     </areas>
     <tab caption="Environments">
-      <control>/App_Plugins/Shield/Backoffice/Dashboards/Environments.html</control>
+      <control>/App_Plugins/Shield/Backoffice/Dashboards/Environments.html?version=1.1.0</control>
     </tab>
   </section>
   <section alias="shieldJournal" xdt:Locator="Match(alias)" xdt:Transform="InsertIfMissing">
@@ -15,7 +15,7 @@
       <area>shield</area>
     </areas>
     <tab caption="Journals">
-      <control>/App_Plugins/Shield/Backoffice/Dashboards/Journal.html</control>
+      <control>/App_Plugins/Shield/Backoffice/Dashboards/Journal.html?version=1.1.0</control>
     </tab>
   </section>
 </dashBoard>

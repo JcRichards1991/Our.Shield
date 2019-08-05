@@ -18,7 +18,7 @@ using Umbraco.Web.Routing;
 
 namespace Our.Shield.MediaProtection.Models
 {
-    [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?version=1.0.7")]
+    [AppEditor("/App_Plugins/Shield.MediaProtection/Views/MediaProtection.html?version=1.1.0")]
     [AppJournal]
     [AppMigration(typeof(MediaProtectionMigration))]
     public class MediaProtectionApp : App<MediaProtectionConfiguration>

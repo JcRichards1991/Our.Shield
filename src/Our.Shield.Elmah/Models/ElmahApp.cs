@@ -11,12 +11,16 @@ using Umbraco.Core;
 
 namespace Our.Shield.Elmah.Models
 {
-    [CustomAppTab("Reporting", 0, "/App_Plugins/Shield.Elmah/Views/Reporting.html?version=1.0.7")]
-    [AppEditor("/App_Plugins/Shield.Elmah/Views/Elmah.html?version=1.0.7", sortOrder: 1)]
+    [CustomAppTab("Reporting", 0, "/App_Plugins/Shield.Elmah/Views/Reporting.html?version=1.1.0")]
+    [AppEditor("/App_Plugins/Shield.Elmah/Views/Elmah.html?version=1.1.0", sortOrder: 1)]
     [AppJournal(sortOrder: 2)]
     public class ElmahApp : App<ElmahConfiguration>
     {
-        private readonly string _allowKey = Guid.NewGuid().ToString();
+        private readonly IpAccessControlService _ipAccessControlService;
+        public ElmahApp()
+        {
+            _ipAccessControlService = new IpAccessControlService();
+        }
 
         /// <inheritdoc />
         public override string Id => nameof(Elmah);
@@ -30,6 +34,7 @@ namespace Our.Shield.Elmah.Models
 
         /// <inheritdoc />
         public override string Icon => "icon-combination-lock orange";
+
         /// <inheritdoc />
         public override IAppConfiguration DefaultConfiguration => new ElmahConfiguration
         {
@@ -50,16 +55,12 @@ namespace Our.Shield.Elmah.Models
             }
         };
 
-        private readonly IpAccessControlService _ipAccessControlService;
-        public ElmahApp()
-        {
-            _ipAccessControlService = new IpAccessControlService();
-        }
+        private readonly string _allowKey = Guid.NewGuid().ToString();
 
         public override bool Execute(IJob job, IAppConfiguration c)
         {
-            ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(_allowKey);
             job.UnwatchWebRequests();
+            job.UnexceptionWebRequest();
 
             if (!c.Enable || !job.Environment.Enable)
                 return true;
@@ -70,13 +71,17 @@ namespace Our.Shield.Elmah.Models
                 return false;
             }
 
-            foreach (var error in new IpAccessControlService().InitIpAccessControl(config.IpAccessRules))
-                job.WriteJournal(
-                    new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
+            foreach (var error in _ipAccessControlService.InitIpAccessControl(config.IpAccessRules))
+            {
+                job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
+            }
+
+            if (config.Unauthorized.TransferType != TransferTypes.PlayDead)
+                job.ExceptionWebRequest(config.Unauthorized.Url);
 
             var regex = new Regex("^/elmah\\.axd", RegexOptions.IgnoreCase);
-
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400000, (count, httpApp) =>
+            
+            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 300000, (count, httpApp) =>
             {
                 if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
                 {
@@ -85,7 +90,7 @@ namespace Our.Shield.Elmah.Models
                 return new WatchResponse(WatchResponse.Cycles.Continue);
             });
 
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400500, (count, httpApp) =>
+            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 300500, (count, httpApp) =>
             {
                 if ((bool?)httpApp.Context.Items[_allowKey] == true
                     || config.UmbracoUserEnable && AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))

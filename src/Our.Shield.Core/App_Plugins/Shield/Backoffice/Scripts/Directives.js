@@ -204,7 +204,7 @@ angular
       function () {
         return {
           restrict: 'E',
-          templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/TransferUrl.html?version=1.0.7',
+          templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/TransferUrl.html?version=1.1.0',
           scope: {
             model: '='
           }

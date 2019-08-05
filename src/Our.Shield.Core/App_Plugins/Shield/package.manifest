@@ -1,13 +1,13 @@
 ﻿{
   "javascript": [
-    "~/App_Plugins/Shield/Backoffice/Scripts/Dashboard.Controllers.js?version=1.0.7",
-    "~/App_Plugins/Shield/Backoffice/Scripts/Dialog.Controllers.js?version=1.0.7",
-    "~/App_Plugins/Shield/Backoffice/Scripts/Directives.js?version=1.0.7",
-    "~/App_Plugins/Shield/Backoffice/Scripts/Editors.Controllers.js?version=1.0.7",
-    "~/App_Plugins/Shield/Backoffice/Scripts/Resources.js?version=1.0.7",
-    "~/App_Plugins/Shield/Backoffice/Scripts/Tree.Menu.Controllers.js?version=1.0.7"
+    "~/App_Plugins/Shield/Backoffice/Scripts/Dashboard.Controllers.js?version=1.1.0",
+    "~/App_Plugins/Shield/Backoffice/Scripts/Dialog.Controllers.js?version=1.1.0",
+    "~/App_Plugins/Shield/Backoffice/Scripts/Directives.js?version=1.1.0",
+    "~/App_Plugins/Shield/Backoffice/Scripts/Editors.Controllers.js?version=1.1.0",
+    "~/App_Plugins/Shield/Backoffice/Scripts/Resources.js?version=1.1.0",
+    "~/App_Plugins/Shield/Backoffice/Scripts/Tree.Menu.Controllers.js?version=1.1.0"
   ],
   "css": [
-    "~/App_Plugins/Shield/Backoffice/Css/Shield.css?version=1.0.7"
+    "~/App_Plugins/Shield/Backoffice/Css/Shield.css?version=1.1.0"
   ]
 }
