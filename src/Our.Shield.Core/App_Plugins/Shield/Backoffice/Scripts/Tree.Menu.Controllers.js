@@ -105,7 +105,7 @@ angular
           environments: null,
           init: function () {
             shieldResource.getEnvironments().then(function (response) {
-              vm.environments = response.data;
+              vm.environments = response;
               vm.environments.splice(vm.environments.length - 1, 1);
               vm.loading = false;
             });

@@ -502,14 +502,14 @@ angular
               shieldResource.getEnvironment(vm.environmentKey).then(function (environment) {
                 vm.environment = environment;
 
-                if (vm.environment.id === '1' && vm.editing) {
+                if (vm.environment.id === 1 && vm.editing) {
                   vm.cancelEditing();
                 } else {
                   vm.path = ['-1', vm.environment.key];
                   vm.ancestors = [{ id: vm.environment.key, name: vm.environment.name }];
                 }
 
-                if (vm.environment.id !== '1' && (vm.environment.domains === null || vm.environment.domains.length === 0)) {
+                if (vm.environment.id !== 1 && (vm.environment.domains === null || vm.environment.domains.length === 0)) {
                   vm.environment.domains = [
                     {
                       id: 0,
@@ -934,7 +934,7 @@ angular
           environments: null,
           init: function () {
             shieldResource.getEnvironments().then(function (response) {
-              vm.environments = response.data;
+              vm.environments = response;
               vm.environments.splice(vm.environments.length - 1, 1);
               vm.loading = false;
             });

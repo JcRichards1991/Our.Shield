@@ -60,14 +60,14 @@
               shieldResource.getEnvironment(vm.environmentKey).then(function (environment) {
                 vm.environment = environment;
 
-                if (vm.environment.id === '1' && vm.editing) {
+                if (vm.environment.id === 1 && vm.editing) {
                   vm.cancelEditing();
                 } else {
                   vm.path = ['-1', vm.environment.key];
                   vm.ancestors = [{ id: vm.environment.key, name: vm.environment.name }];
                 }
 
-                if (vm.environment.id !== '1' && (vm.environment.domains === null || vm.environment.domains.length === 0)) {
+                if (vm.environment.id !== 1 && (vm.environment.domains === null || vm.environment.domains.length === 0)) {
                   vm.environment.domains = [
                     {
                       id: 0,
