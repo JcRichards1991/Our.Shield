@@ -219,6 +219,17 @@ namespace Our.Shield.Core.UI
 
             var environment = JsonConvert.DeserializeObject<Models.Environment>(json.ToString(), new DomainConverter());
 
+            var environments = JobService
+                .Instance
+                .Environments
+                .Select(x => x.Key)
+                .Where(x => x.SortOrder != Constants.Tree.DefaultEnvironmentSortOrder)
+                .ToList();
+
+            environment.SortOrder = environments.Any()
+                ? environments.Max(x => x.SortOrder) + 1
+                : 0;
+
             return EnvironmentService.Instance.Write(environment);
         }
 

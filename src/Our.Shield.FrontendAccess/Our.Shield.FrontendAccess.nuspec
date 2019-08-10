@@ -1,28 +1,30 @@
 <?xml version="1.0"?>
 <package >
-  <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>Joshua Richards</authors>
-    <owners>Joshua Richards</owners>
-    <licenseUrl>https://raw.githubusercontent.com/JcRichards1991/Our.Shield/master/Docs/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <releaseNotes>
-      <![CDATA[
-      - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+).
-      - Merged the 2 watches into 1 which was causing the frontend to always be denied access even if IP(s) are defined to be allowed.
-      ]]>
-    </releaseNotes>
-    <copyright>Copyright 2017</copyright>
-    <tags>Umbraco UmbracoCms Security Locker FrontendAccess Frontend Access</tags>
-    <dependencies>
-      <dependency id="Our.Shield.Core" version="1.1.1" />
-    </dependencies>
-  </metadata>
-  <files>
-    <file src="App_Plugins\Shield.FrontendAccess\package.manifest" target="Content\App_Plugins\Shield.FrontendAccess" />
-  </files>
+	<metadata>
+		<id>$id$</id>
+		<version>$version$</version>
+		<title>$title$</title>
+		<authors>Joshua Richards</authors>
+		<owners>Joshua Richards</owners>
+		<licenseUrl>https://raw.githubusercontent.com/JcRichards1991/Our.Shield/master/Docs/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>$description$</description>
+		<releaseNotes>
+			<![CDATA[
+	  - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+).
+	  - Fixed issue disallowing access to the frontend when IP Address is whitelisted
+	  ]]>
+		</releaseNotes>
+		<copyright>Copyright 2017</copyright>
+		<tags>Umbraco UmbracoCms Security Locker FrontendAccess Frontend Access</tags>
+		<dependencies>
+			<dependency id="Our.Shield.Core" version="1.1.1" />
+			<dependency id="Our.Shield.BackofficeAccess" version="1.1.1" />
+			<dependency id="Our.Shield.MediaProtection" version="1.1.1" />
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="App_Plugins\Shield.FrontendAccess\package.manifest" target="Content\App_Plugins\Shield.FrontendAccess" />
+	</files>
 </package>
