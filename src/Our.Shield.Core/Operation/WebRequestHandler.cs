@@ -453,6 +453,10 @@ namespace Our.Shield.Core.Operation
                                     client.ContentType = value;
                                     break;
 
+                                case "referer":
+                                    client.Referer = value;
+                                    break;
+
                                 default:
                                     client.Headers.Set(key, value);
                                     break;
@@ -461,8 +465,9 @@ namespace Our.Shield.Core.Operation
                         
                         var result = client.GetResponse() as HttpWebResponse;
 
-                        //  clear content, headers and cookies from current request and replace from web request.
+                        //  clear content current content and headers
                         application.Response.ClearContent();
+                        application.Response.ClearHeaders();
 
                         foreach (var key in result.Headers.AllKeys)
                         {
