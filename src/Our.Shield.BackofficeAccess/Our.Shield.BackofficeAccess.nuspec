@@ -14,6 +14,7 @@
       <![CDATA[
       - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+).
       - Fixed issue with the Backoffice always being accessible & stopped the hard resetter file being created on every request when no configuration changes have been made.
+      - Updated to use new TransferTypes added to Shield.Core
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>

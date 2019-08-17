@@ -15,7 +15,13 @@ namespace Our.Shield.Core.Models
         Redirect = 0,
 
         [Description("Internally restarts the process with a new Url, but their Address bar will not reflect this change")]
-        Rewrite = 1
+        Rewrite = 1,
+
+        [Description("Used to rewrite to an action type file. i.e. user control (.aspx, .ascx, etc.)")]
+        TransferRequest = 2,
+
+        [Description("Used to rewrite to a phsical file. i.e. css, js")]
+        TransmitFile = 3
     }
 
     public class TransferUrl

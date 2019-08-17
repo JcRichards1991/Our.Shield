@@ -261,7 +261,7 @@ namespace Our.Shield.Core.Operation
                                x.AppId.Equals(appId, StringComparison.InvariantCultureIgnoreCase)) &&
                                (regy == null ||
                                (regy != null && x.Regex != null && regy.Equals(x.Regex.ToString(), StringComparison.InvariantCulture))));
-                           return environ.Value.Watchers[(int)currentStage].Count();
+                           return environ.Value.Watchers[(int)currentStage].Count;
                        });
                     }
 
@@ -305,7 +305,7 @@ namespace Our.Shield.Core.Operation
 
         private void UrlProcess(UrlException exception)
         {
-            var url = new UmbracoUrlService().Url(exception.Url);
+            var url = new UmbracoUrlService().Url(exception.Url, out bool isUmbracoContent);
             exception.CalculatedUrl = true;
             if (string.IsNullOrWhiteSpace(url))
             {
@@ -406,17 +406,28 @@ namespace Our.Shield.Core.Operation
                 return WatchResponse.Cycles.Continue;
             }
 
-            var url = new UmbracoUrlService().Url(response.Transfer.Url);
+            var url = new UmbracoUrlService().Url(response.Transfer.Url, out bool isUmbracoContent);
             switch (response.Transfer.TransferType)
             {
                 case TransferTypes.Redirect:
                     application.Context.Response.Redirect(url, true);
                     return WatchResponse.Cycles.Stop;
 
-                case TransferTypes.Rewrite:
-                    var umbracoContent = UmbracoContext.Current.ContentCache.GetByRoute(url);
+                case TransferTypes.TransferRequest:
+                    application.Server.TransferRequest(url, true);
+                    return WatchResponse.Cycles.Stop;
 
-                    if (umbracoContent != null)
+                case TransferTypes.TransmitFile:
+                    // Request is for a css etc. file, transmit the file and set correct mime type
+                    var mimeType = MimeMapping.GetMimeMapping(url);
+
+                    application.Response.ContentType = mimeType;
+                    application.Response.TransmitFile(application.Server.MapPath(url));
+                    application.Response.End();
+                    return WatchResponse.Cycles.Stop;
+
+                case TransferTypes.Rewrite:
+                    if (isUmbracoContent)
                     {
                         var client = WebRequest.Create(application.Request.Url.GetLeftPart(UriPartial.Authority) + url) as HttpWebRequest;
                         client.Method = application.Request.HttpMethod;
@@ -462,10 +473,10 @@ namespace Our.Shield.Core.Operation
                                     break;
                             }
                         }
-                        
+
                         var result = client.GetResponse() as HttpWebResponse;
 
-                        //  clear content current content and headers
+                        //  clear current content and headers
                         application.Response.ClearContent();
                         application.Response.ClearHeaders();
 
@@ -482,13 +493,12 @@ namespace Our.Shield.Core.Operation
                                     application.Response.ContentEncoding = Encoding.GetEncoding(value);
                                     break;
 
-                                default:
-                                    application.Response.Headers.Add(key, result.Headers[key]);
-                                    break;
+                                 
                             }
                         }
 
                         result.GetResponseStream().CopyTo(application.Response.OutputStream);
+                        application.Response.StatusCode = (int)result.StatusCode;
                     }
                     application.Context.RewritePath(url);
                     return WatchResponse.Cycles.Restart;
