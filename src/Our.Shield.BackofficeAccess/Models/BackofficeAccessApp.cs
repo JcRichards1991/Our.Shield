@@ -64,49 +64,23 @@ namespace Our.Shield.BackofficeAccess.Models
         }
 
         private readonly string _allowKey = Guid.NewGuid().ToString();
-        private static int _resetterLock;
+        private static int _reSetterLock;
 
-        private void SoftWatcher(IJob job, Regex regex, int priority, string hardLocation, string softLocation, bool rewrite = true, bool addHardResetterFile = false)
+        private void SoftWatcher(IJob job,
+            Regex regex,
+            int priority,
+            string onDiscUmbracoLocation,
+            string virtualUmbracoLocation,
+            bool rewrite = true)
         {
-            //Add watch on the soft location
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, priority, (count, httpApp) =>
             {
-                if (addHardResetterFile && Interlocked.CompareExchange(ref _resetterLock, 0, 1) == 0)
-                {
-                    var path = HttpRuntime.AppDomainAppPath;
-                    var hardPath = path + hardLocation.Trim('/');
-                    var softPath = path + softLocation.Trim('/');
-
-                    var resetter = new HardResetFileHandler();
-
-                    if (resetter.HardLocation != hardPath || resetter.SoftLocation != softPath)
-                    {
-                        resetter.Delete();
-
-                        resetter.HardLocation = hardPath;
-                        resetter.SoftLocation = softPath;
-
-                        resetter.Save();
-                    }
-                }
-
-                //change the Url to point to the hardLocation
-                //for the request to work as expected
-                var rewritePath = httpApp.Request.Url.AbsolutePath.Length > softLocation.Length
-                    ? hardLocation + httpApp.Request.Url.AbsolutePath.Substring(softLocation.Length)
-                    : hardLocation;
-
-                //Request is for a physical file, if it's
-                //a usercontrol etc, we need to TransferRequest
-                //otherwise, it's a css etc. and we need to
-                //transmitFile and set the correct mime type
-                //otherwise, UmbracoModule will try and return
-                //a content item for the request, resulting in
-                //a 404 status code
+                var rewritePath = httpApp.Request.Url.AbsolutePath.Length > virtualUmbracoLocation.Length
+                    ? onDiscUmbracoLocation + httpApp.Request.Url.AbsolutePath.Substring(onDiscUmbracoLocation.Length)
+                    : onDiscUmbracoLocation;
+                
                 if (!string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension))
                 {
-                    //Request is for a usercontrol etc. transfer
-                    //the request and leave the watcher
                     if (httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".aspx")
                         || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".ascx")
                         || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".asmx")
@@ -133,18 +107,11 @@ namespace Our.Shield.BackofficeAccess.Models
                         }
                     });
                 }
-
-                //we can add querystring here as the request is not for
-                //a physical file and may be needed for any 'sub' requests
+                
+                httpApp.Context.Items.Add(_allowKey, true);
                 rewritePath += httpApp.Request.Url.Query;
 
-                //We're not a physical usercontrol etc. file, so we can just
-                //rewrite the path to the hard location. we need to add the
-                //access token to context so we can allow the request to pass
-                //through on the watch for the hard location
-                httpApp.Context.Items.Add(_allowKey, true);
-
-                if (rewrite || regex.IsMatch(softLocation))
+                if (rewrite || regex.IsMatch(virtualUmbracoLocation))
                 {
                     return new WatchResponse(new TransferUrl
                     {
@@ -169,145 +136,6 @@ namespace Our.Shield.BackofficeAccess.Models
             });
         }
 
-        private void AddSoftWatches(IJob job, BackofficeAccessConfiguration config)
-        {
-            var umbracoLocation = ((BackofficeAccessConfiguration)DefaultConfiguration).BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/');
-            var hardLocation = Configuration.UmbracoPath;
-            var softLocation = (config.Enable && job.Environment.Enable)
-                ? config.BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/')
-                : umbracoLocation;
-
-#if TRACE
-            Debug.WriteLine($"AddSoftWatches({job.Environment.Name}): hardLocation = {hardLocation}, softLocation = {softLocation}");
-#endif
-
-            //Match Umbraco path for badly written Umbraco Packages, that only work with hardcoded /umbraco/backoffice
-            if (!softLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase) && !hardLocation.Equals(umbracoLocation, StringComparison.InvariantCultureIgnoreCase))
-            {
-                SoftWatcher(job,
-                    new Regex("^((" + umbracoLocation + "backoffice([\\w-/_]+))|(" + umbracoLocation + "[\\w-/_]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase),
-                    20015,
-                    hardLocation,
-                    umbracoLocation);
-            }
-
-            if (softLocation.Equals(hardLocation, StringComparison.InvariantCultureIgnoreCase))
-            {
-                return;
-            }
-
-            //A hard save is needed, so we need to hook up
-            //the watches to route everything correctly
-
-            //add watch on the soft location
-            SoftWatcher(job,
-                new Regex("^((" + softLocation.TrimEnd('/') + "(/)?)|(" + softLocation + "[\\w-/_]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase),
-                20010,
-                hardLocation,
-                softLocation,
-                config.Unauthorized.TransferType.Equals(TransferTypes.Rewrite),
-                true);
-
-            if (config.Enable && job.Environment.Enable)
-            {
-                job.ExceptionWebRequest(config.Unauthorized.Url);
-            }
-
-            //Add watch on the hard location
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, new Regex("^((" + hardLocation.TrimEnd('/') + "(/)?)|(" + hardLocation + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase), 20020, (count, httpApp) =>
-            {
-                //Check if request has our access token, if so, we're
-                //rewriting the user to the hard location, so let 
-                //the request continue
-                if ((bool?)httpApp.Context.Items[_allowKey] == true
-                    || !string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension))
-                {
-                    return new WatchResponse(WatchResponse.Cycles.Continue);
-                }
-
-                //If the requests has an authenticated umbraco user,
-                //we need to redirect the request back to the
-                //softLocation - This is most likely due to
-                //clicking a link (i.e. content breadcrumb)
-                //which isn't handle by the angular single page app
-                if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
-                {
-                    //request has a authenticated user, we want to
-                    //redirect the user back to the soft location
-                    return new WatchResponse(new TransferUrl
-                    {
-                        TransferType = TransferTypes.Redirect,
-                        Url = new UmbracoUrl
-                        {
-                            Type = UmbracoUrlTypes.Url,
-                            Value = httpApp.Context.Request.Url.AbsolutePath.Length > hardLocation.Length
-                                ? softLocation + httpApp.Context.Request.Url.AbsolutePath.Substring(hardLocation.Length)
-                                : softLocation
-                        }
-                    });
-                }
-
-                //if we're disabled, then we just want
-                //to change the status code to 404
-                if (!config.Enable || !job.Environment.Enable)
-                {
-                    httpApp.Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                    return new WatchResponse(WatchResponse.Cycles.Stop);
-                }
-
-                //We're Enabled, so we need to transfer to the unauthorised Url
-                return new WatchResponse(config.Unauthorized);
-            });
-        }
-
-        private void AddHardWatch(IJob job, BackofficeAccessConfiguration config)
-        {
-            var hardLocationRegex = new Regex("^((" + Configuration.UmbracoPath.TrimEnd('/') + "(/)?)|(" + Configuration.UmbracoPath + "[\\w-/]+\\.[\\w.]{2,5}))$", RegexOptions.IgnoreCase);
-
-            foreach (var error in _ipAccessControlService.InitIpAccessControl(config.IpAccessRules))
-            {
-                job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
-            }
-
-            if (config.Unauthorized.TransferType != TransferTypes.PlayDead)
-                job.ExceptionWebRequest(config.Unauthorized.Url);
-
-            //Add watch on the on-disk UmbracoPath location to do the security checking of the user's ip
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, hardLocationRegex, 21000, (count, httpApp) =>
-            {
-                if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
-                {
-                    return new WatchResponse(WatchResponse.Cycles.Continue);
-                }
-
-                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
-                    return new WatchResponse(WatchResponse.Cycles.Continue);
-
-                if (!string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension) &&
-                    (httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".css")
-                     || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".map")
-                     || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".js")
-                     || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".png")
-                     || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".jpg")
-                     || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".jpeg")
-                     || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".gif")
-                     || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".woff")
-                     || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".woff2")
-                     || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".ttf")
-                     || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".otf")
-                     || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".eot")
-                     || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".svg")))
-                {
-                    httpApp.Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                    return new WatchResponse(WatchResponse.Cycles.Stop);
-                }
-
-                job.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access the backoffice access url. Access was denied"));
-
-                return new WatchResponse(config.Unauthorized);
-            });
-        }
-
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -320,7 +148,7 @@ namespace Our.Shield.BackofficeAccess.Models
             job.UnwatchWebRequests();
             job.UnexceptionWebRequest();
 
-            _resetterLock = 0;
+            _reSetterLock = 0;
 
             if (!(c is BackofficeAccessConfiguration config))
             {
@@ -328,18 +156,120 @@ namespace Our.Shield.BackofficeAccess.Models
                 return false;
             }
 
-            //Add our soft watches - this also handles
-            //the watches for when we're disabled
-            AddSoftWatches(job, config);
+            var defaultUmbracoLocation = ((BackofficeAccessConfiguration)DefaultConfiguration).BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/');
+            var onDiscUmbracoLocation = Configuration.UmbracoPath.EnsureStartsWith('/').EnsureEndsWith('/');
+            var virtualUmbracoLocation = config.Enable && job.Environment.Enable
+                ? config.BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/')
+                : defaultUmbracoLocation;
 
-            //if we're enabled, we need to add our IP checking watch
-            if (config.Enable && job.Environment.Enable)
+            var defaultUmbracoRegex = job.PathToRegex(defaultUmbracoLocation);
+            var onDiscUmbracoRegex = job.PathToRegex(onDiscUmbracoLocation);
+            var virtualUmbracoRegex = job.PathToRegex(virtualUmbracoLocation);
+
+            job.IgnoreWebRequest(defaultUmbracoRegex);
+            job.IgnoreWebRequest(onDiscUmbracoRegex);
+            job.IgnoreWebRequest(virtualUmbracoRegex);
+            
+            if (!virtualUmbracoLocation.Equals(defaultUmbracoLocation, StringComparison.InvariantCultureIgnoreCase)
+                && !onDiscUmbracoLocation.Equals(defaultUmbracoLocation, StringComparison.InvariantCultureIgnoreCase))
             {
-                //Add our Hard Watch to
-                //do the security checking
-                //on the user's IP Address
-                AddHardWatch(job, config);
+                SoftWatcher(job,
+                    new Regex("^(" + defaultUmbracoLocation + "backoffice([\\w-/_]+))", RegexOptions.IgnoreCase),
+                    20000,
+                    onDiscUmbracoLocation,
+                    virtualUmbracoLocation);
             }
+
+            if (config.Enable && job.Environment.Enable && config.Unauthorized.TransferType != TransferTypes.PlayDead)
+            {
+                job.ExceptionWebRequest(config.Unauthorized.Url);
+            }
+
+            if (!virtualUmbracoLocation.Equals(onDiscUmbracoLocation, StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (Interlocked.CompareExchange(ref _reSetterLock, 0, 1) == 0)
+                {
+                    var path = HttpRuntime.AppDomainAppPath;
+                    var onDiscPath = path + onDiscUmbracoLocation.Trim('/');
+                    var virtualPath = path + virtualUmbracoLocation.Trim('/');
+
+                    var reSetter = new HardResetFileHandler();
+
+                    if (reSetter.HardLocation != onDiscPath || reSetter.SoftLocation != virtualPath)
+                    {
+                        reSetter.Delete();
+
+                        reSetter.HardLocation = onDiscPath;
+                        reSetter.SoftLocation = virtualPath;
+
+                        reSetter.Save();
+                    }
+                }
+
+                SoftWatcher(job,
+                    virtualUmbracoRegex,
+                    20100,
+                    onDiscUmbracoLocation,
+                    virtualUmbracoLocation,
+                    config.Unauthorized.TransferType.Equals(TransferTypes.Rewrite));
+
+                job.WatchWebRequests(PipeLineStages.AuthenticateRequest, onDiscUmbracoRegex, 20200, (count, httpApp) =>
+                {
+                    if ((bool?)httpApp.Context.Items[_allowKey] == true
+                        || !string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension)
+                        || !config.Enable
+                        || !job.Environment.Enable)
+                    {
+                        return new WatchResponse(WatchResponse.Cycles.Continue);
+                    }
+                    
+                    if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
+                    {
+                        return new WatchResponse(new TransferUrl
+                        {
+                            TransferType = TransferTypes.Redirect,
+                            Url = new UmbracoUrl
+                            {
+                                Type = UmbracoUrlTypes.Url,
+                                Value = httpApp.Context.Request.Url.AbsolutePath.Length > onDiscUmbracoLocation.Length
+                                    ? virtualUmbracoLocation + httpApp.Context.Request.Url.AbsolutePath.Substring(onDiscUmbracoLocation.Length)
+                                    : virtualUmbracoLocation
+                            }
+                        });
+                    }
+
+                    if (config.Enable && job.Environment.Enable)
+                    {
+                        return new WatchResponse(config.Unauthorized);
+                    }
+
+                    httpApp.Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    return new WatchResponse(WatchResponse.Cycles.Stop);
+                });
+            }
+            
+            if (!config.Enable || !job.Environment.Enable)
+            {
+                return true;
+            }
+
+            foreach (var error in _ipAccessControlService.InitIpAccessControl(config.IpAccessRules))
+            {
+                job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
+            }
+
+            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, onDiscUmbracoRegex, 20300, (count, httpApp) =>
+            {
+                if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)
+                    || _ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
+                {
+                    return new WatchResponse(WatchResponse.Cycles.Continue);
+                }
+
+                job.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access the backoffice access url. Access was denied"));
+
+                return new WatchResponse(config.Unauthorized);
+            });
 
             return true;
         }
