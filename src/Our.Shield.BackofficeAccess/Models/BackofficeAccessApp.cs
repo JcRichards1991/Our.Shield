@@ -5,7 +5,6 @@ using Our.Shield.Core.Operation;
 using Our.Shield.Core.Services;
 using Our.Shield.Core.Settings;
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -71,13 +70,12 @@ namespace Our.Shield.BackofficeAccess.Models
             int priority,
             string onDiscUmbracoLocation,
             string virtualUmbracoLocation,
-            bool rewrite = true)
+            bool rewrite)
         {
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, priority, (count, httpApp) =>
             {
-                var rewritePath = httpApp.Request.Url.AbsolutePath.Length > virtualUmbracoLocation.Length
-                    ? onDiscUmbracoLocation + httpApp.Request.Url.AbsolutePath.Substring(onDiscUmbracoLocation.Length)
-                    : onDiscUmbracoLocation;
+                var path = httpApp.Request.Url.AbsolutePath.EnsureEndsWith('/');
+                var rewritePath = onDiscUmbracoLocation + path.Substring(virtualUmbracoLocation.Length);
                 
                 if (!string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension))
                 {
@@ -111,7 +109,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 httpApp.Context.Items.Add(_allowKey, true);
                 rewritePath += httpApp.Request.Url.Query;
 
-                if (rewrite || regex.IsMatch(virtualUmbracoLocation))
+                if (rewrite)
                 {
                     return new WatchResponse(new TransferUrl
                     {
@@ -177,7 +175,8 @@ namespace Our.Shield.BackofficeAccess.Models
                     new Regex("^(" + defaultUmbracoLocation + "backoffice([\\w-/_]+))", RegexOptions.IgnoreCase),
                     20000,
                     onDiscUmbracoLocation,
-                    virtualUmbracoLocation);
+                    virtualUmbracoLocation,
+                    false);
             }
 
             if (config.Enable && job.Environment.Enable && config.Unauthorized.TransferType != TransferTypes.PlayDead)
@@ -211,36 +210,15 @@ namespace Our.Shield.BackofficeAccess.Models
                     20100,
                     onDiscUmbracoLocation,
                     virtualUmbracoLocation,
-                    config.Unauthorized.TransferType.Equals(TransferTypes.Rewrite));
+                    true);
 
-                job.WatchWebRequests(PipeLineStages.AuthenticateRequest, onDiscUmbracoRegex, 20200, (count, httpApp) =>
+                job.WatchWebRequests(PipeLineStages.AuthenticateRequest, new Regex($"^(({onDiscUmbracoLocation})|({onDiscUmbracoLocation.TrimEnd('/')}))$"), 20200, (count, httpApp) =>
                 {
                     if ((bool?)httpApp.Context.Items[_allowKey] == true
                         || !string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension)
-                        || !config.Enable
-                        || !job.Environment.Enable)
+                        || AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
                     {
                         return new WatchResponse(WatchResponse.Cycles.Continue);
-                    }
-                    
-                    if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
-                    {
-                        return new WatchResponse(new TransferUrl
-                        {
-                            TransferType = TransferTypes.Redirect,
-                            Url = new UmbracoUrl
-                            {
-                                Type = UmbracoUrlTypes.Url,
-                                Value = httpApp.Context.Request.Url.AbsolutePath.Length > onDiscUmbracoLocation.Length
-                                    ? virtualUmbracoLocation + httpApp.Context.Request.Url.AbsolutePath.Substring(onDiscUmbracoLocation.Length)
-                                    : virtualUmbracoLocation
-                            }
-                        });
-                    }
-
-                    if (config.Enable && job.Environment.Enable)
-                    {
-                        return new WatchResponse(config.Unauthorized);
                     }
 
                     httpApp.Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
