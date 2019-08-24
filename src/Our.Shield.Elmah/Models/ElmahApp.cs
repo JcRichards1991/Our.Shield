@@ -80,7 +80,7 @@ namespace Our.Shield.Elmah.Models
 			if (config.Unauthorized.TransferType != TransferTypes.PlayDead)
 				job.ExceptionWebRequest(config.Unauthorized.Url);
 
-			var regex = new Regex("^/elmah\\.axd", RegexOptions.IgnoreCase);
+			var regex = job.PathToRegex("elmah.axd");
 			job.IgnoreWebRequest(regex);
 
 			job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 300000, (count, httpApp) =>

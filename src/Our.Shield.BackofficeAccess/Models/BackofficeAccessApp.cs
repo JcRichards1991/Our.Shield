@@ -142,7 +142,6 @@ namespace Our.Shield.BackofficeAccess.Models
         /// <returns></returns>
         public override bool Execute(IJob job, IAppConfiguration c)
         {
-            ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(_allowKey);
             job.UnwatchWebRequests();
             job.UnexceptionWebRequest();
 

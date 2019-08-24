@@ -79,7 +79,10 @@ namespace Our.Shield.Swagger.Models
 				job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
 			}
 
-			job.ExceptionWebRequest(regex);
+			if (config.Unauthorized.TransferType != TransferTypes.PlayDead)
+			{
+				job.ExceptionWebRequest(config.Unauthorized.Url);
+			}
 
 			if (config.IpAccessRules.Exceptions.Any())
 			{

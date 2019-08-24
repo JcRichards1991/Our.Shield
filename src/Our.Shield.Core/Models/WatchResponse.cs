@@ -8,6 +8,10 @@
 		public enum Cycles
 		{
 			/// <summary>
+			/// Kill the current request (i.e. Request has been terminated)
+			/// </summary>
+			Kill,
+			/// <summary>
 			/// End the current request (i.e. Request has been redirected)
 			/// </summary>
 			Stop,

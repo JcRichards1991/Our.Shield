@@ -1,13 +1,9 @@
 ﻿using System.Web.Routing;
 using Umbraco.Core;
 
-namespace Our.Shield.Core.UI
+namespace Our.Shield.Elmah.Register
 {
-	/// <inheritdoc />
-	/// <summary>
-	/// Initialization class
-	/// </summary>
-	public class Register : ApplicationEventHandler
+	class RegisterUmbraco : ApplicationEventHandler
 	{
 		/// <inheritdoc />
 		/// <summary>
@@ -17,7 +13,7 @@ namespace Our.Shield.Core.UI
 		protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
 		{
 			base.ApplicationStarted(umbracoApplication, applicationContext);
-			applicationContext.Services.SectionService.MakeNew(Constants.App.Name, Constants.App.Alias, Constants.App.Icon);
+			RouteTable.Routes.Ignore("elmah.axd/{*pathInfo}");
 		}
 	}
 }
