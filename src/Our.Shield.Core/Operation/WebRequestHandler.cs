@@ -451,8 +451,8 @@ namespace Our.Shield.Core.Operation
 						application.Response.ContentType = value;
 						break;
 
-					case "content-encoding":
-						application.Response.ContentEncoding = Encoding.GetEncoding(value);
+					default:
+						application.Response.AppendHeader(key, value);
 						break;
 				}
 			}
@@ -665,7 +665,7 @@ namespace Our.Shield.Core.Operation
 
 		void Request(PipeLineStages stage, HttpApplication application)
 		{
-			if (application.Context.Request.Url.AbsolutePath == "/umbraco/ping.aspx")
+			if (application.Context.Request.Url.AbsolutePath == "/umbraco/ping.aspx" || application.Context.Request.Url.AbsolutePath == "/umbraco/backoffice/UmbracoApi/Authentication/GetRemainingTimeoutSeconds")
 			{
 				return;
 			}

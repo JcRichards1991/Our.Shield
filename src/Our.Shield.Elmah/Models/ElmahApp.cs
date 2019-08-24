@@ -4,6 +4,7 @@ using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using Our.Shield.Core.Services;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -94,8 +95,7 @@ namespace Our.Shield.Elmah.Models
 
 			job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 300500, (count, httpApp) =>
 			{
-				if ((bool?)httpApp.Context.Items[_allowKey] == true
-					|| config.UmbracoUserEnable && AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
+				if ((bool?)httpApp.Context.Items[_allowKey] == true || (config.UmbracoUserEnable && AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)))
 				{
 					return new WatchResponse(WatchResponse.Cycles.Continue);
 				}

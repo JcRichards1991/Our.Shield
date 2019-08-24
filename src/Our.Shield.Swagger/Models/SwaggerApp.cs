@@ -84,22 +84,18 @@ namespace Our.Shield.Swagger.Models
 				job.ExceptionWebRequest(config.Unauthorized.Url);
 			}
 
-			if (config.IpAccessRules.Exceptions.Any())
+			job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500250, (count, httpApp) =>
 			{
-				job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500250, (count, httpApp) =>
+				if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
 				{
-					if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
-					{
-						httpApp.Context.Items.Add(_allowKey, true);
-					}
-					return new WatchResponse(WatchResponse.Cycles.Continue);
-				});
-			}
+					httpApp.Context.Items.Add(_allowKey, true);
+				}
+				return new WatchResponse(WatchResponse.Cycles.Continue);
+			});
 
 			job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500500, (count, httpApp) =>
 			{
-				if ((bool?)httpApp.Context.Items[_allowKey] == true
-					|| config.UmbracoUserEnable && AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
+				if ((bool?)httpApp.Context.Items[_allowKey] == true || (config.UmbracoUserEnable && AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)))
 				{
 					return new WatchResponse(WatchResponse.Cycles.Continue);
 				}

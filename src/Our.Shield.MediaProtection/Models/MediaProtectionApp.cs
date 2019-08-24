@@ -74,13 +74,13 @@ namespace Our.Shield.MediaProtection.Models
 				return false;
 			}
 
-			var mediaRegex = job.PathToRegex(VirtualPathUtility.ToAbsolute(new Uri(Umbraco.Core.IO.SystemDirectories.Media, UriKind.Relative).ToString()));
-			job.IgnoreWebRequest(mediaRegex);
-
 			if (!config.Enable || !job.Environment.Enable)
 			{
 				return true;
 			}
+
+			var mediaRegex = job.PathToRegex(VirtualPathUtility.ToAbsolute(new Uri(Umbraco.Core.IO.SystemDirectories.Media, UriKind.Relative).ToString()));
+			job.IgnoreWebRequest(mediaRegex);
 
 			if (config.EnableHotLinkingProtection)
 			{
@@ -101,7 +101,7 @@ namespace Our.Shield.MediaProtection.Models
 				var regex = new Regex("^(" + string.Join("|", config.HotLinkingProtectedDirectories) + ")", RegexOptions.IgnoreCase);
 				job.IgnoreWebRequest(regex);
 
-				job.WatchWebRequests(PipeLineStages.BeginRequest, regex, 30000, (count, httpApp) =>
+				job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 30000, (count, httpApp) =>
 				{
 					var referrer = httpApp.Request.UrlReferrer;
 					if (referrer == null || String.IsNullOrWhiteSpace(referrer.Host) ||
@@ -127,7 +127,7 @@ namespace Our.Shield.MediaProtection.Models
 			if (!config.EnableMembersOnlyMedia)
 				return true;
 
-			job.WatchWebRequests(PipeLineStages.BeginRequest, mediaRegex, 30100, (count, httpApp) =>
+			job.WatchWebRequests(PipeLineStages.AuthenticateRequest, mediaRegex, 30100, (count, httpApp) =>
 			{
 				var httpContext = new HttpContextWrapper(httpApp.Context);
 				var umbAuthTicket = httpContext.GetUmbracoAuthTicket();

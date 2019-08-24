@@ -66,15 +66,15 @@ namespace Our.Shield.FrontendAccess.Models
 			job.UnwatchWebRequests();
 			job.UnexceptionWebRequest();
 
-			if (!c.Enable || !job.Environment.Enable)
-			{
-				return true;
-			}
-
 			if (!(c is FrontendAccessConfiguration config))
 			{
 				job.WriteJournal(new JournalMessage("Error: Config passed into Frontend Access was not of the correct type"));
 				return false;
+			}
+
+			if (!c.Enable || !job.Environment.Enable)
+			{
+				return true;
 			}
 
 			foreach (var error in _ipAccessControlService.InitIpAccessControl(config.IpAccessRules))
