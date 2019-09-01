@@ -106,7 +106,17 @@ namespace Our.Shield.Core.Persistence.Business
                     .Where<Configuration>(x => x.EnvironmentId == envId)
                     .Where<Configuration>(x => x.AppId == appId));
 
-                return record?.Key ?? Guid.NewGuid();
+                if (record != null)
+                {
+                    return record.Key;
+                }
+
+                var key = Guid.NewGuid();
+                var config = App<IAppConfiguration>.Create(appId).DefaultConfiguration;
+
+                Write(envId, appId, key, config);
+
+                return key;
             }
             catch (SqlException sqlEx)
             {

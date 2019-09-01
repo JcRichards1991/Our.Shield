@@ -308,7 +308,6 @@
     <Compile Include="Attributes\AppEditorAttribute.cs" />
     <Compile Include="Attributes\AppAssetAttribute.cs" />
     <Compile Include="UI\ShieldApiController.cs" />
-    <Compile Include="UI\Register.cs" />
     <None Include="App_Plugins\Shield\BackOffice\Scripts\Shield.min.js.map">
       <DependentUpon>Shield.min.js</DependentUpon>
     </None>
