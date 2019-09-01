@@ -226,9 +226,12 @@ namespace Our.Shield.Core.UI
                 .Where(x => x.SortOrder != Constants.Tree.DefaultEnvironmentSortOrder)
                 .ToList();
 
-            environment.SortOrder = environments.Any()
-                ? environments.Max(x => x.SortOrder) + 1
-                : 0;
+            if (!environments.Any(x => x.Key == environment.Key))
+            {
+                environment.SortOrder = environments.Any()
+                    ? environments.Max(x => x.SortOrder) + 1
+                    : 0;
+            }
 
             return EnvironmentService.Instance.Write(environment);
         }

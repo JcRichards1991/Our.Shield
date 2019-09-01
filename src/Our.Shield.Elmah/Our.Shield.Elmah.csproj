@@ -241,6 +241,7 @@
     <Compile Include="Models\ElmahApp.cs" />
     <Compile Include="Models\ElmahConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Register\RegisterUmbraco.cs" />
     <Compile Include="UI\ElmahApiController.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -26,6 +26,7 @@ namespace Our.Shield.Core.Operation
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             base.ApplicationStarted(umbracoApplication, applicationContext);
+            applicationContext.Services.SectionService.MakeNew(UI.Constants.App.Name, UI.Constants.App.Alias, UI.Constants.App.Icon);
 
             new Migration().RunMigrations(applicationContext.DatabaseContext.SqlSyntax, 
                 applicationContext.Services.MigrationEntryService, applicationContext.ProfilingLogger.Logger);

@@ -13,13 +13,15 @@
     <releaseNotes>
       <![CDATA[
       - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+).
-      - Merged the 2 watches into 1 which was causing the frontend to always be denied access even if IP(s) are defined to be allowed.
+      - Fixed issue disallowing access to the frontend when IP Address is whitelisted
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security Locker FrontendAccess Frontend Access</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="1.1.1" />
+      <dependency id="Our.Shield.Core" version="1.1.0" />
+      <dependency id="Our.Shield.BackofficeAccess" version="1.1.0" />
+      <dependency id="Our.Shield.MediaProtection" version="1.1.0" />
     </dependencies>
   </metadata>
   <files>

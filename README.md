@@ -21,7 +21,6 @@ PM> Install-Package Our.Shield.Core
 	```
 	PM> Install-Package Our.Shield.BackofficeAccess
 	```
-		
 	* https://www.nuget.org/packages/Our.Shield.MediaProtection/
 	```
 	PM> Install-Package Our.Shield.MediaProtection
@@ -33,6 +32,10 @@ PM> Install-Package Our.Shield.Core
 	* https://www.nuget.org/packages/Our.Shield.Elmah/
 	```
 	PM> Install-Package Our.Shield.Elmah
+	```
+	* https://www.nuget.org/packages/Our.Shield.Swagger/
+	```
+	PM> Install-Package Our.Shield.Swagger
 	```
 ---
 
@@ -50,7 +53,24 @@ After upgrading, you will need to re-save the configurations of the installed ap
 
 ---
 
-### Log ###
+### Change Log ###
+**1.1.0 - 01/09/2019**
+* All: Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+).
+
+* Shield Core: Refactoring of angular.
+* Shield Core: Added ShieldService to allow external sources (apps) to retrieve limited information from the Shield Core.
+* Shield Core: Added upper target Umbraco version to disallow installation on V8 sites and above (nuget installation).
+
+* Backoffice Access: Fixed issue with the Backoffice always being accessible.
+* Backoffice Access: Stopped the hard resetter file being created on every request when no configuration changes have been made.
+
+* Elmah: Fixed issue where StackTrace not displaying when viewing more details of an issue when using with Elmah SQLServer nuget package.
+* Elmah: Added domain filtering on the report tab. Now will only show errors that have occured for the domains defined on the environment. If no domains defined (i.e. default enviroment) errors are return as before.
+
+* Frontend Access: Fixed issue disallowing access to the frontend when IP Address is whitelisted.
+
+* Swagger: Release of new app, which adds [Swagger](https://swagger.io/) to your Umbraco installation, configured to filter out Umbraco's API's and allowing the ability to add security restrictions to ~/swagger
+
 **1.0.6 - 25/03/2018**
 * Shield Core: Fixes hanging state when creating a new environment
 * Shield Core: Fixes issue with matching domain(s) to a request for custom environment(s)
@@ -114,4 +134,4 @@ Our.Shield.Core, Our.Shield.BackofficeAccess & Our.Shield.MediaProtection releas
 
 
 ### Source Code ###
-Download the source code, it should work for Visual Studio 2013 & 2015. If you set **Our.Shield.Site** as your **Set as Startup project** this should execute the test Umbraco website, where you can test Our.Shield in different scenarios. Once running, surf to http://localhost:8560/admin and at the login type **admin** for user and **password1234!** for password.
+Download the source code, it should work for Visual Studio 2013 & 2015 & 2017. If you set **Our.Shield.Site** as your **Set as Startup project** this should execute the test Umbraco website, where you can test Our.Shield in different scenarios. Once running, surf to http://localhost:8560/admin and at the login type **admin** for user and **password1234!** for password.

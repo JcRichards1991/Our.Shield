@@ -50,7 +50,7 @@ namespace Our.Shield.Core.UI
             }
 
             if (environments.All(x => x.Key.Key != key))
-            return menu;
+                return menu;
 
             menu.Items.Add<ActionDelete>("Delete Environment");
             menu.Items.Add<ActionRefresh>("Reload Apps");
