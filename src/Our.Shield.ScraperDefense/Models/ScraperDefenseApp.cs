@@ -5,7 +5,7 @@ using Umbraco.Core;
 
 namespace Our.Shield.ScraperDefense.Models
 {
-    [AppEditor("/App_Plugins/Shield.ScraperDefense/Views/ScraperDefense.html?version=1.0.6")]
+    [AppEditor("/App_Plugins/Shield.ScraperDefense/Views/ScraperDefense.html?version=1.1.0")]
     [AppJournal]
     public class ScraperDefenseApp : App<ScraperDefenseConfiguration>
     {

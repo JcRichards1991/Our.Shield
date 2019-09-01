@@ -12,24 +12,23 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Fixes hanging state when creating a new environment
-      - Fixes issue with matching domains to a request for custom environments
-      - Added custom configuration section to:
-        1) define request Headers for IP address checking to determine whether to grant or deny access
-        2) Allows the ability to set the polling time for when shield checks it's app's configuration for changes.
-          This allows for a load balanced setup to keep slave server(s) in sync with the master server
+      - Refactoring of angular.
+      - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+).
+      - Added ShieldService to allow external sources to retrieve information from the core.
+      - Added upper target Umbraco version to disallow installation on V8 sites and above.
+      - Added TransferRequest & TransmitFile types to TransferTypes enum
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security</tags>
     <dependencies>
-      <dependency id="UmbracoCms" version="7.5.4" />
+      <dependency id="UmbracoCms" version="[7.3.0,8)" />
       <dependency id="WebActivatorEx" version="2.2.0" />
       <dependency id="IPAddressRange" version="2.0.0.3" />
     </dependencies>
   </metadata>
   <files>
     <file src="App_Plugins\Shield\package.manifest" target="Content\App_Plugins\Shield" />
-    <file src="UI\Transforms\**\*.*" target="Content" />
+    <file src="Transforms\**\*.*" target="Content\Transforms" />
   </files>
 </package>

@@ -1,0 +1,77 @@
+﻿<div class="shield-editor" ng-controller="shield.editors.environment.edit as vm" ng-init="vm.init()">
+  <umb-load-indicator ng-show="vm.loading"></umb-load-indicator>
+
+  <form ng-hide="vm.loading"
+        name="environmentForm"
+        ng-submit="vm.save(environmentForm)"
+        novalidate
+        val-form-manager>
+
+    <umb-editor-view>
+
+      <umb-editor-header ng-if="vm.editing"
+                         name="vm.environment.name"
+                         name-locked="false"
+                         hide-description="true"
+                         hide-alias="true"
+                         icon="vm.environment.icon">
+      </umb-editor-header>
+
+      <umb-editor-header ng-if="!vm.editing"
+                         name="vm.environment.name"
+                         tabs="vm.tabs"
+                         name-locked="true"
+                         hide-icon="true"
+                         hide-description="true"
+                         hide-alias="true">
+      </umb-editor-header>
+
+      <div class="umb-editor-header__actions-menu shield-editor-header" ng-if="vm.environment.id !== 1 && !vm.editing">
+        <div class="btn-group pull-right">
+          <a class="btn" href="#" ng-click="vm.edit()" prevent-default>
+            <localize key="general_edit">Edit</localize>
+          </a>
+        </div>
+      </div>
+
+      <umb-editor-container>
+        <div class="form-horizontal" ng-if="vm.environment.id !== 1" ng-show="vm.editing" ng-include="'/App_Plugins/Shield/Backoffice/Views/EditEnvironment.html?version=1.1.0'"></div>
+
+        <umb-tabs-content class="form-horizontal" view="true" ng-if="!vm.editingEnvironment">
+          <umb-tab ng-repeat="tab in vm.tabs track by $index" id="tab{{tab.id}}" rel="{{tab.id}}">
+            <div ng-include="tab.view"></div>
+          </umb-tab>
+        </umb-tabs-content>
+      </umb-editor-container>
+
+      <umb-editor-footer>
+
+        <umb-editor-footer-content-left>
+          <umb-breadcrumbs ancestors="vm.ancestors"
+                           entity-type="shield">
+          </umb-breadcrumbs>
+        </umb-editor-footer-content-left>
+
+        <umb-editor-footer-content-right>
+          <umb-button ng-if="vm.editing"
+                      label="Cancel"
+                      label-key="general_cancel"
+                      type="button"
+                      action="vm.cancelEditing()">
+          </umb-button>
+
+          <umb-button label="{{vm.button.label}}"
+                      label-key="{{vm.button.labelKey}}"
+                      type="submit"
+                      button-style="success"
+                      shortcut="ctrl+s"
+                      state="vm.button.state">
+          </umb-button>
+        </umb-editor-footer-content-right>
+
+      </umb-editor-footer>
+    </umb-editor-view>
+
+  </form>
+</div>
+

@@ -1,0 +1,50 @@
+[
+  {
+    "outputFileName": "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Shield.js",
+    "inputFiles": [
+      "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Dashboard.Controllers.js",
+      "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Dialog.Controllers.js",
+      "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Directives.js",
+      "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Editors.Controllers.js",
+      "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Resources.js",
+      "src/Our.Shield.Core/App_Plugins/Shield/Backoffice/Scripts/Tree.Menu.Controllers.js"
+    ],
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "src/Our.Shield.BackofficeAccess/App_Plugins/Shield.BackofficeAccess/Scripts/BackofficeAccess.min.js",
+    "inputFiles": [
+      "src/Our.Shield.BackofficeAccess/App_Plugins/Shield.BackofficeAccess/Scripts/BackofficeAccess.js"
+    ],
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "src/Our.Shield.Elmah/App_Plugins/Shield.Elmah/Scripts/Elmah.js",
+    "inputFiles": [
+      "src/Our.Shield.Elmah/App_Plugins/Shield.Elmah/Scripts/Controllers.js",
+      "src/Our.Shield.Elmah/App_Plugins/Shield.Elmah/Scripts/Resources.js"
+    ],
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "src/Our.Shield.FrontendAccess/App_Plugins/Shield.FrontendAccess/Scripts/FrontendAccess.min.js",
+    "inputFiles": [
+      "src/Our.Shield.FrontendAccess/App_Plugins/Shield.FrontendAccess/Scripts/FrontendAccess.js"
+    ],
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "src/Our.Shield.MediaProtection/App_Plugins/Shield.MediaProtection/Scripts/MediaProtection.js",
+    "inputFiles": [
+      "src/Our.Shield.MediaProtection/App_Plugins/Shield.MediaProtection/Scripts/Resources.js",
+      "src/Our.Shield.MediaProtection/App_Plugins/Shield.MediaProtection/Scripts/Controllers.js"
+    ],
+    "sourceMap": true
+  },
+  {
+    "outputFileName": "src/Our.Shield.Swagger/App_Plugins/Shield.Swagger/Scripts/Swagger.min.js",
+    "inputFiles": [
+      "src/Our.Shield.Swagger/App_Plugins/Shield.Swagger/Scripts/Swagger.js"
+    ]
+  }
+]

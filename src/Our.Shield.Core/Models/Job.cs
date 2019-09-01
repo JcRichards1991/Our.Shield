@@ -11,7 +11,7 @@ namespace Our.Shield.Core.Models
 {
     /// <inheritdoc />
     /// <summary>
-    /// Class that conatins each of our executions
+    /// Class that contains each of our executions
     /// </summary>
     internal class Job : IJob
     {
@@ -23,6 +23,8 @@ namespace Our.Shield.Core.Models
 
         /// <inheritdoc />
         public IApp App { get; set; }
+
+        public Guid Key { get; internal set; }
 
         internal Type ConfigType;
 
@@ -38,6 +40,7 @@ namespace Our.Shield.Core.Models
             return new Job
             {
                 Id = Id,
+                Key = Key,
                 Environment = Environment,
                 App = app,
                 ConfigType = ConfigType,
@@ -64,7 +67,7 @@ namespace Our.Shield.Core.Models
             JobService.Instance.ListJournals<T>(this, page, itemsPerPage, out totalPages);
 
         /// <inheritdoc />
-        public int WatchWebRequests(PipeLineStages stage, Regex regex, 
+        public int WatchWebRequests(PipeLineStages stage, Regex regex,
             int priority, Func<int, HttpApplication, WatchResponse> request) =>
             WebRequestHandler.Watch(this, stage, regex, priority, request);
 
@@ -99,5 +102,38 @@ namespace Our.Shield.Core.Models
         /// <inheritdoc />
         public int UnexceptionWebRequest() => WebRequestHandler.Unexception(this);
 
+        public int IgnoreWebRequest(Regex regex) => WebRequestHandler.Ignore(this, regex);
+
+
+        public Regex PathToRegex(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return null;
+            }
+
+            if (path[0] == '/')
+            {
+                path = path.Substring(1);
+            }
+
+            if (path[path.Length - 1] == '/')
+            {
+                path = path.Substring(0, path.Length - 1);
+            }
+
+            return new Regex(@"^/" + path + "$|/" + path + "/", RegexOptions.IgnoreCase);
+        }
+
+
+        public int IgnoreWebRequest(string path) => WebRequestHandler.Ignore(this, PathToRegex(path));
+
+        /// <inheritdoc />
+        public int UnignoreWebRequest(Regex regex) => WebRequestHandler.Unignore(this, regex);
+
+        public int UnignoreWebRequest(string path) => WebRequestHandler.Unignore(this, PathToRegex(path));
+
+        /// <inheritdoc />
+        public int UnignoreWebRequest() => WebRequestHandler.Unignore(this);
     }
 }

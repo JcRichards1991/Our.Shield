@@ -27,6 +27,11 @@ namespace Our.Shield.Core.Models
         IApp App { get; }
 
         /// <summary>
+        /// Unique Identifier
+        /// </summary>
+        Guid Key { get; }
+
+        /// <summary>
         /// Writes a Apps configuration to the database
         /// </summary>
         /// <param name="config">The configuration to write</param>
@@ -64,7 +69,7 @@ namespace Our.Shield.Core.Models
         /// <param name="priority">The priority of the request watch</param>
         /// <param name="request">The function to call when the regex matches a request</param>
         /// <returns></returns>
-        int WatchWebRequests(PipeLineStages stage, Regex regex, int priority, 
+        int WatchWebRequests(PipeLineStages stage, Regex regex, int priority,
             Func<int, HttpApplication, WatchResponse> request);
 
         /// <summary>
@@ -124,5 +129,43 @@ namespace Our.Shield.Core.Models
         /// </summary>
         /// <returns></returns>
         int UnexceptionWebRequest();
+
+        Regex PathToRegex(string path);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="regex"></param>
+        /// <returns></returns>
+        int IgnoreWebRequest(Regex regex);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="regex"></param>
+        /// <returns></returns>
+        int IgnoreWebRequest(string path);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="regex"></param>
+        /// <returns></returns>
+        int UnignoreWebRequest(Regex regex);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="regex"></param>
+        /// <returns></returns>
+        int UnignoreWebRequest(string path);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        int UnignoreWebRequest();
+
+
     }
 }

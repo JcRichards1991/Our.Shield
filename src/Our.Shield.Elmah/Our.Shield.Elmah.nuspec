@@ -12,16 +12,15 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Fixes issues with allowing access for all IP Address
-      - Localized the Reporting tab
-      - Added Refresh Errors button & Generate Test Error button to Reporting tab
-      - Updated to take advantage of the custom configuration section added to the core
+      - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+).
+      - Fixed issue where StackTrace not displaying when viewing more details of an issue when using with Elmah SQLServer nuget package.
+      - Added domain filtering on the report tab. Now will only show errors that have occured for the domains defined on the environment. If no domains defined (i.e. default enviroment) errors are return as before.
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security Elmah</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="1.0.6" />
+      <dependency id="Our.Shield.Core" version="1.1.0" />
       <dependency id="elmah" version="1.2.2" />
     </dependencies>
   </metadata>

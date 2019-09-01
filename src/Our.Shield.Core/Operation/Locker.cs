@@ -8,9 +8,9 @@ namespace Our.Shield.Core.Operation
 	public class Locker
 	{
 #if TRACE2
-        private const int LockWait = 1000000;
+		private const int LockWait = 1000000;
 #else
-        private const int LockWait = 1000;
+		private const int LockWait = 1000;
 #endif
 		private readonly ReaderWriterLockSlim _slim = new ReaderWriterLockSlim();
 
@@ -199,8 +199,8 @@ namespace Our.Shield.Core.Operation
 						}
 					}
 				}
-                executeReadAfter?.Invoke(doRunWrite);
-                return true;
+				executeReadAfter?.Invoke(doRunWrite);
+				return true;
 			}
 			finally
 			{

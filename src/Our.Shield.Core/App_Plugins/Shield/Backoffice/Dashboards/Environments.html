@@ -1,16 +1,10 @@
 ﻿<div class="shield-dashboard" ng-controller="Shield.Dashboards.Environments as vm" ng-init="vm.init()">
 
-    <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
+    <umb-load-indicator ng-show="vm.loading"></umb-load-indicator>
 
-    <umb-editor-view ng-if="!vm.loading">
+    <umb-editor-view ng-hide="vm.loading">
         <umb-editor-container>
             <div class="form-horizontal">
-                <div class="umb-el-wrap control-group umb-control-group">
-                    <div>
-                        <h4 ng-bind-html="vm.description"></h4>
-                    </div>
-                </div>
-
                 <div class="umb-table">
                     <div class="umb-table-head">
                         <div class="umb-table-row">
@@ -36,7 +30,7 @@
                     </div>
 
                     <div class="umb-table-body">
-                        <div class="umb-table-row" ng-repeat="environment in vm.environments track by $index">
+                        <div class="umb-table-row" ng-repeat="environment in vm.environments track by environment.key">
 
                             <div class="umb-table-cell app-icon-cell">
                                 <i class="umb-table-body__icon umb-table-body__fileicon">
@@ -44,7 +38,7 @@
                                 </i>
                             </div>
 
-                            <div class="umb-table-cell umb-table__name" ng-click="vm.editItem(environment)">
+                            <div class="umb-table-cell umb-table__name" ng-click="vm.editEnvironment(environment.key)">
                                 <span ng-bind-html="environment.name"></span>
                             </div>
 

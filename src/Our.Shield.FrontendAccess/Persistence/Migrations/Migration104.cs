@@ -1,4 +1,5 @@
 ﻿using Our.Shield.Core.Models;
+using Our.Shield.Core.Persistence.Business;
 using Our.Shield.FrontendAccess.Models;
 using System.Linq;
 using Umbraco.Core.Logging;
@@ -16,7 +17,7 @@ namespace Our.Shield.FrontendAccess.Persistence.Migrations
 
         public override void Up()
         {
-            var context = Core.Persistance.Business.DbContext.Instance.Configuration;
+            var context = DbContext.Instance.Configuration;
             context.ConfigMapper("FrontendAccess", new Models.Configuration103(), dbData =>
             {
                 var oldData = dbData as Models.Configuration103;

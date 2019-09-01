@@ -20,6 +20,7 @@
     <key alias="DateHeader">Date</key>
     <key alias="TimeHeader">Time</key>
     <key alias="StackTraceHeader">StackTrace</key>
+    <key alias="WebHostHtmlMessageHeader">Web Host Html Message</key>
   </area>
 
   <area alias="Shield.Elmah.Properties">

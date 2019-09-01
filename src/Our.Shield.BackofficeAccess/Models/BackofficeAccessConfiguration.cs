@@ -6,7 +6,7 @@ namespace Our.Shield.BackofficeAccess.Models
 {
     /// <inheritdoc />
     /// <summary>
-    /// The Backofffice Access Configuration
+    /// The Backoffice Access Configuration
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class BackofficeAccessConfiguration : AppConfiguration

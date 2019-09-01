@@ -4,10 +4,6 @@ using Umbraco.Core.Persistence.Migrations;
 
 namespace Our.Shield.Core.Models
 {
-    /// <inheritdoc />
-    /// <summary>
-    /// 
-    /// </summary>
     public interface IApp : IFrisk
     {
         /// <summary>

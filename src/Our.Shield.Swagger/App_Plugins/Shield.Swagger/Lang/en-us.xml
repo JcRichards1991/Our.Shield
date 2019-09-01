@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language alias="en" intName="English (US)" localName="English (US)" lcid="" culture="en-US">
+  <creator>
+    <name>Jonathan Richards</name>
+  </creator>
+
+  <area alias="Shield.Swagger.General">
+    <key alias="Name">Swagger</key>
+    <key alias="Description">Restrict access to ~/swagger to Authenticated Umbraco Users and/or secure via IP restrictions</key>
+  </area>
+
+  <area alias="Shield.Swagger.Properties">
+    <key alias="UmbracoUsersEnableDescription">Whether or not ~/swagger is accessible by users who have authenticated as an Umbraco User</key>
+  </area>
+  
+</language>

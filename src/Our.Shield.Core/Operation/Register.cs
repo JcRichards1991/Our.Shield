@@ -1,4 +1,5 @@
-﻿using Our.Shield.Core.Services;
+﻿using Our.Shield.Core.Persistence.Data.Migrations;
+using Our.Shield.Core.Services;
 using Umbraco.Core;
 
 namespace Our.Shield.Core.Operation
@@ -25,11 +26,12 @@ namespace Our.Shield.Core.Operation
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             base.ApplicationStarted(umbracoApplication, applicationContext);
+            applicationContext.Services.SectionService.MakeNew(UI.Constants.App.Name, UI.Constants.App.Alias, UI.Constants.App.Icon);
 
-            new Persistance.Data.Migrations.Migration().RunMigrations(applicationContext.DatabaseContext.SqlSyntax, 
+            new Migration().RunMigrations(applicationContext.DatabaseContext.SqlSyntax, 
                 applicationContext.Services.MigrationEntryService, applicationContext.ProfilingLogger.Logger);
 
-            JobService.Instance.Init(umbracoApplication, applicationContext);
+            JobService.Instance.Init(applicationContext);
 
             Umbraco.Core.Services.ContentService.Published += UmbracoContentService.ClearCache;
             Umbraco.Core.Services.ContentService.UnPublished += UmbracoContentService.ClearCache;
