@@ -54,7 +54,7 @@ After upgrading, you will need to re-save the configurations of the installed ap
 ---
 
 ### Change Log ###
-**1.1.0 - XX/XX/2019**
+**1.1.0 - 01/09/2019**
 * All: Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+).
 
 * Shield Core: Refactoring of angular.
