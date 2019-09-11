@@ -24,6 +24,11 @@ namespace Our.Shield.Core.UI
     [PluginController(Constants.App.Alias)]
     public class ShieldApiController : UmbracoAuthorizedJsonController
     {
+        /// <summary>
+        /// Deletes an environment via its key
+        /// </summary>
+        /// <param name="key">The key of the environment to delete</param>
+        /// <returns>true if successfully deleted, otherwise, false.</returns>
         [HttpPost]
         public bool DeleteEnvironment(Guid key)
         {
@@ -31,6 +36,12 @@ namespace Our.Shield.Core.UI
             return environment != null && EnvironmentService.Instance.Delete(environment);
         }
 
+        /// <summary>
+        /// Gets an app by it's key
+        /// </summary>
+        /// <param name="key">The key of the app to fetch</param>
+        /// <returns>The app with the corresponding key</returns>
+        [HttpGet]
         public AppApiResponseModel GetApp(Guid key)
         {
             var environment = JobService.Instance.Environments.FirstOrDefault(x => x.Value.Any(y => y.Key == key));
@@ -64,6 +75,12 @@ namespace Our.Shield.Core.UI
             };
         }
 
+        /// <summary>
+        /// Gets an environment by it's key
+        /// </summary>
+        /// <param name="key">The Key of the environment to fetch</param>
+        /// <returns>The environment with the corresponding key</returns>
+        [HttpGet]
         public EnvironmentApiResponseModel GetEnvironment(Guid key)
         {
             var environment = JobService.Instance.Environments.FirstOrDefault(x => x.Key.Key == key);
@@ -78,12 +95,28 @@ namespace Our.Shield.Core.UI
             };
         }
 
+        /// <summary>
+        /// Get all environments available in the system
+        /// </summary>
+        /// <returns>Collection of environments</returns>
         [HttpGet]
         public IEnumerable<IEnvironment> GetEnvironments()
         {
             return JobService.Instance.Environments.Select(x => x.Key).OrderBy(x => x.SortOrder);
         }
 
+        /// <summary>
+        /// Gets the journals based on the parameters passed in
+        /// </summary>
+        /// <param name="method">The level of which to return journals.
+        /// Environments: Returns all journals for all Environments & Apps;
+        /// Environment: Returns all Journals for a given Environment & children Apps;
+        /// App: Returns only the Journals for a given app</param>
+        /// <param name="id">Ignored if method is Environments. Guid Key of the Environment or App to retrieve Journals for</param>
+        /// <param name="page">The page of Journals to retrieve</param>
+        /// <param name="orderBy">The type to sort the Journals by(currently ignored)</param>
+        /// <param name="orderByDirection">The order in which to order. acs or desc</param>
+        /// <returns>Collection of Journals based on the parameters passed in</returns>
         [HttpGet]
         public JournalListing Journals(string method, string id, int page, string orderBy, string orderByDirection)
         {
@@ -146,6 +179,11 @@ namespace Our.Shield.Core.UI
             }
         }
 
+        /// <summary>
+        /// Sorts the environments
+        /// </summary>
+        /// <param name="environmentsJson">Collection of environments</param>
+        /// <returns>True if successfully updated the sort order, otherwise, false</returns>
         [HttpPost]
         public bool SortEnvironments([FromBody] IEnumerable<JObject> environmentsJson)
         {
@@ -178,6 +216,12 @@ namespace Our.Shield.Core.UI
             return true;
         }
 
+        /// <summary>
+        /// Updates an apps configuration to the database
+        /// </summary>
+        /// <param name="key">The key of the app to update</param>
+        /// <param name="json">The new configuration as json</param>
+        /// <returns>True if successfully updated, otherwise, false</returns>
         [HttpPost]
         public bool WriteConfiguration(Guid key, [FromBody] JObject json)
         {
@@ -208,6 +252,11 @@ namespace Our.Shield.Core.UI
             return job.WriteConfiguration(configuration);
         }
 
+        /// <summary>
+        /// Updates an environment in the database
+        /// </summary>
+        /// <param name="json">the environment new settings as json</param>
+        /// <returns></returns>
         [HttpPost]
         public bool WriteEnvironment([FromBody] JObject json)
         {

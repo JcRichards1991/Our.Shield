@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.Site", "Our.Shie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.Swagger", "Our.Shield.Swagger\Our.Shield.Swagger.csproj", "{EA5E50CF-3C82-4D89-98DC-04145A692811}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.Swagger.Test", "Our.Shield.Swagger.Test\Our.Shield.Swagger.Test.csproj", "{003C0426-DE7C-483A-BA15-4D04D02C05B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{EA5E50CF-3C82-4D89-98DC-04145A692811}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA5E50CF-3C82-4D89-98DC-04145A692811}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA5E50CF-3C82-4D89-98DC-04145A692811}.Release|Any CPU.Build.0 = Release|Any CPU
+		{003C0426-DE7C-483A-BA15-4D04D02C05B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{003C0426-DE7C-483A-BA15-4D04D02C05B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{003C0426-DE7C-483A-BA15-4D04D02C05B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{003C0426-DE7C-483A-BA15-4D04D02C05B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +108,7 @@ Global
 		{B933EB8C-A6B0-4E0A-BF09-0A3097697C29} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
 		{9735205C-F3B7-4BDE-AD97-2981ACEA0394} = {8BC9BCE4-5CF6-4713-A22E-5D3249022CE1}
 		{EA5E50CF-3C82-4D89-98DC-04145A692811} = {2E101591-AF0A-4442-BE43-12DF0DC6ED17}
+		{003C0426-DE7C-483A-BA15-4D04D02C05B8} = {8BC9BCE4-5CF6-4713-A22E-5D3249022CE1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B254EAC4-8C82-4A52-AECA-03CB64F93272}

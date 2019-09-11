@@ -14,6 +14,11 @@ namespace Our.Shield.Swagger.Operation
 
         private static string GetXmlCommentsPath()
         {
+            /*
+                TODO: Come up with way of handling this correctly, otherwise, Executing Assembly is Our.Shield.Swagger
+                so would be getting the wrong comments, not website's comments.
+                Also, the website may not have ApiControllers, will need a way of defining this and pulling the desired xml file
+            */
             return $"{AppDomain.CurrentDomain.BaseDirectory}bin\\{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         }
 
@@ -33,7 +38,6 @@ namespace Our.Shield.Swagger.Operation
                 .EnableSwaggerUi(c =>
                 {
                     c.DisableValidator();
-
                 });
         }
     }

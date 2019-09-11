@@ -19,10 +19,9 @@
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security Locker FrontendAccess Frontend Access</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="[1.1.0]" />
-      <dependency id="Our.Shield.BackofficeAccess" version="[1.1.0]" />
-      <dependency id="Our.Shield.Elmah" version="[1.1.0]" />
-      <dependency id="Our.Shield.Swagger" version="[1.1.0]" />
+      <dependency id="Our.Shield.Core" version="[1.1.0)" />
+      <dependency id="Our.Shield.BackofficeAccess" version="[1.1.0)" />
+      <dependency id="Our.Shield.MediaProtection" version="[1.1.0)" />
     </dependencies>
   </metadata>
   <files>
