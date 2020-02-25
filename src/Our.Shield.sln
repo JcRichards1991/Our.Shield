@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8BC9BCE4-5CF6-4713-A22E-5D3249022CE1}"
 EndProject
@@ -42,6 +42,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.Swagger", "Our.Shield.Swagger\Our.Shield.Swagger.csproj", "{EA5E50CF-3C82-4D89-98DC-04145A692811}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.Swagger.Test", "Our.Shield.Swagger.Test\Our.Shield.Swagger.Test.csproj", "{003C0426-DE7C-483A-BA15-4D04D02C05B8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B741AB10-4B68-4C3D-A27C-9E468311C0BB}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

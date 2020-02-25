@@ -10,7 +10,12 @@
     <projectUrl>https://github.com/JcRichards1991/Our.Shield</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>$version$ release</releaseNotes>
+    <releaseNotes>
+      <![CDATA[
+      - Changed the default filtered out Api urls
+      - Update to allow the ability to define own Swagger Configuration
+      ]]>
+    </releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>Umbraco UmbracoCms Security Swagger</tags>
     <dependencies>

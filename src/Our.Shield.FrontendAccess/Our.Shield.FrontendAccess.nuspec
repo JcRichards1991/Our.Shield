@@ -12,8 +12,7 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+).
-      - Fixed issue disallowing access to the frontend when IP Address is whitelisted
+      - Changes nuget package dependencies
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
