@@ -39,6 +39,13 @@ steps:
     packagesToPack: 'src/**/*.nuspec'
     versioningScheme: 'off'
     verbosityPack: 'Normal'
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'src/**/*.nuspec'
+    versioningScheme: 'off'
+    buildProperties: 'id=test;version=1.1.1;title=test;description=test;'
+    verbosityPack: 'Normal'
 
 - task: AzureFileCopy@4
   inputs:
