@@ -32,13 +32,7 @@ steps:
 #  inputs:
 #    platform: '$(buildPlatform)'
 #    configuration: '$(buildConfiguration)'
-    
-- task: NuGetCommand@2
-  inputs:
-    command: 'pack'
-    packagesToPack: 'src/**/*.nuspec'
-    versioningScheme: 'off'
-    verbosityPack: 'Normal'
+
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
