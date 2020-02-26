@@ -40,14 +40,3 @@ steps:
     versioningScheme: 'off'
     buildProperties: 'id=test;version=1.1.1;title=test;description=test;'
     verbosityPack: 'Normal'
-
-- task: AzureFileCopy@4
-  inputs:
-    SourcePath: '$(Build.ArtifactStagingDirectory)'
-    azureSubscription: 'Pay-As-You-Go(a3138c5a-b600-4ff1-b46d-53ab2efe667f)'
-    Destination: 'AzureVMs'
-    storage: 'Shield'
-    resourceGroup: 'VAINRADICAL-RADZYWRITES'
-    vmsAdminUserName: 'joshua.richards'
-    vmsAdminPassword: 'C0mpK1dW!z1991'
-    TargetPath: 'C:\Shield'
