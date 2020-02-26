@@ -33,12 +33,13 @@ steps:
 #    platform: '$(buildPlatform)'
 #    configuration: '$(buildConfiguration)'
     
-- task: DotNetCoreCLI@2
+- task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: 'src/**/*.nuspec'
+    packagesToPack: 'src/**/*.nupsec'
     versioningScheme: 'off'
     verbosityPack: 'Normal'
+    packDestination: '$(Build.ArtifactStagingDirectory)'
 
 - task: AzureFileCopy@4
   inputs:
