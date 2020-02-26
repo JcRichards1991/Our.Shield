@@ -1,7 +1,7 @@
 ﻿using System.Web.Http;
 using WebActivatorEx;
 
-[assembly: PreApplicationStartMethod(typeof(Our.Shield.Swagger.Test.Startup), "Register")]
+[assembly: PreApplicationStartMethod(typeof(Our.Shield.Swagger.Test.Startup), nameof(Our.Shield.Swagger.Test.Startup.Register))]
 namespace Our.Shield.Swagger.Test
 {
     public class Startup

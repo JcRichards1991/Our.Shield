@@ -224,10 +224,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\HttpConfigurationExtensions.cs" />
     <Compile Include="Models\SwaggerApp.cs" />
     <Compile Include="Models\SwaggerConfiguration.cs" />
-    <Compile Include="Operation\FilterBuiltinUrl.cs" />
-    <Compile Include="Operation\Register.cs" />
+    <Compile Include="DocumentFilters\FilterBuiltinUrl.cs" />
+    <Compile Include="Initialization\Register.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
