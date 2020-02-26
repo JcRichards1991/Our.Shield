@@ -10,7 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
+  solution: 'src/Our.Shield.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -36,7 +36,18 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
-    packagesToPack: '**/*.nuspec'
+    packagesToPack: 'src/**/*.nuspec'
     versioningScheme: 'byEnvVar'
     versionEnvVar: '$version$'
     verbosityPack: 'Normal'
+
+- task: AzureFileCopy@4
+  inputs:
+    SourcePath: '$(Build.ArtifactStagingDirectory)'
+    azureSubscription: 'Pay-As-You-Go(a3138c5a-b600-4ff1-b46d-53ab2efe667f)'
+    Destination: 'AzureVMs'
+    storage: 'Shield'
+    resourceGroup: 'VAINRADICAL-RADZYWRITES'
+    vmsAdminUserName: 'joshua.richards'
+    vmsAdminPassword: 'C0mpK1dW!z1991'
+    TargetPath: 'C:\Shield'
