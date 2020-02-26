@@ -36,10 +36,9 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: 'src/**/*.nupsec'
+    packagesToPack: 'src/**/*.csproj'
     versioningScheme: 'off'
     verbosityPack: 'Normal'
-    packDestination: '$(Build.ArtifactStagingDirectory)'
 
 - task: AzureFileCopy@4
   inputs:
