@@ -38,5 +38,4 @@ steps:
     command: 'pack'
     packagesToPack: 'src/**/*.nuspec'
     versioningScheme: 'off'
-    buildProperties: 'id=test;version=1.1.1;title=test;description=test;'
     verbosityPack: 'Normal'
