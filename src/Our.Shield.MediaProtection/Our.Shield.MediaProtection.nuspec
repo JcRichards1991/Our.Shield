@@ -12,13 +12,13 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+)
+      - Keeping version in sync with other Apps for Our.Shield
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security MediaProtection Media Protection</tags>
     <dependencies>
-      <dependency id="Our.Shield.Core" version="[1.1.0]" />
+      <dependency id="Our.Shield.Core" version="1.1.0" />
     </dependencies>
   </metadata>
   <files>
