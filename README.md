@@ -54,6 +54,13 @@ After upgrading, you will need to re-save the configurations of the installed ap
 ---
 
 ### Change Log ###
+**1.1.1 - 28/02/2020**
+* Frontend Access: Fixed issues with dependencies
+
+* Swagger: Added the ability to define own Swagger Docs/UI Configs. See [docs](https://github.com/JcRichards1991/Our.Shield/blob/master/Docs/manual.pdf) for more information
+
+Shield Core + All Apps: Updated to keep version in sync with Frontend access & Swagger
+
 **1.1.0 - 01/09/2019**
 * All: Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+).
 
