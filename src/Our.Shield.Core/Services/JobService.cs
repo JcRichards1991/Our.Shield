@@ -353,6 +353,7 @@ namespace Our.Shield.Core.Services
             return JobLock.Write(() =>
             {
                 var keys = new List<int>();
+
                 foreach (var job in Jobs.Value)
                 {
                     if (job.Value.Environment.Id == environment.Id)
@@ -365,6 +366,7 @@ namespace Our.Shield.Core.Services
                         keys.Add(job.Key);
                     }
                 }
+
                 foreach (var key in keys)
                 {
                     Jobs.Value.Remove(key);

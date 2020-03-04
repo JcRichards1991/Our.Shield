@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Our.Shield.Core.Attributes;
-using Our.Shield.Core.CacheRefreshers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Models.CacheRefresherJson;
 using Our.Shield.Core.Persistence.Business;
@@ -263,16 +262,7 @@ namespace Our.Shield.Core.UI
 
             job.WriteJournal(new JournalMessage($"{Security.CurrentUser.Name} has updated the configuration"));
 
-            if (job.WriteConfiguration(configuration))
-            {
-                DistributedCache.Instance.RefreshByJson(
-                    new Guid(Constants.DistributedCache.ConfigurationCacheRefresherId),
-                    GetJsonModel(new ConfigurationCacheRefresherJsonModel(Enums.CacheRefreshType.Write, key)));
-
-                return true;
-            }
-
-            return false;
+            return job.WriteConfiguration(configuration);
         }
 
         /// <summary>
@@ -308,7 +298,7 @@ namespace Our.Shield.Core.UI
             if (EnvironmentService.Instance.Write(environment))
             {
                 DistributedCache.Instance.RefreshByJson(
-                    new Guid(Constants.DistributedCache.ConfigurationCacheRefresherId),
+                    new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
                     GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.Write, environment.Key)));
 
                 return true;

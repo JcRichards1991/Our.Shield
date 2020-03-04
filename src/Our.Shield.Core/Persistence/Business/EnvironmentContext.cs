@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Core.Logging;
+using Umbraco.Core.Persistence;
 using Environment = Our.Shield.Core.Persistence.Data.Dto.Environment;
 
 namespace Our.Shield.Core.Persistence.Business
@@ -48,6 +49,36 @@ namespace Our.Shield.Core.Persistence.Business
             try
             {
                 var environment = Database.SingleOrDefault<Environment>(id);
+                if (environment != null)
+                {
+                    environment.Domains = MapUmbracoDomains(Database.FetchAll<Data.Dto.Domain>())
+                        .Where(x => x.EnvironmentId == environment.Id);
+                }
+                return environment;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error(typeof(EnvironmentContext), $"Error reading environment with id: {id}", ex);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Reads a single environment from the database by it's id
+        /// </summary>
+        /// <param name="key">The GUID key of the environment to read</param>
+        /// <returns>null if doesn't exist; otherwise the environment</returns>
+        public Environment Read(Guid key)
+        {
+            try
+            {
+                var sql = new Sql();
+                sql.Select("*")
+                    .From<Environment>(Syntax)
+                    .Where<Environment>(x => x.Key == key);
+
+                var environment = Database.FirstOrDefault<Environment>(sql);
+
                 if (environment != null)
                 {
                     environment.Domains = MapUmbracoDomains(Database.FetchAll<Data.Dto.Domain>())

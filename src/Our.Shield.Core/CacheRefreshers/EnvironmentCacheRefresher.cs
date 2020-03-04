@@ -1,6 +1,9 @@
 ﻿using Our.Shield.Core.Models.CacheRefresherJson;
+using Our.Shield.Core.Persistence.Business;
+using Our.Shield.Core.Services;
 using Our.Shield.Core.UI;
 using System;
+using System.Linq;
 using Umbraco.Core.Cache;
 
 namespace Our.Shield.Core.CacheRefreshers
@@ -16,21 +19,53 @@ namespace Our.Shield.Core.CacheRefreshers
         public override void Refresh(string json)
         {
             var cacheInstruction = Newtonsoft.Json.JsonConvert.DeserializeObject<EnvironmentCacheRefresherJsonModel>(json);
+            var environments = JobService.Instance.Environments.Keys;
+            var environment = environments.FirstOrDefault(x => x.Key == cacheInstruction.Key);
 
             switch (cacheInstruction.CacheRefreshType)
             {
                 case Enums.CacheRefreshType.Write:
-                    break;
+                    var dbEnv = new Models.Environment(DbContext.Instance.Environment.Read(cacheInstruction.Key));
 
-                case Enums.CacheRefreshType.Update:
+                    if (environment == null)
+                    {
+                        JobService.Instance.Register(dbEnv);
+                    }
+                    else
+                    {
+                        JobService.Instance.Unregister(environment);
+                        JobService.Instance.Register(dbEnv);
+                    }
+
                     break;
 
                 case Enums.CacheRefreshType.Remove:
-                    break;
+                    if (environment == null)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        JobService.Instance.Unregister(environment);
+                        break;
+                    }
 
                 case Enums.CacheRefreshType.ReOrder:
+                    var dbEnvs = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
+
+                    foreach (var env in dbEnvs)
+                    {
+                        if (!environments.Any(x => x.Id.Equals(env.Id) && !x.SortOrder.Equals(env.SortOrder)))
+                            continue;
+
+                        JobService.Instance.Unregister(env);
+                        JobService.Instance.Register(env);
+                    }
+
                     break;
             }
+
+            JobService.Instance.Poll(true);
 
             base.Refresh(json);
         }

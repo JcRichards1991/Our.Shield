@@ -5,7 +5,6 @@
         public enum CacheRefreshType
         {
             Write,
-            Update,
             Remove,
             ReOrder
         }

@@ -34,7 +34,7 @@ namespace Our.Shield.Core.Services
             if (!JobService.Instance.Environments.Any(x => x.Key.Id.Equals(environment.Id)))
             {
                 //created new environment, we need to register it
-                JobService.Instance.Register(environment, Umbraco.Core.ApplicationContext.Current);
+                JobService.Instance.Register(environment);
 
                 var environments = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
                 var oldEnvironments = JobService.Instance.Environments.Keys;
