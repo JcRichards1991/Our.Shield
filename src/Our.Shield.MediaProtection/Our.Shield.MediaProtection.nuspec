@@ -12,7 +12,7 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Lowered the target umbraco version. Now can be installed against 7.3.0+ (previously 7.5.4+)
+      - Keeping in sync with Our.Shield.Core
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
