@@ -144,7 +144,6 @@ namespace Our.Shield.Core.Services
             {
                 Register(new Models.Environment(ev), applicationContext);
             }
-            Poll(true);
         }
 
         public void Register(IEnvironment environment, ApplicationContext applicationContext = null)
@@ -167,76 +166,11 @@ namespace Our.Shield.Core.Services
             }
         }
 
-        private const long RanRepeat = 0L;
-        private const long RanNow = 1L;
-        private long _ranTick = RanNow;
-
-        private int _runningPoll;
-
-        public void Poll(bool forceUpdate)
-        {
-            if (forceUpdate)
-            {
-                _ranTick = RanRepeat;
-            }
-            Poll();
-        }
-        
-        public void Poll()
-        {
-            if (DateTime.UtcNow.Ticks < _ranTick)
-            {
-                return;
-            }
-
-            if (Interlocked.CompareExchange(ref Instance._runningPoll, 0, 1) != 0)
-            {
-                return;
-            }
-
-            try
-            {
-                //System.Diagnostics.Debug.WriteLine("START running poll with " + ranTick.ToString());
-                _ranTick = RanNow;
-                if (JobLock.Write(() =>
-                {
-                    foreach (var reg in Jobs.Value)
-                    {
-                        var ct = new CancellationTokenSource();
-                        var task = new Task<bool>(() => Execute(reg.Value), ct.Token, TaskCreationOptions.PreferFairness);
-
-                        reg.Value.CancelToken = ct;
-                        reg.Value.Task = task;
-                    }
-                }))
-                {
-                    if (JobLock.Read(() =>
-                    {
-                        foreach (var reg in Jobs.Value)
-                        {
-                            reg.Value.Task.Start();
-                        }
-                    }))
-                    {
-                        if (Interlocked.CompareExchange(ref _ranTick, RanRepeat, RanNow) != RanRepeat)
-                        {
-                            _ranTick = DateTime.UtcNow.AddSeconds(Configuration.PollTimer).Ticks;
-                        }
-                    }
-                }
-                //System.Diagnostics.Debug.WriteLine("END running poll with " + ranTick.ToString());
-            }
-            finally
-            {
-                _runningPoll = 0;
-            }
-        }
-
-        private bool Execute(Job job)
+        internal bool Execute(Job job)
         {
             try
             {
-                job.CancelToken.Token.ThrowIfCancellationRequested();
+                job.CancelToken?.Token.ThrowIfCancellationRequested();
 
                 var config = ReadConfiguration(job, job.App.DefaultConfiguration);
                 if (JobLock.Read(() => job.LastRan != null && config.LastModified < job.LastRan))
@@ -266,8 +200,6 @@ namespace Our.Shield.Core.Services
             {
                 return false;
             }
-
-            Poll(true);
 
             return true;
         }
@@ -353,6 +285,7 @@ namespace Our.Shield.Core.Services
             return JobLock.Write(() =>
             {
                 var keys = new List<int>();
+
                 foreach (var job in Jobs.Value)
                 {
                     if (job.Value.Environment.Id == environment.Id)
@@ -365,6 +298,7 @@ namespace Our.Shield.Core.Services
                         keys.Add(job.Key);
                     }
                 }
+
                 foreach (var key in keys)
                 {
                     Jobs.Value.Remove(key);

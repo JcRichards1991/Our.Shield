@@ -1,8 +1,8 @@
 ﻿using Our.Shield.Core.Models;
+using Our.Shield.Core.Persistence.Business;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Our.Shield.Core.Persistence.Business;
 
 namespace Our.Shield.Core.Services
 {
@@ -34,7 +34,7 @@ namespace Our.Shield.Core.Services
             if (!JobService.Instance.Environments.Any(x => x.Key.Id.Equals(environment.Id)))
             {
                 //created new environment, we need to register it
-                JobService.Instance.Register(environment, Umbraco.Core.ApplicationContext.Current);
+                JobService.Instance.Register(environment);
 
                 var environments = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
                 var oldEnvironments = JobService.Instance.Environments.Keys;
@@ -59,8 +59,6 @@ namespace Our.Shield.Core.Services
 
                 JobService.Instance.Register(environment);
             }
-
-            JobService.Instance.Poll(true);
             return true;
         }
 
@@ -88,7 +86,6 @@ namespace Our.Shield.Core.Services
                 }
             }
 
-            JobService.Instance.Poll(true);
             return true;
         }
 

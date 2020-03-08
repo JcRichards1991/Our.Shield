@@ -51,5 +51,11 @@
 
             public const int CreateEnvironmentId = -100;
         }
+
+        public class DistributedCache
+        {
+            public const string EnvironmentCacheRefresherId = "2d3d8e66-7a63-405a-aa13-24095f0bacb5";
+            public const string ConfigurationCacheRefresherId = "04cf399a-8d7d-4b1c-8320-9020f4e34c91";
+        }
     }
 }

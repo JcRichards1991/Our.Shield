@@ -247,6 +247,12 @@
     <Compile Include="Attributes\AppTabAttribute.cs" />
     <Compile Include="Attributes\CustomAppTabAttribute.cs" />
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
+    <Compile Include="CacheRefreshers\ConfigurationCacheRefresher.cs" />
+    <Compile Include="CacheRefreshers\EnvironmentCacheRefresher.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="Models\CacheRefresherJson\ConfigurationCacheRefresherJsonModel.cs" />
+    <Compile Include="Models\CacheRefresherJson\EnvironmentCacheRefresherJsonModel.cs" />
+    <Compile Include="Models\CacheRefresherJson\ICacheRefreshJsonModel.cs" />
     <Compile Include="PackageActions\AddShieldConfigurationSection.cs" />
     <Compile Include="Persistence\Data\Migrations\Dto\Configuration\Configuration107.cs" />
     <Compile Include="Persistence\Data\Migrations\Dto\Environment\Environment107.cs" />

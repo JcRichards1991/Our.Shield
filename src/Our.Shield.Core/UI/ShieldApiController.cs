@@ -3,12 +3,14 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
+using Our.Shield.Core.Models.CacheRefresherJson;
 using Our.Shield.Core.Persistence.Business;
 using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using Umbraco.Web.Cache;
 using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
 
@@ -33,7 +35,17 @@ namespace Our.Shield.Core.UI
         public bool DeleteEnvironment(Guid key)
         {
             var environment = (Models.Environment)JobService.Instance.Environments.FirstOrDefault(x => x.Key.Key == key).Key;
-            return environment != null && EnvironmentService.Instance.Delete(environment);
+            
+            if (environment != null && EnvironmentService.Instance.Delete(environment))
+            {
+                DistributedCache.Instance.RefreshByJson(
+                    new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
+                    GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.Remove, key)));
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -213,6 +225,11 @@ namespace Our.Shield.Core.UI
 
                 JobService.Instance.Register(environment);
             }
+
+            DistributedCache.Instance.RefreshByJson(
+                Guid.Parse(Constants.DistributedCache.EnvironmentCacheRefresherId),
+                GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.ReOrder, Guid.Empty)));
+
             return true;
         }
 
@@ -229,6 +246,7 @@ namespace Our.Shield.Core.UI
                 return false;
 
             var job = JobService.Instance.Job(key);
+
             if (job == null)
             {
                 //  Invalid id
@@ -239,17 +257,21 @@ namespace Our.Shield.Core.UI
             {
                 return false;
             }
+
             configuration.Enable = json.GetValue(nameof(IAppConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase).Value<bool>();
 
-            if (Security.CurrentUser == null)
+            job.WriteJournal(new JournalMessage($"{Security.CurrentUser.Name} has updated the configuration"));
+
+            if (job.WriteConfiguration(configuration))
             {
-                return job.WriteConfiguration(configuration);
+                DistributedCache.Instance.RefreshByJson(
+                    Guid.Parse(Constants.DistributedCache.ConfigurationCacheRefresherId),
+                    GetJsonModel(new ConfigurationCacheRefresherJsonModel(Enums.CacheRefreshType.Write, key)));
+
+                return true;
             }
 
-            var user = Security.CurrentUser;
-            job.WriteJournal(new JournalMessage($"{user.Name} has updated the configuration"));
-
-            return job.WriteConfiguration(configuration);
+            return false;
         }
 
         /// <summary>
@@ -282,7 +304,21 @@ namespace Our.Shield.Core.UI
                     : 0;
             }
 
-            return EnvironmentService.Instance.Write(environment);
+            if (EnvironmentService.Instance.Write(environment))
+            {
+                DistributedCache.Instance.RefreshByJson(
+                    new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
+                    GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.Write, environment.Key)));
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private string GetJsonModel(ICacheRefreshJsonModel jsonModel)
+        {
+            return JsonConvert.SerializeObject(jsonModel);
         }
 
         private class DomainConverter : CustomCreationConverter<IDomain>
