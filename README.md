@@ -54,6 +54,9 @@ After upgrading, you will need to re-save the configurations of the installed ap
 ---
 
 ### Change Log ###
+**1.1.2 - 08/03/2020**
+* Shield Core: Fixed issue when used in a load balanced setup where not all servers in the cluster are kept in sync correctly
+
 **1.1.1 - 28/02/2020**
 * Frontend Access: Fixed issues with dependencies
 
