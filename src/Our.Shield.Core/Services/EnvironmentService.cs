@@ -1,8 +1,8 @@
 ﻿using Our.Shield.Core.Models;
+using Our.Shield.Core.Persistence.Business;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Our.Shield.Core.Persistence.Business;
 
 namespace Our.Shield.Core.Services
 {
@@ -59,8 +59,6 @@ namespace Our.Shield.Core.Services
 
                 JobService.Instance.Register(environment);
             }
-
-            JobService.Instance.Poll(true);
             return true;
         }
 
@@ -88,7 +86,6 @@ namespace Our.Shield.Core.Services
                 }
             }
 
-            JobService.Instance.Poll(true);
             return true;
         }
 

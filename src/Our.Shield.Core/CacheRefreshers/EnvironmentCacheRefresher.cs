@@ -65,8 +65,6 @@ namespace Our.Shield.Core.CacheRefreshers
                     break;
             }
 
-            JobService.Instance.Poll(true);
-
             base.Refresh(json);
         }
 

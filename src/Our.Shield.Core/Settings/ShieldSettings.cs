@@ -10,17 +10,13 @@ namespace Our.Shield.Core.Settings
 
             if (shieldSection != null)
             {
-                PollTimer = shieldSection.PollTimer;
                 IpAddressValidation = new IpAddressValidation(shieldSection);
             }
             else
             {
-                PollTimer = 600;
                 IpAddressValidation = new IpAddressValidation();
             }
         }
-
-        public int PollTimer { get; }
 
         public IIpAddressValidation IpAddressValidation { get; }
     }

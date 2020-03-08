@@ -88,7 +88,7 @@ namespace Our.Shield.Core.Persistence.Business
             }
             catch (Exception ex)
             {
-                LogHelper.Error(typeof(EnvironmentContext), $"Error reading environment with id: {id}", ex);
+                LogHelper.Error(typeof(EnvironmentContext), $"Error reading environment with id: {key}", ex);
                 return null;
             }
         }

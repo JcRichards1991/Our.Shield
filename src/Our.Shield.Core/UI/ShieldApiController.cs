@@ -262,7 +262,16 @@ namespace Our.Shield.Core.UI
 
             job.WriteJournal(new JournalMessage($"{Security.CurrentUser.Name} has updated the configuration"));
 
-            return job.WriteConfiguration(configuration);
+            if (job.WriteConfiguration(configuration))
+            {
+                DistributedCache.Instance.RefreshByJson(
+                    Guid.Parse(Constants.DistributedCache.ConfigurationCacheRefresherId),
+                    GetJsonModel(new ConfigurationCacheRefresherJsonModel(Enums.CacheRefreshType.Write, key)));
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

@@ -8,8 +8,6 @@
 
         public static string UmbracoVersion => ApplicationSettings.UmbracoVersion;
 
-        public static int PollTimer => ShieldSettings.PollTimer;
-
         public static IIpAddressValidation IpAddressValidation => ShieldSettings.IpAddressValidation;
     }
 }
