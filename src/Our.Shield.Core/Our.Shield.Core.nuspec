@@ -12,7 +12,7 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Keeping version in sync with Apps update
+      - Fixed issue when used in a load balanced setup where not all servers in the cluster are kept in sync correctly
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>

@@ -12,7 +12,7 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Changes nuget package dependencies
+      - Keeping in sync with Our.Shield.Core
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>

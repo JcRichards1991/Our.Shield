@@ -12,8 +12,7 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Changed the default filtered out Api urls
-      - Update to allow the ability to define own Swagger Configuration
+      - Keeping in sync with Our.Shield.Core
       ]]>
     </releaseNotes>
     <copyright>Copyright 2018</copyright>
