@@ -13,6 +13,7 @@
     <releaseNotes>
       <![CDATA[
       - Fixed issue with AccessHelper class causing Membership authentication to not work correctly when Umbraco User is logged into Umbraco
+      - Fixed issue with Shield App Configurations not being applied on application startup.
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>

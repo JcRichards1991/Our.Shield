@@ -151,7 +151,7 @@ namespace Our.Shield.Core.Services
             var appIds = App<IAppConfiguration>.Register;
             foreach (var appId in appIds)
             {
-                var app = App<IAppConfiguration>.Create(appId.Key);
+                var app = App<IAppConfiguration>.Create(appId.Key); 
 
                 if (applicationContext != null)
                 {
@@ -238,9 +238,11 @@ namespace Our.Shield.Core.Services
         
         private bool Register(IEnvironment environment, IApp app)
         {
-            return JobLock.Write(() =>
+            Job job = null;
+
+            if (JobLock.Write(() =>
             {
-                var job = new Job
+                job = new Job
                 {
                     Id = _registerCount++,
                     Key = DbContext.Instance.Configuration.ReadUniqueKey(environment.Id, app.Id),
@@ -250,7 +252,13 @@ namespace Our.Shield.Core.Services
                 };
 
                 Jobs.Value.Add(job.Id, job);
-            });
+            }))
+            {
+                if (job != null)
+                    return Execute(job);
+            }
+
+            return false;
         }
 
         private bool Unregister(int id)

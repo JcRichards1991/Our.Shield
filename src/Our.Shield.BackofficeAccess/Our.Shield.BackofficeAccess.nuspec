@@ -12,7 +12,7 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Keeping in sync with Our.Shield.Core
+      - Added the ability to define an exclude list of URL(s) that Backoffice Access should ignore, even if it matches the backoffice Access Url. i.e. ~/umbraco/api
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>

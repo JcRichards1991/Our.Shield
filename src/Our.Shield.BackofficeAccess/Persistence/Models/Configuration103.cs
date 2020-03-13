@@ -8,12 +8,16 @@ namespace Our.Shield.BackofficeAccess.Persistence.Models
     {
         [JsonProperty("backendAccessUrl")]
         public string BackendAccessUrl { get; set; }
+
         [JsonProperty("ipAddressesAccess")]
         public int IpAddressesAccess { get; set; }
+
         [JsonProperty("IpAddresses")]
         public IEnumerable<IpEntry103> IpAddresses { get; set; }
+
         [JsonProperty("unauthorisedAction")]
         public TransferTypes UnauthorisedAction { get; set; }
+
         [JsonProperty("urlType")]
         public UrlType103 UrlType { get; set; }
     }
