@@ -12,7 +12,7 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Fixed issue when used in a load balanced setup where not all servers in the cluster are kept in sync correctly
+      - Fixed issue with AccessHelper class causing Membership authentication to not work correctly when Umbraco User is logged into Umbraco
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>

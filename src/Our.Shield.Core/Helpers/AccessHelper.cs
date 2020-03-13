@@ -1,7 +1,5 @@
 ﻿using System.Web;
-using Umbraco.Core.Configuration;
 using Umbraco.Core.Security;
-
 namespace Our.Shield.Core.Helpers
 {
     public static class AccessHelper
@@ -14,26 +12,13 @@ namespace Our.Shield.Core.Helpers
         public static bool IsRequestAuthenticatedUmbracoUser(HttpApplication httpApp)
         {
             var httpContext = new HttpContextWrapper(httpApp.Context);
-            var umbAuthTicket = httpContext.GetUmbracoAuthTicket();
-
-            return httpContext.AuthenticateCurrentRequest(umbAuthTicket, true);
-        }
-
-        public static string UmbracoTrailingSlash(string originalUrl)
-        {
-            var url = string.Copy(originalUrl);
-            var addTrailingSlash = UmbracoConfig.For.UmbracoSettings().RequestHandler.AddTrailingSlash;
-            var lastChar = url[url.Length - 1];
-            if (addTrailingSlash && lastChar != '\\')
+            var umbracoAuthTicket = httpContext.GetUmbracoAuthTicket();
+            if (umbracoAuthTicket != null)
             {
-                url += "\\";
+                httpContext.RenewUmbracoAuthTicket();
+                return true;
             }
-            else if (!addTrailingSlash && lastChar == '\\')
-            {
-                url = url.Substring(0, url.Length - 1);
-            }
-            return url;
+            return false;
         }
-
     }
 }
