@@ -54,6 +54,14 @@ After upgrading, you will need to re-save the configurations of the installed ap
 ---
 
 ### Change Log ###
+**1.1.3 - 15/03/2020**
+* Sheild Core: Fixed issue with AccessHelper class causing Membership authentication to not work correctly when Umbraco User is logged into Umbraco
+* Shield Core: Fixed issue with Shield App Configurations not being applied on application startup.
+
+* Backoffice Access: Added the ability to define an exclude list of URL(s) that Backoffice Access should ignore, even if it matches the backoffice Access Url. i.e. ~/umbraco/api
+
+All Apps: Keeping version in sync with Shield Core
+
 **1.1.2 - 08/03/2020**
 * Shield Core: Fixed issue when used in a load balanced setup where not all servers in the cluster are kept in sync correctly
 

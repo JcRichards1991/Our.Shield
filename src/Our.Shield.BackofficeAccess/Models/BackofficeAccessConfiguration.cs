@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
+using System.Collections.Generic;
 
 namespace Our.Shield.BackofficeAccess.Models
 {
@@ -17,6 +18,10 @@ namespace Our.Shield.BackofficeAccess.Models
         [JsonProperty("backendAccessUrl")]
         [SingleEnvironment]
         public string BackendAccessUrl { get; set; }
+
+        [JsonProperty("excludeUrls")]
+        [SingleEnvironment]
+        public IEnumerable<string> ExcludeUrls { get; set; }
 
         /// <summary>
         /// Client access

@@ -40,6 +40,7 @@ namespace Our.Shield.BackofficeAccess.Models
         public override IAppConfiguration DefaultConfiguration => new BackofficeAccessConfiguration
         {
             BackendAccessUrl = "umbraco",
+            ExcludeUrls = Enumerable.Empty<string>(),
             IpAccessRules = new IpAccessControl
             {
                 AccessType = IpAccessControl.AccessTypes.AllowAll,
@@ -108,23 +109,10 @@ namespace Our.Shield.BackofficeAccess.Models
                 
                 httpApp.Context.Items.Add(_allowKey, true);
                 rewritePath += httpApp.Request.Url.Query;
-
-                if (rewrite)
-                {
-                    return new WatchResponse(new TransferUrl
-                    {
-                        TransferType = TransferTypes.Rewrite,
-                        Url = new UmbracoUrl
-                        {
-                            Type = UmbracoUrlTypes.Url,
-                            Value = rewritePath
-                        }
-                    });
-                }
-
+                
                 return new WatchResponse(new TransferUrl
                 {
-                    TransferType = TransferTypes.Redirect,
+                    TransferType = rewrite ? TransferTypes.Rewrite : TransferTypes.Redirect,
                     Url = new UmbracoUrl
                     {
                         Type = UmbracoUrlTypes.Url,
@@ -144,6 +132,7 @@ namespace Our.Shield.BackofficeAccess.Models
         {
             job.UnwatchWebRequests();
             job.UnexceptionWebRequest();
+            job.UnignoreWebRequest();
 
             _reSetterLock = 0;
 
@@ -166,7 +155,7 @@ namespace Our.Shield.BackofficeAccess.Models
             job.IgnoreWebRequest(defaultUmbracoRegex);
             job.IgnoreWebRequest(onDiscUmbracoRegex);
             job.IgnoreWebRequest(virtualUmbracoRegex);
-            
+
             if (!virtualUmbracoLocation.Equals(defaultUmbracoLocation, StringComparison.InvariantCultureIgnoreCase)
                 && !onDiscUmbracoLocation.Equals(defaultUmbracoLocation, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -238,7 +227,8 @@ namespace Our.Shield.BackofficeAccess.Models
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, onDiscUmbracoRegex, 20300, (count, httpApp) =>
             {
                 if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)
-                    || _ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
+                    || _ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request)
+                    || config.ExcludeUrls.Any(x => httpApp.Request.Url.AbsolutePath.StartsWith(x.EnsureStartsWith('/'), StringComparison.OrdinalIgnoreCase)))
                 {
                     return new WatchResponse(WatchResponse.Cycles.Continue);
                 }
