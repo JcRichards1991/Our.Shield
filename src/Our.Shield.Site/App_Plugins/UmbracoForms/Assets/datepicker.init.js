@@ -37,7 +37,9 @@
                 onSelect: function (date) {
                     setShadow(this, date);
                 },
-                minDate: new Date('1753-01-01T00:00:00') //Min value of datetime in SQL Server CE
+                minDate: new Date('1753-01-01T00:00:00'), //Min value of datetime in SQL Server CE
+                defaultDate: new Date(field.value),
+                setDefaultDate: true
             });
         }
 
