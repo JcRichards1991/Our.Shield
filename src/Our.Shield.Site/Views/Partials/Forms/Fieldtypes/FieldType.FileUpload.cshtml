@@ -3,7 +3,7 @@
 @{
     var isValid = (Model.Mandatory && Model.Values != null && Model.Values.Any()) || (!Model.Mandatory);
 }
-<input type="file" name="@Model.Name" id="@Model.Id" multiple
+<input type="file" name="@Model.Name" id="@Model.Id"  data-umb="@Model.Id" multiple
        data-val="@(isValid == false ? "true" : null)"
        data-val-required="@(isValid == false ? Model.RequiredErrorMessage : null)" />
 

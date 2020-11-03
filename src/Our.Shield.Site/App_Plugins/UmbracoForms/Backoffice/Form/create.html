@@ -1,13 +1,13 @@
-<div class="umb-dialog-body with-footer" ng-controller="UmbracoForms.Editors.Form.CreateController as vm">
+<div class="umb-dialog-body with-footer" ng-controller="UmbracoForms.Editors.Form.CreateController">
 	
 	<div class="umb-pane">
 	<h5>Create a new form</h5>
 
 	<ul class="umb-actions umb-actions-child">
-		<li>
-			<a 
-				href="#forms/form/{{vm.editUrl}}/{{currentNode.id}}?template=&create=true" 
-				ng-click="nav.hideNavigation()">
+		<li >
+			<a  data-element="action-emptyForm"
+				href="#forms/form/edit/{{currentNode.id}}?template=&create=true" 
+				ng-click="hideNavigation()">
 			    
 			    <i class="large icon-autofill"></i>
 
@@ -21,8 +21,8 @@
 		</li>
 
 		
-		<li ng-repeat="template in vm.formTemplates | orderBy:'name':false">
-		    <a href="#forms/form/{{vm.editUrl}}/{{currentNode.id}}?template={{template.alias}}&create=true" ng-click="nav.hideNavigation()">
+		<li ng-repeat="template in formTemplates | orderBy:'name':false">
+		    <a data-element="action-{{template.alias}}"  href="#forms/form/edit/{{currentNode.id}}?template={{template.alias}}&create=true" ng-click="hideNavigation()">
 		        
 		        <i class="large icon-autofill"></i>
 
@@ -39,7 +39,7 @@
 </div>
 	
 <div class="umb-dialog-footer btn-toolbar umb-btn-toolbar">
-		<button class="btn" ng-click="nav.hideDialog(true)">
+		<button class="btn" ng-click="hideDialog(true)">
 			<localize key="buttons_somethingElse">Do something else</localize>
 		</button>
 </div>

@@ -1,6 +1,5 @@
-@inherits WebViewPage<FormViewModel>
+@inherits WebViewPage<Umbraco.Forms.Web.Models.FormViewModel>
 @using ClientDependency.Core.Mvc
-@using Umbraco.Forms.Mvc.Models
 @using Umbraco.Forms.Mvc.BusinessLogic
 @using Umbraco.Forms.Mvc
 
@@ -41,11 +40,11 @@
 
             @Html.AntiForgeryToken()
 
-            @Html.HiddenFor(x => Model.FormId, new {id=(string)null})
-            @Html.HiddenFor(x => Model.FormName, new {id=(string)null})
-            @Html.HiddenFor(x => Model.RecordId, new {id=(string)null})
-            @Html.HiddenFor(x => Model.PreviousClicked, new {id=(string)null})
-            @Html.HiddenFor(x => Model.Theme, new {id=(string)null})
+            @Html.HiddenFor(x => Model.FormId, new {id = (string)null})
+            @Html.HiddenFor(x => Model.FormName, new {id = (string)null})
+            @Html.HiddenFor(x => Model.RecordId, new {id = (string)null})
+            @Html.HiddenFor(x => Model.PreviousClicked, new {id = (string)null})
+            @Html.HiddenFor(x => Model.Theme, new {id = (string)null})
 
             @* These 2 cannot use the htmlhelper *@
             <input type="hidden" name="FormStep" value="@Model.FormStep" />

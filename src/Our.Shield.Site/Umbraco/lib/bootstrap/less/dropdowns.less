@@ -8,10 +8,7 @@
 .dropdown {
   position: relative;
 }
-.dropdown-toggle {
-  // The caret makes the toggle a bit too tall in IE7
-  *margin-bottom: -3px;
-}
+
 .dropdown-toggle:active,
 .open .dropdown-toggle {
   outline: 0;
@@ -50,15 +47,10 @@
   margin: 2px 0 0; // override default ul
   list-style: none;
   background-color: @dropdownBackground;
-  border: 1px solid #ccc; // Fallback for IE7-8
   border: 1px solid @dropdownBorder;
-  *border-right-width: 2px;
-  *border-bottom-width: 2px;
   .border-radius(6px);
   .box-shadow(0 5px 10px rgba(0,0,0,.2));
-  -webkit-background-clip: padding-box;
-     -moz-background-clip: padding;
-          background-clip: padding-box;
+  background-clip: padding-box;
 
   // Aligns the dropdown menu to right
   &.pull-right {
@@ -80,15 +72,16 @@
     line-height: @baseLineHeight;
     color: @dropdownLinkColor;
     white-space: nowrap;
+    cursor:pointer;
   }
 }
 
 // Hover/Focus state
 // -----------
 .dropdown-menu > li > a:hover,
-.dropdown-menu > li > a:focus,
+.dropdown-menu > li > button:hover,
 .dropdown-submenu:hover > a,
-.dropdown-submenu:focus > a {
+.dropdown-submenu:hover > button {
   text-decoration: none;
   color: @dropdownLinkColorHover;
   #gradient > .vertical(@dropdownLinkBackgroundHover, darken(@dropdownLinkBackgroundHover, 5%));
@@ -97,8 +90,7 @@
 // Active state
 // ------------
 .dropdown-menu > .active > a,
-.dropdown-menu > .active > a:hover,
-.dropdown-menu > .active > a:focus {
+.dropdown-menu > .active > a:hover {
   color: @dropdownLinkColorActive;
   text-decoration: none;
   outline: 0;
@@ -109,27 +101,20 @@
 // --------------
 // Gray out text and ensure the hover/focus state remains gray
 .dropdown-menu > .disabled > a,
-.dropdown-menu > .disabled > a:hover,
-.dropdown-menu > .disabled > a:focus {
+.dropdown-menu > .disabled > a:hover {
   color: @grayLight;
 }
 // Nuke hover/focus effects
-.dropdown-menu > .disabled > a:hover,
-.dropdown-menu > .disabled > a:focus {
+.dropdown-menu > .disabled > a:hover {
   text-decoration: none;
   background-color: transparent;
   background-image: none; // Remove CSS gradient
-  .reset-filter();
   cursor: default;
 }
 
 // Open state for the dropdown
 // ---------------------------
 .open {
-  // IE7's z-index only goes to the nearest positioned ancestor, which would
-  // make the menu appear below buttons that appeared later on the page
-  *z-index: @zindexDropdown;
-
   & > .dropdown-menu {
     display: block;
   }

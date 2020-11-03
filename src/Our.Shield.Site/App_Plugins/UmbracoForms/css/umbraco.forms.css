@@ -182,6 +182,10 @@ select.-full-width {
 .umb-forms-designer input[type="file"] {
   display: flex;
 }
+.show-validation .ng-invalid-val-required-component .forms-question-type {
+  border-color: #fe3e39;
+  color: #fe3e39;
+}
 .umb-forms__member {
   display: flex;
   align-items: flex-start;
@@ -198,6 +202,15 @@ select.-full-width {
 .umb-forms__member-edit:hover {
   color: #00aea2;
   text-decoration: underline;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+.label-input {
+  padding-bottom: 2px;
+  vertical-align: text-top;
+  padding-top: 2px;
 }
 .form-search {
   margin-right: 5px;
@@ -330,14 +343,14 @@ select.-full-width {
   text-decoration: underline;
 }
 .umb-forms-card {
-  background: #f3f3f5;
+  background: #ffffff;
   display: block;
   transition: all 100ms ease;
   color: #303033;
   text-align: center;
 }
-.umb-forms-card:hover {
-  background: #e9e9eb;
+a.umb-forms-card .umb-box:hover {
+  background: #f3f3f5;
   transition: all 100ms ease;
   color: #000000;
 }
@@ -1090,10 +1103,11 @@ IFRAME {
   margin-bottom: 20px;
 }
 .umb-forms__page {
-  background: #f3f3f5;
+  background: #e9e9eb;
   padding: 20px 15px;
   margin-top: 30px;
   margin-bottom: 30px;
+  border-radius: 3px;
 }
 .umb-forms__page-number {
   width: 23px;
@@ -1151,6 +1165,30 @@ input.umb-forms__page-name::-webkit-input-placeholder {
   opacity: .5;
 }
 .umb-forms__actions {
+  flex: 0 0 40px;
+  text-align: center;
+  margin: 15px 0 0 15px;
+}
+.umb-forms__actions a,
+.umb-forms__actions span {
+  margin: 0 0 10px;
+  display: block;
+  font-size: 18px;
+  position: relative;
+  cursor: pointer;
+}
+.umb-forms__actions a:hover,
+.umb-forms__actions span:hover {
+  color: #03bfb3;
+  text-decoration: none;
+}
+.umb-forms__actions.-page a {
+  position: relative;
+}
+.umb-forms__actions.-fieldset a {
+  color: #000000;
+}
+.umb-forms__page-actions {
   color: #817f85;
   display: flex;
   flex-direction: row;
@@ -1158,21 +1196,20 @@ input.umb-forms__page-name::-webkit-input-placeholder {
   margin-left: auto;
   padding-left: 10px;
 }
-.umb-forms__actions a {
-  margin-right: 5px;
+.umb-forms__page-actions a,
+.umb-forms__page-actions span {
   position: relative;
   color: #68676b;
-  font-size: 16px;
+  font-size: 18px;
+  margin-right: 5px;
 }
-.umb-forms__actions a:hover {
-  color: #000000;
+.umb-forms__page-actions a:hover,
+.umb-forms__page-actions span:hover {
+  color: #03bfb3;
   text-decoration: none;
 }
-.umb-forms__actions.-page a {
-  position: relative;
-}
-.umb-forms__actions.-fieldset a {
-  color: #ffffff;
+.umb-forms__page-actions.-fieldset a {
+  color: #000000;
 }
 .umb-forms__container {
   background: #ffffff;
@@ -1181,13 +1218,22 @@ input.umb-forms__page-name::-webkit-input-placeholder {
 .umb-forms__fieldset {
   margin-top: 20px;
   margin-bottom: 20px;
+  min-height: 86px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-sizing: border-box;
+  background-color: #fff;
+  position: relative;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.16);
+}
+.umb-forms__fieldset.-active {
+  border-color: #03bfb3;
 }
 .umb-forms__fieldset-header {
   display: flex;
-  padding: 5px 10px;
-  border: 2px solid transparent;
-  background: #00aea2;
   align-items: center;
+  border-bottom: 1px solid #e9e9eb;
+  padding: 10px 15px;
 }
 .umb-forms__fieldset-info {
   display: flex;
@@ -1197,7 +1243,8 @@ input.umb-forms__page-name::-webkit-input-placeholder {
 .umb-forms__fieldset-name {
   border: none;
   background-color: transparent;
-  color: #ffffff;
+  color: #000000;
+  font-weight: 700;
   font-size: 13px;
   padding: 0;
 }
@@ -1206,7 +1253,7 @@ input.umb-forms__page-name::-webkit-input-placeholder {
 }
 .umb-forms__fieldset-name::-webkit-input-placeholder {
   font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #c0f0ed;
+  color: #d9d9d9;
 }
 .umb-forms__fieldset-name::-moz-placeholder {
   font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1299,8 +1346,17 @@ input.umb-forms__page-name::-webkit-input-placeholder {
 }
 .umb-forms__field-description {
   display: block;
-  font-size: 14px;
-  margin-top: -10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #515054;
+  margin-bottom: 0;
+  width: 100%;
+  min-height: 25px;
+  box-sizing: border-box;
+  resize: none;
+  overflow: hidden;
+  border-color: transparent;
+  background: 0 0;
 }
 .umb-forms__field-info {
   padding-right: 10px;
@@ -1318,12 +1374,12 @@ input.umb-forms__page-name::-webkit-input-placeholder {
   flex: 1 1 auto;
 }
 .umb-forms__field-preview {
-  width: auto;
-  position: relative;
-  flex: 1;
-  padding: 15px 20px;
-  background-image: url("/umbraco/assets/img/checkered-background-20.png");
   pointer-events: none;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  padding: 25px 10px 20px;
+  background-color: #f3f3f5;
 }
 .umb-forms__containers {
   display: flex;
@@ -1333,7 +1389,6 @@ input.umb-forms__page-name::-webkit-input-placeholder {
   flex: 1 1 100%;
   margin-left: 1px;
   margin-right: 1px;
-  border: 2px solid #e9e9eb;
   border-top: none;
   display: flex;
   flex-direction: column;
@@ -1635,15 +1690,18 @@ input.umb-forms__page-name::-webkit-input-placeholder {
   margin-bottom: 40px;
 }
 .umb-forms-workflow-actions {
-  border-left: 2px solid #e9e9eb;
-  border-right: 2px solid #e9e9eb;
-  border-bottom: 2px solid #e9e9eb;
   padding: 10px 15px;
   margin-bottom: 30px;
   display: flex;
-  flex-direction: row;
   align-items: center;
-  margin-top: -30px;
+  margin-top: 10px;
+  min-height: 86px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-sizing: border-box;
+  background-color: #fff;
+  position: relative;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.16);
 }
 .umb-forms-workflow-preview {
   line-height: 1.3;
@@ -1898,7 +1956,6 @@ a.umb-forms-workflow-preview__item:hover {
   margin-right: 0;
 }
 .umb-forms__save-as-node {
-  display: flex;
   flex-wrap: wrap;
   margin-top: 20px;
 }
@@ -2003,4 +2060,7 @@ a.umb-forms-workflow-preview__item:hover {
 .umb-forms-date-range-picker.daterange .dr-selections .dr-calendar .dr-range-switcher .dr-switcher i:hover:after,
 .umb-forms-date-range-picker.daterange .dr-selections .dr-calendar .dr-range-switcher .dr-switcher i:hover:before {
   background-color: #00aea2;
+}
+.umb-forms__validation-pattern {
+  margin-bottom: 5px !important;
 }

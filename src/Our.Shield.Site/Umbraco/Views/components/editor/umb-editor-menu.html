@@ -1,22 +1,31 @@
 <div class="pull-right" style="position: relative;">
 
-    <!-- options button -->
-    <a class="btn btn-info" href="#" ng-click="getOptions()" prevent-default data-toggle="dropdown">
-        <localize key="general_actions">Actions</localize>
-        <span class="caret"></span>
-    </a>
+    <umb-button
+        type="button"
+        button-style="white"
+        action="dropdown.isOpen = !dropdown.isOpen"
+        label-key="general_actions"
+        show-caret="true"
+        has-popup="true"
+        is-expanded="dropdown.isOpen"
+        disabled="!actions || !actions.length"
+        >
+    </umb-button>
 
-    <!-- actions -->
-    <ul class="dropdown-menu umb-actions" role="menu" aria-labelledby="dLabel">
-        <li class="action" ng-class="{sep:action.seperator}" ng-repeat="action in actions">
+    <umb-dropdown ng-if="dropdown.isOpen" class="umb-actions" on-close="dropdown.isOpen = false" deep-blur="dropdown.isOpen = false">
+        <umb-dropdown-item class="umb-action" ng-class="{'sep':action.separatorm, '-opens-dialog': action.opensDialog}" ng-repeat="action in actions">
+            <button type="button" ng-click="executeMenuItem(action)">
+                <i class="icon icon-{{action.cssclass}}" aria-hidden="true"></i>
+                <!-- Render the text that will be visually displayed -->
+                <span class="menu-label" aria-hidden="true">{{action.name}}</span>
+                <!-- Render the textDescription from the language files if it's attached to the action object-->
+                <span class="sr-only" ng-if="action.textDescription">
+                    <localize key="visuallyHiddenTexts_{{action.alias}}Description" tokens="[currentNode.name]"></localize>
+                </span>
+                <!-- Otherwise render a combination of the nodename and the currentNode name-->
+                <span class="sr-only" ng-if="!action.textDescription">{{action.name}} {{currentNode.name}}</span>
+            </button>
+        </umb-dropdown-item>
+    </umb-dropdown>
 
-            <!-- How does this reference executeMenuItem() i really don't think that this is very clear -->
-            <a prevent-default
-                ng-click="executeMenuItem(action)">
-                <i class="icon icon-{{action.cssclass}}"></i>
-                <span class="menu-label">{{action.name}}</span>
-            </a>
-
-        </li>
-    </ul>
 </div>

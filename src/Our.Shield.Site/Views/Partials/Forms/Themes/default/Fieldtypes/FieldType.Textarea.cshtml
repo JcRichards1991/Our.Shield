@@ -4,6 +4,7 @@
 <textarea class="@Html.GetFormFieldClass(Model.FieldTypeName)"  
           name="@Model.Name" 
           id="@Model.Id" 
+          data-umb="@Model.Id" 
           rows="2" 
           cols="20"
         @{if(string.IsNullOrEmpty(Model.PlaceholderText) == false){<text>placeholder="@Model.PlaceholderText"</text>}}

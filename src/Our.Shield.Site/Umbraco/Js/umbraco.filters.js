@@ -1,11 +1,51 @@
 (function () {
+    'use strict';
     angular.module('umbraco.filters', []);
+    'use strict';
+    function _toConsumableArray(arr) {
+        return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+    }
+    function _nonIterableSpread() {
+        throw new TypeError('Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.');
+    }
+    function _unsupportedIterableToArray(o, minLen) {
+        if (!o)
+            return;
+        if (typeof o === 'string')
+            return _arrayLikeToArray(o, minLen);
+        var n = Object.prototype.toString.call(o).slice(8, -1);
+        if (n === 'Object' && o.constructor)
+            n = o.constructor.name;
+        if (n === 'Map' || n === 'Set')
+            return Array.from(o);
+        if (n === 'Arguments' || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
+            return _arrayLikeToArray(o, minLen);
+    }
+    function _iterableToArray(iter) {
+        if (typeof Symbol !== 'undefined' && Symbol.iterator in Object(iter))
+            return Array.from(iter);
+    }
+    function _arrayWithoutHoles(arr) {
+        if (Array.isArray(arr))
+            return _arrayLikeToArray(arr);
+    }
+    function _arrayLikeToArray(arr, len) {
+        if (len == null || len > arr.length)
+            len = arr.length;
+        for (var i = 0, arr2 = new Array(len); i < len; i++) {
+            arr2[i] = arr[i];
+        }
+        return arr2;
+    }
     angular.module('umbraco.filters').filter('compareArrays', function () {
         return function inArray(array, compareArray, compareProperty) {
+            if (!compareArray || !compareArray.length) {
+                return _toConsumableArray(array);
+            }
             var result = [];
-            angular.forEach(array, function (arrayItem) {
+            array.forEach(function (arrayItem) {
                 var exists = false;
-                angular.forEach(compareArray, function (compareItem) {
+                compareArray.forEach(function (compareItem) {
                     if (arrayItem[compareProperty] === compareItem[compareProperty]) {
                         exists = true;
                     }
@@ -17,6 +57,7 @@
             return result;
         };
     });
+    'use strict';
     // Filter to take a node id and grab it's name instead
     // Usage: {{ pickerAlias | ncNodeName }}
     // Cache for node names so we don't make a ton of requests
@@ -64,6 +105,7 @@
             return $('<div/>').html(input).text();
         };
     });
+    'use strict';
     /**
 * @ngdoc filter
 * @name umbraco.filters.preserveNewLineInHtml
@@ -78,6 +120,16 @@
             return text.replace(/\n/g, '<br />');
         };
     });
+    'use strict';
+    angular.module('umbraco.filters').filter('safe_html', [
+        '$sce',
+        function ($sce) {
+            return function (text) {
+                return $sce.trustAsHtml(text);
+            };
+        }
+    ]);
+    'use strict';
     angular.module('umbraco.filters').filter('timespan', function () {
         return function (input) {
             var sec_num = parseInt(input, 10);
@@ -97,6 +149,102 @@
             return time;
         };
     });
+    'use strict';
+    /**
+ * @ngdoc filter
+ * @name umbraco.filters.filter:truncate
+ * @namespace truncateFilter
+ * 
+ * param {any} wordwise if true, the string will be cut after last fully displayed word.
+ * param {any} max where to cut the string.
+ * param {any} tail option tail, defaults to: '…'
+ * 
+ * Legacy version:
+ * parameter noOfChars(wordwise) Where to cut the string.
+ * parameter appendDots(max) If true dots will be appended in the end.
+ * 
+ * @description
+ * Limits the length of a string, if a cut happens only the string will be appended with three dots to indicate that more is available.
+ */
+    angular.module('umbraco.filters').filter('truncate', function () {
+        return function (value, wordwise, max, tail) {
+            if (!value)
+                return '';
+            /* 
+    Overload-fix to support Forms Legacy Version:
+      We are making this hack to support the old Forms version of the truncate filter.
+    The old version took different attributes, this code block checks if the first argument isnt a boolean, meaning its not the new version, meaning that the filter is begin used in the old way.
+    Therefor we use the second argument(max) to indicate wether we want a tail (…) and using the first argument(wordwise) as the second argument(max amount of characters)
+    */
+            if (typeof wordwise !== 'boolean') {
+                // switch arguments around to fit Forms version.
+                if (max !== true) {
+                    tail = '';
+                }
+                max = wordwise;
+                wordwise = false;
+            }
+            // !end of overload fix.
+            max = parseInt(max, 10);
+            if (!max)
+                return value;
+            if (value.length <= max)
+                return value;
+            tail = !tail && tail !== '' ? '\u2026' : tail;
+            if (wordwise && value.substr(max, 1) === ' ') {
+                max++;
+            }
+            value = value.substr(0, max);
+            if (wordwise) {
+                var lastspace = value.lastIndexOf(' ');
+                if (lastspace !== -1) {
+                    value = value.substr(0, lastspace + 1);
+                }
+            }
+            return value + tail;
+        };
+    });
+    'use strict';
+    /**
+ * @ngdoc filter
+ * @name umbraco.filters.filter:umbCmsJoinArray
+ * @namespace umbCmsJoinArray
+ * 
+ * param {array} array of string or objects, if an object use the third argument to specify which prop to list.
+ * param {seperator} string containing the seperator to add between joined values.
+ * param {prop} string used if joining an array of objects, set the name of properties to join.
+ * 
+ * @description
+ * Join an array of string or an array of objects, with a costum seperator.
+ * 
+ */
+    angular.module('umbraco.filters').filter('umbCmsJoinArray', function () {
+        return function join(array, separator, prop) {
+            return (!angular.isUndefined(prop) ? array.map(function (item) {
+                return item[prop];
+            }) : array).join(separator || '');
+        };
+    });
+    'use strict';
+    /**
+ * @ngdoc filter
+ * @name umbraco.filters.filter:umbCmsTitleCase
+ * @namespace umbCmsTitleCase
+ * 
+ * param {string} the text turned into title case.
+ * 
+ * @description
+ * Transforms text to title case. Capitalizes the first letter of each word, and transforms the rest of the word to lower case.
+ * 
+ */
+    angular.module('umbraco.filters').filter('umbCmsTitleCase', function () {
+        return function (str) {
+            return str.replace(/\w\S*/g, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        };
+    });
+    'use strict';
     /**
  * @ngdoc filter
  * @name umbraco.filters.filter:umbWordLimit
@@ -109,7 +257,7 @@
         'use strict';
         function umbWordLimitFilter() {
             return function (collection, property) {
-                if (!angular.isString(collection)) {
+                if (!Utilities.isString(collection)) {
                     return collection;
                 }
                 if (angular.isUndefined(property)) {

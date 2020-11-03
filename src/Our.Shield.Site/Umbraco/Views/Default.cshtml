@@ -1,10 +1,12 @@
 ﻿@using Umbraco.Core
 @using ClientDependency.Core
 @using ClientDependency.Core.Mvc
+@using Umbraco.Core.Composing
 @using Umbraco.Core.IO
 @using Umbraco.Web
-@using umbraco
-@inherits System.Web.Mvc.WebViewPage
+
+@inherits WebViewPage<Umbraco.Web.Editors.BackOfficeModel>
+
 @{
     var isDebug = false;
     if (Request.RawUrl.IndexOf('?') >= 0)
@@ -19,14 +21,15 @@
 
     Html
         .RequiresCss("assets/css/umbraco.css", "Umbraco")
-        .RequiresCss("tree/treeicons.css", "UmbracoClient")
         .RequiresCss("lib/bootstrap-social/bootstrap-social.css", "Umbraco")
         .RequiresCss("lib/font-awesome/css/font-awesome.min.css", "Umbraco");
 }
+
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <base href="@GlobalSettings.Path.EnsureEndsWith('/')" />
+    <base href="@Model.GlobalSettings.Path.EnsureEndsWith('/')" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,74 +40,105 @@
     <title ng-bind="$root.locationTitle">Umbraco</title>
 
     @Html.RenderCssHere(
-        new BasicPath("Umbraco", IOHelper.ResolveUrl(SystemDirectories.Umbraco)),
-        new BasicPath("UmbracoClient", IOHelper.ResolveUrl(SystemDirectories.UmbracoClient)))
+        new BasicPath("Umbraco", IOHelper.ResolveUrl(SystemDirectories.Umbraco)))
 </head>
-<body ng-class="{'touch':touchDevice, 'emptySection':emptySection, 'umb-drawer-is-visible':drawer.show}" ng-controller="Umbraco.MainController" id="umbracoMainPageBody">
+<body ng-class="{'touch':touchDevice, 'emptySection':emptySection, 'umb-drawer-is-visible':drawer.show, 'umb-tour-is-visible': tour.show, 'tabbing-active':tabbingActive}" ng-controller="Umbraco.MainController" id="umbracoMainPageBody">
+
+    <noscript>
+        <div style="margin: 10px;">
+            <h3><img src="assets/img/application/logo.png" alt="Umbraco logo" style="vertical-align: text-bottom;" /> Umbraco</h3>
+            <p>For full functionality of Umbraco CMS it is necessary to enable JavaScript.</p>
+            <p>Here are the <a href="https://www.enable-javascript.com/" target="_blank" style="text-decoration: underline;">instructions how to enable JavaScript in your web browser</a>.</p>
+        </div>
+    </noscript>
 
     <div ng-hide="!authenticated" ng-cloak>
 
-        <!-- help dialog controller by the help button - this also forces the backoffice UI to shift 400px  -->
-        <umb-drawer data-element="drawer" ng-if="drawer.show" model="drawer.model" view="drawer.view"></umb-drawer>
+        <div style="display: none;" id="mainwrapper" class="clearfix">
 
-        <div id="mainwrapper" class="clearfix" ng-click="closeDialogs($event)">
+            <umb-app-header></umb-app-header>
 
-            <umb-navigation></umb-navigation>
+            <div class="umb-app-content">
 
-            <section id="contentwrapper">
-                <div id="contentcolumn" ng-view>
-                    <noscript>
-                        <div>
-                            <h3><img src="assets/img/application/logo.png" alt="Umbraco logo" style="vertical-align: text-bottom;" /> Umbraco</h3>
-                            <p>For full functionality of Umbraco CMS it is necessary to enable JavaScript.</p>
-                            <p>Here are the <a href="https://www.enable-javascript.com/" target="_blank" style="text-decoration: underline;">instructions how to enable JavaScript in your web browser</a>.</p>
-                        </div>
-                    </noscript>
-                </div>
-            </section>
+                <umb-navigation></umb-navigation>
 
-            <umb-tour
-                ng-if="tour.show"
-                model="tour">
-            </umb-tour>
+                <section id="contentwrapper">
+
+                    <div id="contentcolumn">
+                        <div class="umb-editor" ng-view></div>
+                    </div>
+
+                </section>
+
+            </div>
 
             <umb-notifications></umb-notifications>
 
         </div>
 
+        <umb-tour
+            ng-if="tour.show"
+            model="tour">
+        </umb-tour>
+
+        <!-- help dialog controller by the help button - this also forces the backoffice UI to shift 400px  -->
+        <umb-drawer data-element="drawer" ng-if="drawer.show" model="drawer.model" view="drawer.view"></umb-drawer>
+
+        <umb-search ng-if="search.show" on-close="closeSearch()"></umb-search>
+
     </div>
 
-    <umb-backdrop
-        ng-if="backdrop.show"
-        backdrop-opacity="backdrop.opacity"
-        highlight-element="backdrop.element"
-        highlight-prevent-click="backdrop.elementPreventClick"
-        disable-events-on-click="backdrop.disableEventsOnClick">
+    <umb-backdrop ng-if="backdrop.show || infiniteMode"
+                  backdrop-opacity="backdrop.opacity"
+                  highlight-element="backdrop.element"
+                  highlight-prevent-click="backdrop.elementPreventClick"
+                  disable-events-on-click="backdrop.disableEventsOnClick">
     </umb-backdrop>
 
-    <umb-overlay
-        ng-if="ysodOverlay.show"
-        model="ysodOverlay"
-        position="right"
-        view="ysodOverlay.view">
+    <umb-overlay ng-if="overlay.show"
+                 model="overlay"
+                 position="{{overlay.position}}"
+                 size="overlay.size"
+                 view="overlay.view"
+                 name="overlay.name"
+                 parent-scope="overlay.parentScope">
     </umb-overlay>
 
-    @Html.BareMinimumServerVariablesScript(Url, ApplicationContext.Current, Url.Action("ExternalLogin", "BackOffice", new { area = ViewBag.UmbracoPath }))
+    <umb-editors ng-show="infiniteMode"></umb-editors>
+
+    <umb-login
+        ng-if="login.show"
+        on-login="hideLoginScreen()">
+    </umb-login>
+
+    @Html.BareMinimumServerVariablesScript(Url, Url.Action("ExternalLogin", "BackOffice", new { area = ViewData.GetUmbracoPath() }), Model.Features, Current.Configs.Global())
 
     <script>
+
         document.angularReady = function(app) {
-            @Html.AngularValueExternalLoginInfoScript((IEnumerable<string>)ViewBag.ExternalSignInError)
+            @Html.AngularValueExternalLoginInfoScript(ViewData.GetExternalSignInProviderErrors())
             @Html.AngularValueResetPasswordCodeInfoScript(ViewData["PasswordResetCode"])
+            @Html.AngularValueTinyMceAssets()
+
+            app.run(["iconHelper", function (iconHelper) {
+                @* We inject icons to the icon helper(service), since icons can only be loaded if user is authorized. By injecting these to the service they will not be requested as they will become cached. *@
+                iconHelper.defineIcon("icon-check", '@Html.Raw(Model.IconCheckData)');
+                iconHelper.defineIcon("icon-delete", '@Html.Raw(Model.IconDeleteData)');
+            }]);
+
+            //required for the noscript trick
+            document.getElementById("mainwrapper").style.display = "inherit";
+
         }
     </script>
 
-    <script src="lib/rgrove-lazyload/lazyload.js"></script>
+    <script src="lib/lazyload-js/lazyload.min.js"></script>
     <script src="@Url.GetUrlWithCacheBust("Application", "BackOffice")"></script>
 
     @if (isDebug)
     {
-        <script src="lib/jquery/jquery.min.js"></script>
         @Html.RenderProfiler()
     }
+
 </body>
 </html>

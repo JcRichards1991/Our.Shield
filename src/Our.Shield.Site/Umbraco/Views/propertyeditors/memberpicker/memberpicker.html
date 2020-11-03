@@ -1,4 +1,4 @@
-<div ng-controller="Umbraco.PropertyEditors.MemberPickerController" class="umb-editor umb-memberpicker">
+<div ng-controller="Umbraco.PropertyEditors.MemberPickerController" class="umb-property-editor umb-memberpicker">
 
 	<div>
 		<umb-node-preview
@@ -10,19 +10,13 @@
 		</umb-node-preview>
 	</div>
 
-	<a ng-show="model.config.multiPicker === true || renderModel.length === 0" 
-		class="umb-node-preview-add" 
-		href="#"
-		ng-click="openMemberPicker()"
-		prevent-default>
+	<button type="button"
+            class="umb-node-preview-add" 
+            ng-show="model.config.multiPicker === true || renderModel.length === 0" 
+		    ng-click="openMemberPicker()">
 		<localize key="general_add">Add</localize>
-	</a>
+	</button>
 
-   <umb-overlay
-      ng-if="memberPickerOverlay.show"
-      model="memberPickerOverlay"
-      position="right"
-      view="memberPickerOverlay.view">
-   </umb-overlay>
+    <input type="hidden" name="mandatory" ng-model="model.mandatory" ng-required="model.validation.mandatory && !renderModel.length" />
 
 </div>

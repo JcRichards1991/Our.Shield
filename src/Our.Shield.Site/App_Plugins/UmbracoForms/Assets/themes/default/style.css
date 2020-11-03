@@ -61,7 +61,7 @@ label.umbraco-forms-label
 	margin: 0.5em 0;
 	border: 1px solid #bbb;
 }
-.umbraco-forms-form input.text:focus, .umbraco-forms-form input.title:focus,.umbraco-forms-form textarea:focus, .umbraco-forms-form select:focus,
+.umbraco-forms-form input.text:focus, .umbraco-forms-form input.title:focus,.umbraco-forms-form textarea:focus, .umbraco-forms-form select:focus
 {
 	border: 1px solid #666;
 }

@@ -1,5 +1,5 @@
-﻿@inherits WebViewPage<FormViewModel>
-@using Umbraco.Forms.Core
+﻿@inherits WebViewPage<Umbraco.Forms.Web.Models.FormViewModel>
+@using Umbraco.Forms.Core.Enums
 @using Umbraco.Forms.Mvc
 @using Umbraco.Forms.Mvc.Models
 @using Umbraco.Forms.Mvc.BusinessLogic
@@ -85,7 +85,7 @@
     }
 
 
-    <div style="display: none">
+    <div style="display: none" aria-hidden="true">
         <input type="text" name="@Model.FormId.ToString().Replace("-", "")" />
     </div>
 

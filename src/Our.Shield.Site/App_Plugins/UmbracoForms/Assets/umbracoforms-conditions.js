@@ -34,12 +34,14 @@
             fsConditions = params.fsConditions || {},
             fieldConditions = params.fieldConditions || {},
             values = params.values || {},
+            dataTypes = params.dataTypes || {},
             cachedResults = {};
 
         function evaluateRuleInstance(rule) {
             var value = values[rule.field],
+                dataType = dataTypes[rule.Field],
                 func = operators[rule.operator],
-                result = value !== null && func(value, rule.value);
+                result = value !== null && func(value, rule.value, dataType);
             // console.log(rule.field + ": " + value + " " + rule.operator + " " + rule.value + " = " + result + "\n");
             return result;
         }

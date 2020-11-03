@@ -1,7 +1,7 @@
 @model Umbraco.Forms.Mvc.Models.FieldViewModel
 @using Umbraco.Forms.Mvc
 
-<select class="@Html.GetFormFieldClass(Model.FieldTypeName)"  name="@Model.Name" id="@Model.Id"
+<select class="@Html.GetFormFieldClass(Model.FieldTypeName)"  name="@Model.Name" id="@Model.Id" data-umb="@Model.Id"
 @if (Model.Mandatory){<text> data-val="true" data-val-required="@Model.RequiredErrorMessage"</text>}
 >
     <option value=""></option>

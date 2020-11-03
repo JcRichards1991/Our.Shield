@@ -7,7 +7,7 @@
         });
 
         $.validator.unobtrusive.adapters.addBool("requiredcb", "required");
-        
+
         $.validator.addMethod('umbracoforms_regex', function(value, element) {
 
             var regex = $(element).attr("data-regex");
