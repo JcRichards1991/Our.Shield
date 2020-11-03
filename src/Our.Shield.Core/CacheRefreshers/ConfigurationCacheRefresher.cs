@@ -1,20 +1,29 @@
 ﻿using Our.Shield.Core.Models;
 using Our.Shield.Core.Models.CacheRefresherJson;
-using Our.Shield.Core.Persistence.Business;
 using Our.Shield.Core.Services;
 using System;
 using Umbraco.Core.Cache;
 
 namespace Our.Shield.Core.CacheRefreshers
 {
+    /// <inheritdoc />
     public class ConfigurationCacheRefresher : JsonCacheRefresherBase<ConfigurationCacheRefresher>
     {
-        public override Guid UniqueIdentifier => new Guid(UI.Constants.DistributedCache.ConfigurationCacheRefresherId);
+        /// <inheritdoc />
+        public override Guid RefresherUniqueId => new Guid(UI.Constants.DistributedCache.ConfigurationCacheRefresherId);
 
+        /// <inheritdoc />
         public override string Name => "Shield Configuration Cache Refresher";
 
-        protected override ConfigurationCacheRefresher Instance => this;
+        /// <inheritdoc />
+        protected override ConfigurationCacheRefresher This => this;
 
+        /// <inheritdoc />
+        public ConfigurationCacheRefresher(AppCaches appCaches) : base (appCaches)
+        {
+        }
+
+        /// <inheritdoc />
         public override void Refresh(string json)
         {
             var cacheInstruction = Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigurationCacheRefresherJsonModel>(json);
@@ -38,26 +47,6 @@ namespace Our.Shield.Core.CacheRefreshers
             }
 
             base.Refresh(json);
-        }
-
-        public override void RefreshAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Refresh(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Refresh(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Remove(int id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

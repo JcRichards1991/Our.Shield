@@ -28,7 +28,7 @@ namespace Our.Shield.Core.Operation
             base.ApplicationStarted(umbracoApplication, applicationContext);
             applicationContext.Services.SectionService.MakeNew(UI.Constants.App.Name, UI.Constants.App.Alias, UI.Constants.App.Icon);
 
-            new Migration().RunMigrations(applicationContext.DatabaseContext.SqlSyntax, 
+            new Migration().RunMigrations(applicationContext.DatabaseContext.SqlSyntax,
                 applicationContext.Services.MigrationEntryService, applicationContext.ProfilingLogger.Logger);
 
             JobService.Instance.Init(applicationContext);

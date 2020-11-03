@@ -8,14 +8,25 @@ using Umbraco.Core.Cache;
 
 namespace Our.Shield.Core.CacheRefreshers
 {
+    /// <inheritdoc />
     public class EnvironmentCacheRefresher : JsonCacheRefresherBase<EnvironmentCacheRefresher>
     {
-        public override Guid UniqueIdentifier => new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId);
+        /// <inheritdoc />
+        public override Guid RefresherUniqueId => new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId);
 
+        /// <inheritdoc />
         public override string Name => "Shield Environment Cache Refresher";
 
-        protected override EnvironmentCacheRefresher Instance => this;
+        /// <inheritdoc />
+        protected override EnvironmentCacheRefresher This => this;
 
+        /// <inheritdoc />
+        public EnvironmentCacheRefresher (AppCaches appCaches) : base(appCaches)
+        {
+
+        }
+
+        /// <inheritdoc />
         public override void Refresh(string json)
         {
             var cacheInstruction = Newtonsoft.Json.JsonConvert.DeserializeObject<EnvironmentCacheRefresherJsonModel>(json);
@@ -66,26 +77,6 @@ namespace Our.Shield.Core.CacheRefreshers
             }
 
             base.Refresh(json);
-        }
-
-        public override void RefreshAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Refresh(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Refresh(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Remove(int id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

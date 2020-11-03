@@ -1,6 +1,4 @@
 ﻿using Umbraco.Core.Models;
-using Umbraco.Web;
-using Umbraco.Web.PublishedCache;
 
 namespace Our.Shield.Core.Services
 {
@@ -8,13 +6,8 @@ namespace Our.Shield.Core.Services
     {
         private const string CacheKeyId = "1a10ed15-e2b2-4ecb-b204-77d541076af3";
         private const string CacheKeyXPath = "9a93f022-d393-44bc-8ef5-6a3bfcbf8c31";
-
-        public UmbracoContentService(UmbracoContext umbContext) : base(umbContext)
-        {
-        }
-
-        public static void ClearCache(Umbraco.Core.Publishing.IPublishingStrategy sender,
-            Umbraco.Core.Events.PublishEventArgs<IContent> e)
+        
+        public static void ClearCache(object sender, PublishEventArgs<IContent> e)
         {
             ClearApplicationCacheItem(CacheKeyId);
             ClearApplicationCacheItem(CacheKeyXPath);

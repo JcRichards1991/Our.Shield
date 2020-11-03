@@ -1,9 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using Umbraco.Core.Persistence.Migrations;
+using Umbraco.Core.Migrations;
 
 namespace Our.Shield.Core.Models
 {
+    /// <summary>
+    /// Definition of an App to plugin to Our.Shield custom umbraco section
+    /// </summary>
     public interface IApp : IFrisk
     {
         /// <summary>
