@@ -2,16 +2,26 @@
 using System;
 using System.Configuration;
 using System.Web.Configuration;
-using System.Xml;
-using umbraco.cms.businesslogic.packager.standardPackageActions;
-using umbraco.interfaces;
+using System.Xml.Linq;
 using Umbraco.Core.Logging;
+using Umbraco.Core.PackageActions;
 
 namespace Our.Shield.Core.PackageActions
 {
+    /// <summary>
+    /// Package action to add Shield's Configuration when installed via Umbraco's Package Manager
+    /// </summary>
     public class AddShieldConfigurationSection : IPackageAction
     {
-        public bool Execute(string packageName, XmlNode xmlData)
+        private readonly ILogger _logger;
+
+        public AddShieldConfigurationSection(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        /// <inheritdoc />
+        public bool Execute(string packageName, XElement xmlData)
         {
             try
             {
@@ -31,18 +41,20 @@ namespace Our.Shield.Core.PackageActions
             }
             catch (Exception ex)
             {
-                LogHelper.Error<AddShieldConfigurationSection>("Error at execute AddShieldConfigurationSection package action", ex);
+                _logger.Error<AddShieldConfigurationSection>("Error at execute AddShieldConfigurationSection package action", ex);
             }
 
             return false;
         }
 
+        /// <inheritdoc />
         public string Alias()
         {
             return nameof(AddShieldConfigurationSection);
         }
 
-        public bool Undo(string packageName, XmlNode xmlData)
+        /// <inheritdoc />
+        public bool Undo(string packageName, XElement xmlData)
         {
             try
             {
@@ -57,17 +69,10 @@ namespace Our.Shield.Core.PackageActions
             }
             catch (Exception ex)
             {
-                LogHelper.Error<AddShieldConfigurationSection>("Error at undo AddShieldConfigurationSection package action", ex);
+                _logger.Error<AddShieldConfigurationSection>("Error at undo AddShieldConfigurationSection package action", ex);
             }
 
             return false;
         }
-
-        public XmlNode SampleXml()
-        {
-            var sample = "<Action runat=\"install\" undo=\"true\" alias=\"AddShieldConfigurationSection\" />";
-            return helper.parseStringToXmlNode(sample);
-        }
-
     }
 }

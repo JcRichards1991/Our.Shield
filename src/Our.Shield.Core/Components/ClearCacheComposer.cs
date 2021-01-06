@@ -1,8 +1,4 @@
-﻿using Our.Shield.Core.Persistence.Data.Migrations;
-using Our.Shield.Core.Services;
-using Umbraco.Core.Composing;
-using Umbraco.Core.Services.Implement;
-using Umbraco.Web.Services;
+﻿using Umbraco.Core.Composing;
 
 namespace Our.Shield.Core.Components
 {
@@ -12,32 +8,35 @@ namespace Our.Shield.Core.Components
     public class ClearCacheComponent : IComponent
     {
         /// <inheritdoc/>
-        public void Initialize(ISectionService sectionService)
+        public ClearCacheComponent()
         {
-            var t = sectionService.GetSections(); // .MakeNew(UI.Constants.App.Name, UI.Constants.App.Alias, UI.Constants.App.Icon);
+        }
 
-            new Migration().RunMigrations(
-                applicationContext.DatabaseContext.SqlSyntax,
-                applicationContext.Services.MigrationEntryService,
-                applicationContext.ProfilingLogger.Logger);
+        /// <inheritdoc/>
+        public void Initialize()
+        {
+            //new Migration().RunMigrations(
+            //    _sqlSyntaxProvider,
+            //    applicationContext.Services.MigrationEntryService,
+            //    _logger);
 
-            JobService.Instance.Init(applicationContext);
+            //JobService.Instance.Init(_sqlContext);
 
-            ContentService.Published += UmbracoContentService.ClearCache;
-            ContentService.Unpublished += UmbracoContentService.ClearCache;
+            //ContentService.Published += UmbracoContentService.ClearCache;
+            //ContentService.Unpublished += UmbracoContentService.ClearCache;
 
-            MediaService.Saved += UmbracoMediaService.ClearCache;
-            MediaService.Deleted += UmbracoMediaService.ClearCache;
+            //MediaService.Saved += UmbracoMediaService.ClearCache;
+            //MediaService.Deleted += UmbracoMediaService.ClearCache;
         }
 
         /// <inheritdoc/>
         public void Terminate()
         {
-            ContentService.Published -= UmbracoContentService.ClearCache;
-            ContentService.Unpublished -= UmbracoContentService.ClearCache;
+            //ContentService.Published -= UmbracoContentService.ClearCache;
+            //ContentService.Unpublished -= UmbracoContentService.ClearCache;
 
-            MediaService.Saved -= UmbracoMediaService.ClearCache;
-            MediaService.Deleted -= UmbracoMediaService.ClearCache;
+            //MediaService.Saved -= UmbracoMediaService.ClearCache;
+            //MediaService.Deleted -= UmbracoMediaService.ClearCache;
         }
 
         // TEST CODE. 

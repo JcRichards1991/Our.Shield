@@ -1,39 +1,24 @@
-﻿using Umbraco.Core.Logging;
-using Umbraco.Core.Persistence.Migrations;
-using Umbraco.Core.Persistence.SqlSyntax;
+﻿using Umbraco.Core.Migrations;
 
 namespace Our.Shield.MediaProtection.Models
 {
-    /// <summary>
-    /// Handles Creating/Editing the Configuration table.
-    /// </summary>
     [Migration("1.0.0", 1, nameof(Shield) + nameof(MediaProtection))]
     internal class MediaProtectionMigration : MigrationBase
     {
         public bool AddMediaTypes;
 
         /// <summary>
-        /// Default constructor for the Configuration Migration
+        /// Initializes a new instance of the <see cref="MediaProtectionMigration"/> class
         /// </summary>
-        /// <param name="sqlSyntax">The SQL Syntax</param>
-        /// <param name="logger">The Logger</param>
-        public MediaProtectionMigration(ISqlSyntaxProvider sqlSyntax, ILogger logger) : base(sqlSyntax, logger)
+        /// <param name="migrationContext"></param>
+        public MediaProtectionMigration(IMigrationContext migrationContext) : base(migrationContext)
         {
         }
 
-        /// <summary>
-        /// Sets the AddMediaTypes Flag
-        /// </summary>
-        public override void Up()
+        /// <inheritdoc />
+        public override void Migrate()
         {
             AddMediaTypes = true;
-        }
-
-        /// <summary>
-        /// Placeholder Method
-        /// </summary>
-        public override void Down()
-        {
         }
     }
 }

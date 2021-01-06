@@ -9,8 +9,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
-using Umbraco.Core.Logging;
-using Umbraco.Web;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.Core.Operation.WebRequestHandler), nameof(Our.Shield.Core.Operation.WebRequestHandler.Register))]
 namespace Our.Shield.Core.Operation
@@ -48,7 +46,6 @@ namespace Our.Shield.Core.Operation
             public readonly string Name;
             public readonly int SortOrder;
             public readonly bool ContinueProcessing;
-            // ReSharper disable once MemberHidesStaticFromOuterClass
             public readonly List<string> Domains;
             public readonly Locker[] WatchLocks;
             public readonly List<Watcher>[] Watchers;
@@ -67,7 +64,6 @@ namespace Our.Shield.Core.Operation
                     WatchLocks[index] = new Locker();
                     Watchers[index] = new List<Watcher>();
                 }
-
             }
         }
 
@@ -130,7 +126,7 @@ namespace Our.Shield.Core.Operation
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.Error<WebRequestHandler>($"{domain.Name} is not a valid domain", ex);
+                    Serilog.Log.Error(ex, "{DomainName} is not a valid domain", domain.Name);
                     continue;
                 }
 

@@ -1,4 +1,5 @@
-﻿using Umbraco.Core.Events;
+﻿using Umbraco.Core.Cache;
+using Umbraco.Core.Events;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.PublishedCache;
@@ -12,13 +13,16 @@ namespace Our.Shield.Core.Services
         private const string CacheKeyXPath = "9a93f022-d393-44bc-8ef5-6a3bfcbf8c31";
 
         /// <inheritdoc/>
-        public UmbracoContentService(IUmbracoContextAccessor umbracoAssessor) : base (umbracoAssessor.UmbracoContext)
+        public UmbracoContentService(
+            IUmbracoContextAccessor umbracoContextAccessor,
+            AppCaches appCaches)
+            : base (umbracoContextAccessor.UmbracoContext, appCaches)
         {
 
         }
         
         /// <inheritdoc/>
-        public static void ClearCache(object sender, PublishEventArgs<IContent> e)
+        public void ClearCache(object sender, PublishEventArgs<IContent> e)
         {
             ClearApplicationCacheItem(CacheKeyId);
             ClearApplicationCacheItem(CacheKeyXPath);

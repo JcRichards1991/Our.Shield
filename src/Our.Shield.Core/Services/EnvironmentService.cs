@@ -1,5 +1,4 @@
 ﻿using Our.Shield.Core.Models;
-using Our.Shield.Core.Persistence.Business;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,40 +25,42 @@ namespace Our.Shield.Core.Services
         /// <returns>True if successfully written; otherwise, False</returns>
         public bool Write(IEnvironment environment)
         {
-            if (!DbContext.Instance.Environment.Write(environment))
-            {
-                return false;
-            }
-            
-            if (!JobService.Instance.Environments.Any(x => x.Key.Id.Equals(environment.Id)))
-            {
-                //created new environment, we need to register it
-                JobService.Instance.Register(environment);
+            throw new NotImplementedException();
 
-                var environments = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
-                var oldEnvironments = JobService.Instance.Environments.Keys;
+            //if (!DbContext.Instance.Environment.Write(environment))
+            //{
+            //    return false;
+            //}
 
-                foreach (var newEnv in environments)
-                {
-                    if (!oldEnvironments.Any(x => x.Id.Equals(newEnv.Id) && !x.SortOrder.Equals(newEnv.SortOrder)))
-                        continue;
+            //if (!JobService.Instance.Environments.Any(x => x.Key.Id.Equals(environment.Id)))
+            //{
+            //    //created new environment, we need to register it
+            //    JobService.Instance.Register(environment);
 
-                    JobService.Instance.Unregister(newEnv);
-                    JobService.Instance.Register(newEnv);
-                }
-            }
-            else
-            {
-                //Environment has changed, we need to unregister it
-                //and then re-register it with the new changes
-                if (!JobService.Instance.Unregister(environment))
-                {
-                    return false;
-                }
+            //    var environments = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
+            //    var oldEnvironments = JobService.Instance.Environments.Keys;
 
-                JobService.Instance.Register(environment);
-            }
-            return true;
+            //    foreach (var newEnv in environments)
+            //    {
+            //        if (!oldEnvironments.Any(x => x.Id.Equals(newEnv.Id) && !x.SortOrder.Equals(newEnv.SortOrder)))
+            //            continue;
+
+            //        JobService.Instance.Unregister(newEnv);
+            //        JobService.Instance.Register(newEnv);
+            //    }
+            //}
+            //else
+            //{
+            //    //Environment has changed, we need to unregister it
+            //    //and then re-register it with the new changes
+            //    if (!JobService.Instance.Unregister(environment))
+            //    {
+            //        return false;
+            //    }
+
+            //    JobService.Instance.Register(environment);
+            //}
+            //return true;
         }
 
         /// <summary>
@@ -69,24 +70,26 @@ namespace Our.Shield.Core.Services
         /// <returns></returns>
         public bool Delete(Models.Environment environment)
         {
-            if (!JobService.Instance.Unregister(environment) || !DbContext.Instance.Environment.Delete(environment.Id))
-            {
-                return false;
-            }
+            throw new NotImplementedException();
 
-            var environments = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
-            var oldEnvironments = JobService.Instance.Environments.Keys;
+            //if (!JobService.Instance.Unregister(environment) || !DbContext.Instance.Environment.Delete(environment.Id))
+            //{
+            //    return false;
+            //}
 
-            foreach (var newEnv in environments)
-            {
-                if (oldEnvironments.Any(x => x.Id.Equals(newEnv.Id) && !x.SortOrder.Equals(newEnv.SortOrder)))
-                {
-                    JobService.Instance.Unregister(newEnv);
-                    JobService.Instance.Register(newEnv);
-                }
-            }
+            //var environments = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
+            //var oldEnvironments = JobService.Instance.Environments.Keys;
 
-            return true;
+            //foreach (var newEnv in environments)
+            //{
+            //    if (oldEnvironments.Any(x => x.Id.Equals(newEnv.Id) && !x.SortOrder.Equals(newEnv.SortOrder)))
+            //    {
+            //        JobService.Instance.Unregister(newEnv);
+            //        JobService.Instance.Register(newEnv);
+            //    }
+            //}
+
+            //return true;
         }
 
         /// <summary>
@@ -99,7 +102,7 @@ namespace Our.Shield.Core.Services
         /// <param name="totalPages">The total amount of pages that can be returned</param>
         /// <returns></returns>
         public IEnumerable<IJournal> JournalListing(int id, int page, int itemsPerPage, Type type, out int totalPages) =>
-            DbContext.Instance.Journal.Read(id, page, itemsPerPage, type, out totalPages);
+            throw new NotImplementedException(); //DbContext.Instance.Journal.Read(id, page, itemsPerPage, type, out totalPages);
 
         /// <summary>
         /// 
@@ -111,6 +114,6 @@ namespace Our.Shield.Core.Services
         /// <param name="totalPages">The total amount of pages that can be returned</param>
         /// <returns></returns>
         public IEnumerable<T> JournalListing<T>(int id, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
-            DbContext.Instance.Journal.Read(id, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
+            throw new NotImplementedException(); //DbContext.Instance.Journal.Read(id, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
     }
 }

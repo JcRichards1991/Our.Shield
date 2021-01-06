@@ -45,13 +45,13 @@ namespace Our.Shield.Core.Models
         /// </summary>
         /// <param name="data">The DTO object from the database</param>
         // ReSharper disable once SuggestBaseTypeForParameter
-        internal Domain(Persistence.Data.Dto.Domain data)
-        {
-            Id = data.Id;
-            Name = data.Name;
-            UmbracoDomainId = data.UmbracoDomainId;
-            EnvironmentId = data.EnvironmentId;
-        }
+        //internal Domain(Persistence.Data.Dto.Domain data)
+        //{
+        //    Id = data.Id;
+        //    Name = data.Name;
+        //    UmbracoDomainId = data.UmbracoDomainId;
+        //    EnvironmentId = data.EnvironmentId;
+        //}
 
         /// <summary>
         /// Checks whether or not two Domains are the same

@@ -12,26 +12,34 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using Umbraco.Core;
+using Umbraco.Core.Services;
 
 namespace Our.Shield.BackofficeAccess.Models
 {
-    /// <inheritdoc />
     /// <summary>
+    /// 
     /// </summary>
-    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=1.1.0")]
+    [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=2.0.0")]
     [AppJournal]
-    [AppMigration(typeof(Persistence.Migrations.Migration104))]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
     {
+        private readonly IpAccessControlService _ipAccessControlService;
+
+        public BackofficeAccessApp(
+            ILocalizedTextService localizedTextService,
+            IpAccessControlService ipAccessControlService) : base(localizedTextService)
+        {
+            _ipAccessControlService = ipAccessControlService;
+        }
+
         /// <inheritdoc />
         public override string Id => nameof(BackofficeAccess);
 
         /// <inheritdoc />
-        public override string Name =>
-            ApplicationContext.Current.Services.TextService.Localize("Shield.BackofficeAccess.General/Name", CultureInfo.CurrentCulture);
+        public override string Name => LocalizedTextService.Localize("Shield.BackofficeAccess.General/Name", CultureInfo.CurrentCulture);
 
         /// <inheritdoc />
-        public override string Description => ApplicationContext.Current.Services.TextService.Localize("Shield.BackofficeAccess.General/Description", CultureInfo.CurrentCulture);
+        public override string Description => LocalizedTextService.Localize("Shield.BackofficeAccess.General/Description", CultureInfo.CurrentCulture);
 
         /// <inheritdoc />
         public override string Icon => "icon-stop-hand red";
@@ -56,12 +64,6 @@ namespace Our.Shield.BackofficeAccess.Models
                 }
             }
         };
-
-        private readonly IpAccessControlService _ipAccessControlService;
-        public BackofficeAccessApp()
-        {
-            _ipAccessControlService = new IpAccessControlService();
-        }
 
         private readonly string _allowKey = Guid.NewGuid().ToString();
         private static int _reSetterLock;

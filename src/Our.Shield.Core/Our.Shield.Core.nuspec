@@ -19,7 +19,7 @@
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security</tags>
     <dependencies>
-      <dependency id="UmbracoCms" version="[7.3.0,8)" />
+      <dependency id="UmbracoCms" version="[8.1,9)" />
       <dependency id="WebActivatorEx" version="2.2.0" />
       <dependency id="IPAddressRange" version="2.0.0.3" />
     </dependencies>

@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Umbraco.Core.Logging;
 using Configuration = Our.Shield.Core.Settings.Configuration;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.BackofficeAccess.Models.HardReset), nameof(Our.Shield.BackofficeAccess.Models.HardReset.Start))]
@@ -23,7 +22,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 return;
             }
 
-            var curUmbVersion = Umbraco.Core.Configuration.UmbracoVersion.GetSemanticVersion().ToString();
+            var curUmbVersion = Umbraco.Core.Configuration.UmbracoVersion.SemanticVersion.ToString();
 
             if(!curUmbVersion.Equals(Configuration.UmbracoVersion, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -32,7 +31,8 @@ namespace Our.Shield.BackofficeAccess.Models
 
             if (!Directory.Exists(resetter.HardLocation))
             {
-                LogHelper.Error<HardReset>($"Unable to find directory at location {resetter.HardLocation} for renaming to {Path.GetFileName(resetter.SoftLocation)}", null);
+                Serilog.Log.Error("Unable to find directory at location {HardLocation} for renaming to {SoftLocation}", resetter.HardLocation, Path.GetFileName(resetter.SoftLocation));
+
                 return;
             }
 
@@ -44,7 +44,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 }
                 catch(Exception ex)
                 {
-                    LogHelper.Error<HardReset>($"Unable to delete directory {resetter.SoftLocation}", ex);
+                    Serilog.Log.Error(ex, "Unable to delete directory {SoftLocation}", resetter.SoftLocation);
                     return;
                 }
             }
@@ -53,10 +53,10 @@ namespace Our.Shield.BackofficeAccess.Models
             {
                 UmbracoPath = "~/" + Path.GetFileName(resetter.SoftLocation)
             };
+
             ConfigurationManager.AppSettings.Set("umbracoPath", webConfig.UmbracoPath);
 
             var paths = webConfig.UmbracoReservedPaths;
-
             var regex = new Regex("^(~?)(/?)" + Path.GetFileName(resetter.HardLocation) + "(/?)$", RegexOptions.IgnoreCase);
 
             for (var i = 0; i < paths.Length; i++)
@@ -78,7 +78,7 @@ namespace Our.Shield.BackofficeAccess.Models
             }
             catch(Exception ex)
             {
-                LogHelper.Error<HardReset>($"Unable to rename directory from {resetter.SoftLocation} to {resetter.HardLocation}", ex);
+                Serilog.Log.Error(ex, "Unable to rename directory from {SoftLocation} to {HardLocation}", resetter.SoftLocation, resetter.HardLocation);
                 return;
             }
 
@@ -88,7 +88,7 @@ namespace Our.Shield.BackofficeAccess.Models
             }
             catch(Exception ex)
             {
-                LogHelper.Error<HardReset>($"Unable to delete the Hard Resetter File located at {resetter.FilePath}", ex);
+                Serilog.Log.Error(ex, "Unable to delete the Hard Resetter File located at {FilePath}", resetter.FilePath);
                 return;
             }
 
@@ -98,7 +98,7 @@ namespace Our.Shield.BackofficeAccess.Models
             }
             catch(Exception ex)
             {
-                LogHelper.Error<HardReset>("Failed to save changes to the website's web.config file", ex);
+                Serilog.Log.Error(ex, "Failed to save changes to the website's web.config file");
                 Directory.Move(resetter.SoftLocation, resetter.HardLocation);
             }
         }
@@ -132,17 +132,14 @@ namespace Our.Shield.BackofficeAccess.Models
 
         internal class WebConfigFileHandler
         {
-            private const string File = "web.config";
-
-            private static string FilePath => AppDomain.CurrentDomain.BaseDirectory + File;
-
+            private readonly string FilePath;
             private readonly XDocument _webConfig;
 
             public WebConfigFileHandler()
             {
+                FilePath = $"{AppDomain.CurrentDomain.BaseDirectory}web.config";
                 _webConfig = XDocument.Load(FilePath);
             }
-
 
             public string UmbracoPath
             {
@@ -151,6 +148,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 {
                     var appKey = _webConfig?.XPathSelectElement("/configuration/appSettings/add[@key='umbracoPath']");
                     var attr = appKey?.Attribute("value");
+
                     if (attr != null)
                     {
                         attr.Value = value;
@@ -165,6 +163,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 {
                     var appKey = _webConfig?.XPathSelectElement("/configuration/appSettings/add[@key='umbracoReservedPaths']");
                     var attr = appKey?.Attribute("value");
+
                     if (attr != null)
                     {
                         attr.Value = string.Join(",", value);
@@ -174,8 +173,9 @@ namespace Our.Shield.BackofficeAccess.Models
 
             public void SetLocationPath(string currentLocation, string newLocation)
             {
-                var element = _webConfig.XPathSelectElement("/configuration/location[@path='" + currentLocation + "']");
+                var element = _webConfig.XPathSelectElement($"/configuration/location[@path='\"{currentLocation}\"']");
                 var attr = element?.Attribute("path");
+
                 if (attr != null)
                 {
                     attr.Value = newLocation;
@@ -184,9 +184,10 @@ namespace Our.Shield.BackofficeAccess.Models
 
             public void Save()
             {
-                using (var fileStream = System.IO.File.Open(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                using (var fileStream = File.Open(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
                 {
                     fileStream.SetLength(0);
+
                     using (var streamWriter = new StreamWriter(fileStream, Encoding.UTF8))
                     {
                         streamWriter.Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + _webConfig);

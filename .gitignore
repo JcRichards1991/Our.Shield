@@ -261,3 +261,5 @@ src/Our.Shield.UmbracoPackageSite/App_Plugins
 
 !database/*.sdf
 *.orig
+src/Our.Shield.UI/App_Data/
+src/Our.Shield.UI/App_Plugins/Shield/

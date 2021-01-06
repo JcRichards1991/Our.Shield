@@ -271,8 +271,6 @@
   <ItemGroup>
     <Compile Include="Models\FrontendAccessApp.cs" />
     <Compile Include="Models\FrontendAccessConfiguration.cs" />
-    <Compile Include="Persistence\Migrations\Migration104.cs" />
-    <Compile Include="Persistence\Models\Configuration103.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

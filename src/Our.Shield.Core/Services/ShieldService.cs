@@ -8,20 +8,24 @@ namespace Our.Shield.Core.Services
     {
         public IEnvironment GetEnvironmentByKey(Guid key)
         {
-            return JobService
-                .Instance
-                .Environments
-                .FirstOrDefault(x => x.Key.Key == key)
-                .Key;
+            throw new NotImplementedException();
+
+            //return JobService
+            //    .Instance
+            //    .Environments
+            //    .FirstOrDefault(x => x.Key.Key == key)
+            //    .Key;
         }
 
         public IEnvironment GetEnvironmentByAppKey(Guid appKey)
         {
-            return JobService
-                .Instance
-                .Environments
-                .FirstOrDefault(x => x.Value.Any(y => y.Key == appKey))
-                .Key;
+            throw new NotImplementedException();
+
+            //return JobService
+            //    .Instance
+            //    .Environments
+            //    .FirstOrDefault(x => x.Value.Any(y => y.Key == appKey))
+            //    .Key;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Our.Shield.Core.CacheRefreshers
     public class ConfigurationCacheRefresher : JsonCacheRefresherBase<ConfigurationCacheRefresher>
     {
         /// <inheritdoc />
-        public override Guid RefresherUniqueId => new Guid(UI.Constants.DistributedCache.ConfigurationCacheRefresherId);
+        public override Guid RefresherUniqueId => new Guid(Constants.DistributedCache.ConfigurationCacheRefresherId);
 
         /// <inheritdoc />
         public override string Name => "Shield Configuration Cache Refresher";

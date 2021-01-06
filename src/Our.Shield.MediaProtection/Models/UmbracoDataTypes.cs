@@ -1,5 +1,4 @@
-﻿using Umbraco.Core.Models;
-using Umbraco.Core.Services;
+﻿using Umbraco.Core.Services;
 
 namespace Our.Shield.MediaProtection.Models
 {
@@ -23,7 +22,7 @@ namespace Our.Shield.MediaProtection.Models
         /// 
         /// </summary>
         public IDataTypeDefinition Text =>
-            _dataTypeService.GetDataTypeDefinitionById(-88);
+            _dataTypeService.GetDataType(-88);
 
         /// <summary>
         /// 
