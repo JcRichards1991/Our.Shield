@@ -1,6 +1,52 @@
 ﻿angular
   .module('umbraco')
-  .controller('Shield.Dashboards.Environments',
+  .controller('Shield.Controllers.Dashboard',
+    [
+      '$scope',
+      'dashboardResource',
+      'localizationService',
+      function ($scope,
+        dashboardResource,
+        localizationService) {
+
+        var dashboardCtrl = this;
+
+        angular.extend(dashboardCtrl, {
+          loading: true,
+          name: '',
+          tabs: [],
+          init: function () {
+            localizationService
+              .localize('sections_Shield')
+              .then(function (name) {
+                dashboardCtrl.name = name;
+            });
+
+            dashboardResource
+              .getDashboard('Shield')
+              .then(function (tabs) {
+                dashboardCtrl.tabs = tabs;
+                // set first tab to active
+                if (dashboardCtrl.tabs && dashboardCtrl.tabs.length > 0) {
+                  dashboardCtrl.tabs[0].active = true;
+                }
+                dashboardCtrl.loading = false;
+            });
+          },
+          changeTab: function (tab) {
+            dashboardCtrl.tabs.forEach(function (tab) {
+              tab.active = false;
+            });
+
+            tab.active = true;
+          }
+        });
+      }
+    ]);
+
+angular
+  .module('umbraco')
+  .controller('Shield.Controllers.EnvironmentsDashboard',
     [
       '$scope',
       '$location',
@@ -28,7 +74,7 @@
 
 angular
   .module('umbraco')
-  .controller('Shield.Dashboards.Journal',
+  .controller('Shield.Controllers.JournalDashboard',
     [
       '$scope',
       '$routeParams',
@@ -124,8 +170,8 @@ angular
             shieldResource
               .getJournals(vm.method, vm.id, vm.pageNumber, vm.options.orderBy, vm.options.orderDirection)
               .then(function (response) {
-                vm.items = response.items;
-                vm.totalPages = response.totalPages;
+                vm.items = []; //response.items;
+                vm.totalPages = 0; //response.totalPages;
                 vm.loading = false;
               });
           }

@@ -13,7 +13,7 @@
         angular.extend(vm, {
           create: function () {
             navigationService.hideDialog();
-            $location.path('/shield/shield/CreateEnvironment/');
+            $location.path('/settings/shield/CreateEnvironment/');
           }
         });
       }

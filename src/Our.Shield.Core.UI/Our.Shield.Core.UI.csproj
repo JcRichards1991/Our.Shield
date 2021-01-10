@@ -284,6 +284,7 @@
     <Content Include="App_Plugins\Shield\BackOffice\Shield\CreateEnvironment.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\Delete.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\Environment.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Shield\Dashboard.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\Sort.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Views\AppListing.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Views\Dialogs\EditIpException.html" />

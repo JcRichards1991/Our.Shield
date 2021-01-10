@@ -76,7 +76,7 @@ namespace Our.Shield.Core.CacheRefreshers
             //        break;
             //}
 
-            base.Refresh(json);
+            //base.Refresh(json);
         }
     }
 }

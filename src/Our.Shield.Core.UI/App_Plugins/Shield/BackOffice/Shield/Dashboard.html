@@ -1,0 +1,36 @@
+﻿<div ng-controller="Shield.Controllers.Dashboard as $dashboardCtrl" ng-init="$dashboardCtrl.init()">
+
+  <form name="dashboardForm" val-form-manager>
+
+    <umb-load-indicator ng-show="$dashboardCtrl.loading"></umb-load-indicator>
+
+    <div class="umb-dashboard" ng-if="!$dashboardCtrl.loading" data-element='dashboard'>
+
+      <div class="umb-dashboard__header" ng-show="$dashboardCtrl.tabs.length > 1">
+        <umb-tabs-nav ng-if="$dashboardCtrl.tabs"
+                      tabs="$dashboardCtrl.tabs"
+                      on-tab-change="$dashboardCtrl.changeTab(tab)">
+        </umb-tabs-nav>
+      </div>
+
+      <div class="umb-dashboard__content">
+
+        <umb-tab-content ng-repeat="tab in $dashboardCtrl.tabs" ng-if="tab.active" tab="tab" class="row-fluid">
+
+          <div ng-repeat="property in tab.properties">
+
+            <div class="clearfix">
+              <div ng-include="property.view"></div>
+            </div>
+
+          </div>
+
+        </umb-tab-content>
+
+      </div>
+
+    </div>
+
+  </form>
+
+</div>

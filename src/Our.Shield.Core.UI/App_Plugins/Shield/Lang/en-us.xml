@@ -8,6 +8,11 @@
     <key alias="shield">Shield</key>
   </area>
 
+  <area alias="dashboardTabs">
+    <key alias="shieldEnvironmentsDashboard">Environments</key>
+    <key alias="shieldJournalDashboard">Journal</key>
+  </area>
+
   <area alias="Shield.General">
     <key alias="SaveConfigurationSuccess">Have successfully updated the App</key>
     <key alias="SaveConfigurationError">Unable to update configuration</key>
