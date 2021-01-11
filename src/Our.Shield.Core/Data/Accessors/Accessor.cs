@@ -3,13 +3,27 @@ using Umbraco.Core.Scoping;
 
 namespace Our.Shield.Core.Data.Accessors
 {
-    internal abstract class Accessor
+    /// <summary>
+    /// Base Data Accessor
+    /// </summary>
+    public abstract class Accessor
     {
+        /// <summary>
+        /// Scope Provider
+        /// </summary>
         protected readonly IScopeProvider ScopeProvider;
 
+        /// <summary>
+        /// Logger
+        /// </summary>
         protected readonly ILogger Logger;
 
-        protected Accessor(IScopeProvider scopeProvider, ILogger logger)
+        /// <summary>
+        /// Initializes a new instance of <see cref="Accessor"/> class
+        /// </summary>
+        /// <param name="scopeProvider"></param>
+        /// <param name="logger"></param>
+        public Accessor(IScopeProvider scopeProvider, ILogger logger)
         {
             ScopeProvider = scopeProvider;
             Logger = logger;

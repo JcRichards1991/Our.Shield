@@ -10,12 +10,6 @@ namespace Our.Shield.Core.Models
     public interface IEnvironment
     {
         /// <summary>
-        /// The Id of the Environment
-        /// </summary>
-        [JsonProperty("id")]
-        int Id { get; }
-
-        /// <summary>
         /// Unique Identifier
         /// </summary>
         [JsonProperty("key")]
@@ -49,18 +43,12 @@ namespace Our.Shield.Core.Models
         /// whether or not the environment is enabled
         /// </summary>
         [JsonProperty("enable")]
-        bool Enable { get; }
+        bool Enabled { get; }
 
         /// <summary>
         /// Whether or not the environment should continue processing
         /// </summary>
         [JsonProperty("continueProcessing")]
         bool ContinueProcessing { get; }
-
-        /// <summary>
-        /// The Environment Color indicator as hexadecimal
-        /// </summary>
-        [JsonProperty("colorIndicator")]
-        string ColorIndicator { get; }
     }
 }

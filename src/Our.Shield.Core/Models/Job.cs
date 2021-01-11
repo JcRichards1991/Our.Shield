@@ -80,8 +80,8 @@ namespace Our.Shield.Core.Models
             WebRequestHandler.Unwatch(this, stage);
 
         /// <inheritdoc />
-        public int UnwatchWebRequests() =>
-            WebRequestHandler.Unwatch(Environment.Id, App.Id);
+        //public int UnwatchWebRequests() =>
+        //    WebRequestHandler.Unwatch(Environment.Id, App.Id);
 
         /// <inheritdoc />
         public int UnwatchWebRequests(IApp app) =>

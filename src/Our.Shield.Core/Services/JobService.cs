@@ -221,7 +221,7 @@ namespace Our.Shield.Core.Services
 
                 foreach (var job in Jobs.Value)
                 {
-                    if (job.Value.Environment.Id == environment.Id)
+                    if (job.Value.Environment.Key == environment.Key)
                     {
                         if (job.Value.Task != null && !job.Value.Task.IsCanceled && !job.Value.Task.IsCompleted &&
                             !job.Value.CancelToken.IsCancellationRequested)

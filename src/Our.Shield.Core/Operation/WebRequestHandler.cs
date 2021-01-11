@@ -42,7 +42,7 @@ namespace Our.Shield.Core.Operation
 
         private class Environ
         {
-            public readonly int Id;
+            public readonly Guid Key;
             public readonly string Name;
             public readonly int SortOrder;
             public readonly bool ContinueProcessing;
@@ -52,7 +52,6 @@ namespace Our.Shield.Core.Operation
 
             public Environ(IEnvironment environment)
             {
-                Id = environment.Id;
                 Name = string.Copy(environment.Name);
                 SortOrder = environment.SortOrder;
                 ContinueProcessing = environment.ContinueProcessing;
@@ -77,7 +76,7 @@ namespace Our.Shield.Core.Operation
 
         private class UrlException
         {
-            public int EnvironmentId;
+            public Guid EnvironmentKey;
             public string AppId;
             public Regex Regex;
             public UmbracoUrl Url;
@@ -225,12 +224,12 @@ namespace Our.Shield.Core.Operation
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="environmentId"></param>
+        /// <param name="environmentKey"></param>
         /// <param name="appId"></param>
         /// <param name="stage"></param>
         /// <param name="regex"></param>
         /// <returns></returns>
-        public static int Unwatch(int? environmentId = null, string appId = null, PipeLineStages? stage = null, Regex regex = null)
+        public static int Unwatch(Guid? environmentKey = null, string appId = null, PipeLineStages? stage = null, Regex regex = null)
         {
             var watchRemovedCounter = 0;
             var deleteEnvirons = new List<int>();
@@ -239,7 +238,7 @@ namespace Our.Shield.Core.Operation
             if (EnvironLock.Read(() =>
             {
                 var regy = regex?.ToString();
-                foreach (var environ in Environs.Where(x => environmentId == null || x.Value.Id == environmentId))
+                foreach (var environ in Environs.Where(x => environmentKey == null || x.Value.Key == environmentKey))
                 {
                     var watchRemainCounter = 0;
                     foreach (var objectStage in Enum.GetValues(typeof(PipeLineStages)))
@@ -460,7 +459,7 @@ namespace Our.Shield.Core.Operation
         }
 
         // ReSharper disable once UnusedParameter.Local
-        private WatchResponse.Cycles ExecuteTransfer(int environmentId, Watcher watch, WatchResponse response, HttpApplication application)
+        private WatchResponse.Cycles ExecuteTransfer(Guid environmentKey, Watcher watch, WatchResponse response, HttpApplication application)
         {
             if (response.Transfer.TransferType == TransferTypes.PlayDead)
             {
@@ -477,7 +476,7 @@ namespace Our.Shield.Core.Operation
             {
                 var requestUrl = application.Context.Request.Url;
 
-                foreach (var exception in UrlExceptions.Where(x => x.EnvironmentId == environmentId))
+                foreach (var exception in UrlExceptions.Where(x => x.EnvironmentKey == environmentKey))
                 {
                     if (exception.Regex != null && (exception.Regex.IsMatch(requestUrl.PathAndQuery) ||
                         exception.Regex.IsMatch(requestUrl.AbsoluteUri)))
@@ -583,7 +582,7 @@ namespace Our.Shield.Core.Operation
                     {
                         var ignores = UrlIgnoresLock.Read(() =>
                         {
-                            return UrlIgnores.Where(x => x.EnvironmentId == environ.Value.Id && x.Regex.IsMatch(filePath)).Select(x => x.AppId);
+                            return UrlIgnores.Where(x => x.EnvironmentKey == environ.Value.Key && x.Regex.IsMatch(filePath)).Select(x => x.AppId);
                         });
 
                         foreach (var watch in environ.Value.Watchers[(int)stage])
@@ -603,7 +602,7 @@ namespace Our.Shield.Core.Operation
 #if TRACE
                                 debug += "by transfer then ";
 #endif
-                                watchResponse.Cycle = ExecuteTransfer(environ.Value.Id, watch, watchResponse, application);
+                                watchResponse.Cycle = ExecuteTransfer(environ.Value.Key, watch, watchResponse, application);
                             }
 
                             switch (watchResponse.Cycle)
@@ -761,7 +760,7 @@ namespace Our.Shield.Core.Operation
                 var count = Interlocked.Increment(ref _requestCount);
                 UrlExceptions.Add(new UrlException
                 {
-                    EnvironmentId = job.Environment.Id,
+                    EnvironmentKey = job.Environment.Key,
                     AppId = job.App.Id,
                     Regex = regex,
                     Url = url
@@ -771,20 +770,20 @@ namespace Our.Shield.Core.Operation
         }
 
         // ReSharper disable once MethodOverloadWithOptionalParameter
-        public static int Unexception(IJob job, Regex regex = null) => Unexception(job.Environment.Id, job.App.Id, regex);
+        public static int Unexception(IJob job, Regex regex = null) => Unexception(job.Environment.Key, job.App.Id, regex);
         // ReSharper disable once MethodOverloadWithOptionalParameter
-        public static int Unexception(IJob job, UmbracoUrl url = null) => Unexception(job.Environment.Id, job.App.Id, null, url);
-        public static int Unexception(IJob job) => Unexception(job.Environment.Id, job.App.Id);
+        public static int Unexception(IJob job, UmbracoUrl url = null) => Unexception(job.Environment.Key, job.App.Id, null, url);
+        public static int Unexception(IJob job) => Unexception(job.Environment.Key, job.App.Id);
         public static int Unexception(string appId = null, Regex regex = null) => Unexception(null, appId, regex);
 
-        public static int Unexception(int? environmentId = null, string appId = null, Regex regex = null, UmbracoUrl url = null)
+        public static int Unexception(Guid? environmentKey = null, string appId = null, Regex regex = null, UmbracoUrl url = null)
         {
             return UrlExceptionLock.Write(() =>
             {
                 var regy = regex?.ToString();
 
                 return UrlExceptions.RemoveAll(x =>
-                    (environmentId == null || x.EnvironmentId == environmentId) && (appId == null || x.AppId == appId) &&
+                    (environmentKey == null || x.EnvironmentKey == environmentKey) && (appId == null || x.AppId == appId) &&
                     ((regex == null || x.Regex.ToString() == regy) || (url == null || x.Url.Equals(url))));
             });
         }
@@ -803,7 +802,7 @@ namespace Our.Shield.Core.Operation
                 var count = Interlocked.Increment(ref _requestCount);
                 UrlIgnores.Add(new UrlException
                 {
-                    EnvironmentId = job.Environment.Id,
+                    EnvironmentKey = job.Environment.Key,
                     AppId = job.App.Id,
                     Regex = regex
                 });
@@ -812,19 +811,19 @@ namespace Our.Shield.Core.Operation
         }
 
         // ReSharper disable once MethodOverloadWithOptionalParameter
-        public static int Unignore(IJob job, Regex regex = null) => Unignore(job.Environment.Id, job.App.Id, regex);
+        public static int Unignore(IJob job, Regex regex = null) => Unignore(job.Environment.Key, job.App.Id, regex);
         // ReSharper disable once MethodOverloadWithOptionalParameter
-        public static int Unignore(IJob job) => Unignore(job.Environment.Id, job.App.Id);
+        public static int Unignore(IJob job) => Unignore(job.Environment.Key, job.App.Id);
         public static int Unignore(string appId = null, Regex regex = null) => Unignore(null, appId, regex);
 
-        public static int Unignore(int? environmentId = null, string appId = null, Regex regex = null)
+        public static int Unignore(Guid? environmentKey = null, string appId = null, Regex regex = null)
         {
             return UrlIgnoresLock.Write(() =>
             {
                 var regy = regex?.ToString();
 
                 return UrlIgnores.RemoveAll(x =>
-                    (environmentId == null || x.EnvironmentId == environmentId)
+                    (environmentKey == null || x.EnvironmentKey == environmentKey)
                     && (appId == null || x.AppId == appId) &&
                     (regex == null || x.Regex.ToString() == regy));
             });

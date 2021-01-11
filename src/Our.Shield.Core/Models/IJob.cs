@@ -87,7 +87,11 @@ namespace Our.Shield.Core.Models
         /// <returns></returns>
         int UnwatchWebRequests(PipeLineStages stage);
 
-        int UnwatchWebRequests();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        //int UnwatchWebRequests();
 
         /// <summary>
         /// Removes all Web Requests from the WebRequestsHandler collection for the given App
@@ -165,7 +169,5 @@ namespace Our.Shield.Core.Models
         /// </summary>
         /// <returns></returns>
         int UnignoreWebRequest();
-
-
     }
 }

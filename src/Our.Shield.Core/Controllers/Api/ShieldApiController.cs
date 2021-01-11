@@ -1,15 +1,13 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
-using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Models.CacheRefresherJson;
 using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
-using Umbraco.Web.Cache;
 using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
 
@@ -24,11 +22,26 @@ namespace Our.Shield.Core.Controllers.Api
     [PluginController(Constants.App.Alias)]
     public class ShieldApiController : UmbracoAuthorizedJsonController
     {
-        private readonly DistributedCache _distributedCache;
+        private readonly IEnvironmentService _environmentService;
 
-        public ShieldApiController(DistributedCache distributedCache)
+        /// <summary>
+        /// Initializes a new instance of <see cref="ShieldApiController"/> class
+        /// </summary>
+        /// <param name="environmentService"></param>
+        public ShieldApiController(
+            IEnvironmentService environmentService)
         {
-            _distributedCache = distributedCache;
+            _environmentService = environmentService;
+        }
+
+        /// <summary>
+        /// Get all environments available in the system
+        /// </summary>
+        /// <returns>Collection of environments</returns>
+        [HttpGet]
+        public async Task<IReadOnlyList<IEnvironment>> GetEnvironments()
+        {
+            return await _environmentService.Get();
         }
 
         /// <summary>
@@ -37,20 +50,21 @@ namespace Our.Shield.Core.Controllers.Api
         /// <param name="key">The key of the environment to delete</param>
         /// <returns>true if successfully deleted, otherwise, false.</returns>
         [HttpPost]
-        public bool DeleteEnvironment(Guid key)
+        public async Task<bool> DeleteEnvironment(Guid key)
         {
-            var environment = (Models.Environment)JobService.Instance.Environments.FirstOrDefault(x => x.Key.Key == key).Key;
+            throw new NotImplementedException();
+            //var environment = (Models.Environment)JobService.Instance.Environments.FirstOrDefault(x => x.Key.Key == key).Key;
             
-            if (environment != null && EnvironmentService.Instance.Delete(environment))
-            {
-                _distributedCache.RefreshByJson(
-                    new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
-                    GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.Remove, key)));
+            //if (environment != null && await _environmentService.Delete(environment))
+            //{
+            //    _distributedCache.RefreshByJson(
+            //        new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
+            //        GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.Remove, key)));
 
-                return true;
-            }
+            //    return true;
+            //}
 
-            return false;
+            //return false;
         }
 
         /// <summary>
@@ -61,35 +75,36 @@ namespace Our.Shield.Core.Controllers.Api
         [HttpGet]
         public AppApiResponseModel GetApp(Guid key)
         {
-            var environment = JobService.Instance.Environments.FirstOrDefault(x => x.Value.Any(y => y.Key == key));
+            throw new NotImplementedException();
+            //var environment = JobService.Instance.Environments.FirstOrDefault(x => x.Value.Any(y => y.Key == key));
 
-            if (environment.Key == null)
-                return null;
+            //if (environment.Key == null)
+            //    return null;
 
-            var job = environment.Value.First(x => x.Key == key);
+            //var job = environment.Value.First(x => x.Key == key);
 
-            var tabAttrs = (job.App.GetType().GetCustomAttributes(typeof(AppTabAttribute), true) as IEnumerable<AppTabAttribute> ?? new List<AppTabAttribute>()).ToList();
+            //var tabAttrs = (job.App.GetType().GetCustomAttributes(typeof(AppTabAttribute), true) as IEnumerable<AppTabAttribute> ?? new List<AppTabAttribute>()).ToList();
 
-            //  TODO: Make tab captions localized
-            var tabs = new List<ITab>();
-            foreach (var tabAttr in tabAttrs.OrderBy(x => x.SortOrder))
-            {
-                if (tabAttr is AppEditorAttribute appEditorAttr)
-                {
-                    tabs.Add(new AppConfigTab(appEditorAttr));
-                    continue;
-                }
+            ////  TODO: Make tab captions localized
+            //var tabs = new List<ITab>();
+            //foreach (var tabAttr in tabAttrs.OrderBy(x => x.SortOrder))
+            //{
+            //    if (tabAttr is AppEditorAttribute appEditorAttr)
+            //    {
+            //        tabs.Add(new AppConfigTab(appEditorAttr));
+            //        continue;
+            //    }
 
-                tabs.Add(new Tab(tabAttr));
-            }
+            //    tabs.Add(new Tab(tabAttr));
+            //}
 
-            return new AppApiResponseModel(job)
-            {
-                //Environments = environments.Keys,
-                Environment = environment.Key,
-                Configuration = job.ReadConfiguration(),
-                Tabs = tabs
-            };
+            //return new AppApiResponseModel(job)
+            //{
+            //    //Environments = environments.Keys,
+            //    Environment = environment.Key,
+            //    Configuration = job.ReadConfiguration(),
+            //    Tabs = tabs
+            //};
         }
 
         /// <summary>
@@ -100,26 +115,17 @@ namespace Our.Shield.Core.Controllers.Api
         [HttpGet]
         public EnvironmentApiResponseModel GetEnvironment(Guid key)
         {
-            var environment = JobService.Instance.Environments.FirstOrDefault(x => x.Key.Key == key);
+            throw new NotImplementedException();
+            //var environment = JobService.Instance.Environments.FirstOrDefault(x => x.Key.Key == key);
 
-            if (environment.Key == null)
-                return null;
+            //if (environment.Key == null)
+            //    return null;
 
-            return new EnvironmentApiResponseModel(environment.Key)
-            {
-                Description = $"View apps for {environment.Key.Name} environment",
-                Apps = environment.Value.Select(x => new AppListingItem(x)).OrderBy(x => x.Name).ToArray()
-            };
-        }
-
-        /// <summary>
-        /// Get all environments available in the system
-        /// </summary>
-        /// <returns>Collection of environments</returns>
-        [HttpGet]
-        public IEnumerable<IEnvironment> GetEnvironments()
-        {
-            return JobService.Instance.Environments.Select(x => x.Key).OrderBy(x => x.SortOrder);
+            //return new EnvironmentApiResponseModel(environment.Key)
+            //{
+            //    Description = $"View apps for {environment.Key.Name} environment",
+            //    Apps = environment.Value.Select(x => new AppListingItem(x)).OrderBy(x => x.Name).ToArray()
+            //};
         }
 
         /// <summary>
@@ -137,64 +143,68 @@ namespace Our.Shield.Core.Controllers.Api
         [HttpGet]
         public JournalListing Journals(string method, string id, int page, string orderBy, string orderByDirection)
         {
-            var environments = JobService.Instance.Environments;
+            throw new NotImplementedException();
 
-            switch (method)
-            {
-                case "Environments":
-                    throw new NotImplementedException();
-                    //return new JournalListing
-                    //{
-                    //    Journals = DbContext.Instance.Journal.Read<JournalMessage>(page, 200, out int totalPages).Select(x =>
-                    //    {
-                    //        var e = environments.FirstOrDefault(ev => ev.Key.Id == x.EnvironmentId);
-                    //        return new JournalListingItem
-                    //        {
-                    //            DateStamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                    //            App = new AppListingItem(e.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
-                    //            Environment = e.Key,
-                    //            Message = x.Message
-                    //        };
-                    //    }),
-                    //    TotalPages = totalPages
-                    //};
+            //var environments = JobService.Instance.Environments;
 
-                case "Environment":
-                    var envId = Guid.Parse(id);
-                    var environment = environments.FirstOrDefault(x => x.Key.Key == envId);
-                    return new JournalListing
-                    {
-                        Journals = EnvironmentService.Instance
-                            .JournalListing<JournalMessage>(environment.Key.Id, page, 100, out var totalPages)
-                            .Select(x => new JournalListingItem
-                            {
-                                DateStamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                                App = new AppListingItem(environment.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
-                                Environment = environment.Key,
-                                Message = x.Message
-                            }),
-                        TotalPages = totalPages
-                    };
+            //switch (method)
+            //{
+            //    case "Environments":
+            //        throw new NotImplementedException();
+            //        //return new JournalListing
+            //        //{
+            //        //    Journals = DbContext.Instance.Journal.Read<JournalMessage>(page, 200, out int totalPages).Select(x =>
+            //        //    {
+            //        //        var e = environments.FirstOrDefault(ev => ev.Key.Id == x.EnvironmentId);
+            //        //        return new JournalListingItem
+            //        //        {
+            //        //            DateStamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+            //        //            App = new AppListingItem(e.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
+            //        //            Environment = e.Key,
+            //        //            Message = x.Message
+            //        //        };
+            //        //    }),
+            //        //    TotalPages = totalPages
+            //        //};
 
-                case "App":
-                    var appId = Guid.Parse(id);
-                    environment = environments.FirstOrDefault(x => x.Value.Any(j => j.Key == appId));
-                    var job = environment.Value.First(x => x.Key == appId);
-                    return new JournalListing
-                    {
-                        Journals = job.ListJournals<JournalMessage>(page, 50, out totalPages).Select(x => new JournalListingItem
-                        {
-                            DateStamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
-                            App = new AppListingItem(job),
-                            Environment = environment.Key,
-                            Message = x.Message
-                        }),
-                        TotalPages = totalPages
-                    };
+            //    case "Environment":
+            //        throw new NotImplementedException();
+            //        //var envId = Guid.Parse(id);
+            //        //var environment = environments.FirstOrDefault(x => x.Key.Key == envId);
+            //        //return new JournalListing
+            //        //{
+            //        //    Journals = EnvironmentService.Instance
+            //        //        .JournalListing<JournalMessage>(environment.Key.Id, page, 100, out var totalPages)
+            //        //        .Select(x => new JournalListingItem
+            //        //        {
+            //        //            DateStamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+            //        //            App = new AppListingItem(environment.Value.FirstOrDefault(j => j.App.Id == x.AppId)),
+            //        //            Environment = environment.Key,
+            //        //            Message = x.Message
+            //        //        }),
+            //        //    TotalPages = totalPages
+            //        //};
 
-                default:
-                    return null;
-            }
+            //    case "App":
+            //        throw new NotImplementedException();
+            //        //var appId = Guid.Parse(id);
+            //        //environment = environments.FirstOrDefault(x => x.Value.Any(j => j.Key == appId));
+            //        //var job = environment.Value.First(x => x.Key == appId);
+            //        //return new JournalListing
+            //        //{
+            //        //    Journals = job.ListJournals<JournalMessage>(page, 50, out totalPages).Select(x => new JournalListingItem
+            //        //    {
+            //        //        DateStamp = x.Datestamp.ToString("dd/MM/yyyy HH:mm:ss"),
+            //        //        App = new AppListingItem(job),
+            //        //        Environment = environment.Key,
+            //        //        Message = x.Message
+            //        //    }),
+            //        //    TotalPages = totalPages
+            //        //};
+
+            //    default:
+            //        return null;
+            //}
         }
 
         /// <summary>
@@ -205,36 +215,36 @@ namespace Our.Shield.Core.Controllers.Api
         [HttpPost]
         public bool SortEnvironments([FromBody] IEnumerable<JObject> environmentsJson)
         {
-            var json = environmentsJson.ToList();
-            if (!json.Any())
-            {
-                return false;
-            }
+            //var json = environmentsJson.ToList();
+            //if (!json.Any())
+            //{
+            //    return false;
+            //}
 
-            var environments = json.Select(x => JsonConvert.DeserializeObject<Models.Environment>(x.ToString(), new DomainConverter()));
-            var oldEnvironments = JobService.Instance.Environments.Keys;
+            //var environments = json.Select(x => JsonConvert.DeserializeObject<Models.Environment>(x.ToString(), new DomainConverter()));
+            //var oldEnvironments = JobService.Instance.Environments.Keys;
 
-            foreach (var environment in environments)
-            {
-                if (!oldEnvironments.Any(x => x.Id.Equals(environment.Id) && !x.SortOrder.Equals(environment.SortOrder)))
-                    continue;
+            //foreach (var environment in environments)
+            //{
+            //    if (!oldEnvironments.Any(x => x.Id.Equals(environment.Id) && !x.SortOrder.Equals(environment.SortOrder)))
+            //        continue;
 
-                if (!EnvironmentService.Instance.Write(environment))
-                {
-                    return false;
-                }
+            //    if (!EnvironmentService.Instance.Write(environment))
+            //    {
+            //        return false;
+            //    }
 
-                if (!JobService.Instance.Unregister(environment))
-                {
-                    return false;
-                }
+            //    if (!JobService.Instance.Unregister(environment))
+            //    {
+            //        return false;
+            //    }
 
-                JobService.Instance.Register(environment);
-            }
+            //    JobService.Instance.Register(environment);
+            //}
 
-            _distributedCache.RefreshByJson(
-                Guid.Parse(Constants.DistributedCache.EnvironmentCacheRefresherId),
-                GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.ReOrder, Guid.Empty)));
+            //_distributedCache.RefreshByJson(
+            //    Guid.Parse(Constants.DistributedCache.EnvironmentCacheRefresherId),
+            //    GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.ReOrder, Guid.Empty)));
 
             return true;
         }
@@ -248,36 +258,38 @@ namespace Our.Shield.Core.Controllers.Api
         [HttpPost]
         public bool WriteConfiguration(Guid key, [FromBody] JObject json)
         {
-            if (json == null || key == Guid.Empty)
-                return false;
+            throw new NotImplementedException();
 
-            var job = JobService.Instance.Job(key);
+            //if (json == null || key == Guid.Empty)
+            //    return false;
 
-            if (job == null)
-            {
-                //  Invalid id
-                return false;
-            }
+            //var job = JobService.Instance.Job(key);
 
-            if (!(json.ToObject(((Job)job).ConfigType) is IAppConfiguration configuration))
-            {
-                return false;
-            }
+            //if (job == null)
+            //{
+            //    //  Invalid id
+            //    return false;
+            //}
 
-            configuration.Enable = json.GetValue(nameof(IAppConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase).Value<bool>();
+            //if (!(json.ToObject(((Job)job).ConfigType) is IAppConfiguration configuration))
+            //{
+            //    return false;
+            //}
 
-            job.WriteJournal(new JournalMessage($"{Security.CurrentUser.Name} has updated the configuration"));
+            //configuration.Enable = json.GetValue(nameof(IAppConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase).Value<bool>();
 
-            if (job.WriteConfiguration(configuration))
-            {
-                _distributedCache.RefreshByJson(
-                    Guid.Parse(Constants.DistributedCache.ConfigurationCacheRefresherId),
-                    GetJsonModel(new ConfigurationCacheRefresherJsonModel(Enums.CacheRefreshType.Write, key)));
+            //job.WriteJournal(new JournalMessage($"{Security.CurrentUser.Name} has updated the configuration"));
 
-                return true;
-            }
+            //if (job.WriteConfiguration(configuration))
+            //{
+            //    _distributedCache.RefreshByJson(
+            //        Guid.Parse(Constants.DistributedCache.ConfigurationCacheRefresherId),
+            //        GetJsonModel(new ConfigurationCacheRefresherJsonModel(Enums.CacheRefreshType.Write, key)));
 
-            return false;
+            //    return true;
+            //}
+
+            //return false;
         }
 
         /// <summary>
@@ -286,40 +298,42 @@ namespace Our.Shield.Core.Controllers.Api
         /// <param name="json">the environment new settings as json</param>
         /// <returns></returns>
         [HttpPost]
-        public bool WriteEnvironment([FromBody] JObject json)
+        public async Task<bool> WriteEnvironment([FromBody] JObject json)
         {
-            if (json == null)
-            {
-                //  json is invalid
-                return false;
-            }
+            throw new NotImplementedException();
 
-            var environment = JsonConvert.DeserializeObject<Models.Environment>(json.ToString(), new DomainConverter());
+            //if (json == null)
+            //{
+            //    //  json is invalid
+            //    return false;
+            //}
 
-            var environments = JobService
-                .Instance
-                .Environments
-                .Select(x => x.Key)
-                .Where(x => x.SortOrder != Constants.Tree.DefaultEnvironmentSortOrder)
-                .ToList();
+            //var environment = JsonConvert.DeserializeObject<Models.Environment>(json.ToString(), new DomainConverter());
 
-            if (!environments.Any(x => x.Key == environment.Key))
-            {
-                environment.SortOrder = environments.Any()
-                    ? environments.Max(x => x.SortOrder) + 1
-                    : 0;
-            }
+            //var environments = JobService
+            //    .Instance
+            //    .Environments
+            //    .Select(x => x.Key)
+            //    .Where(x => x.SortOrder != Constants.Tree.DefaultEnvironmentSortOrder)
+            //    .ToList();
 
-            if (EnvironmentService.Instance.Write(environment))
-            {
-                _distributedCache.RefreshByJson(
-                    new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
-                    GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.Write, environment.Key)));
+            //if (!environments.Any(x => x.Key == environment.Key))
+            //{
+            //    environment.SortOrder = environments.Any()
+            //        ? environments.Max(x => x.SortOrder) + 1
+            //        : 0;
+            //}
 
-                return true;
-            }
+            //if (await _environmentService.Upsert(environment))
+            //{
+            //    _distributedCache.RefreshByJson(
+            //        new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
+            //        GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.Write, environment.Key)));
 
-            return false;
+            //    return true;
+            //}
+
+            //return false;
         }
 
         private string GetJsonModel(ICacheRefreshJsonModel jsonModel)

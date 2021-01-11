@@ -2,32 +2,114 @@
 using Our.Shield.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Umbraco.Core.Logging;
 
 namespace Our.Shield.Core.Services
 {
-    internal class EnvironmentService : IEnvironmentService
+    /// <summary>
+    /// Implentation of <see cref="IEnvironmentService"/>
+    /// </summary>
+    public class EnvironmentService : IEnvironmentService
     {
-        private readonly IEnvironmentAccessor _environmentAccessor;
-
-        public EnvironmentService(IEnvironmentAccessor environmentAccessor)
-        {
-            _environmentAccessor = environmentAccessor;
-        }
+        private readonly IEnvironmentAccessor _dataAccessor;
+        private readonly ILogger _logger;
 
         /// <summary>
-        /// Writes an environment to the database
+        /// Initializes a new instance of the <see cref="EnvironmentService"/> class
         /// </summary>
-        /// <param name="environment">The environment to write</param>
-        /// <returns>True if successfully written; otherwise, False</returns>
-        public bool Write(IEnvironment environment)
+        /// <param name="environmentAccessor"></param>
+        /// <param name="logger"></param>
+        public EnvironmentService(
+            IEnvironmentAccessor environmentAccessor,
+            ILogger logger)
         {
-            throw new NotImplementedException();
+            _dataAccessor = environmentAccessor;
+            _logger = logger;
+        }
 
-            //if (!DbContext.Instance.Environment.Write(environment))
+        /// <inheritdoc />
+        public async Task<bool> Upsert(IEnvironment environment)
+        {
+            if (!await UpsertDatabase(environment))
+            {
+                return false;
+            }
+
+            return UpsertSystem();
+        }
+
+        /// <inheritdoc />
+        public async Task<IReadOnlyList<IEnvironment>> Get()
+        {
+            var envs = await _dataAccessor.Read();
+
+            if (envs.Any())
+            {
+                return envs
+                    .Select(x => new Models.Environment(x))
+                    .ToList()
+                    .AsReadOnly();
+            }
+
+            return new List<IEnvironment>();
+        }
+
+        /// <inheritdoc />
+        public async Task<IEnvironment> Get(Guid key)
+        {
+            var env = await _dataAccessor.Read(key);
+
+            if (env != null)
+            {
+                return new Models.Environment(env);
+            }
+
+            _logger.Warn<EnvironmentService>("No environment found in database with key: {Key}", key);
+
+            return default(IEnvironment);
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> Delete(IEnvironment environment)
+        {
+            //if (!JobService.Instance.Unregister(environment) || !DbContext.Instance.Environment.Delete(environment.Id))
             //{
             //    return false;
             //}
 
+            //var environments = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
+            //var oldEnvironments = JobService.Instance.Environments.Keys;
+
+            //foreach (var newEnv in environments)
+            //{
+            //    if (oldEnvironments.Any(x => x.Id.Equals(newEnv.Id) && !x.SortOrder.Equals(newEnv.SortOrder)))
+            //    {
+            //        JobService.Instance.Unregister(newEnv);
+            //        JobService.Instance.Register(newEnv);
+            //    }
+            //}
+
+            var env = new Data.Dtos.Environment(environment);
+
+            return await _dataAccessor.Delete(env);
+        }
+
+        private async Task<bool> UpsertDatabase(IEnvironment environment)
+        {
+            var env = new Data.Dtos.Environment(environment);
+
+            if (environment.Key == Guid.Empty)
+            {
+                return await _dataAccessor.Create(env);
+            }
+
+            return await _dataAccessor.Update(env);
+        }
+
+        private bool UpsertSystem()
+        {
             //if (!JobService.Instance.Environments.Any(x => x.Key.Id.Equals(environment.Id)))
             //{
             //    //created new environment, we need to register it
@@ -56,60 +138,8 @@ namespace Our.Shield.Core.Services
 
             //    JobService.Instance.Register(environment);
             //}
-            //return true;
+
+            return true;
         }
-
-        /// <summary>
-        /// Deletes an environment from the database
-        /// </summary>
-        /// <param name="environment">The environment to remove</param>
-        /// <returns></returns>
-        public bool Delete(Models.Environment environment)
-        {
-            throw new NotImplementedException();
-
-            //if (!JobService.Instance.Unregister(environment) || !DbContext.Instance.Environment.Delete(environment.Id))
-            //{
-            //    return false;
-            //}
-
-            //var environments = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
-            //var oldEnvironments = JobService.Instance.Environments.Keys;
-
-            //foreach (var newEnv in environments)
-            //{
-            //    if (oldEnvironments.Any(x => x.Id.Equals(newEnv.Id) && !x.SortOrder.Equals(newEnv.SortOrder)))
-            //    {
-            //        JobService.Instance.Unregister(newEnv);
-            //        JobService.Instance.Register(newEnv);
-            //    }
-            //}
-
-            //return true;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id">Id of the environment to return the journals for</param>
-        /// <param name="page">The page of results to return</param>
-        /// <param name="itemsPerPage">The number of items to return per page</param>
-        /// <param name="type">The type of journal the the results should be</param>
-        /// <param name="totalPages">The total amount of pages that can be returned</param>
-        /// <returns></returns>
-        public IEnumerable<IJournal> JournalListing(int id, int page, int itemsPerPage, Type type, out int totalPages) =>
-            throw new NotImplementedException(); //DbContext.Instance.Journal.Read(id, page, itemsPerPage, type, out totalPages);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T">The type of journal the the results should be</typeparam>
-        /// <param name="id">Id of the environment to return the journals for</param>
-        /// <param name="page">The page of results to return</param>
-        /// <param name="itemsPerPage">The number of items to return per page</param>
-        /// <param name="totalPages">The total amount of pages that can be returned</param>
-        /// <returns></returns>
-        public IEnumerable<T> JournalListing<T>(int id, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
-            throw new NotImplementedException(); //DbContext.Instance.Journal.Read(id, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
     }
 }

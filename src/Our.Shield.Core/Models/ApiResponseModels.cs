@@ -19,26 +19,38 @@ namespace Our.Shield.Core.Models
         public IEnumerable<ITab> Tabs { get; set; }
     }
 
-    public class EnvironmentApiResponseModel : Environment
+    public class EnvironmentApiResponseModel : IEnvironment
     {
-        [JsonProperty("description")]
-        public string Description { get; set; }
-        
-        [JsonProperty("apps")]
-        public IEnumerable<AppListingItem> Apps;
-
         public EnvironmentApiResponseModel(IEnvironment environment)
         {
-            Id = environment.Id;
             Key = environment.Key;
             Name = environment.Name;
             Icon = environment.Icon;
             Domains = environment.Domains;
             SortOrder = environment.SortOrder;
-            Enable = environment.Enable;
+            Enabled = environment.Enabled;
             ContinueProcessing = environment.ContinueProcessing;
-            ColorIndicator = environment.ColorIndicator;
         }
+
+        public Guid Key { get; set; }
+
+        public string Name { get; set; }
+
+        public string Icon { get; set; }
+
+        public IEnumerable<IDomain> Domains { get; set; }
+
+        public int SortOrder { get; set; }
+
+        public bool Enabled { get; set; }
+
+        public bool ContinueProcessing { get; set; }
+
+        [JsonProperty("apps")]
+        public IEnumerable<AppListingItem> Apps;
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
     }
 
     public interface ITab

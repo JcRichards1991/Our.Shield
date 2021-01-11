@@ -294,6 +294,7 @@
     <Compile Include="Data\Accessors\IJournalAccessor.cs" />
     <Compile Include="Data\Accessors\JournalAccessor.cs" />
     <Compile Include="Data\Dtos\Dto.cs" />
+    <Compile Include="Data\Dtos\IEnvironment.cs" />
     <Compile Include="Data\Dtos\Journal.cs" />
     <Compile Include="Data\Migrations\InstallMigration.cs" />
     <Compile Include="Data\Dtos\App.cs" />
@@ -306,6 +307,8 @@
     <Compile Include="Models\CacheRefresherJson\ICacheRefreshJsonModel.cs" />
     <Compile Include="PackageActions\AddShieldConfigurationSection.cs" />
     <Compile Include="Services\IEnvironmentService.cs" />
+    <Compile Include="Services\IJournalService.cs" />
+    <Compile Include="Services\JournalService.cs" />
     <Compile Include="Services\ShieldService.cs" />
     <Compile Include="Settings\Configuration.cs" />
     <Compile Include="Settings\IpAddressValidation.cs" />

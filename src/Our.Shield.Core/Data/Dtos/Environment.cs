@@ -1,35 +1,41 @@
 ﻿using NPoco;
-using Umbraco.Core.Persistence.DatabaseAnnotations;
+using System.Diagnostics;
 
 namespace Our.Shield.Core.Data.Dtos
 {
     [TableName(nameof(Shield) + "Environments")]
     [PrimaryKey(nameof(Key), AutoIncrement = false)]
     [ExplicitColumns]
-    internal class Environment : Dto
+    [DebuggerDisplay("{value}", Name = nameof(Name))]
+    [DebuggerDisplay("{value}", Name = nameof(Enabled))]
+    [DebuggerDisplay("{value}", Name = nameof(Key))]
+    internal class Environment : Dto, IEnvironment
     {
-        [Column(nameof(Name))]
-        [NullSetting(NullSetting = NullSettings.NotNull)]
+        internal Environment()
+        {
+        }
+
+        internal Environment(Models.IEnvironment env)
+        {
+            Key = env.Key;
+            Name = env.Name;
+            Icon = env.Icon;
+            SortOrder = env.SortOrder;
+            Enabled = env.Enabled;
+            ContinueProcessing = env.ContinueProcessing;
+            //Domains = env.Domains;
+        }
+
         public string Name { get; set; }
 
-        [Column(nameof(Icon))]
-        [NullSetting(NullSetting = NullSettings.NotNull)]
         public string Icon { get; set; }
 
-        [Column(nameof(SortOrder))]
-        [NullSetting(NullSetting = NullSettings.NotNull)]
         public int SortOrder { get; set; }
 
-        [Column(nameof(Enabled))]
-        [NullSetting(NullSetting = NullSettings.NotNull)]
         public bool Enabled { get; set; }
 
-        [Column(nameof(ContinueProcessing))]
-        [NullSetting(NullSetting = NullSettings.NotNull)]
         public bool ContinueProcessing { get; set; }
 
-        [Column(nameof(Domains))]
-        [NullSetting(NullSetting = NullSettings.NotNull)]
         public string Domains { get; set; }
     }
 }

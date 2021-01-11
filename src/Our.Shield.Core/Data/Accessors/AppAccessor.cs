@@ -100,7 +100,12 @@ namespace Our.Shield.Core.Data.Accessors
         {
             var app = await Read(key);
 
-            return await Delete(app);
+            if (app != null)
+            {
+                return await Delete(app);
+            }
+
+            return false;
         }
 
         public async Task<bool> Delete(App app)
