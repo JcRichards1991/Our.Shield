@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Models.CacheRefresherJson;
 using Our.Shield.Core.Services;
+using Our.Shield.Shared;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -31,6 +32,8 @@ namespace Our.Shield.Core.Controllers.Api
         public ShieldApiController(
             IEnvironmentService environmentService)
         {
+            GuardClauses.NotNull(environmentService, nameof(environmentService));
+
             _environmentService = environmentService;
         }
 

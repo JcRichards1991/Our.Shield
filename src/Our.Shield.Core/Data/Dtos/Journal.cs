@@ -6,7 +6,7 @@ namespace Our.Shield.Core.Data.Dtos
 {
     [TableName(nameof(Shield) + "Journals")]
     [PrimaryKey(nameof(Key), AutoIncrement = false)]
-    internal class Journal : Dto
+    class Journal : Dto
     {
         [Column(nameof(EnvironmentKey))]
         [ForeignKey(typeof(Environment), Name = "FK_" + nameof(Journal) + "_" + nameof(Environment))]

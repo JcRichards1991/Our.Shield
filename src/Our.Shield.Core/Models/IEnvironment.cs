@@ -10,43 +10,43 @@ namespace Our.Shield.Core.Models
     public interface IEnvironment
     {
         /// <summary>
-        /// Unique Identifier
+        /// The unique identifier of the <see cref="IEnvironment"/>
         /// </summary>
         [JsonProperty("key")]
         Guid Key { get; }
 
         /// <summary>
-        /// The Name of the Environment
+        /// The name of the <see cref="IEnvironment"/>
         /// </summary>
         [JsonProperty("name")]
         string Name { get; }
 
         /// <summary>
-        /// The Icon of the Environment
+        /// The icon of the <see cref="IEnvironment"/>
         /// </summary>
         [JsonProperty("icon")]
         string Icon { get; }
 
         /// <summary>
-        /// The Domains for the Environment
+        /// The domains the <see cref="IEnvironment"/> handles requests for
         /// </summary>
         [JsonProperty("domains")]
         IEnumerable<IDomain> Domains { get; }
 
         /// <summary>
-        /// The sort order of the environment
+        /// The sort order of the <see cref="IEnvironment"/> that appears in the UI and the order in which the environments will be processed in
         /// </summary>
         [JsonProperty("sortOrder")]
         int SortOrder { get; }
 
         /// <summary>
-        /// whether or not the environment is enabled
+        /// whether or not the <see cref="IEnvironment"/> is enabled, and sub-sequently the environment's app(s)
         /// </summary>
         [JsonProperty("enable")]
         bool Enabled { get; }
 
         /// <summary>
-        /// Whether or not the environment should continue processing
+        /// Whether or not the <see cref="IEnvironment"/> should continue processing to the next <see cref="IEnvironment"/> to handle if applicable
         /// </summary>
         [JsonProperty("continueProcessing")]
         bool ContinueProcessing { get; }

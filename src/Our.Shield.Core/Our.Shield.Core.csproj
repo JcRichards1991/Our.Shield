@@ -294,6 +294,7 @@
     <Compile Include="Data\Accessors\IJournalAccessor.cs" />
     <Compile Include="Data\Accessors\JournalAccessor.cs" />
     <Compile Include="Data\Dtos\Dto.cs" />
+    <Compile Include="Data\Dtos\IDto.cs" />
     <Compile Include="Data\Dtos\IEnvironment.cs" />
     <Compile Include="Data\Dtos\Journal.cs" />
     <Compile Include="Data\Migrations\InstallMigration.cs" />
@@ -363,7 +364,12 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Our.Shield.Shared\Our.Shield.Shared.csproj">
+      <Project>{C3E0DFD3-A730-4388-BE45-53AC5B878E18}</Project>
+      <Name>Our.Shield.Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

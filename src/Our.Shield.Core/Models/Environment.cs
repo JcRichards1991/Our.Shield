@@ -4,16 +4,26 @@ using System.Diagnostics;
 
 namespace Our.Shield.Core.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [DebuggerDisplay("{value}", Name = nameof(Name))]
     [DebuggerDisplay("{value}", Name = nameof(Enabled))]
     [DebuggerDisplay("{value}", Name = nameof(Key))]
-    internal class Environment : IEnvironment
+    public class Environment : IEnvironment
     {
-        internal Environment()
+        /// <summary>
+        /// Initalizes a new instance of <see cref="Environment"/> class
+        /// </summary>
+        public Environment()
         {
         }
 
-        internal Environment(Data.Dtos.IEnvironment data)
+        /// <summary>
+        /// Initializes a new instance of <see cref="Environment"/> class from an <see cref="Data.Dtos.IEnvironment"/>
+        /// </summary>
+        /// <param name="data">The <see cref="Data.Dtos.IEnvironment"/> to initialize from</param>
+        public Environment(Data.Dtos.IEnvironment data)
         {
             Key = data.Key;
             Name = data.Name;
@@ -24,20 +34,28 @@ namespace Our.Shield.Core.Models
             ContinueProcessing = data.ContinueProcessing;
         }
 
-        public Guid Key { get; internal set; }
+        /// <inheritdoc />
+        public Guid Key { get; set; }
 
-        public string Name { get; internal set; }
+        /// <inheritdoc />
+        public string Name { get; set; }
 
-        public string Icon { get; internal set; }
+        /// <inheritdoc />
+        public string Icon { get; set; }
 
-        public IEnumerable<IDomain> Domains { get; internal set; }
+        /// <inheritdoc />
+        public IEnumerable<IDomain> Domains { get; set; }
 
-        public int SortOrder { get; internal set; }
+        /// <inheritdoc />
+        public int SortOrder { get; set; }
 
-        public bool Enabled { get; internal set; }
+        /// <inheritdoc />
+        public bool Enabled { get; set; }
 
-        public bool ContinueProcessing { get; internal set; }
+        /// <inheritdoc />
+        public bool ContinueProcessing { get; set; }
 
+        /// <inheritdoc />
         public override bool Equals(object other)
         {
             switch (other)
@@ -53,6 +71,7 @@ namespace Our.Shield.Core.Models
             }
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return base.GetHashCode();

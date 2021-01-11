@@ -1,5 +1,6 @@
 ﻿using Our.Shield.Core.Data.Accessors;
 using Our.Shield.Core.Models;
+using Our.Shield.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,9 @@ namespace Our.Shield.Core.Services
             IEnvironmentAccessor environmentAccessor,
             ILogger logger)
         {
+            GuardClauses.NotNull(environmentAccessor, nameof(environmentAccessor));
+            GuardClauses.NotNull(logger, nameof(logger));
+
             _dataAccessor = environmentAccessor;
             _logger = logger;
         }
@@ -74,6 +78,8 @@ namespace Our.Shield.Core.Services
         /// <inheritdoc />
         public async Task<bool> Delete(IEnvironment environment)
         {
+            GuardClauses.NotNull(environment, nameof(environment));
+
             //if (!JobService.Instance.Unregister(environment) || !DbContext.Instance.Environment.Delete(environment.Id))
             //{
             //    return false;

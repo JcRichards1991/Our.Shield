@@ -1,4 +1,5 @@
-﻿using Umbraco.Core.Logging;
+﻿using Our.Shield.Shared;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Scoping;
 
 namespace Our.Shield.Core.Data.Accessors
@@ -25,6 +26,9 @@ namespace Our.Shield.Core.Data.Accessors
         /// <param name="logger"></param>
         public Accessor(IScopeProvider scopeProvider, ILogger logger)
         {
+            GuardClauses.NotNull(scopeProvider, nameof(scopeProvider));
+            GuardClauses.NotNull(logger, nameof(logger));
+
             ScopeProvider = scopeProvider;
             Logger = logger;
         }

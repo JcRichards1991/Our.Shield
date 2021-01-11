@@ -1,18 +1,16 @@
-﻿using NPoco;
-using System;
-using Umbraco.Core.Persistence.DatabaseAnnotations;
+﻿using System;
 
 namespace Our.Shield.Core.Data.Dtos
 {
-    internal abstract class Dto
+    /// <summary>
+    /// Base DTO
+    /// </summary>
+    public abstract class Dto : IDto
     {
-        [Column(nameof(Key))]
-        [PrimaryKeyColumn(AutoIncrement = false)]
-        [NullSetting(NullSetting = NullSettings.NotNull)]
+        /// <inheritdoc />
         public Guid Key { get; set; }
 
-        [Column(nameof(LastModifiedDateUtc))]
-        [NullSetting(NullSetting = NullSettings.NotNull)]
+        /// <inheritdoc />
         public DateTime LastModifiedDateUtc { get; set; }
     }
 }
