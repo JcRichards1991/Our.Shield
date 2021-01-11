@@ -64,8 +64,14 @@ angular
               vm.loading = false;
             });
           },
+          addEnvironment: function () {
+
+          },
           editEnvironment: function (environmentKey) {
             $location.path('/shield/shield/environment/' + environmentKey);
+          },
+          sortEnvironments: function () {
+
           }
         });
       }

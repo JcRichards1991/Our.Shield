@@ -1,60 +1,51 @@
-﻿<div class="shield-dashboard" ng-controller="Shield.Controllers.EnvironmentsDashboard as vm" ng-init="vm.init()">
+﻿<div class="umb-enditor-container umb-scrollable row-fluid" ng-controller="Shield.Controllers.EnvironmentsDashboard as vm" ng-init="vm.loading=false">
 
-  Environments Table Here
+  <umb-load-indicator ng-show="vm.loading"></umb-load-indicator>
 
-  <!--<umb-load-indicator ng-show="vm.loading"></umb-load-indicator>
+  <div class="umb-pane" ng-if="!vm.loading">
 
-  <umb-editor-view ng-hide="vm.loading">
-    <umb-editor-container>
-      <div class="form-horizontal">
-        <div class="umb-table">
-          <div class="umb-table-head">
-            <div class="umb-table-row">
+    <div class="umb-editor-sub-header umb-editor-sub-header--">
+      <div class="umb-editor-sub-header__content-left">
+        <umb-button button-style="outline"
+                    type="button"
+                    action="vm.addEnvironment()"
+                    label-key="Shield.Dashboard.Environments_ButtonAddEnvironment"></umb-button>
 
-              <div class="umb-table-cell app-icon-cell">
-                &nbsp;
-              </div>
-
-              <div class="umb-table-cell umb-table__name">
-                <a class="umb-table-head__link" href="#" prevent-default>
-                  <localize key="Shield.Dashboard.Environment.Table_NameHeader">Name</localize>
-                  <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
-                </a>
-              </div>
-
-              <div class="umb-table-cell">
-                <a class="umb-table-head__link" href="#" prevent-default>
-                  <localize key="Shield.Dashboard.Environment.Table_DomainsHeader">Domains</localize>
-                  <i class="umb-table-head__icon icon" ng-class="icon-navigation-up"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div class="umb-table-body">
-            <div class="umb-table-row" ng-repeat="environment in vm.environments track by environment.key">
-
-              <div class="umb-table-cell app-icon-cell">
-                <i class="umb-table-body__icon umb-table-body__fileicon">
-                  <span class="{{environment.icon}}"></span>
-                </i>
-              </div>
-
-              <div class="umb-table-cell umb-table__name" ng-click="vm.editEnvironment(environment.key)">
-                <span ng-bind-html="environment.name"></span>
-              </div>
-
-              <div class="umb-table-cell shield-domain-listing">
-                <ul>
-                  <li ng-repeat="domain in environment.domains track by $index">
-                    {{domain.name}}
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+        <umb-button button-style="outline"
+                    type="button"
+                    action="vm.sortEnvironments()"
+                    label-key="Shield.Dashboard.Environments_ButtonSortEnvironments"></umb-button>
       </div>
-    </umb-editor-container>
-  </umb-editor-view>-->
+    </div>
+
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>
+            <localize key="Shield.Dashboard.Environments_TableHeaderName">Name</localize>
+          </th>
+          <th>
+            <localize key="Shield.Dashboard.Environments_TableHeaderDomain">Domains</localize>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="environment in vm.environments track by environment.key">
+          <td>
+            <i ng-class="environment.icon" style="margin-right: 5px;"></i>
+            <span ng-bind-html="environment.name"></span>
+          </td>
+          <td>
+            <ul>
+              <li ng-repeat="domain in environment.domains track by $index">
+                {{domain.name}}
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
 </div>

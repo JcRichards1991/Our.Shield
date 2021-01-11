@@ -1,16 +1,13 @@
-﻿DELETE FROM [umbracoMigration]
-WHERE name like 'Shield%'
-AND name != 'ShieldMediaProtection'
+﻿DELETE FROM [umbracoKeyValue]
+WHERE [key] like '%+Shield'
+--AND name != 'ShieldMediaProtection'
 GO
 
-DROP TABLE [ShieldJournal]
+DROP TABLE [ShieldJournals]
 GO
 
-DROP TABLE [ShieldConfiguration]
+DROP TABLE [ShieldApps]
 GO
 
-DROP TABLE [ShieldDomain]
-GO
-
-DROP TABLE [ShieldEnvironment]
+DROP TABLE [ShieldEnvironments]
 GO

@@ -97,15 +97,17 @@
     <key alias="ColorIndicatorInvalid">Invalid hexadecimal color</key>
   </area>
 
-  <area alias="Shield.Dashboard.Environment.Table">
-    <key alias="NameHeader">Name</key>
-    <key alias="DomainsHeader">Domains</key>
+  <area alias="Shield.Dashboard.Environments">
+    <key alias="ButtonAddEnvironment">Add Environment</key>
+    <key alias="ButtonSortEnvironments">Sort Environments</key>
+    <key alias="TableHeaderName">Name</key>
+    <key alias="TableHeaderDomain">Domains</key>
   </area>
 
-  <area alias="Shield.Dashboard.Journals.Table">
-    <key alias="DateHeader">Date</key>
-    <key alias="EnvironmentHeader">Environment</key>
-    <key alias="AppHeader">App</key>
-    <key alias="MessageHeader">Message</key>
+  <area alias="Shield.Dashboard.Journal">
+    <key alias="TableHeaderDate">Date</key>
+    <key alias="TableHeaderEnvironment">Environment</key>
+    <key alias="TableHeaderApp">App</key>
+    <key alias="TableHeaderMessage">Message</key>
   </area>
 </language>

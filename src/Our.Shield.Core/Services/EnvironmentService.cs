@@ -1,22 +1,18 @@
-﻿using Our.Shield.Core.Models;
+﻿using Our.Shield.Core.Data.Accessors;
+using Our.Shield.Core.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Our.Shield.Core.Services
 {
-    internal class EnvironmentService
+    internal class EnvironmentService : IEnvironmentService
     {
-        private static readonly Lazy<EnvironmentService> EnvironmentServiceInstance = new Lazy<EnvironmentService>(() => new EnvironmentService());
+        private readonly IEnvironmentAccessor _environmentAccessor;
 
-        private EnvironmentService()
+        public EnvironmentService(IEnvironmentAccessor environmentAccessor)
         {
+            _environmentAccessor = environmentAccessor;
         }
-
-        /// <summary>
-        /// Accessor for instance
-        /// </summary>
-        public static EnvironmentService Instance => EnvironmentServiceInstance.Value;
 
         /// <summary>
         /// Writes an environment to the database

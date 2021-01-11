@@ -1,11 +1,12 @@
 ﻿using Our.Shield.Core.Components;
+using Our.Shield.Core.Data.Accessors;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 
 namespace Our.Shield.Core.Composers
 {
     /// <summary>
-    /// <see cref="IUserComposer"/> for the Startup process of the application
+    /// Initializes Shield's Start Up requirements
     /// </summary>
     [RuntimeLevel(MinLevel = RuntimeLevel.Run)]
     public class StartUpComposer : IUserComposer
@@ -13,7 +14,20 @@ namespace Our.Shield.Core.Composers
         /// <inheritdoc/>
         public void Compose(Composition composition)
         {
+            RegisterComponents(composition);
+            RegisterServices(composition);
+        }
+
+        private void RegisterComponents(Composition composition)
+        {
             composition.Components().Append<ClearCacheComponent>();
+        }
+
+        private void RegisterServices(Composition composition)
+        {
+            composition.RegisterFor<IEnvironmentAccessor, EnvironmentAccessor>(Lifetime.Singleton);
+            composition.RegisterFor<IAppAccessor, AppAccessor>(Lifetime.Singleton);
+            composition.RegisterFor<IJournalAccessor, JournalAccessor>(Lifetime.Singleton);
         }
     }
 }

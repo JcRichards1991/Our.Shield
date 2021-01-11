@@ -283,12 +283,29 @@
     <Compile Include="CacheRefreshers\ConfigurationCacheRefresher.cs" />
     <Compile Include="CacheRefreshers\EnvironmentCacheRefresher.cs" />
     <Compile Include="Components\ClearCacheComposer.cs" />
+    <Compile Include="Components\ShieldMigrationComponent.cs" />
+    <Compile Include="Composers\BootUpComposer.cs" />
     <Compile Include="Composers\StartUpComposer.cs" />
+    <Compile Include="Data\Accessors\Accessor.cs" />
+    <Compile Include="Data\Accessors\AppAccessor.cs" />
+    <Compile Include="Data\Accessors\EnvironmentAccessor.cs" />
+    <Compile Include="Data\Accessors\IAppAccessor.cs" />
+    <Compile Include="Data\Accessors\IEnvironmentAccessor.cs" />
+    <Compile Include="Data\Accessors\IJournalAccessor.cs" />
+    <Compile Include="Data\Accessors\JournalAccessor.cs" />
+    <Compile Include="Data\Dtos\Dto.cs" />
+    <Compile Include="Data\Dtos\Journal.cs" />
+    <Compile Include="Data\Migrations\InstallMigration.cs" />
+    <Compile Include="Data\Dtos\App.cs" />
+    <Compile Include="Data\Dtos\Environment.cs" />
+    <Compile Include="Data\Migrations\ShieldMigrationPlan.cs" />
+    <Compile Include="Data\Migrations\Shield2_0_0Migration.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Models\CacheRefresherJson\ConfigurationCacheRefresherJsonModel.cs" />
     <Compile Include="Models\CacheRefresherJson\EnvironmentCacheRefresherJsonModel.cs" />
     <Compile Include="Models\CacheRefresherJson\ICacheRefreshJsonModel.cs" />
     <Compile Include="PackageActions\AddShieldConfigurationSection.cs" />
+    <Compile Include="Services\IEnvironmentService.cs" />
     <Compile Include="Services\ShieldService.cs" />
     <Compile Include="Settings\Configuration.cs" />
     <Compile Include="Settings\IpAddressValidation.cs" />
@@ -343,6 +360,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
