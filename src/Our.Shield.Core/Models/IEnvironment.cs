@@ -42,7 +42,7 @@ namespace Our.Shield.Core.Models
         /// <summary>
         /// whether or not the <see cref="IEnvironment"/> is enabled, and sub-sequently the environment's app(s)
         /// </summary>
-        [JsonProperty("enable")]
+        [JsonProperty("enabled")]
         bool Enabled { get; }
 
         /// <summary>

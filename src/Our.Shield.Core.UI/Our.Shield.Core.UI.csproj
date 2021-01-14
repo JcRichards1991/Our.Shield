@@ -257,10 +257,8 @@
     <Content Include="App_Plugins\Shield\BackOffice\Dashboards\Environments.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Dashboards\Journal.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\ColorIndicator.js" />
-    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Dashboard.Controllers.js" />
-    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Dialog.Controllers.js" />
+    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Controllers.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Directives.js" />
-    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Editors.Controllers.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Resources.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Shield.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Shield.min.js">

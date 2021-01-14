@@ -101,6 +101,7 @@
     <key alias="ButtonAddEnvironment">Add Environment</key>
     <key alias="ButtonSortEnvironments">Sort Environments</key>
     <key alias="TableHeaderName">Name</key>
+    <key alias="TableHeaderEnabled">Enabled</key>
     <key alias="TableHeaderDomain">Domains</key>
   </area>
 

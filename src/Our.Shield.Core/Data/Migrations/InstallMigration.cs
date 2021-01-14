@@ -41,7 +41,7 @@ namespace Our.Shield.Core.Data.Migrations.Install
                     Key = Guid.NewGuid(),
                     LastModifiedDateUtc = DateTime.UtcNow,
                     Name = "Default",
-                    Icon = "icon-cog",
+                    Icon = "icon-globe",
                     SortOrder = int.MaxValue,
                     Enabled = true,
                     ContinueProcessing = true,

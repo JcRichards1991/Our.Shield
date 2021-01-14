@@ -18,34 +18,57 @@
       </div>
     </div>
 
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th>
+    <div class="umb-table">
+      <div class="umb-table-head">
+        <div class="umb-table-row">
+
+          <div class="umb-table-cell">
+            &nbsp;
+          </div>
+
+          <div class="umb-table-cell umb-table__name">
             <localize key="Shield.Dashboard.Environments_TableHeaderName">Name</localize>
-          </th>
-          <th>
+          </div>
+
+          <div class="umb-table-cell" style="max-width: 100px;">
+            <localize key="Shield.Dashboard.Environments_TableHeaderEnabled">Enabled</localize>
+          </div>
+
+          <div class="umb-table-cell">
             <localize key="Shield.Dashboard.Environments_TableHeaderDomain">Domains</localize>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="environment in vm.environments track by environment.key">
-          <td>
-            <i ng-class="environment.icon" style="margin-right: 5px;"></i>
-            <span ng-bind-html="environment.name"></span>
-          </td>
-          <td>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="umb-table-body">
+        <div class="umb-table-row umb-outline"
+             ng-repeat="environment in vm.environments track by environment.key"
+             ng-click="vm.editEnvironment(environment.key)">
+
+          <div class="umb-table-cell">
+            <i class="umb-table-body__icon" ng-class="environment.icon"></i>
+          </div>
+
+          <div class="umb-table-cell umb-table__name">
+            {{environment.name}}
+          </div>
+
+          <div class="umb-table-cell" style="max-width: 100px;">
+            <i style="font-size: 20px;"
+               ng-class="{'icon-check color-green': environment.enabled, 'icon-wrong color-red': !environment.enabled}"></i>
+          </div>
+
+          <div class="umb-table-cell">
             <ul>
               <li ng-repeat="domain in environment.domains track by $index">
                 {{domain.name}}
               </li>
             </ul>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          </div>
 
+        </div>
+      </div>
+    </div>
   </div>
-
 </div>
