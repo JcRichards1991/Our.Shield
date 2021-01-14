@@ -27,14 +27,14 @@ namespace Our.Shield.Core.Composers
 
         private void RegisterDataAccessors(Composition composition)
         {
-            composition.RegisterFor<IEnvironmentAccessor, EnvironmentAccessor>(Lifetime.Singleton);
-            composition.RegisterFor<IAppAccessor, AppAccessor>(Lifetime.Singleton);
-            composition.RegisterFor<IJournalAccessor, JournalAccessor>(Lifetime.Singleton);
+            composition.Register<IEnvironmentAccessor, EnvironmentAccessor>();
+            composition.Register<IAppAccessor, AppAccessor>();
+            composition.Register<IJournalAccessor, JournalAccessor>();
         }
 
         private void RegisterServices(Composition composition)
         {
-            composition.RegisterFor<IEnvironmentService, EnvironmentService>(Lifetime.Singleton);
+            composition.Register<IEnvironmentService, EnvironmentService>();
         }
     }
 }

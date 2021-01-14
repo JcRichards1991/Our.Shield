@@ -1,73 +1,106 @@
 ﻿angular
   .module('umbraco.resources')
-  .factory('shieldResource',
+  .factory('shieldResourceHelper',
     [
       '$http',
       '$q',
       function ($http, $q) {
+        return {
+          delete: function (url) {
+            var deferred = $q.defer();
 
-        var apiRoot = 'backoffice/Shield/ShieldApi/';
-
-        var get = function (url, data) {
-          var deferred = $q.defer();
-
-          data = data || {};
-
-          $http
-            .get(apiRoot + url,
-              {
-                params: data
-              })
-            .then(function (response) {
+            $http({
+              method: 'DELETE',
+              url: url,
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            }).then(function (response) {
               return deferred.resolve(response.data);
             }, function (response) {
-              return deferred.resolve(response);
+              console.log(response);
+
+              return deferred.resolve(false);
             });
 
-          return deferred.promise;
+            return deferred.promise;
+          },
+          get: function (url, data) {
+            var deferred = $q.defer();
+
+            data = data || {};
+
+            $http
+              .get(url,
+                {
+                  params: data
+                })
+              .then(function (response) {
+                return deferred.resolve(response.data);
+              }, function (response) {
+                  console.log(response);
+
+                  return deferred.resolve(false);
+              });
+
+            return deferred.promise;
+          },
+          post: function (url, data) {
+            var deferred = $q.defer();
+
+            $http({
+              method: 'POST',
+              url: url,
+              data: JSON.stringify(data),
+              dataType: 'json',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            }).then(function (response) {
+              return deferred.resolve(response.data);
+            }, function (response) {
+                console.log(response);
+
+                return deferred.resolve(false);
+            });
+
+            return deferred.promise;
+          }
         };
+      }
+    ]);
 
-        var post = function (url, data) {
-          var deferred = $q.defer();
-
-          $http({
-            method: 'POST',
-            url: apiRoot + url,
-            data: JSON.stringify(data),
-            dataType: 'json',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }).then(function (response) {
-            return deferred.resolve(response.data);
-          }, function (response) {
-            return deferred.resolve(response);
-          });
-
-          return deferred.promise;
-        };
+angular
+  .module('umbraco.resources')
+  .factory('shieldResource',
+    [
+      'shieldResourceHelper',
+      function (shieldResourceHelper) {
+        var apiRoot = 'backoffice/shield/ShieldApi/';
 
         return {
           deleteEnvironment: function (key) {
-            return post('DeleteEnvironment?key=' + key);
+            return shieldResourceHelper.delete(apiRoot + 'DeleteEnvironment?key=' + key);
           },
           getApp: function (key) {
-            return get('GetApp',
+            return shieldResourceHelper.get(
+              apiRoot + 'GetApp',
               {
                 key: key
               });
           },
           getEnvironment: function (key) {
-            return get('GetEnvironment',
+            return shieldResourceHelper.get(
+              apiRoot + 'GetEnvironment',
               {
                 key: key
               });
           },
           getEnvironments: function () {
-            return get('GetEnvironments');
+            return shieldResourceHelper.get(apiRoot + 'GetEnvironments');
           },
           getJournals: function (method, id, page, orderBy, orderByDirection) {
-            return get('Journals',
+            return shieldResourceHelper.get(apiRoot + 'Journals',
               {
                 method: method,
                 id: id,
@@ -77,19 +110,25 @@
               });
           },
           getView: function (id) {
-            return get('View',
+            return shieldResourceHelper.get(apiRoot + 'View',
               {
                 id: id
               });
           },
           postConfiguration: function (key, config) {
-            return post('WriteConfiguration?key=' + key, config);
+            return shieldResourceHelper.post(
+              apiRoot + 'WriteConfiguration?key=' + key,
+              config);
           },
           postEnvironment: function (environment) {
-            return post('WriteEnvironment', environment);
+            return shieldResourceHelper.post(
+              apiRoot + 'WriteEnvironment',
+              environment);
           },
           setEnvironmentsSortOrder: function (environments) {
-            return post('SortEnvironments', environments);
+            return shieldResourceHelper.post(
+              apiRoot + 'SortEnvironments',
+              environments);
           }
         };
       }

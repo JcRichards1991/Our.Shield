@@ -1,6 +1,4 @@
-﻿using NPoco;
-using System;
-using Umbraco.Core.Persistence.DatabaseAnnotations;
+﻿using System;
 
 namespace Our.Shield.Core.Data.Dtos
 {
@@ -12,16 +10,11 @@ namespace Our.Shield.Core.Data.Dtos
         /// <summary>
         /// Unique Identifier of the <see cref="IDto"/>
         /// </summary>
-        [Column(nameof(Key))]
-        [PrimaryKeyColumn(AutoIncrement = false)]
-        [NullSetting(NullSetting = NullSettings.NotNull)]
         Guid Key { get; }
 
         /// <summary>
         /// Last Modified Date of the <see cref="IDto"/> 
         /// </summary>
-        [Column(nameof(LastModifiedDateUtc))]
-        [NullSetting(NullSetting = NullSettings.NotNull)]
         DateTime LastModifiedDateUtc { get; }
     }
 }

@@ -294,8 +294,10 @@
     <Compile Include="Data\Accessors\IJournalAccessor.cs" />
     <Compile Include="Data\Accessors\JournalAccessor.cs" />
     <Compile Include="Data\Dtos\Dto.cs" />
+    <Compile Include="Data\Dtos\IApp.cs" />
     <Compile Include="Data\Dtos\IDto.cs" />
     <Compile Include="Data\Dtos\IEnvironment.cs" />
+    <Compile Include="Data\Dtos\IJournal.cs" />
     <Compile Include="Data\Dtos\Journal.cs" />
     <Compile Include="Data\Migrations\InstallMigration.cs" />
     <Compile Include="Data\Dtos\App.cs" />

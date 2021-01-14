@@ -21,13 +21,33 @@ namespace Our.Shield.Core.Tests.Services
         }
 
         [Fact]
+        public async Task WhenNull_Upsert_ShouldThrowException()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _environmentService.Upsert(null));
+        }
+
+        [Fact]
+        public async Task WhenNotNull_Upsert_ShouldInsertOrUpdateEnvironment()
+        {
+            var env = new Models.Environment
+            {
+                Name = "Test Env",
+                Enabled = true,
+                Icon = "icon-cog",
+                SortOrder = 0
+            };
+
+            Assert.True(await _environmentService.Upsert(env));
+        }
+
+        [Fact]
         public async Task WhenNull_Delete_ShouldThrowException()
         {
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await _environmentService.Delete(null));
         }
 
         [Fact]
-        public async Task WhenNotNull_Delete_ShouldNotThrowException()
+        public async Task WhenNotNull_Delete_ShouldRemoveEnvironment()
         {
             var env = new Models.Environment
             {

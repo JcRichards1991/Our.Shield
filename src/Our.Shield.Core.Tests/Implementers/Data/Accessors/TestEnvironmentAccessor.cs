@@ -1,5 +1,4 @@
 ﻿using Our.Shield.Core.Data.Accessors;
-using Our.Shield.Core.Data.Dtos;
 using Our.Shield.Shared;
 using Our.Shield.Shared.Extensions;
 using System;
@@ -11,11 +10,11 @@ namespace Our.Shield.Core.Tests.Implementers.Data.Accessors
 {
     internal class TestEnvironmentAccessor : IEnvironmentAccessor
     {
-        private static List<IEnvironment> _environments;
+        private static List<Core.Data.Dtos.Environment> _environments;
 
         static TestEnvironmentAccessor()
         {
-            _environments = new List<IEnvironment>();
+            _environments = new List<Core.Data.Dtos.Environment>();
         }
 
         ~TestEnvironmentAccessor()
@@ -23,7 +22,7 @@ namespace Our.Shield.Core.Tests.Implementers.Data.Accessors
             _environments = null;
         }
 
-        public async Task<bool> Create(IEnvironment environment)
+        public async Task<bool> Create(Core.Data.Dtos.Environment environment)
         {
             return await Task.Run(() =>
             {
@@ -49,7 +48,7 @@ namespace Our.Shield.Core.Tests.Implementers.Data.Accessors
             return await Task.Run(async () => await Delete(_environments.FirstOrDefault(x => x.Key == key)));
         }
 
-        public async Task<bool> Delete(IEnvironment environment)
+        public async Task<bool> Delete(Core.Data.Dtos.Environment environment)
         {
             return await Task.Run(() =>
             {
@@ -68,17 +67,17 @@ namespace Our.Shield.Core.Tests.Implementers.Data.Accessors
             });
         }
 
-        public async Task<IReadOnlyList<IEnvironment>> Read()
+        public async Task<IReadOnlyList<Core.Data.Dtos.Environment>> Read()
         {
             return await Task.Run(() => _environments.AsReadOnly());
         }
 
-        public async Task<IEnvironment> Read(Guid key)
+        public async Task<Core.Data.Dtos.Environment> Read(Guid key)
         {
             return await Task.Run(() => _environments.FirstOrDefault(x => x.Key == key));
         }
 
-        public async Task<bool> Update(IEnvironment environment)
+        public async Task<bool> Update(Core.Data.Dtos.Environment environment)
         {
             return await Task.Run(() =>
             {

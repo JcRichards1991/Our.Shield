@@ -25,15 +25,15 @@ namespace Our.Shield.Core.Data.Accessors
         }
 
         /// <inheritdoc />
-        public async Task<bool> Create(Dtos.IEnvironment environment)
+        public async Task<bool> Create(Dtos.Environment environment)
         {
             using (var scope = ScopeProvider.CreateScope())
             {
                 try
                 {
-                    var result = await scope.Database.InsertAsync(environment);
+                    environment.Key = Guid.NewGuid();
 
-                    return result != null;
+                    return await scope.Database.InsertAsync(environment) != null;
                 }
                 catch(Exception ex)
                 {
@@ -49,7 +49,7 @@ namespace Our.Shield.Core.Data.Accessors
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<Dtos.IEnvironment>> Read()
+        public async Task<IReadOnlyList<Dtos.Environment>> Read()
         {
             using (var scope = ScopeProvider.CreateScope(autoComplete: true))
             {
@@ -73,7 +73,7 @@ namespace Our.Shield.Core.Data.Accessors
         }
 
         /// <inheritdoc />
-        public async Task<Dtos.IEnvironment> Read(Guid key)
+        public async Task<Dtos.Environment> Read(Guid key)
         {
             using (var scope = ScopeProvider.CreateScope(autoComplete: true))
             {
@@ -95,9 +95,25 @@ namespace Our.Shield.Core.Data.Accessors
         }
 
         /// <inheritdoc />
-        public Task<bool> Update(Dtos.IEnvironment environment)
+        public async Task<bool> Update(Dtos.Environment environment)
         {
-            throw new NotImplementedException();
+            using (var scope = ScopeProvider.CreateScope())
+            {
+                try
+                {
+                    return await scope.Database.UpdateAsync(environment) == 0;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error<EnvironmentAccessor>(ex);
+                }
+                finally
+                {
+                    scope.Complete();
+                }
+            }
+
+            return false;
         }
 
         /// <inheritdoc />
@@ -114,9 +130,25 @@ namespace Our.Shield.Core.Data.Accessors
         }
 
         /// <inheritdoc />
-        public Task<bool> Delete(Dtos.IEnvironment environment)
+        public async Task<bool> Delete(Dtos.Environment environment)
         {
-            throw new NotImplementedException();
+            using (var scope = ScopeProvider.CreateScope())
+            {
+                try
+                {
+                    return await scope.Database.DeleteAsync(environment) == 0;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error<EnvironmentAccessor>(ex);
+                }
+                finally
+                {
+                    scope.Complete();
+                }
+            }
+
+            return false;
         }
     }
 }

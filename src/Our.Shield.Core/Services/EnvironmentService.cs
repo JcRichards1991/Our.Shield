@@ -108,7 +108,14 @@ namespace Our.Shield.Core.Services
 
             if (environment.Key == Guid.Empty)
             {
-                return await _dataAccessor.Create(env);
+                var successful = await _dataAccessor.Create(env);
+
+                if (successful)
+                {
+                    ((Models.Environment)environment).Key = env.Key;
+                }
+
+                return successful;
             }
 
             return await _dataAccessor.Update(env);

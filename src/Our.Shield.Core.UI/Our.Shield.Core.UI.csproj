@@ -237,14 +237,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_dashboard.scss" />
-    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_domain-listing-table.scss" />
-    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_editor-header.scss" />
-    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_ip-access-control-ranges.scss" />
-    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_sort-panel-overview.scss" />
-    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_transfer-url.scss" />
-    <None Include="App_Plugins\Shield\BackOffice\Css\Partials\_umb-table.scss" />
-    <None Include="App_Plugins\Shield\BackOffice\Css\Shield.scss" />
     <None Include="App_Plugins\Shield\BackOffice\Scripts\Shield.min.js.map">
       <DependentUpon>Shield.min.js</DependentUpon>
     </None>
@@ -262,10 +254,6 @@
     <None Include="Transforms\Web.config.uninstall.xdt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\Shield\BackOffice\Css\Shield.css" />
-    <Content Include="App_Plugins\Shield\BackOffice\Css\Shield.min.css">
-      <DependentUpon>Shield.css</DependentUpon>
-    </Content>
     <Content Include="App_Plugins\Shield\BackOffice\Dashboards\Environments.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Dashboards\Journal.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\ColorIndicator.js" />

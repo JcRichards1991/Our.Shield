@@ -65,10 +65,10 @@ angular
             });
           },
           addEnvironment: function () {
-
+            $location.path('/settings/shield/CreateEnvironment');
           },
           editEnvironment: function (environmentKey) {
-            $location.path('/shield/shield/environment/' + environmentKey);
+            $location.path('/settings/shield/environment/' + environmentKey);
           },
           sortEnvironments: function () {
 
