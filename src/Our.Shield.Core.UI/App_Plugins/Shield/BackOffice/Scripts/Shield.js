@@ -188,7 +188,7 @@ angular
 
 angular
   .module('umbraco')
-  .controller('shield.editors.environment.edit',
+  .controller('Shield.Controllers.EnvironmentEdit',
     [
       '$scope',
       '$routeParams',
@@ -324,7 +324,7 @@ angular
 
 angular
   .module('umbraco')
-  .controller('shield.editors.environment.create',
+  .controller('Shield.Controllers.EnvironmentCreate',
     [
       '$scope',
       '$location',
@@ -349,14 +349,11 @@ angular
             environment: {
               icon: '',
               name: '',
-              domains: [{ id: 0, name: '', umbracoDomainId: null, environmentId: 0 }],
+              domains: [],
               enable: false,
               continueProcessing: false
             },
             loading: true,
-            init: function () {
-              vm.loading = false;
-            },
             save: function ($form) {
               if ($form.overlayForm) {
                 return;
@@ -399,7 +396,7 @@ angular
 
 angular
   .module('umbraco')
-  .controller('shield.editors.app.edit',
+  .controller('Shield.Controllers.AppEdit',
     [
       '$scope',
       '$routeParams',

@@ -265,6 +265,9 @@
     <Reference Include="Umbraco.Web.UI, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Web.8.1.0\lib\net472\Umbraco.Web.UI.dll</HintPath>
     </Reference>
+    <Reference Include="UrlRewritingNet.UrlRewriter, Version=2.0.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UrlRewritingNet.2.0.7\lib\UrlRewritingNet.UrlRewriter.dll</HintPath>
+    </Reference>
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
     </Reference>
@@ -350,7 +353,6 @@
     <Compile Include="Models\Journal.cs" />
     <Compile Include="Attributes\AppEditorAttribute.cs" />
     <Compile Include="Controllers\Api\ShieldApiController.cs" />
-    <None Include="packages.config" />
     <Compile Include="Controllers\Trees\ShieldTreeController.cs" />
     <Compile Include="Services\JobService.cs" />
     <Compile Include="Models\IApp.cs" />
@@ -365,6 +367,7 @@
     <None Include="Our.Shield.Core.nuspec">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Our.Shield.Shared\Our.Shield.Shared.csproj">

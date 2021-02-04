@@ -1,108 +1,156 @@
-﻿<div class="umb-el-wrap control-group umb-control-group">
-    <div>
-        <label for="enable" class="control-label">
-            <localize key="Shield.Properties_EnableLabel">Enable</localize>
-            <small>
-                <localize key="Shield.Environment.Properties_EnableDescription">Is this Environment active</localize>
-            </small>
-        </label>
-        <div class="controls">
-            <div class="umb-editor umb-checkbox">
-                <input type="checkbox" id="enable" ng-model="vm.environment.enable" />
-            </div>
-        </div>
-    </div>
-</div>
+﻿<div class="umb-editor-sub-views">
+  <div class="umb-editor-sub-view sub-view-Content">
+    <div class="umb-editor-sub-view__content">
+      <div class="form-horizontal">
+        <div class="umb-group-panel">
+          <div class="umb-group-panel__content">
 
-<!--<div class="umb-el-wrap control-group umb-control-group">
-    <div>
-        <label for="colorIndicator" class="control-label">
-            <localize key="Shield.Environment.Properties_ColorIndicatorLabel">Color Indicator</localize>
-            <small>
-                <localize key="Shield.Environment.Properties_ColorIndicatorDescription">Change the color of Umbraco favicon and navigation to easily determine the environment your on</localize>
-            </small>
-        </label>
-        <div class="controls">
-            <div class="umb-editor">
-                <input type="text" id="colorIndicator" name="colorIndicator" ng-model="vm.environment.colorIndicator" required ng-trim="false" ng-pattern="/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i"/>
-                <span class="help-inline" val-msg-for="colorIndicator" val-toggle-msg="required">
-                    <localize key="Shield.Properties.Validation_Required">Required</localize>
-                </span>
-                <span class="help-inline" val-msg-for="colorIndicator" val-toggle-msg="pattern">
-                    <localize key="Shield.Environment.Properties.Validation_ColorIndicatorInvalid">Invalid hexedecimal color</localize>
-                </span>
-            </div>
-        </div>
-    </div>
-</div>-->
+            <div class="umb-property">
+              <div class="control-group umb-control-group">
+                <div class="umb-el-wrap">
 
-<div ng-if="vm.id !== '1'">
-    <div class="umb-el-wrap control-group umb-control-group">
-        <div>
-            <label for="continueProcessing" class="control-label">
-                <localize key="Shield.Environment.Properties_ContinueProcessingLabel">Continue Processing</localize>
-                <small>
-                    <localize key="Shield.Environment.Properties_ContinueProcessingDescription">Whether or not to continue processing when an environment has been found by Shield's HttpModule (recommended is false)</localize>
-                </small>
-            </label>
-            <div class="controls">
-                <div class="umb-editor umb-checkbox">
-                    <input type="checkbox" id="continueProcessing" ng-model="vm.environment.continueProcessing" />
+                  <div class="control-header">
+                    <label class="control-label">
+                      <localize key="Shield.Properties_EnableLabel"></localize>
+                    </label>
+                    <small class="control-description">
+                      <localize key="Shield.Environment.Properties_EnableDescription"></localize>
+                    </small>
+                  </div>
+
+                  <div class="controls">
+                    <div class="umb-property-editor db">
+                      <div class="umb-property-editor umb-boolean">
+                        <umb-toggle input-id="environmentEnabled"
+                                    checked="vm.environment.enabled"
+                                    on-click="vm.environment.enabled = !vm.environment.enabled"
+                                    show-labels="false"
+                                    label-position="right"
+                                    label-on="true"
+                                    label-off="false">
+                        </umb-toggle>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
+              </div>
             </div>
-        </div>
-    </div>
 
-    <div class="umb-el-wrap control-group umb-control-group">
-        <div>
-            <label for="domain0" class="control-label">
-                <localize key="Shield.Environment.Properties_DomainsLabel">Domains</localize>
-                <small>
-                    <localize key="Shield.Environment.Properties_DomainsDescription">The domains that are associated to this environment</localize>
-                </small>
-            </label>
-            <div class="controls">
-                <div class="umb-editor">
-                    <table class="domains-container">
-                        <tbody>
-                            <tr ng-repeat="domain in vm.environment.domains track by $index">
-                                <td>
-                                    <input type="text" id="domain{{$index}}" name="domain{{$index}}" ng-model="domain.name"
-                                           required
-                                           shield-add-to-form
-                                           ng-trim="false"
-                                           ng-pattern="/^(http(s)?:\/\/)(([\w-_]+((\.[\w-_]+)+)?)+)(\.[\w]+)?(:[0-9]+)?([\w-_\/]+)?$/i" />
+            <!--<div class="umb-property">
+              <div class="control-group umb-control-group">
+                <div class="umb-el-wrap">
 
-                                    <span class="help-inline" val-msg-for="domain{{$index}}" val-toggle-msg="required">
-                                        <localize key="Shield.Properties.Validation_Required">Required</localize>
-                                    </span>
-                                    <span class="help-inline" val-msg-for="domain{{$index}}" val-toggle-msg="pattern">
-                                        <localize key="Shield.Environment.Properties.Validation_DomainInvalid">Invalid Domain</localize>
-                                    </span>
-                                </td>
+                  <div class="control-header">
+                    <label class="control-label">
+                      <localize key="Shield.Environment.Properties_ColorIndicatorLabel"></localize>
+                    </label>
+                    <small class="control-description">
+                      <localize key="Shield.Environment.Properties_ColorIndicatorDescription"></localize>
+                    </small>
+                  </div>
 
-                                <td>
-                                    <span class="btn btn-danger" ng-click="vm.environment.domains.splice($index, 1)" ng-if="vm.environment.domains.length > 1 || vm.environment.id === 1">
-                                        <localize key="general_remove">Remove</localize>
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
+                  <div class="controls">
+                    <div class="umb-property-editor db">
+                      <div class="umb-property-editor umb-text">
+                        <input type="text" id="colorIndicator" name="colorIndicator" ng-model="vm.environment.colorIndicator" required ng-trim="false" ng-pattern="/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i" />
+                        <span class="help-inline" val-msg-for="colorIndicator" val-toggle-msg="required">
+                          <localize key="Shield.Properties.Validation_Required">Required</localize>
+                        </span>
+                        <span class="help-inline" val-msg-for="colorIndicator" val-toggle-msg="pattern">
+                          <localize key="Shield.Environment.Properties.Validation_ColorIndicatorInvalid">Invalid hexedecimal color</localize>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
 
-                        <tfoot>
-                            <tr>
-                                <td></td>
-
-                                <td>
-                                    <span class="btn btn-success" ng-click="vm.environment.domains.push({id: 0, name: '', umbracoDomainId: null, environmentId: vm.environment.id})">
-                                        <localize key="general_add">Add</localize>
-                                    </span>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
                 </div>
+              </div>
+            </div>-->
+
+            <div ng-if="vm.id !== '1'">
+
+              <div class="umb-property">
+                <div class="control-group umb-control-group">
+                  <div class="umb-el-wrap">
+
+                    <div class="control-header">
+                      <label class="control-label">
+                        <localize key="Shield.Environment.Properties_ContinueProcessingLabel"></localize>
+                      </label>
+                      <small class="control-description">
+                        <localize key="Shield.Environment.Properties_ContinueProcessingDescription"></localize>
+                      </small>
+                    </div>
+
+                    <div class="controls">
+                      <div class="umb-property-editor db">
+                        <div class="umb-property-editor umb-boolean">
+                          <umb-toggle input-id="environmentEnabled"
+                                      checked="vm.environment.continueProcessing"
+                                      on-click="vm.environment.continueProcessing = !vm.environment.continueProcessing"
+                                      show-labels="false"
+                                      label-position="right"
+                                      label-on="true"
+                                      label-off="false">
+                          </umb-toggle>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="umb-property">
+                <div class="control-group umb-control-group">
+                  <div class="umb-el-wrap">
+
+                    <div class="control-header">
+                      <label class="control-label">
+                        <localize key="Shield.Environment.Properties_DomainsLabel"></localize>
+                      </label>
+                      <small class="control-description">
+                        <localize key="Shield.Environment.Properties_DomainsDescription"></localize>
+                      </small>
+                    </div>
+
+                    <div class="controls">
+                      <div class="umb-property-editor db">
+                        <div class="umb-property-editor umb-contentpicker">
+
+                          <div class="umb-node-preview" ng-repeat="domain in vm.environment.domains track by $index">
+                            <div class="flex" style="min-width: 90%">
+                              <div class="umb-node-preview__name" style="width: 100%" ng-attr-title="{{domain.name}}">
+                                <input type="text" class="umb-property-editor umb-textstring textstring" ng-model="domain.name" />
+                              </div>
+                            </div>
+                            <div class="umb-node-preview__actions">
+                              <button type="button" class="umb-node-preview__action umb-node-preview__action--red" ng-click="vm.environment.domains.splice($index, 1)">
+                                <localize key="general_remove"></localize>
+                              </button>
+                            </div>
+                          </div>
+
+                          <button type="button"
+                                  class="umb-node-preview-add"
+                                  ng-click="vm.environment.domains.push({id: 0, name: '', umbracoDomainId: null, environmentId: vm.environment.id})">
+                            <localize key="general_add"></localize>
+                          </button>
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
             </div>
+
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>

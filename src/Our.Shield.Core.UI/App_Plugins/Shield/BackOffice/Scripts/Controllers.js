@@ -349,14 +349,11 @@ angular
             environment: {
               icon: '',
               name: '',
-              domains: [{ id: 0, name: '', umbracoDomainId: null, environmentId: 0 }],
+              domains: [],
               enable: false,
               continueProcessing: false
             },
             loading: true,
-            init: function () {
-              vm.loading = false;
-            },
             save: function ($form) {
               if ($form.overlayForm) {
                 return;
