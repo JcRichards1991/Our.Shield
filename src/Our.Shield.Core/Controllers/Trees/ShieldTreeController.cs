@@ -8,7 +8,7 @@ using UmbConsts = Umbraco.Core.Constants;
 namespace Our.Shield.Core.UI
 {
     /// <summary>
-    /// Shield Tree Conteoller to render the tree within the Settings Section
+    /// Shield Tree Controller to render the tree within the Settings Section
     /// </summary>
     [PluginController(Constants.App.Alias)]
     [Tree(

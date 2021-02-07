@@ -1,4 +1,4 @@
-﻿using Our.Shield.Core.Data.Dtos;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using Umbraco.Core.Migrations;
 
@@ -10,7 +10,7 @@ namespace Our.Shield.Core.Data.Migrations.Install
     public class InstallMigration : MigrationBase
     {
         /// <summary>
-        /// Initializes a new intace of <see cref="InstallMigration"/> class
+        /// Initializes a new instance of <see cref="InstallMigration"/> class
         /// </summary>
         /// <param name="context"></param>
         public InstallMigration(IMigrationContext context)
@@ -26,17 +26,16 @@ namespace Our.Shield.Core.Data.Migrations.Install
                 .Do();
 
             Create
-                .Table<App>()
+                .Table<Dtos.App>()
                 .Do();
 
             Create
-                .Table<Journal>()
+                .Table<Dtos.Journal>()
                 .Do();
 
             Insert
                 .IntoTable(nameof(Shield) + "Environments")
-                .Row(
-                new Dtos.Environment
+                .Row(new Dtos.Environment
                 {
                     Key = Guid.NewGuid(),
                     LastModifiedDateUtc = DateTime.UtcNow,
@@ -45,7 +44,7 @@ namespace Our.Shield.Core.Data.Migrations.Install
                     SortOrder = int.MaxValue,
                     Enabled = true,
                     ContinueProcessing = true,
-                    Domains = "[]"
+                    Domains = new JArray().ToString()
                 })
                 .Do();
         }

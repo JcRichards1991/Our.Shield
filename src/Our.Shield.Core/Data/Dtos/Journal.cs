@@ -1,4 +1,5 @@
 ﻿using NPoco;
+using Our.Shield.Core.Models;
 using System;
 using Umbraco.Core.Persistence.DatabaseAnnotations;
 
@@ -10,7 +11,7 @@ namespace Our.Shield.Core.Data.Dtos
     [TableName(nameof(Shield) + "Journals")]
     [PrimaryKey(nameof(Key), AutoIncrement = false)]
     [ExplicitColumns]
-    public class Journal : Dto, IJournal
+    internal class Journal : Dto, IJournal
     {
         /// <inheritdoc />
         [Column(nameof(EnvironmentKey))]
@@ -26,8 +27,14 @@ namespace Our.Shield.Core.Data.Dtos
         public Guid AppKey { get; set; }
 
         /// <inheritdoc />
-        [Column(nameof(MessageJson))]
+        [Column(nameof(Message))]
         [NullSetting(NullSetting = NullSettings.NotNull)]
-        public string MessageJson { get; set; }
+        public string Message { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Ignore]
+        public DateTime DateStamp => LastModifiedDateUtc;
     }
 }

@@ -1,23 +1,27 @@
 ﻿using Moq;
 using Our.Shield.Core.Data.Accessors;
 using Our.Shield.Core.Services;
-using Our.Shield.Core.Tests.Implementers.Data.Accessors;
 using System;
 using System.Threading.Tasks;
 using Umbraco.Core.Logging;
+using Umbraco.Web.Cache;
 using Xunit;
+using AutoMapper;
 
 namespace Our.Shield.Core.Tests.Services
 {
     public class EnvironmentServiceTests
     {
-        protected readonly IEnvironmentAccessor _dataAccessor;
-        protected readonly IEnvironmentService _environmentService;
+        private readonly IEnvironmentService _environmentService;
 
         public EnvironmentServiceTests()
         {
-            _dataAccessor = new TestEnvironmentAccessor();
-            _environmentService = new EnvironmentService(_dataAccessor, Mock.Of<ILogger>());
+            _environmentService = new EnvironmentService(
+                Mock.Of<IJobService>(),
+                Mock.Of<IEnvironmentAccessor>(),
+                Mock.Of<DistributedCache>(),
+                Mock.Of<IMapper>(),
+                Mock.Of<ILogger>());
         }
 
         [Fact]
@@ -29,15 +33,16 @@ namespace Our.Shield.Core.Tests.Services
         [Fact]
         public async Task WhenNotNull_Upsert_ShouldInsertOrUpdateEnvironment()
         {
-            var env = new Models.Environment
+            var env = new Models.Requests.UpsertEnvironmentRequest
             {
-                Name = "Test Env",
+                Name = "Test Environment",
                 Enabled = true,
-                Icon = "icon-cog",
-                SortOrder = 0
+                Icon = "icon-settings"
             };
 
-            Assert.True(await _environmentService.Upsert(env));
+            var result = await _environmentService.Upsert(env);
+
+            Assert.False(result.HasError());
         }
 
         [Fact]
@@ -49,17 +54,16 @@ namespace Our.Shield.Core.Tests.Services
         [Fact]
         public async Task WhenNotNull_Delete_ShouldRemoveEnvironment()
         {
-            var env = new Models.Environment
+            var env = new Models.Requests.UpsertEnvironmentRequest
             {
-                Name = "Test Env",
+                Name = "Test Environment",
                 Enabled = true,
-                Icon = "icon-cog",
-                SortOrder = 0
+                Icon = "icon-settings"
             };
 
             await _environmentService.Upsert(env);
 
-            var result = await _environmentService.Delete(env);
+            var result = await _environmentService.Delete(env.Key);
 
             Assert.True(result);
         }

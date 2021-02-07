@@ -1,36 +1,68 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using Our.Shield.Core.Models;
-using Our.Shield.Core.Models.CacheRefresherJson;
+using Our.Shield.Core.Models.Requests;
+using Our.Shield.Core.Models.Responses;
 using Our.Shield.Core.Services;
 using Our.Shield.Shared;
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Umbraco.Web.Editors;
+using Umbraco.Core;
+using Umbraco.Core.Cache;
+using Umbraco.Core.Configuration;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Persistence;
+using Umbraco.Core.Services;
+using Umbraco.Web;
 using Umbraco.Web.Mvc;
+using Umbraco.Web.WebApi;
+using Umbraco.Web.WebApi.Filters;
+using UmbConstants = Umbraco.Core.Constants;
 
 namespace Our.Shield.Core.Controllers.Api
 {
     /// <summary>
-    /// Api Controller for the Umbraco Access area of the custom section
+    /// API Controller for the Umbraco Access area of the custom section
     /// </summary>
     /// <example>
     /// Endpoint: /Umbraco/BackOffice/Shield/ShieldApi/{Action}
     /// </example>
     [PluginController(Constants.App.Alias)]
-    public class ShieldApiController : UmbracoAuthorizedJsonController
+    [UmbracoApplicationAuthorize(UmbConstants.Applications.Settings)]
+    public class ShieldApiController : UmbracoAuthorizedApiController
     {
         private readonly IEnvironmentService _environmentService;
 
         /// <summary>
         /// Initializes a new instance of <see cref="ShieldApiController"/> class
         /// </summary>
-        /// <param name="environmentService"></param>
+        /// <param name="globalSettings"><see cref="IGlobalSettings"/></param>
+        /// <param name="umbContextAccessor"><see cref="IUmbracoContextAccessor"/></param>
+        /// <param name="sqlContext"><see cref="ISqlContext"/></param>
+        /// <param name="serviceContext"><see cref="ServiceContext"/></param>
+        /// <param name="appCaches"><see cref="AppCaches"/></param>
+        /// <param name="profilingLogger"><see cref="IProfilingLogger"/></param>
+        /// <param name="runtimeState"><see cref="IRuntimeState"/></param>
+        /// <param name="umbHelper"><see cref="UmbracoHelper"/></param>
+        /// /// <param name="environmentService"><see cref="IEnvironmentService"/>.</param>
         public ShieldApiController(
+            IGlobalSettings globalSettings,
+            IUmbracoContextAccessor umbContextAccessor,
+            ISqlContext sqlContext,
+            ServiceContext serviceContext,
+            AppCaches appCaches,
+            IProfilingLogger profilingLogger,
+            IRuntimeState runtimeState,
+            UmbracoHelper umbHelper,
             IEnvironmentService environmentService)
+            : base(globalSettings, umbContextAccessor, sqlContext, serviceContext, appCaches, profilingLogger, runtimeState, umbHelper)
         {
             GuardClauses.NotNull(environmentService, nameof(environmentService));
 
@@ -42,9 +74,9 @@ namespace Our.Shield.Core.Controllers.Api
         /// </summary>
         /// <returns>Collection of environments</returns>
         [HttpGet]
-        public async Task<IReadOnlyList<IEnvironment>> GetEnvironments()
+        public async Task<IHttpActionResult> GetEnvironments()
         {
-            return await _environmentService.Get();
+            return ApiResponse(await _environmentService.Get());
         }
 
         /// <summary>
@@ -53,11 +85,13 @@ namespace Our.Shield.Core.Controllers.Api
         /// <param name="key">The key of the environment to delete</param>
         /// <returns>true if successfully deleted, otherwise, false.</returns>
         [HttpPost]
-        public async Task<bool> DeleteEnvironment(Guid key)
+        public async Task<DeleteEnvironmentResponse> DeleteEnvironment(Guid key)
         {
+            var response = _environmentService.Delete(key);
+
             throw new NotImplementedException();
             //var environment = (Models.Environment)JobService.Instance.Environments.FirstOrDefault(x => x.Key.Key == key).Key;
-            
+
             //if (environment != null && await _environmentService.Delete(environment))
             //{
             //    _distributedCache.RefreshByJson(
@@ -76,9 +110,10 @@ namespace Our.Shield.Core.Controllers.Api
         /// <param name="key">The key of the app to fetch</param>
         /// <returns>The app with the corresponding key</returns>
         [HttpGet]
-        public AppApiResponseModel GetApp(Guid key)
+        public IHttpActionResult GetApp(Guid key)
         {
             throw new NotImplementedException();
+
             //var environment = JobService.Instance.Environments.FirstOrDefault(x => x.Value.Any(y => y.Key == key));
 
             //if (environment.Key == null)
@@ -116,19 +151,16 @@ namespace Our.Shield.Core.Controllers.Api
         /// <param name="key">The Key of the environment to fetch</param>
         /// <returns>The environment with the corresponding key</returns>
         [HttpGet]
-        public EnvironmentApiResponseModel GetEnvironment(Guid key)
+        public async Task<IHttpActionResult> GetEnvironment(Guid key)
         {
-            throw new NotImplementedException();
-            //var environment = JobService.Instance.Environments.FirstOrDefault(x => x.Key.Key == key);
+            var environment = await _environmentService.Get(key);
 
-            //if (environment.Key == null)
-            //    return null;
+            if (environment == null)
+            {
+                return NotFound();
+            }
 
-            //return new EnvironmentApiResponseModel(environment.Key)
-            //{
-            //    Description = $"View apps for {environment.Key.Name} environment",
-            //    Apps = environment.Value.Select(x => new AppListingItem(x)).OrderBy(x => x.Name).ToArray()
-            //};
+            return ApiResponse(environment);
         }
 
         /// <summary>
@@ -144,7 +176,7 @@ namespace Our.Shield.Core.Controllers.Api
         /// <param name="orderByDirection">The order in which to order. acs or desc</param>
         /// <returns>Collection of Journals based on the parameters passed in</returns>
         [HttpGet]
-        public JournalListing Journals(string method, string id, int page, string orderBy, string orderByDirection)
+        public IHttpActionResult Journals(string method, string id, int page, string orderBy, string orderByDirection)
         {
             throw new NotImplementedException();
 
@@ -298,50 +330,44 @@ namespace Our.Shield.Core.Controllers.Api
         /// <summary>
         /// Updates an environment in the database
         /// </summary>
-        /// <param name="json">the environment new settings as json</param>
+        /// <param name="request"><see cref="UpsertEnvironmentRequest"/>.</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<bool> WriteEnvironment([FromBody] JObject json)
+        public async Task<IHttpActionResult> UpsertEnvironment(UpsertEnvironmentRequest request)
         {
-            throw new NotImplementedException();
+            if (request == null || !ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            //if (json == null)
-            //{
-            //    //  json is invalid
-            //    return false;
-            //}
+            var response = await _environmentService.Upsert(request);
 
-            //var environment = JsonConvert.DeserializeObject<Models.Environment>(json.ToString(), new DomainConverter());
-
-            //var environments = JobService
-            //    .Instance
-            //    .Environments
-            //    .Select(x => x.Key)
-            //    .Where(x => x.SortOrder != Constants.Tree.DefaultEnvironmentSortOrder)
-            //    .ToList();
-
-            //if (!environments.Any(x => x.Key == environment.Key))
-            //{
-            //    environment.SortOrder = environments.Any()
-            //        ? environments.Max(x => x.SortOrder) + 1
-            //        : 0;
-            //}
-
-            //if (await _environmentService.Upsert(environment))
-            //{
-            //    _distributedCache.RefreshByJson(
-            //        new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
-            //        GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.Write, environment.Key)));
-
-            //    return true;
-            //}
-
-            //return false;
+            return ApiResponse(
+                response,
+                response.HasError()
+                    ? HttpStatusCode.BadRequest
+                    : HttpStatusCode.OK);
         }
 
-        private string GetJsonModel(ICacheRefreshJsonModel jsonModel)
+        private IHttpActionResult ApiResponse<T>(
+            T response,
+            HttpStatusCode statusCode = HttpStatusCode.OK)
+            where T : BaseResponse
         {
-            return JsonConvert.SerializeObject(jsonModel);
+            return ResponseMessage(
+                new HttpResponseMessage
+                {
+                    StatusCode = statusCode,
+                    Content = new StringContent(
+                        JsonConvert.SerializeObject(
+                            response,
+                            new JsonSerializerSettings
+                            {
+                                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                            }),
+                        Encoding.UTF8,
+                        "application/json")
+                });
         }
 
         private class DomainConverter : CustomCreationConverter<IDomain>

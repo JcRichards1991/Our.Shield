@@ -1,5 +1,5 @@
-﻿using Our.Shield.Shared;
-using Umbraco.Core.Logging;
+﻿using AutoMapper;
+using Our.Shield.Shared;
 using Umbraco.Core.Scoping;
 
 namespace Our.Shield.Core.Data.Accessors
@@ -15,22 +15,24 @@ namespace Our.Shield.Core.Data.Accessors
         protected readonly IScopeProvider ScopeProvider;
 
         /// <summary>
-        /// Logger
+        /// Mapper
         /// </summary>
-        protected readonly ILogger Logger;
+        protected readonly IMapper Mapper;
 
         /// <summary>
         /// Initializes a new instance of <see cref="Accessor"/> class
         /// </summary>
-        /// <param name="scopeProvider"></param>
-        /// <param name="logger"></param>
-        public Accessor(IScopeProvider scopeProvider, ILogger logger)
+        /// <param name="scopeProvider"><see cref="IScopeProvider"/></param>
+        /// <param name="mapper"></param>
+        public Accessor(
+            IScopeProvider scopeProvider,
+            IMapper mapper)
         {
             GuardClauses.NotNull(scopeProvider, nameof(scopeProvider));
-            GuardClauses.NotNull(logger, nameof(logger));
+            GuardClauses.NotNull(mapper, nameof(mapper));
 
             ScopeProvider = scopeProvider;
-            Logger = logger;
+            Mapper = mapper;
         }
     }
 }

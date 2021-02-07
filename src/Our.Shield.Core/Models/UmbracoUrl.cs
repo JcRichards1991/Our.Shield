@@ -1,37 +1,23 @@
 ﻿using Newtonsoft.Json;
+using Our.Shield.Core.Enums;
 
 namespace Our.Shield.Core.Models
 {
-    public enum UmbracoUrlTypes
-    {
-        Url,
-        XPath,
-        ContentPicker
-    }
-
+    /// <summary>
+    /// 
+    /// </summary>
     public class UmbracoUrl
     {
         /// <summary>
-        /// The type of Url
+        /// The type of URL
         /// </summary>
         [JsonProperty("type")]
-        public UmbracoUrlTypes Type { get; set; }
+        public UmbracoUrlType Type { get; set; }
 
         /// <summary>
-        /// The value of the Url
+        /// The value of the URL
         /// </summary>
         [JsonProperty("value")]
         public string Value { get; set; }
-
-        public override bool Equals(object obj)
-        {
-            var other = (UmbracoUrl)obj;
-            return Type == other?.Type && Value.Equals(other.Value);
-        }
-
-        public override int GetHashCode()
-        {
-            return (int)Type + Value.GetHashCode();
-        }
     }
 }

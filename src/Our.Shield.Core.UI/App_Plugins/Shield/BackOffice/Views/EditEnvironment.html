@@ -21,7 +21,7 @@
                   <div class="controls">
                     <div class="umb-property-editor db">
                       <div class="umb-property-editor umb-boolean">
-                        <umb-toggle input-id="environmentEnabled"
+                        <umb-toggle input-id="Enabled"
                                     checked="vm.environment.enabled"
                                     on-click="vm.environment.enabled = !vm.environment.enabled"
                                     show-labels="false"
@@ -86,7 +86,7 @@
                     <div class="controls">
                       <div class="umb-property-editor db">
                         <div class="umb-property-editor umb-boolean">
-                          <umb-toggle input-id="environmentEnabled"
+                          <umb-toggle input-id="ContinueProcessing"
                                       checked="vm.environment.continueProcessing"
                                       on-click="vm.environment.continueProcessing = !vm.environment.continueProcessing"
                                       show-labels="false"
@@ -121,8 +121,8 @@
 
                           <div class="umb-node-preview" ng-repeat="domain in vm.environment.domains track by $index">
                             <div class="flex" style="min-width: 90%">
-                              <div class="umb-node-preview__name" style="width: 100%" ng-attr-title="{{domain.name}}">
-                                <input type="text" class="umb-property-editor umb-textstring textstring" ng-model="domain.name" />
+                              <div class="umb-node-preview__name" style="width: 100%" ng-attr-title="{{domain.fullyQualifiedUrl}}">
+                                <input type="text" class="umb-property-editor umb-textstring textstring" ng-model="domain.fullyQualifiedUrl" />
                               </div>
                             </div>
                             <div class="umb-node-preview__actions">
@@ -134,7 +134,7 @@
 
                           <button type="button"
                                   class="umb-node-preview-add"
-                                  ng-click="vm.environment.domains.push({id: 0, name: '', umbracoDomainId: null, environmentId: vm.environment.id})">
+                                  ng-click="vm.environment.domains.push({fullyQualifiedUrl: ''})">
                             <localize key="general_add"></localize>
                           </button>
 

@@ -51,11 +51,11 @@ namespace Our.Shield.Core.Services
         {
             if (typeof(T) == typeof(IPublishedMediaCache))
             {
-                return UmbContext.MediaCache.GetById(id);
+                return UmbContext.Media.GetById(id);
             }
             if (typeof(T) == typeof(IPublishedContentCache))
             {
-                return UmbContext.ContentCache.GetById(id);
+                return UmbContext.Content.GetById(id);
             }
 
             return null;

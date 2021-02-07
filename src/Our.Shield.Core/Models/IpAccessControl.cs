@@ -20,6 +20,7 @@ namespace Our.Shield.Core.Models
         {
             [Description("The Value is an IP Address")]
             Single,
+
             [Description("The Value is an IP Address Range")]
             Range
         }
@@ -37,13 +38,13 @@ namespace Our.Shield.Core.Models
             public IpAddressType IpAddressType { get; set; }
 
             /// <summary>
-            /// Range or Ip Address with optional Cidr
+            /// Range or IP Address with optional Cidr
             /// </summary>
             [JsonProperty("fromIpAddress")]
             public string FromIpAddress { get; set; }
 
             /// <summary>
-            /// Range or Ip Address with optional Cidr
+            /// Range or IP Address with optional Cidr
             /// </summary>
             [JsonProperty("toIpAddress")]
             public string ToIpAddress { get; set; }

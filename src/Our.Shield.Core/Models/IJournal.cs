@@ -12,19 +12,19 @@ namespace Our.Shield.Core.Models
         /// App Id of the journal
         /// </summary>
         [JsonProperty("appId")]
-        string AppId { get; }
+        Guid AppKey { get; }
 
         /// <summary>
         /// Environment Id of the journal
         /// </summary>
         [JsonProperty("environmentId")]
-        int EnvironmentId { get; }
+        Guid EnvironmentKey { get; }
 
         /// <summary>
-        /// Datestamp of when the journal was created
+        /// Date stamp of when the journal was created
         /// </summary>
-        [JsonProperty("datestamp")]
-        DateTime Datestamp { get; }
+        [JsonProperty("dateStamp")]
+        DateTime DateStamp { get; }
 
         /// <summary>
         /// The message of the Journal

@@ -14,9 +14,5 @@ namespace Our.Shield.Core.Data.Accessors
         Task<App> Read(Guid key);
 
         Task<bool> Update(App App);
-
-        Task<bool> Delete(Guid key);
-
-        Task<bool> Delete(App app);
     }
 }

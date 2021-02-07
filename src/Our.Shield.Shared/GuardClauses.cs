@@ -29,5 +29,13 @@ namespace Our.Shield.Shared
                 throw new ArgumentNullException(paramName, "Cannot be null or an empty list");
             }
         }
+
+        public static void NotEmpty(Guid guid, string paramName)
+        {
+            if (guid == null || guid == Guid.Empty)
+            {
+                throw new ArgumentException(paramName, "Cannot be an empty guid");
+            }
+        }
     }
 }

@@ -7,6 +7,10 @@
       function ($http, $q) {
         return {
           delete: function (url) {
+            if (!url) {
+              throw Error('url is required');
+            }
+
             var deferred = $q.defer();
 
             $http({
@@ -26,6 +30,10 @@
             return deferred.promise;
           },
           get: function (url, data) {
+            if (!url) {
+              throw Error('url is required');
+            }
+
             var deferred = $q.defer();
 
             data = data || {};
@@ -38,14 +46,22 @@
               .then(function (response) {
                 return deferred.resolve(response.data);
               }, function (response) {
-                  console.log(response);
+                console.log(response);
 
-                  return deferred.resolve(false);
+                return deferred.resolve(false);
               });
 
             return deferred.promise;
           },
           post: function (url, data) {
+            if (!url) {
+              throw Error('url is required');
+            }
+
+            if (!data) {
+              throw Error('data is required');
+            }
+
             var deferred = $q.defer();
 
             $http({
@@ -53,15 +69,13 @@
               url: url,
               data: JSON.stringify(data),
               dataType: 'json',
-              headers: {
-                'Content-Type': 'application/json'
-              }
+              contentType: 'application/json'
             }).then(function (response) {
               return deferred.resolve(response.data);
             }, function (response) {
-                console.log(response);
+              console.log(response);
 
-                return deferred.resolve(false);
+              return deferred.resolve(false);
             });
 
             return deferred.promise;
@@ -83,24 +97,17 @@ angular
             return shieldResourceHelper.delete(apiRoot + 'DeleteEnvironment?key=' + key);
           },
           getApp: function (key) {
-            return shieldResourceHelper.get(
-              apiRoot + 'GetApp',
-              {
-                key: key
-              });
+            return shieldResourceHelper.get(apiRoot + 'GetApp', { key: key });
           },
           getEnvironment: function (key) {
-            return shieldResourceHelper.get(
-              apiRoot + 'GetEnvironment',
-              {
-                key: key
-              });
+            return shieldResourceHelper.get(apiRoot + 'GetEnvironment', { key: key });
           },
           getEnvironments: function () {
             return shieldResourceHelper.get(apiRoot + 'GetEnvironments');
           },
           getJournals: function (method, id, page, orderBy, orderByDirection) {
-            return shieldResourceHelper.get(apiRoot + 'Journals',
+            return shieldResourceHelper.get(
+              apiRoot + 'Journals',
               {
                 method: method,
                 id: id,
@@ -110,25 +117,16 @@ angular
               });
           },
           getView: function (id) {
-            return shieldResourceHelper.get(apiRoot + 'View',
-              {
-                id: id
-              });
+            return shieldResourceHelper.get(apiRoot + 'View', { id: id });
           },
           postConfiguration: function (key, config) {
-            return shieldResourceHelper.post(
-              apiRoot + 'WriteConfiguration?key=' + key,
-              config);
-          },
-          postEnvironment: function (environment) {
-            return shieldResourceHelper.post(
-              apiRoot + 'WriteEnvironment',
-              environment);
+            return shieldResourceHelper.post(apiRoot + 'WriteConfiguration?key=' + key, config);
           },
           setEnvironmentsSortOrder: function (environments) {
-            return shieldResourceHelper.post(
-              apiRoot + 'SortEnvironments',
-              environments);
+            return shieldResourceHelper.post(apiRoot + 'SortEnvironments', environments);
+          },
+          upsertEnvironment: function (environment) {
+            return shieldResourceHelper.post(apiRoot + 'UpsertEnvironment', environment);
           }
         };
       }

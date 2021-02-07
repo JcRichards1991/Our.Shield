@@ -1,8 +1,11 @@
-﻿using NPoco;
+﻿using LightInject;
+using NPoco;
+using Our.Shield.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Umbraco.Core.Logging;
+using Umbraco.Core.Persistence;
 using Umbraco.Core.Scoping;
 
 namespace Our.Shield.Core.Data.Accessors
@@ -15,37 +18,32 @@ namespace Our.Shield.Core.Data.Accessors
         /// <summary>
         /// Initializes a new instance of <see cref="EnvironmentAccessor"/> class
         /// </summary>
-        /// <param name="scopeProvider"></param>
-        /// <param name="logger"></param>
+        /// <param name="scopeProvider"><see cref="IScopeProvider"/></param>
+        /// <param name="mapper"><see cref="IMapper"/></param>
         public EnvironmentAccessor(
             IScopeProvider scopeProvider,
-            ILogger logger)
-            : base(scopeProvider, logger)
+            [Inject(nameof(Shield))] AutoMapper.IMapper mapper)
+            : base(scopeProvider, mapper)
         {
         }
 
         /// <inheritdoc />
-        public async Task<bool> Create(Dtos.Environment environment)
+        public async Task<Guid> Create(IEnvironment environment)
         {
+            ((Models.Environment)environment).Key = Guid.NewGuid();
+
+            var dto = Mapper.Map<Dtos.Environment>(environment);
+
+            dto.LastModifiedDateUtc = DateTime.UtcNow;
+
             using (var scope = ScopeProvider.CreateScope())
             {
-                try
-                {
-                    environment.Key = Guid.NewGuid();
+                var result = await scope.Database.InsertAsync(dto);
 
-                    return await scope.Database.InsertAsync(environment) != null;
-                }
-                catch(Exception ex)
-                {
-                    Logger.Error<EnvironmentAccessor>(ex);
-                }
-                finally
-                {
-                    scope.Complete();
-                }
+                scope.Complete();
+
+                return (Guid)result;
             }
-
-            return false;
         }
 
         /// <inheritdoc />
@@ -53,23 +51,13 @@ namespace Our.Shield.Core.Data.Accessors
         {
             using (var scope = ScopeProvider.CreateScope(autoComplete: true))
             {
-                try
-                {
-                    var result = await scope.Database.FetchAsync<Dtos.Environment>();
+                var dtos = await scope.Database.FetchAsync<Dtos.Environment>();
 
-                    return result.AsReadOnly();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error<EnvironmentAccessor>(ex);
-                }
-                finally
-                {
-                    scope.Complete();
-                }
+                return dtos
+                    .OrderBy(x => x.SortOrder)
+                    .ToList()
+                    .AsReadOnly();
             }
-
-            return new List<Dtos.Environment>();
         }
 
         /// <inheritdoc />
@@ -77,78 +65,54 @@ namespace Our.Shield.Core.Data.Accessors
         {
             using (var scope = ScopeProvider.CreateScope(autoComplete: true))
             {
-                try
-                {
-                    return await scope.Database.SingleAsync<Dtos.Environment>(new Sql().Where("[Key] = '{0}'", key));
-                }
-                catch(Exception ex)
-                {
-                    Logger.Error<EnvironmentAccessor>(ex);
-                }
-                finally
-                {
-                    scope.Complete();
-                }
-            }
+                var sql = new Sql<ISqlContext>(scope.Database.SqlContext)
+                    .Where<Dtos.Environment>(x => x.Key == key);
 
-            return null;
+                var dto = await scope.Database.SingleAsync<Dtos.Environment>(sql);
+
+                return dto;
+            }
         }
 
         /// <inheritdoc />
-        public async Task<bool> Update(Dtos.Environment environment)
+        public async Task<bool> Update(IEnvironment environment)
+        {
+            var dto = Mapper.Map<Dtos.Environment>(environment);
+
+            dto.LastModifiedDateUtc = DateTime.UtcNow;
+
+            using (var scope = ScopeProvider.CreateScope())
+            {
+                return await scope.Database.UpdateAsync(dto) == 0;
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> Delete(IEnvironment environment)
         {
             using (var scope = ScopeProvider.CreateScope())
             {
-                try
-                {
-                    return await scope.Database.UpdateAsync(environment) == 0;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error<EnvironmentAccessor>(ex);
-                }
-                finally
-                {
-                    scope.Complete();
-                }
-            }
+                var result = await scope.Database.DeleteAsync(environment);
 
-            return false;
+                scope.Complete();
+
+                return result == 0;
+            }
         }
 
         /// <inheritdoc />
         public async Task<bool> Delete(Guid key)
         {
-            var env = await Read(key);
-
-            if (env != null)
-            {
-                return await Delete(env);
-            }
-
-            return false;
-        }
-
-        /// <inheritdoc />
-        public async Task<bool> Delete(Dtos.Environment environment)
-        {
             using (var scope = ScopeProvider.CreateScope())
             {
-                try
-                {
-                    return await scope.Database.DeleteAsync(environment) == 0;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error<EnvironmentAccessor>(ex);
-                }
-                finally
-                {
-                    scope.Complete();
-                }
-            }
+                var sql = new Sql<ISqlContext>(scope.Database.SqlContext)
+                    .Delete<Dtos.Environment>()
+                    .Where<Dtos.Environment>(x => x.Key == key);
 
-            return false;
+                await scope.Database.ExecuteAsync(sql);
+
+                return true;
+            }
         }
     }
 }

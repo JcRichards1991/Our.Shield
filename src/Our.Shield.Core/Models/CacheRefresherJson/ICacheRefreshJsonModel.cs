@@ -1,4 +1,4 @@
-﻿using static Our.Shield.Core.Enums;
+﻿using Our.Shield.Core.Enums;
 
 namespace Our.Shield.Core.Models.CacheRefresherJson
 {

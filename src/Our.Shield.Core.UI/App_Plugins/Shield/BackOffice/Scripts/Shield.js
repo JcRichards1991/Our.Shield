@@ -59,9 +59,11 @@ angular
           loading: true,
           environments: [],
           init: function () {
-            shieldResource.getEnvironments().then(function (response) {
-              vm.environments = response;
-              vm.loading = false;
+            shieldResource
+              .getEnvironments()
+              .then(function (response) {
+                vm.environments = response.environments;
+                vm.loading = false;
             });
           },
           addEnvironment: function () {
@@ -350,15 +352,11 @@ angular
               icon: '',
               name: '',
               domains: [],
-              enable: false,
+              enabled: false,
               continueProcessing: false
             },
             loading: true,
             save: function ($form) {
-              if ($form.overlayForm) {
-                return;
-              }
-
               vm.button.state = 'busy';
               $scope.$broadcast('formSubmitting', { scope: $scope, action: 'publish' });
 
@@ -375,19 +373,21 @@ angular
 
               $form.$setPristine();
 
-              shieldResource.postEnvironment(vm.environment).then(function (response) {
-                if (response === true || response === 'true') {
-                  localizationService.localize('Shield.General_CreateEnvironmentSuccess').then(function (value) {
-                    notificationsService.success(value);
-                  });
-                  navigationService.syncTree({ tree: "shield", path: ['-1', '-21'], forceReload: true, activate: true });
-                  $location.path('/shield');
-                } else {
-                  vm.button.state = 'error';
-                  localizationService.localize('Shield.General_CreateEnvironmentError').then(function (value) {
-                    notificationsService.error(value);
-                  });
-                }
+              shieldResource
+                .upsertEnvironment(vm.environment)
+                .then(function (response) {
+                  if (response === true || response === 'true') {
+                    localizationService.localize('Shield.General_CreateEnvironmentSuccess').then(function (value) {
+                      notificationsService.success(value);
+                    });
+                    navigationService.syncTree({ tree: "shield", path: ['-1', '-21'], forceReload: true, activate: true });
+                    $location.path('/shield');
+                  } else {
+                    vm.button.state = 'error';
+                    localizationService.localize('Shield.General_CreateEnvironmentError').then(function (value) {
+                      notificationsService.error(value);
+                    });
+                  }
               });
             }
           });
@@ -790,6 +790,10 @@ angular
       function ($http, $q) {
         return {
           delete: function (url) {
+            if (!url) {
+              throw Error('url is required');
+            }
+
             var deferred = $q.defer();
 
             $http({
@@ -809,6 +813,10 @@ angular
             return deferred.promise;
           },
           get: function (url, data) {
+            if (!url) {
+              throw Error('url is required');
+            }
+
             var deferred = $q.defer();
 
             data = data || {};
@@ -821,14 +829,22 @@ angular
               .then(function (response) {
                 return deferred.resolve(response.data);
               }, function (response) {
-                  console.log(response);
+                console.log(response);
 
-                  return deferred.resolve(false);
+                return deferred.resolve(false);
               });
 
             return deferred.promise;
           },
           post: function (url, data) {
+            if (!url) {
+              throw Error('url is required');
+            }
+
+            if (!data) {
+              throw Error('data is required');
+            }
+
             var deferred = $q.defer();
 
             $http({
@@ -836,15 +852,13 @@ angular
               url: url,
               data: JSON.stringify(data),
               dataType: 'json',
-              headers: {
-                'Content-Type': 'application/json'
-              }
+              contentType: 'application/json'
             }).then(function (response) {
               return deferred.resolve(response.data);
             }, function (response) {
-                console.log(response);
+              console.log(response);
 
-                return deferred.resolve(false);
+              return deferred.resolve(false);
             });
 
             return deferred.promise;
@@ -866,24 +880,17 @@ angular
             return shieldResourceHelper.delete(apiRoot + 'DeleteEnvironment?key=' + key);
           },
           getApp: function (key) {
-            return shieldResourceHelper.get(
-              apiRoot + 'GetApp',
-              {
-                key: key
-              });
+            return shieldResourceHelper.get(apiRoot + 'GetApp', { key: key });
           },
           getEnvironment: function (key) {
-            return shieldResourceHelper.get(
-              apiRoot + 'GetEnvironment',
-              {
-                key: key
-              });
+            return shieldResourceHelper.get(apiRoot + 'GetEnvironment', { key: key });
           },
           getEnvironments: function () {
             return shieldResourceHelper.get(apiRoot + 'GetEnvironments');
           },
           getJournals: function (method, id, page, orderBy, orderByDirection) {
-            return shieldResourceHelper.get(apiRoot + 'Journals',
+            return shieldResourceHelper.get(
+              apiRoot + 'Journals',
               {
                 method: method,
                 id: id,
@@ -893,25 +900,16 @@ angular
               });
           },
           getView: function (id) {
-            return shieldResourceHelper.get(apiRoot + 'View',
-              {
-                id: id
-              });
+            return shieldResourceHelper.get(apiRoot + 'View', { id: id });
           },
           postConfiguration: function (key, config) {
-            return shieldResourceHelper.post(
-              apiRoot + 'WriteConfiguration?key=' + key,
-              config);
-          },
-          postEnvironment: function (environment) {
-            return shieldResourceHelper.post(
-              apiRoot + 'WriteEnvironment',
-              environment);
+            return shieldResourceHelper.post(apiRoot + 'WriteConfiguration?key=' + key, config);
           },
           setEnvironmentsSortOrder: function (environments) {
-            return shieldResourceHelper.post(
-              apiRoot + 'SortEnvironments',
-              environments);
+            return shieldResourceHelper.post(apiRoot + 'SortEnvironments', environments);
+          },
+          upsertEnvironment: function (environment) {
+            return shieldResourceHelper.post(apiRoot + 'UpsertEnvironment', environment);
           }
         };
       }

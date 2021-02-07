@@ -1,7 +1,13 @@
-﻿using Our.Shield.Core.Models.CacheRefresherJson;
+﻿using AutoMapper;
+using LightInject;
+using Our.Shield.Core.Data.Accessors;
+using Our.Shield.Core.Models.CacheRefresherJson;
 using Our.Shield.Core.Services;
+using Our.Shield.Shared;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Core.Cache;
 
 namespace Our.Shield.Core.CacheRefreshers
@@ -9,6 +15,32 @@ namespace Our.Shield.Core.CacheRefreshers
     /// <inheritdoc />
     public class EnvironmentCacheRefresher : JsonCacheRefresherBase<EnvironmentCacheRefresher>
     {
+        private readonly IJobService _jobService;
+        private readonly IEnvironmentAccessor _dataAccessor;
+        private readonly IMapper _mapper;
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="EnvironmentCacheRefresher"/>
+        /// </summary>
+        /// <param name="appCaches"><see cref="AppCaches"/></param>
+        /// <param name="jobService"><see cref="IJobService"/></param>
+        /// <param name="dataAccessor"><see cref="IEnvironmentAccessor"/></param>
+        public EnvironmentCacheRefresher (
+            AppCaches appCaches,
+            IJobService jobService,
+            IEnvironmentAccessor dataAccessor,
+            [Inject(nameof(Shield))] IMapper mapper)
+            : base(appCaches)
+        {
+            GuardClauses.NotNull(jobService, nameof(jobService));
+            GuardClauses.NotNull(dataAccessor, nameof(dataAccessor));
+            GuardClauses.NotNull(mapper, nameof(mapper));
+
+            _jobService = jobService;
+            _dataAccessor = dataAccessor;
+            _mapper = mapper;
+        }
+
         /// <inheritdoc />
         public override Guid RefresherUniqueId => new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId);
 
@@ -19,64 +51,74 @@ namespace Our.Shield.Core.CacheRefreshers
         protected override EnvironmentCacheRefresher This => this;
 
         /// <inheritdoc />
-        public EnvironmentCacheRefresher (AppCaches appCaches) : base(appCaches)
-        {
-
-        }
-
-        /// <inheritdoc />
         public override void Refresh(string json)
         {
-            throw new NotImplementedException();
+            var cacheInstruction = Newtonsoft.Json.JsonConvert.DeserializeObject<EnvironmentCacheRefresherJsonModel>(json);
+            var environments = _jobService.Environments.Keys;
+            var environment = environments.FirstOrDefault(x => x.Key == cacheInstruction.Key);
 
-            //var cacheInstruction = Newtonsoft.Json.JsonConvert.DeserializeObject<EnvironmentCacheRefresherJsonModel>(json);
-            //var environments = JobService.Instance.Environments.Keys;
-            //var environment = environments.FirstOrDefault(x => x.Key == cacheInstruction.Key);
+            switch (cacheInstruction.CacheRefreshType)
+            {
+                case Enums.CacheRefreshType.Upsert:
+                    {
+                        var dto = Task
+                            .Run(async () => await _dataAccessor.Read(cacheInstruction.Key))
+                            .GetAwaiter()
+                            .GetResult();
 
-            //switch (cacheInstruction.CacheRefreshType)
-            //{
-            //    case Enums.CacheRefreshType.Write:
-            //        var dbEnv = new Models.Environment(DbContext.Instance.Environment.Read(cacheInstruction.Key));
+                        var env = _mapper.Map<Models.Environment>(dto);
 
-            //        if (environment == null)
-            //        {
-            //            JobService.Instance.Register(dbEnv);
-            //        }
-            //        else
-            //        {
-            //            JobService.Instance.Unregister(environment);
-            //            JobService.Instance.Register(dbEnv);
-            //        }
+                        if (environment == null)
+                        {
+                            _jobService.Register(env);
+                        }
+                        else
+                        {
+                            _jobService.Unregister(environment);
+                            _jobService.Register(env);
+                        }
 
-            //        break;
+                        break;
+                    }
 
-            //    case Enums.CacheRefreshType.Remove:
-            //        if (environment == null)
-            //        {
-            //            return;
-            //        }
-            //        else
-            //        {
-            //            JobService.Instance.Unregister(environment);
-            //            break;
-            //        }
+                case Enums.CacheRefreshType.Remove:
+                    {
+                        if (environment == null)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            _jobService.Unregister(environment);
+                            break;
+                        }
+                    }
 
-            //    case Enums.CacheRefreshType.ReOrder:
-            //        var dbEnvs = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
+                case Enums.CacheRefreshType.ReOrder:
+                    {
+                        var dtos = Task
+                            .Run(async () => await _dataAccessor.Read())
+                            .GetAwaiter()
+                            .GetResult();
 
-            //        foreach (var env in dbEnvs)
-            //        {
-            //            if (!environments.Any(x => x.Id.Equals(env.Id) && !x.SortOrder.Equals(env.SortOrder)))
-            //                continue;
+                        var envs = _mapper.Map<IList<Models.Environment>>(dtos);
 
-            //            JobService.Instance.Unregister(env);
-            //            JobService.Instance.Register(env);
-            //        }
+                        foreach (var env in envs)
+                        {
+                            if (!environments.Any(x => x.Key == env.Key && x.SortOrder != env.SortOrder))
+                            {
+                                continue;
+                            }
 
-            //        break;
-            //}
+                            _jobService.Unregister(env);
+                            _jobService.Register(env);
+                        }
 
-            //base.Refresh(json);
+                        break;
+                    }
+            }
+
+            base.Refresh(json);
         }
     }
 }

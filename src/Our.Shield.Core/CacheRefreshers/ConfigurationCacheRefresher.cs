@@ -26,25 +26,25 @@ namespace Our.Shield.Core.CacheRefreshers
         /// <inheritdoc />
         public override void Refresh(string json)
         {
-            var cacheInstruction = Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigurationCacheRefresherJsonModel>(json);
+            //var cacheInstruction = Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigurationCacheRefresherJsonModel>(json);
 
-            var job = JobService.Instance.Job(cacheInstruction.Key);
+            //var job = JobService.Instance.Job(cacheInstruction.Key);
 
-            if (job == null)
-            {
-                //  Invalid id
-                return;
-            }
+            //if (job == null)
+            //{
+            //    //  Invalid id
+            //    return;
+            //}
 
-            switch (cacheInstruction.CacheRefreshType)
-            {
-                case Enums.CacheRefreshType.Write:
-                    JobService.Instance.Execute((Job)job);
-                    break;
+            //switch (cacheInstruction.CacheRefreshType)
+            //{
+            //    case Enums.CacheRefreshType.Write:
+            //        JobService.Instance.Execute((Job)job);
+            //        break;
 
-                default:
-                    return;
-            }
+            //    default:
+            //        return;
+            //}
 
             base.Refresh(json);
         }

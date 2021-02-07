@@ -2,26 +2,20 @@
 using Our.Shield.Core.Operation;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Umbraco.Core.Persistence;
 
 namespace Our.Shield.Core.Services
 {
-    internal class JobService
+    internal class JobService : IJobService
     {
         //  Starting id for Jobs
         private const int JobIdStart = 1000;
 
-        private static readonly Lazy<JobService> JobServiceInstance = new Lazy<JobService>(() => new JobService());
-        
-        public static JobService Instance =>
-            JobServiceInstance.Value;
-
         private static readonly Locker JobLock = new Locker();
 
-        private static readonly Lazy<IDictionary<int, Job>> Jobs =
-            new Lazy<IDictionary<int, Job>>(() =>
-            new Dictionary<int, Job>());
+        private static readonly Lazy<IDictionary<Guid, Job>> Jobs =
+            new Lazy<IDictionary<Guid, Job>>(() =>
+            new Dictionary<Guid, Job>());
 
         private int _registerCount = JobIdStart;
         
@@ -32,6 +26,7 @@ namespace Our.Shield.Core.Services
                 return JobLock.Read(() =>
                 {
                     var results = new Dictionary<IEnvironment, IList<IJob>>();
+
                     foreach (var kvp in Jobs.Value)
                     {
                         if (!results.TryGetValue(kvp.Value.Environment, out var jobs))
@@ -41,19 +36,15 @@ namespace Our.Shield.Core.Services
                         }
                         jobs.Add(kvp.Value.DeepCopy());
                     }
+
                     return results;
                 });
             }
         }
-        
-        public IJob Job(int id)
-        {
-            return JobLock.Read(() => Jobs.Value[id].DeepCopy());
-        }
 
         public IJob Job(Guid key)
         {
-            return JobLock.Read(() => Jobs.Value.FirstOrDefault(x => x.Value.Key == key).Value);
+            return JobLock.Read(() => Jobs.Value[key].DeepCopy());
         }
         
         public void Init(ISqlContext sqlContext)
@@ -71,6 +62,7 @@ namespace Our.Shield.Core.Services
         public void Register(IEnvironment environment)
         {
             var appIds = App<IAppConfiguration>.Register;
+
             foreach (var appId in appIds)
             {
                 var app = App<IAppConfiguration>.Create(appId.Key);
@@ -82,7 +74,7 @@ namespace Our.Shield.Core.Services
             }
         }
 
-        internal bool Execute(Job job)
+        public bool Execute(Job job)
         {
             try
             {
@@ -107,6 +99,7 @@ namespace Our.Shield.Core.Services
             {
                 //  Ignore cancel
             }
+
             return false;
         }
         
@@ -122,12 +115,6 @@ namespace Our.Shield.Core.Services
             //return true;
         }
 
-        /// <summary>
-        /// writes an journal to the database
-        /// </summary>
-        /// <param name="job">the job handling the write</param>
-        /// <param name="journal">the journal to write</param>
-        /// <returns>True if successfully written; otherwise, False</returns>
         public bool WriteJournal(IJob job, IJournal journal)
         {
             throw new NotImplementedException();
@@ -142,7 +129,7 @@ namespace Our.Shield.Core.Services
             //    defaultConfiguration ?? App<IAppConfiguration>.Create(job.App.Id).DefaultConfiguration);
         }
 
-        public IAppConfiguration ReadConfiguration(int environmentId, string appId, IAppConfiguration defaultConfiguration = null)
+        public IAppConfiguration ReadConfiguration(Guid environmentId, string appId, IAppConfiguration defaultConfiguration = null)
         {
             if (defaultConfiguration == null)
             {
@@ -155,11 +142,10 @@ namespace Our.Shield.Core.Services
             //    defaultConfiguration);
         }
         
-        /// <returns></returns>
         public IEnumerable<T> ListJournals<T>(IJob job, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
             throw new NotImplementedException(); //DbContext.Instance.Journal.Read<T>(job.Environment.Id, job.App.Id, page, itemsPerPage, out totalPages);
         
-        private bool Register(IEnvironment environment, IApp app)
+        public bool Register(IEnvironment environment, IApp app)
         {
             throw new NotImplementedException();
 
@@ -186,38 +172,31 @@ namespace Our.Shield.Core.Services
             //return false;
         }
 
-        private bool Unregister(int id)
+        public bool Unregister(Guid key)
         {
             return JobLock.Write(() =>
             {
-                if (!Jobs.Value.TryGetValue(id, out var job))
+                if (!Jobs.Value.TryGetValue(key, out var job))
+                {
                     return;
+                }
 
                 if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
                 {
                     job.CancelToken.Cancel();
                 }
-                Jobs.Value.Remove(id);
+
+                Jobs.Value.Remove(key);
             });
         }
 
-        /// <summary>
-        /// Removes a job from the job service
-        /// </summary>
-        /// <param name="job">the job to remove</param>
-        /// <returns>True if successfully removed; otherwise, False</returns>
-        public bool Unregister(IJob job) => Unregister(job.Id);
+        public bool Unregister(IJob job) => Unregister(job.Key);
 
-        /// <summary>
-        /// Removes a collection of jobs from the job service
-        /// </summary>
-        /// <param name="environment">The environment to unregister</param>
-        /// <returns>True if successfully removed; otherwise, False</returns>
         public bool Unregister(IEnvironment environment)
         {
             return JobLock.Write(() =>
             {
-                var keys = new List<int>();
+                var keys = new List<Guid>();
 
                 foreach (var job in Jobs.Value)
                 {
@@ -228,6 +207,7 @@ namespace Our.Shield.Core.Services
                         {
                             job.Value.CancelToken.Cancel();
                         }
+
                         keys.Add(job.Key);
                     }
                 }
@@ -239,28 +219,26 @@ namespace Our.Shield.Core.Services
             });
         }
 
-        /// <summary>
-        /// Removes all jobs from the job service where the app's id are the same
-        /// </summary>
-        /// <param name="appId">The id of the app</param>
-        /// <returns>True if successfully removed; otherwise, False</returns>
-        private bool Unregister(string appId)
+        public bool Unregister(string appId)
         {
             return JobLock.Write(() =>
             {
-                var removeItems = new List<int>();
+                var removeItems = new List<Guid>();
 
                 foreach (var reg in Jobs.Value)
                 {
                     var job = reg.Value;
 
                     if (job.App.Id != appId)
+                    {
                         continue;
+                    }
 
                     if (job.Task != null && !job.Task.IsCanceled && !job.Task.IsCompleted && !job.CancelToken.IsCancellationRequested)
                     {
                         job.CancelToken.Cancel();
                     }
+
                     removeItems.Add(reg.Key);
                 }
 
@@ -271,11 +249,6 @@ namespace Our.Shield.Core.Services
             });
         }
 
-        /// <summary>
-        /// Removes all jobs from the job service where the app are the same
-        /// </summary>
-        /// <param name="app">the app to remove</param>
-        /// <returns>True if successfully removed; otherwise, False</returns>
         public bool Unregister(IApp app) => Unregister(app.Id);
     }
 }

@@ -1,41 +1,45 @@
-﻿using NPoco;
-using Umbraco.Core.Persistence.DatabaseAnnotations;
+﻿using System;
 
 namespace Our.Shield.Core.Data.Dtos
 {
     /// <summary>
-    /// The DTO representation of an Environment
+    /// 
     /// </summary>
-    public interface IEnvironment : IDto
+    public interface IEnvironment
     {
         /// <summary>
-        /// Name of the <see cref="IEnvironment"/>
+        /// 
         /// </summary>
-        string Name { get; set; }
+        Guid Key { get; }
 
         /// <summary>
-        /// Icon of the <see cref="IEnvironment"/>
+        /// 
         /// </summary>
-        string Icon { get; set; }
+        string Name { get; }
 
         /// <summary>
-        /// Sort Order of the <see cref="IEnvironment"/>
+        /// 
         /// </summary>
-        int SortOrder { get; set; }
+        string Icon { get; }
 
         /// <summary>
-        /// Whether or not this <see cref="IEnvironment"/> is Enabled
+        /// 
         /// </summary>
-        bool Enabled { get; set; }
+        string Domains { get; }
 
         /// <summary>
-        /// Whether or not this <see cref="IEnvironment"/> is set up to Continue Processing to allow the next Environment to handle the request
+        /// 
         /// </summary>
-        bool ContinueProcessing { get; set; }
+        int SortOrder { get; }
 
         /// <summary>
-        /// Domains this <see cref="IEnvironment"/> handles requests for
+        /// 
         /// </summary>
-        string Domains { get; set; }
+        bool Enabled { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        bool ContinueProcessing { get; }
     }
 }

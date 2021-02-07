@@ -1,6 +1,10 @@
-﻿using Our.Shield.Core.Components;
+﻿using AutoMapper;
+using LightInject;
+using Our.Shield.Core.CacheRefreshers;
+using Our.Shield.Core.Components;
 using Our.Shield.Core.Data.Accessors;
 using Our.Shield.Core.Services;
+using System;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 
@@ -18,6 +22,8 @@ namespace Our.Shield.Core.Composers
             RegisterComponents(composition);
             RegisterDataAccessors(composition);
             RegisterServices(composition);
+            RegisterCacheRefreshers(composition);
+            RegisterAutoMapper(composition);
         }
 
         private void RegisterComponents(Composition composition)
@@ -34,7 +40,31 @@ namespace Our.Shield.Core.Composers
 
         private void RegisterServices(Composition composition)
         {
+            composition.Register<IJobService, JobService>(Lifetime.Singleton);
             composition.Register<IEnvironmentService, EnvironmentService>();
+        }
+
+        private void RegisterCacheRefreshers(Composition composition)
+        {
+            composition.CacheRefreshers().Add<ConfigurationCacheRefresher>();
+            composition.CacheRefreshers().Add<EnvironmentCacheRefresher>();
+        }
+
+        private void RegisterAutoMapper(Composition composition)
+        {
+            if (!(composition.Concrete is ServiceContainer container))
+            {
+                throw new ArgumentException(nameof(container));
+            }
+
+            container.Register(factory =>
+               new MapperConfiguration(cfg =>
+               {
+                   cfg.AddProfile(new Mappers.GlobalProfile());
+               })
+               .CreateMapper(),
+               nameof(Shield) + "Mapper",
+               new PerContainerLifetime());
         }
     }
 }

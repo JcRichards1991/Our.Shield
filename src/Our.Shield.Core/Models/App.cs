@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -64,35 +63,35 @@ namespace Our.Shield.Core.Models
 
         /// <inheritdoc />
         public bool WriteConfiguration(IJob job, IAppConfiguration config) =>
-            JobService.Instance.WriteConfiguration(job, config);
+            throw new NotImplementedException(); //JobService.Instance.WriteConfiguration(job, config);
 
         /// <inheritdoc />
         public bool WriteConfiguration(int jobId, IAppConfiguration config) =>
-            WriteConfiguration(JobService.Instance.Job(jobId), config);
+            throw new NotImplementedException(); //WriteConfiguration(JobService.Instance.Job(jobId), config);
 
         /// <inheritdoc />
         public IAppConfiguration ReadConfiguration(IJob job) =>
-            JobService.Instance.ReadConfiguration(job, DefaultConfiguration);
+            throw new NotImplementedException(); //JobService.Instance.ReadConfiguration(job, DefaultConfiguration);
 
         /// <inheritdoc />
         public IAppConfiguration ReadConfiguration(int jobId) =>
-            ReadConfiguration(JobService.Instance.Job(jobId));
+            throw new NotImplementedException(); //ReadConfiguration(JobService.Instance.Job(jobId));
 
         /// <inheritdoc />
         public bool WriteJournal(IJob job, IJournal journal) =>
-            JobService.Instance.WriteJournal(job, journal);
+            throw new NotImplementedException(); //JobService.Instance.WriteJournal(job, journal);
 
         /// <inheritdoc />
         public bool WriteJournal(int jobId, IJournal journal) =>
-            WriteJournal(JobService.Instance.Job(jobId), journal);
+            throw new NotImplementedException(); //WriteJournal(JobService.Instance.Job(jobId), journal);
 
         /// <inheritdoc />
         public IEnumerable<T> ListJournals<T>(IJob job, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
-            JobService.Instance.ListJournals<T>(job, page, itemsPerPage, out totalPages);
+            throw new NotImplementedException(); //JobService.Instance.ListJournals<T>(job, page, itemsPerPage, out totalPages);
 
         /// <inheritdoc />
         public IEnumerable<T> ListJournals<T>(int jobId, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
-            ListJournals<T>(JobService.Instance.Job(jobId), page, itemsPerPage, out totalPages);
+            throw new NotImplementedException(); //ListJournals<T>(JobService.Instance.Job(jobId), page, itemsPerPage, out totalPages);
 
         /// <inheritdoc />
         public override bool Equals(object other)

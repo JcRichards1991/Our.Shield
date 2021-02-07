@@ -1,5 +1,5 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace Our.Shield.Core.Models
@@ -40,7 +40,7 @@ namespace Our.Shield.Core.Models
         int SortOrder { get; }
 
         /// <summary>
-        /// whether or not the <see cref="IEnvironment"/> is enabled, and sub-sequently the environment's app(s)
+        /// whether or not the <see cref="IEnvironment"/> is enabled, and subsequently the environment's app(s)
         /// </summary>
         [JsonProperty("enabled")]
         bool Enabled { get; }

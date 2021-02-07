@@ -1,4 +1,4 @@
-﻿using Umbraco.Core.Logging;
+﻿using LightInject;
 using Umbraco.Core.Scoping;
 
 namespace Our.Shield.Core.Data.Accessors
@@ -7,8 +7,8 @@ namespace Our.Shield.Core.Data.Accessors
     {
         public JournalAccessor(
             IScopeProvider scopeProvider,
-            ILogger logger)
-            : base(scopeProvider, logger)
+            [Inject(nameof(Shield))] AutoMapper.IMapper mapper)
+            : base(scopeProvider, mapper)
         {
         }
     }

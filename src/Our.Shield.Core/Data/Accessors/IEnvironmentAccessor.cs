@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Our.Shield.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,44 +11,44 @@ namespace Our.Shield.Core.Data.Accessors
     public interface IEnvironmentAccessor
     {
         /// <summary>
-        /// Saves a new <see cref="Dtos.IEnvironment"/> to the database
+        /// Saves a new <see cref="IEnvironment"/> to the database
         /// </summary>
         /// <param name="environment"></param>
         /// <returns></returns>
-        Task<bool> Create(Dtos.Environment environment);
+        Task<Guid> Create(IEnvironment environment);
 
         /// <summary>
-        /// Reads a <see cref="Dtos.Environment"/> from the database
+        /// Reads a <see cref="IEnvironment"/> from the database
         /// </summary>
         /// <returns></returns>
         Task<IReadOnlyList<Dtos.Environment>> Read();
 
         /// <summary>
-        /// Gets the <see cref="Dtos.Environment"/> from the database by it's Key
+        /// Gets the <see cref="IEnvironment"/> from the database by it's Key
         /// </summary>
-        /// <param name="key">The Key of the <see cref="Dtos.Environment"/> to retrieve</param> 
+        /// <param name="key">The Key of the <see cref="IEnvironment"/> to retrieve</param> 
         /// <returns></returns>
         Task<Dtos.Environment> Read(Guid key);
 
         /// <summary>
-        /// Updates an <see cref="Dtos.IEnvironment"/> in the database
+        /// Updates an <see cref="IEnvironment"/> in the database
         /// </summary>
         /// <param name="environment"></param>
         /// <returns></returns>
-        Task<bool> Update(Dtos.Environment environment);
+        Task<bool> Update(IEnvironment environment);
 
         /// <summary>
-        /// Deletes an <see cref="Dtos.IEnvironment"/> from the database by it's Key
+        /// Deletes an <see cref="IEnvironment"/> from the database
         /// </summary>
-        /// <param name="key">The key of the <see cref="Dtos.Environment"/> to delete</param>
+        /// <param name="environment">The <see cref="IEnvironment"/> to delete</param>
+        /// <returns></returns>
+        Task<bool> Delete(IEnvironment environment);
+
+        /// <summary>
+        /// Deletes an <see cref="IEnvironment"/> from the database
+        /// </summary>
+        /// <param name="key">Key of the <see cref="IEnvironment"/> to delete</param>
         /// <returns></returns>
         Task<bool> Delete(Guid key);
-
-        /// <summary>
-        /// Deletes an <see cref="Dtos.Environment"/> from the database
-        /// </summary>
-        /// <param name="environment">The <see cref="Dtos.IEnvironment"/> to delete</param>
-        /// <returns></returns>
-        Task<bool> Delete(Dtos.Environment environment);
     }
 }

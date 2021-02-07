@@ -14,7 +14,7 @@ namespace Our.Shield.Core.Models
         /// <summary>
         /// The Job Id
         /// </summary>
-        int Id { get; }
+        Guid Key { get; }
 
         /// <summary>
         /// The Job Environment
@@ -25,11 +25,6 @@ namespace Our.Shield.Core.Models
         /// The Job App Id
         /// </summary>
         IApp App { get; }
-
-        /// <summary>
-        /// Unique Identifier
-        /// </summary>
-        Guid Key { get; }
 
         /// <summary>
         /// Writes a Apps configuration to the database
@@ -65,7 +60,7 @@ namespace Our.Shield.Core.Models
         /// Adds a Web Request to WebRequestsHandler collection
         /// </summary>
         /// <param name="stage">The stage of the pipeline to add a watch too</param>
-        /// <param name="regex">The Regex use to match for requests</param>
+        /// <param name="regex">The regex use to match for requests</param>
         /// <param name="priority">The priority of the request watch</param>
         /// <param name="request">The function to call when the regex matches a request</param>
         /// <returns></returns>
@@ -91,7 +86,7 @@ namespace Our.Shield.Core.Models
         /// 
         /// </summary>
         /// <returns></returns>
-        //int UnwatchWebRequests();
+        int UnwatchWebRequests();
 
         /// <summary>
         /// Removes all Web Requests from the WebRequestsHandler collection for the given App
@@ -134,6 +129,11 @@ namespace Our.Shield.Core.Models
         /// <returns></returns>
         int UnexceptionWebRequest();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         Regex PathToRegex(string path);
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace Our.Shield.Core.Models
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="regex"></param>
+        /// <param name="path"></param>
         /// <returns></returns>
         int IgnoreWebRequest(string path);
 
@@ -160,7 +160,7 @@ namespace Our.Shield.Core.Models
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="regex"></param>
+        /// <param name="path"></param>
         /// <returns></returns>
         int UnignoreWebRequest(string path);
 

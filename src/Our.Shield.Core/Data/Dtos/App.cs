@@ -10,7 +10,7 @@ namespace Our.Shield.Core.Data.Dtos
     [TableName(nameof(Shield) + "Apps")]
     [PrimaryKey(nameof(Key), AutoIncrement = false)]
     [ExplicitColumns]
-    public class App : Dto, IApp
+    internal class App : Dto, IApp
     {
         /// <inheritdoc />
         [Column(nameof(AppId))]

@@ -59,9 +59,11 @@ angular
           loading: true,
           environments: [],
           init: function () {
-            shieldResource.getEnvironments().then(function (response) {
-              vm.environments = response;
-              vm.loading = false;
+            shieldResource
+              .getEnvironments()
+              .then(function (response) {
+                vm.environments = response.environments;
+                vm.loading = false;
             });
           },
           addEnvironment: function () {
@@ -350,15 +352,11 @@ angular
               icon: '',
               name: '',
               domains: [],
-              enable: false,
+              enabled: false,
               continueProcessing: false
             },
             loading: true,
             save: function ($form) {
-              if ($form.overlayForm) {
-                return;
-              }
-
               vm.button.state = 'busy';
               $scope.$broadcast('formSubmitting', { scope: $scope, action: 'publish' });
 
@@ -375,19 +373,21 @@ angular
 
               $form.$setPristine();
 
-              shieldResource.postEnvironment(vm.environment).then(function (response) {
-                if (response === true || response === 'true') {
-                  localizationService.localize('Shield.General_CreateEnvironmentSuccess').then(function (value) {
-                    notificationsService.success(value);
-                  });
-                  navigationService.syncTree({ tree: "shield", path: ['-1', '-21'], forceReload: true, activate: true });
-                  $location.path('/shield');
-                } else {
-                  vm.button.state = 'error';
-                  localizationService.localize('Shield.General_CreateEnvironmentError').then(function (value) {
-                    notificationsService.error(value);
-                  });
-                }
+              shieldResource
+                .upsertEnvironment(vm.environment)
+                .then(function (response) {
+                  if (response === true || response === 'true') {
+                    localizationService.localize('Shield.General_CreateEnvironmentSuccess').then(function (value) {
+                      notificationsService.success(value);
+                    });
+                    navigationService.syncTree({ tree: "shield", path: ['-1', '-21'], forceReload: true, activate: true });
+                    $location.path('/shield');
+                  } else {
+                    vm.button.state = 'error';
+                    localizationService.localize('Shield.General_CreateEnvironmentError').then(function (value) {
+                      notificationsService.error(value);
+                    });
+                  }
               });
             }
           });

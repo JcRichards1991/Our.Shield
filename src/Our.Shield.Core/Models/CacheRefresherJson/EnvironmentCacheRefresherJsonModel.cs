@@ -2,7 +2,7 @@
 
 namespace Our.Shield.Core.Models.CacheRefresherJson
 {
-    public class EnvironmentCacheRefresherJsonModel : ICacheRefreshJsonModel
+    internal class EnvironmentCacheRefresherJsonModel : ICacheRefreshJsonModel
     {
         public EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType cacheRefreshType, Guid key)
         {
