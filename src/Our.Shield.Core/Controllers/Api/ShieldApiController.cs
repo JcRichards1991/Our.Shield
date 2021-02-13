@@ -76,7 +76,34 @@ namespace Our.Shield.Core.Controllers.Api
         [HttpGet]
         public async Task<IHttpActionResult> GetEnvironments()
         {
-            return ApiResponse(await _environmentService.Get());
+            var response = await _environmentService.GetAsync();
+
+            return ApiResponse(
+                response,
+                response.HasError() ? HttpStatusCode.BadRequest : HttpStatusCode.OK);
+        }
+
+        /// <summary>
+        /// Gets an environment by it's key
+        /// </summary>
+        /// <param name="key">The Key of the environment to fetch</param>
+        /// <returns>The environment with the corresponding key</returns>
+        [HttpGet]
+        public async Task<IHttpActionResult> GetEnvironment(Guid key)
+        {
+            var response = await _environmentService.GetAsync(key);
+
+            if (response.HasError())
+            {
+                return ApiResponse(response, HttpStatusCode.BadRequest);
+            }
+
+            if (response.Environment == null)
+            {
+                return NotFound();
+            }
+
+            return ApiResponse(response);
         }
 
         /// <summary>
@@ -84,24 +111,14 @@ namespace Our.Shield.Core.Controllers.Api
         /// </summary>
         /// <param name="key">The key of the environment to delete</param>
         /// <returns>true if successfully deleted, otherwise, false.</returns>
-        [HttpPost]
-        public async Task<DeleteEnvironmentResponse> DeleteEnvironment(Guid key)
+        [HttpDelete]
+        public async Task<IHttpActionResult> DeleteEnvironment(Guid key)
         {
-            var response = _environmentService.Delete(key);
+            var response = await _environmentService.DeleteAsync(key);
 
-            throw new NotImplementedException();
-            //var environment = (Models.Environment)JobService.Instance.Environments.FirstOrDefault(x => x.Key.Key == key).Key;
-
-            //if (environment != null && await _environmentService.Delete(environment))
-            //{
-            //    _distributedCache.RefreshByJson(
-            //        new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
-            //        GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.Remove, key)));
-
-            //    return true;
-            //}
-
-            //return false;
+            return ApiResponse(
+                response,
+                response.HasError() ? HttpStatusCode.BadRequest : HttpStatusCode.OK);
         }
 
         /// <summary>
@@ -143,24 +160,6 @@ namespace Our.Shield.Core.Controllers.Api
             //    Configuration = job.ReadConfiguration(),
             //    Tabs = tabs
             //};
-        }
-
-        /// <summary>
-        /// Gets an environment by it's key
-        /// </summary>
-        /// <param name="key">The Key of the environment to fetch</param>
-        /// <returns>The environment with the corresponding key</returns>
-        [HttpGet]
-        public async Task<IHttpActionResult> GetEnvironment(Guid key)
-        {
-            var environment = await _environmentService.Get(key);
-
-            if (environment == null)
-            {
-                return NotFound();
-            }
-
-            return ApiResponse(environment);
         }
 
         /// <summary>
@@ -340,7 +339,7 @@ namespace Our.Shield.Core.Controllers.Api
                 return BadRequest(ModelState);
             }
 
-            var response = await _environmentService.Upsert(request);
+            var response = await _environmentService.UpsertAsync(request);
 
             return ApiResponse(
                 response,
@@ -349,9 +348,7 @@ namespace Our.Shield.Core.Controllers.Api
                     : HttpStatusCode.OK);
         }
 
-        private IHttpActionResult ApiResponse<T>(
-            T response,
-            HttpStatusCode statusCode = HttpStatusCode.OK)
+        private IHttpActionResult ApiResponse<T>(T response, HttpStatusCode statusCode = HttpStatusCode.OK)
             where T : BaseResponse
         {
             return ResponseMessage(

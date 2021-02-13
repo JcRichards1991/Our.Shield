@@ -5,7 +5,7 @@ using System.Linq;
 namespace Our.Shield.Core.Models.Responses
 {
     /// <summary>
-    /// Base Abstract class for Api Responses
+    /// Base Abstract class for Responses
     /// </summary>
     public abstract class BaseResponse
     {

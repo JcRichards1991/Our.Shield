@@ -264,7 +264,6 @@
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Shield.min.js">
       <DependentUpon>Shield.js</DependentUpon>
     </Content>
-    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Tree.Menu.Controllers.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\App.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\Create.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\CreateEnvironment.html" />

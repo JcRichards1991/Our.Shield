@@ -83,20 +83,11 @@ namespace Our.Shield.Core.Data.Accessors
 
             using (var scope = ScopeProvider.CreateScope())
             {
-                return await scope.Database.UpdateAsync(dto) == 0;
-            }
-        }
-
-        /// <inheritdoc />
-        public async Task<bool> Delete(IEnvironment environment)
-        {
-            using (var scope = ScopeProvider.CreateScope())
-            {
-                var result = await scope.Database.DeleteAsync(environment);
+                var result = await scope.Database.UpdateAsync(dto);
 
                 scope.Complete();
 
-                return result == 0;
+                return result == 1;
             }
         }
 
@@ -109,9 +100,11 @@ namespace Our.Shield.Core.Data.Accessors
                     .Delete<Dtos.Environment>()
                     .Where<Dtos.Environment>(x => x.Key == key);
 
-                await scope.Database.ExecuteAsync(sql);
+                var result = await scope.Database.ExecuteAsync(sql);
 
-                return true;
+                scope.Complete();
+
+                return result == 1;
             }
         }
     }

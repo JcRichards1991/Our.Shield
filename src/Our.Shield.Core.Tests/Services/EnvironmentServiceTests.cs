@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using AutoMapper;
+using Moq;
 using Our.Shield.Core.Data.Accessors;
 using Our.Shield.Core.Services;
 using System;
@@ -6,7 +7,6 @@ using System.Threading.Tasks;
 using Umbraco.Core.Logging;
 using Umbraco.Web.Cache;
 using Xunit;
-using AutoMapper;
 
 namespace Our.Shield.Core.Tests.Services
 {
@@ -18,20 +18,31 @@ namespace Our.Shield.Core.Tests.Services
         {
             _environmentService = new EnvironmentService(
                 Mock.Of<IJobService>(),
-                Mock.Of<IEnvironmentAccessor>(),
+                MockEnvironmentAccess(),
                 Mock.Of<DistributedCache>(),
                 Mock.Of<IMapper>(),
                 Mock.Of<ILogger>());
         }
 
-        [Fact]
-        public async Task WhenNull_Upsert_ShouldThrowException()
+        private IEnvironmentAccessor MockEnvironmentAccess()
         {
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _environmentService.Upsert(null));
+            var dataAccessor = new Mock<IEnvironmentAccessor>();
+
+            //dataAccessor
+            //    .Setup(x => x.Create(It.IsAny<Models.IEnvironment>()))
+            //    .ReturnsAsync(new Guid(""));
+
+            return dataAccessor.Object;
         }
 
         [Fact]
-        public async Task WhenNotNull_Upsert_ShouldInsertOrUpdateEnvironment()
+        public async Task WhenNull_Upsert_ShouldThrowException()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _environmentService.UpsertAsync(null));
+        }
+
+        [Fact]
+        public async Task WhenNotNullAndNoKey_Upsert_ShouldInsertEnvironment()
         {
             var env = new Models.Requests.UpsertEnvironmentRequest
             {
@@ -40,15 +51,31 @@ namespace Our.Shield.Core.Tests.Services
                 Icon = "icon-settings"
             };
 
-            var result = await _environmentService.Upsert(env);
+            var result = await _environmentService.UpsertAsync(env);
 
             Assert.False(result.HasError());
         }
 
         [Fact]
-        public async Task WhenNull_Delete_ShouldThrowException()
+        public async Task WhenNotNullAndWithKey_Upsert_ShouldUpdateEnvironment()
         {
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _environmentService.Delete(null));
+            var env = new Models.Requests.UpsertEnvironmentRequest
+            {
+                Key = Guid.NewGuid(),
+                Name = "Test Environment",
+                Enabled = true,
+                Icon = "icon-settings"
+            };
+
+            var result = await _environmentService.UpsertAsync(env);
+
+            Assert.False(result.HasError());
+        }
+
+        [Fact]
+        public async Task WhenEmptyGuid_Delete_ShouldThrowException()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _environmentService.DeleteAsync(Guid.Empty));
         }
 
         [Fact]
@@ -61,11 +88,11 @@ namespace Our.Shield.Core.Tests.Services
                 Icon = "icon-settings"
             };
 
-            await _environmentService.Upsert(env);
+            await _environmentService.UpsertAsync(env);
 
-            var result = await _environmentService.Delete(env.Key);
+            var response = await _environmentService.DeleteAsync(env.Key);
 
-            Assert.True(result);
+            Assert.True(response.Successful);
         }
     }
 }

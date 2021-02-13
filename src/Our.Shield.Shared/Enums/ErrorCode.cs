@@ -7,13 +7,16 @@ namespace Our.Shield.Shared.Enums
         [Description("None")]
         None,
 
-        [Description("Environment - Insert Error")]
+        [Description("Environment - Insert")]
         EnviromentInsert,
 
-        [Description("Environment - Update Error")]
+        [Description("Environment - Update")]
         EnvironmentUpdate,
 
-        [Description("Environment Read Error")]
-        EnvironmentRead
+        [Description("Environment - Read")]
+        EnvironmentRead,
+
+        [Description("Environment - Delete")]
+        EnvrionmentDelete
     }
 }

@@ -2,21 +2,18 @@
   "dashboards": [
     {
       "alias": "shieldEnvironmentsDashboard",
-      "view": "/App_Plugins/Shield/Backoffice/Dashboards/Environments.html",
+      "view": "/App_Plugins/Shield/BackOffice/Dashboards/Environments.html?v=2.0.0",
       "sections": [ "shield" ],
       "weight": 1
     },
     {
       "alias": "shieldJournalDashboard",
-      "view": "/App_Plugins/Shield/Backoffice/Dashboards/Journal.html",
+      "view": "/App_Plugins/Shield/BackOffice/Dashboards/Journal.html?v=2.0.0",
       "sections": [ "shield" ],
       "weight": 2
     }
   ],
   "javascript": [
-    "~/App_Plugins/Shield/Backoffice/Scripts/Shield.js?version=1.1.3"
-  ],
-  "css": [
-    "~/App_Plugins/Shield/Backoffice/Css/Shield.css?version=1.1.3"
+    "~/App_Plugins/Shield/BackOffice/Scripts/Shield.js?v=2.0.0"
   ]
 }

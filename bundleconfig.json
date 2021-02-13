@@ -1,11 +1,10 @@
 [
   {
-    "outputFileName": "src/Our.Shield.Core.UI/App_Plugins/Shield/Backoffice/Scripts/Shield.js",
+    "outputFileName": "src/Our.Shield.Core.UI/App_Plugins/Shield/BackOffice/Scripts/Shield.js",
     "inputFiles": [
-      "src/Our.Shield.Core.UI/App_Plugins/Shield/Backoffice/Scripts/Controllers.js",
-      "src/Our.Shield.Core.UI/App_Plugins/Shield/Backoffice/Scripts/Directives.js",
-      "src/Our.Shield.Core.UI/App_Plugins/Shield/Backoffice/Scripts/Resources.js",
-      "src/Our.Shield.Core.UI/App_Plugins/Shield/Backoffice/Scripts/Tree.Menu.Controllers.js"
+      "src/Our.Shield.Core.UI/App_Plugins/Shield/BackOffice/Scripts/Controllers.js",
+      "src/Our.Shield.Core.UI/App_Plugins/Shield/BackOffice/Scripts/Directives.js",
+      "src/Our.Shield.Core.UI/App_Plugins/Shield/BackOffice/Scripts/Resources.js"
     ],
     "sourceMap": true
   },

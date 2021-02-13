@@ -1,51 +1,28 @@
-﻿<div class="shield-editor" ng-controller="Shield.Controllers.EnvironmentEdit as vm" ng-init="vm.init()">
+﻿<div class="editor-content" ng-controller="Shield.Controllers.EnvironmentEdit as vm" ng-init="vm.init()">
+
   <umb-load-indicator ng-show="vm.loading"></umb-load-indicator>
 
-  <form ng-hide="vm.loading"
-        name="environmentForm"
-        ng-submit="vm.save(environmentForm)"
+  <form name="createEnvironmentForm"
+        ng-submit="vm.save(createEnvironmentForm)"
         novalidate
-        val-form-manager>
+        val-form-manager
+        ng-hide="vm.loading">
 
-    <umb-editor-view>
+    <umb-editor-view footer="true">
 
-      <umb-editor-header ng-if="vm.editing"
-                         name="vm.environment.name"
+      <umb-editor-header name="vm.environment.name"
                          name-locked="false"
                          hide-description="true"
                          hide-alias="true"
-                         icon="vm.environment.icon">
+                         icon="vm.environment.icon"
+                         navigation="vm.tabs">
       </umb-editor-header>
-
-      <umb-editor-header ng-if="!vm.editing"
-                         name="vm.environment.name"
-                         tabs="vm.tabs"
-                         name-locked="true"
-                         hide-icon="true"
-                         hide-description="true"
-                         hide-alias="true">
-      </umb-editor-header>
-
-      <div class="umb-editor-header__actions-menu shield-editor-header" ng-if="vm.environment.id !== 1 && !vm.editing">
-        <div class="btn-group pull-right">
-          <a class="btn" href="#" ng-click="vm.edit()" prevent-default>
-            <localize key="general_edit">Edit</localize>
-          </a>
-        </div>
-      </div>
 
       <umb-editor-container>
-        <div class="form-horizontal" ng-if="vm.environment.id !== 1" ng-show="vm.editing" ng-include="'/App_Plugins/Shield/Backoffice/Views/EditEnvironment.html?version=1.1.0'"></div>
-
-        <umb-tabs-content class="form-horizontal" view="true" ng-if="!vm.editingEnvironment">
-          <umb-tab ng-repeat="tab in vm.tabs track by $index" id="tab{{tab.id}}" rel="{{tab.id}}">
-            <div ng-include="tab.view"></div>
-          </umb-tab>
-        </umb-tabs-content>
+        <div class="umb-group-panel" ng-repeat="tab in vm.tabs track by tab.id" ng-include="tab.view" ng-show="tab.active"></div>
       </umb-editor-container>
 
       <umb-editor-footer>
-
         <umb-editor-footer-content-left>
           <umb-breadcrumbs ancestors="vm.ancestors"
                            entity-type="shield">
@@ -53,13 +30,6 @@
         </umb-editor-footer-content-left>
 
         <umb-editor-footer-content-right>
-          <umb-button ng-if="vm.editing"
-                      label="Cancel"
-                      label-key="general_cancel"
-                      type="button"
-                      action="vm.cancelEditing()">
-          </umb-button>
-
           <umb-button label="{{vm.button.label}}"
                       label-key="{{vm.button.labelKey}}"
                       type="submit"
@@ -68,10 +38,8 @@
                       state="vm.button.state">
           </umb-button>
         </umb-editor-footer-content-right>
-
       </umb-editor-footer>
-    </umb-editor-view>
 
+    </umb-editor-view>
   </form>
 </div>
-

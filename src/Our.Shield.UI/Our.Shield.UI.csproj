@@ -268,8 +268,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\Shield\BackOffice\Css\Shield.css" />
-    <Content Include="App_Plugins\Shield\BackOffice\Css\Shield.min.css" />
     <Content Include="App_Plugins\Shield\BackOffice\Dashboards\Environments.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\Dashboard.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Dashboards\Journal.html" />
@@ -278,7 +276,6 @@
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Resources.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Shield.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Shield.min.js" />
-    <Content Include="App_Plugins\Shield\BackOffice\Scripts\Tree.Menu.Controllers.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\App.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\Create.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\CreateEnvironment.html" />
@@ -326,14 +323,6 @@
     <Content Include="config\imageprocessor\processing.config" />
     <Content Include="config\imageprocessor\cache.config" />
     <Content Include="config\umbracoSettings.config" />
-    <Content Include="App_Plugins\Shield\BackOffice\Css\Partials\_dashboard.scss" />
-    <Content Include="App_Plugins\Shield\BackOffice\Css\Partials\_domain-listing-table.scss" />
-    <Content Include="App_Plugins\Shield\BackOffice\Css\Partials\_editor-header.scss" />
-    <Content Include="App_Plugins\Shield\BackOffice\Css\Partials\_ip-access-control-ranges.scss" />
-    <Content Include="App_Plugins\Shield\BackOffice\Css\Partials\_sort-panel-overview.scss" />
-    <Content Include="App_Plugins\Shield\BackOffice\Css\Partials\_transfer-url.scss" />
-    <Content Include="App_Plugins\Shield\BackOffice\Css\Partials\_umb-table.scss" />
-    <Content Include="App_Plugins\Shield\BackOffice\Css\Shield.scss" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Shield.min.js.map" />
     <Content Include="App_Plugins\Shield\package.manifest" />
     <Content Include="Views\Web.config" />

@@ -40,13 +40,6 @@ namespace Our.Shield.Core.Data.Accessors
         /// <summary>
         /// Deletes an <see cref="IEnvironment"/> from the database
         /// </summary>
-        /// <param name="environment">The <see cref="IEnvironment"/> to delete</param>
-        /// <returns></returns>
-        Task<bool> Delete(IEnvironment environment);
-
-        /// <summary>
-        /// Deletes an <see cref="IEnvironment"/> from the database
-        /// </summary>
         /// <param name="key">Key of the <see cref="IEnvironment"/> to delete</param>
         /// <returns></returns>
         Task<bool> Delete(Guid key);

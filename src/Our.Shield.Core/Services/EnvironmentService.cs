@@ -58,7 +58,7 @@ namespace Our.Shield.Core.Services
         }
 
         /// <inherit />
-        public async Task<UpsertEnvironmentResponse> Upsert(UpsertEnvironmentRequest request)
+        public async Task<UpsertEnvironmentResponse> UpsertAsync(UpsertEnvironmentRequest request)
         {
             var environment = new Models.Environment
             {
@@ -83,7 +83,7 @@ namespace Our.Shield.Core.Services
                     : 0;
             }
 
-            var response = await Upsert(environment);
+            var response = await UpsertAsync(environment);
 
             if (response.HasError())
             {
@@ -98,7 +98,7 @@ namespace Our.Shield.Core.Services
         }
 
         /// <inherit />
-        public async Task<GetEnvironmentsResponse> Get()
+        public async Task<GetEnvironmentsResponse> GetAsync()
         {
             var response = new GetEnvironmentsResponse();
 
@@ -119,13 +119,22 @@ namespace Our.Shield.Core.Services
         }
 
         /// <inherit />
-        public async Task<GetEnvironmentResponse> Get(Guid key)
+        public GetEnvironmentsResponse Get() =>
+            Task.Run(async () => await GetAsync()).GetAwaiter().GetResult();
+
+        /// <inherit />
+        public async Task<GetEnvironmentResponse> GetAsync(Guid key)
         {
             var response = new GetEnvironmentResponse();
 
             try
             {
-                response.Environment = _mapper.Map<Models.Environment>(await _dataAccessor.Read(key));
+                var environment = await _dataAccessor.Read(key);
+
+                if (environment != null)
+                {
+                    response.Environment = _mapper.Map<Models.Environment>(environment);
+                }
             }
             catch (Exception ex)
             {
@@ -138,32 +147,11 @@ namespace Our.Shield.Core.Services
         }
 
         /// <inherit />
-        public async Task<bool> Delete(IEnvironment environment)
-        {
-            GuardClauses.NotNull(environment, nameof(environment));
-
-            //if (!JobService.Instance.Unregister(environment) || !DbContext.Instance.Environment.Delete(environment.Id))
-            //{
-            //    return false;
-            //}
-
-            //var environments = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
-            //var oldEnvironments = JobService.Instance.Environments.Keys;
-
-            //foreach (var newEnv in environments)
-            //{
-            //    if (oldEnvironments.Any(x => x.Id.Equals(newEnv.Id) && !x.SortOrder.Equals(newEnv.SortOrder)))
-            //    {
-            //        JobService.Instance.Unregister(newEnv);
-            //        JobService.Instance.Register(newEnv);
-            //    }
-            //}
-
-            return await _dataAccessor.Delete(environment);
-        }
+        public GetEnvironmentResponse Get(Guid key) =>
+            Task.Run(async () => await GetAsync(key)).GetAwaiter().GetResult();
 
         /// <inherit />
-        public async Task<bool> Delete(Guid key)
+        public async Task<DeleteEnvironmentResponse> DeleteAsync(Guid key)
         {
             GuardClauses.NotNull(key, nameof(key));
 
@@ -171,10 +159,23 @@ namespace Our.Shield.Core.Services
                 new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
                 JsonConvert.SerializeObject(new EnvironmentCacheRefresherJsonModel(CacheRefreshType.Remove, key)));
 
-            return await _dataAccessor.Delete(key);
+            var response = new DeleteEnvironmentResponse();
+
+            try
+            {
+                response.Successful = await _dataAccessor.Delete(key);
+            }
+            catch(Exception ex)
+            {
+                _logger.Error<EnvironmentService>(ex, "Error occurred deleting environment with {Key}", key);
+
+                response.ErrorCode = ErrorCode.EnvrionmentDelete;
+            }
+
+            return response;
         }
 
-        private async Task<UpsertEnvironmentResponse> Upsert(IEnvironment environment)
+        private async Task<UpsertEnvironmentResponse> UpsertAsync(IEnvironment environment)
         {
             var response = new UpsertEnvironmentResponse();
 
@@ -183,15 +184,13 @@ namespace Our.Shield.Core.Services
                 try
                 {
                     response.Key = await _dataAccessor.Create(environment);
-
-                    return response;
                 }
                 catch (Exception ex)
                 {
                     _logger.Error<EnvironmentService>(ex, "Error occurred inserting Environment");
-                }
 
-                response.ErrorCode = ErrorCode.EnviromentInsert;
+                    response.ErrorCode = ErrorCode.EnviromentInsert;
+                }
 
                 return response;
             }
@@ -201,16 +200,14 @@ namespace Our.Shield.Core.Services
                 if (await _dataAccessor.Update(environment))
                 {
                     response.Key = environment.Key;
-
-                    return response;
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error<EnvironmentService>(ex, "Error occurred updating Environment");
-            }
 
-            response.ErrorCode = ErrorCode.EnvironmentUpdate;
+                response.ErrorCode = ErrorCode.EnvironmentUpdate;
+            }
 
             return response;
         }

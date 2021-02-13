@@ -4,7 +4,7 @@ using System;
 namespace Our.Shield.Core.Models.Responses
 {
     /// <summary>
-    /// The Response Model for the <see cref="IEnvironmentService"/>.<see cref="IEnvironmentService.Upsert"/>
+    /// The Response Model for the <see cref="IEnvironmentService"/>.<see cref="IEnvironmentService.UpsertAsync"/>
     /// </summary>
     public class UpsertEnvironmentResponse : BaseResponse
     {
