@@ -272,7 +272,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="Extensions\HttpConfigurationExtensions.cs" />
     <Compile Include="Models\SwaggerApp.cs" />
     <Compile Include="Models\SwaggerConfiguration.cs" />
