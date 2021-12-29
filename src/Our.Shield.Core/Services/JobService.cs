@@ -1,24 +1,41 @@
-﻿using Our.Shield.Core.Models;
+﻿using AutoMapper;
+using LightInject;
+using Newtonsoft.Json;
+using Our.Shield.Core.Data.Accessors;
+using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
+using Our.Shield.Shared;
 using System;
 using System.Collections.Generic;
-using Umbraco.Core.Persistence;
 
 namespace Our.Shield.Core.Services
 {
     internal class JobService : IJobService
     {
-        //  Starting id for Jobs
-        private const int JobIdStart = 1000;
-
         private static readonly Locker JobLock = new Locker();
 
         private static readonly Lazy<IDictionary<Guid, Job>> Jobs =
             new Lazy<IDictionary<Guid, Job>>(() =>
             new Dictionary<Guid, Job>());
 
-        private int _registerCount = JobIdStart;
-        
+        private readonly IEnvironmentAccessor _environmentAccessor;
+        private readonly IAppAccessor _appAccessor;
+        private readonly IMapper _mapper;
+
+        public JobService(
+            IEnvironmentAccessor environmentAccessor,
+            IAppAccessor appAccessor,
+            [Inject(nameof(Shield))] IMapper mapper)
+        {
+            GuardClauses.NotNull(environmentAccessor, nameof(environmentAccessor));
+            GuardClauses.NotNull(appAccessor, nameof(appAccessor));
+            GuardClauses.NotNull(mapper, nameof(mapper));
+
+            _environmentAccessor = environmentAccessor;
+            _appAccessor = appAccessor;
+            _mapper = mapper;
+        }
+
         public IDictionary<IEnvironment, IList<IJob>> Environments
         {
             get
@@ -46,17 +63,15 @@ namespace Our.Shield.Core.Services
         {
             return JobLock.Read(() => Jobs.Value[key].DeepCopy());
         }
-        
-        public void Init(ISqlContext sqlContext)
+
+        public void Init()
         {
-            throw new NotImplementedException();
+            var environments = _environmentAccessor.Read().Result;
 
-            //var evs = DbContext.Instance.Environment.Read();
-
-            //foreach (var ev in evs)
-            //{
-            //    Register(new Models.Environment(ev), sqlContext);
-            //}
+            foreach (var environment in environments)
+            {
+                Register(_mapper.Map<Models.Environment>(environment));
+            }
         }
 
         public void Register(IEnvironment environment)
@@ -81,6 +96,7 @@ namespace Our.Shield.Core.Services
                 job.CancelToken?.Token.ThrowIfCancellationRequested();
 
                 var config = ReadConfiguration(job, job.App.DefaultConfiguration);
+
                 if (JobLock.Read(() => job.LastRan != null && config.LastModified < job.LastRan))
                 {
                     return true;
@@ -102,7 +118,7 @@ namespace Our.Shield.Core.Services
 
             return false;
         }
-        
+
         public bool WriteConfiguration(IJob job, IAppConfiguration config)
         {
             throw new NotImplementedException();
@@ -120,56 +136,75 @@ namespace Our.Shield.Core.Services
             throw new NotImplementedException();
             //return DbContext.Instance.Journal.Write(job.Environment.Id, job.App.Id, journal);
         }
-        
-        public IAppConfiguration ReadConfiguration(IJob job, IAppConfiguration defaultConfiguration = null)
-        {
-            throw new NotImplementedException();
 
-            //return DbContext.Instance.Configuration.Read(job.Environment.Id, job.App.Id, ((Job)job).ConfigType,
-            //    defaultConfiguration ?? App<IAppConfiguration>.Create(job.App.Id).DefaultConfiguration);
-        }
-
-        public IAppConfiguration ReadConfiguration(Guid environmentId, string appId, IAppConfiguration defaultConfiguration = null)
+        internal Data.Dtos.App ReadApp(string appId, Guid environmentKey, IAppConfiguration appConfiguration = null)
         {
-            if (defaultConfiguration == null)
+            var app = _appAccessor.Read(appId, environmentKey).Result;
+
+            if (app != null)
             {
-                defaultConfiguration = App<IAppConfiguration>.Create(appId).DefaultConfiguration;
+                return app;
             }
 
-            throw new NotImplementedException();
+            app = new Data.Dtos.App
+            {
+                AppId = appId,
+                EnvironmentKey = environmentKey,
+                Configuration = JsonConvert.SerializeObject(appConfiguration ?? App<IAppConfiguration>.Create(appId).DefaultConfiguration)
+            };
 
-            //return DbContext.Instance.Configuration.Read(environmentId, appId, defaultConfiguration.GetType(),
-            //    defaultConfiguration);
+            app.Key = _appAccessor.Create(app).Result;
+
+            return app;
         }
-        
+
+        public IAppConfiguration ReadConfiguration(IJob job, IAppConfiguration defaultConfiguration = null)
+        {
+            return ReadConfiguration(job.App.Id, job.Environment.Key, defaultConfiguration);
+        }
+
+        public IAppConfiguration ReadConfiguration(string appId, Guid environmentKey, IAppConfiguration defaultConfiguration = null)
+        {
+            defaultConfiguration = defaultConfiguration ?? App<IAppConfiguration>.Create(appId).DefaultConfiguration;
+
+            var app = ReadApp(appId, environmentKey, defaultConfiguration);
+            if (app == null)
+            {
+                return defaultConfiguration;
+            }
+
+            return JsonConvert.DeserializeObject(app.Configuration, defaultConfiguration.GetType()) as IAppConfiguration;
+        }
+
         public IEnumerable<T> ListJournals<T>(IJob job, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
             throw new NotImplementedException(); //DbContext.Instance.Journal.Read<T>(job.Environment.Id, job.App.Id, page, itemsPerPage, out totalPages);
-        
+
         public bool Register(IEnvironment environment, IApp app)
         {
-            throw new NotImplementedException();
+            Job job = null;
+            var dbApp = ReadApp(app.Id, environment.Key);
+            app.Key = dbApp.Key;
 
-            //Job job = null;
+            if (JobLock.Write(() =>
+            {
+                job = new Job
+                {
+                    Key = dbApp.Key,
+                    Environment = environment,
+                    App = app,
+                    ConfigType = app.GetType().BaseType?.GenericTypeArguments[0]
+                };
 
-            //if (JobLock.Write(() =>
-            //{
-            //    job = new Job
-            //    {
-            //        Id = _registerCount++,
-            //        Key = DbContext.Instance.Configuration.ReadUniqueKey(environment.Id, app.Id),
-            //        Environment = environment,
-            //        App = app,
-            //        ConfigType = app.GetType().BaseType?.GenericTypeArguments[0]
-            //    };
+                Jobs.Value.Add(job.Key, job);
+            }))
+            {
+                if (job != null)
+                {
+                    return Execute(job);
+                }
+            }
 
-            //    Jobs.Value.Add(job.Id, job);
-            //}))
-            //{
-            //    if (job != null)
-            //        return Execute(job);
-            //}
-
-            //return false;
+            return false;
         }
 
         public bool Unregister(Guid key)

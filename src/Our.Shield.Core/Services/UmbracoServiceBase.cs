@@ -7,11 +7,11 @@ using UmbConsts = Umbraco.Core.Constants;
 
 namespace Our.Shield.Core.Services
 {
-    public class UmbracoServiceBase
+    public abstract class UmbracoServiceBase
     {
         private const long CacheLengthInTicks = TimeSpan.TicksPerDay;
-        internal UmbracoContext UmbContext;
-        internal AppCaches AppCaches;
+        internal readonly UmbracoContext UmbContext;
+        internal readonly AppCaches AppCaches;
         internal readonly TimeSpan CacheLength = new TimeSpan(CacheLengthInTicks);
 
         internal UmbracoServiceBase(UmbracoContext umbContext, AppCaches appCaches)
@@ -36,10 +36,13 @@ namespace Our.Shield.Core.Services
             AppCaches.RuntimeCache.InsertCacheItem(CacheKeyId(cacheKeyId, id), getCacheItem, CacheLength);
 
         internal void ClearApplicationCacheItem(string cacheKey) =>
-            throw new NotImplementedException(); // AppCaches.RuntimeCache.ClearCacheByKeySearch(cacheKey);
+            AppCaches.RuntimeCache.ClearByKey(cacheKey);
 
-        T GetRequestCacheItem<T>(string cacheKeyXpath, string xpath) => (T)UmbContext.HttpContext.Items[CacheKeyXPath(cacheKeyXpath, xpath)];
-        T GetRequestCacheItem<T>(string cacheKeyId, int id) => (T)UmbContext.HttpContext.Items[CacheKeyId(cacheKeyId, id)];
+        T GetRequestCacheItem<T>(string cacheKeyXpath, string xpath) =>
+            (T)UmbContext.HttpContext.Items[CacheKeyXPath(cacheKeyXpath, xpath)];
+
+        T GetRequestCacheItem<T>(string cacheKeyId, int id) =>
+            (T)UmbContext.HttpContext.Items[CacheKeyId(cacheKeyId, id)];
 
         void SetRequestCacheKey<T>(string cacheKeyXpath, string xpath, T value) =>
             UmbContext.HttpContext.Items[CacheKeyXPath(cacheKeyXpath, xpath)] = value;

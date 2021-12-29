@@ -1,7 +1,6 @@
 ﻿using Our.Shield.Core.Models;
 using System;
 using System.Collections.Generic;
-using Umbraco.Core.Persistence;
 
 namespace Our.Shield.Core.Services
 {
@@ -11,7 +10,7 @@ namespace Our.Shield.Core.Services
 
         IJob Job(Guid key);
 
-        void Init(ISqlContext sqlContext);
+        void Init();
 
         void Register(IEnvironment environment);
 
@@ -30,8 +29,8 @@ namespace Our.Shield.Core.Services
             IAppConfiguration defaultConfiguration = null);
 
         IAppConfiguration ReadConfiguration(
-            Guid environmentId,
             string appId,
+            Guid environmentKey,
             IAppConfiguration defaultConfiguration = null);
 
         IEnumerable<T> ListJournals<T>(

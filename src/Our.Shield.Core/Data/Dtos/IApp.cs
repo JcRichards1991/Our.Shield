@@ -23,7 +23,7 @@ namespace Our.Shield.Core.Data.Dtos
         bool Enabled { get; set; }
 
         /// <summary>
-        /// The Confirguration for the <see cref="IApp"/>
+        /// The Configuration for the <see cref="IApp"/>
         /// </summary>
         string Configuration { get; set; }
     }

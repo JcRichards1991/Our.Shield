@@ -15,14 +15,14 @@ namespace Our.Shield.Core.Models
     public class Job : IJob
     {
         /// <inheritdoc />
-        public int Id { get; set; }
-
-        /// <inheritdoc />
         public IEnvironment Environment { get; set; }
 
         /// <inheritdoc />
         public IApp App { get; set; }
 
+        /// <summary>
+        /// The unique key of the job
+        /// </summary>
         public Guid Key { get; internal set; }
 
         internal Type ConfigType;
@@ -39,7 +39,6 @@ namespace Our.Shield.Core.Models
 
             return new Job
             {
-                Id = Id,
                 Key = Key,
                 Environment = Environment,
                 App = app,
@@ -103,7 +102,6 @@ namespace Our.Shield.Core.Models
         public int UnexceptionWebRequest() => WebRequestHandler.Unexception(this);
 
         public int IgnoreWebRequest(Regex regex) => WebRequestHandler.Ignore(this, regex);
-
 
         public Regex PathToRegex(string path)
         {

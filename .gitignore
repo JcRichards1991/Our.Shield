@@ -263,4 +263,5 @@ src/Our.Shield.UmbracoPackageSite/App_Plugins
 *.orig
 src/Our.Shield.UI/App_Data/
 src/Our.Shield.UI/App_Plugins/Shield/
+src/Our.Shield.UI/App_Plugins/Shield.BackofficeAccess/
 src/Our.Shield.UI/Umbraco/

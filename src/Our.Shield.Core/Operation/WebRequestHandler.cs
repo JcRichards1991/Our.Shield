@@ -59,6 +59,7 @@ namespace Our.Shield.Core.Operation
                 //Domains = Domains(environment.Domains);
                 WatchLocks = new Locker[PipeLineStagesLength];
                 Watchers = new List<Watcher>[PipeLineStagesLength];
+
                 for (var index = 0; index != PipeLineStagesLength; index++)
                 {
                     WatchLocks[index] = new Locker();
@@ -308,11 +309,13 @@ namespace Our.Shield.Core.Operation
             {
                 return false;
             }
+
             exception.CalculatedUrl = true;
             if (string.IsNullOrWhiteSpace(url))
             {
                 return false;
             }
+
             var query = url.IndexOf('?');
             if (query == 0)
             {
@@ -320,6 +323,7 @@ namespace Our.Shield.Core.Operation
                 exception.CalculatedUrlWithSlash = "/" + url;
                 return true;
             }
+
             var point = (query == -1 ? url.Length : query) - 1;
             var builder = new StringBuilder(url.Length);
             if (url[point] == '/')
@@ -336,6 +340,7 @@ namespace Our.Shield.Core.Operation
                 exception.CalculatedUrlWithoutSlash = builder.ToString();
                 return true;
             }
+
             exception.CalculatedUrlWithoutSlash = url;
             for (var i = 0; i != url.Length; i++)
             {
@@ -345,6 +350,7 @@ namespace Our.Shield.Core.Operation
                     builder.Append('/');
                 }
             }
+
             exception.CalculatedUrlWithSlash = builder.ToString();
             return true;
         }
@@ -430,8 +436,7 @@ namespace Our.Shield.Core.Operation
                 }
             }
 
-            HttpWebResponse result = null;
-
+            HttpWebResponse result;
             try
             {
                 result = client.GetResponse() as HttpWebResponse;
@@ -841,6 +846,5 @@ namespace Our.Shield.Core.Operation
                     (regex == null || x.Regex.ToString() == regy));
             });
         }
-
     }
 }

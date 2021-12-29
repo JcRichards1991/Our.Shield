@@ -24,7 +24,8 @@ namespace Our.Shield.Core.Services
     public class EnvironmentService : IEnvironmentService
     {
         private readonly IJobService _jobService;
-        private readonly IEnvironmentAccessor _dataAccessor;
+        private readonly IEnvironmentAccessor _environmentAccessor;
+        private readonly IAppAccessor _appAccessor;
         private readonly DistributedCache _distributedCache;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
@@ -34,24 +35,28 @@ namespace Our.Shield.Core.Services
         /// </summary>
         /// <param name="jobService"><see cref="IJobService"/></param>
         /// <param name="environmentAccessor"><see cref="IEnvironmentAccessor"/></param>
+        /// <param name="appAccessor"></param>
         /// <param name="distributedCache"><see cref="DistributedCache"/></param>
         /// <param name="mapper"></param>
         /// <param name="logger"><see cref="ILogger"/></param>
         public EnvironmentService(
             IJobService jobService,
             IEnvironmentAccessor environmentAccessor,
+            IAppAccessor appAccessor,
             DistributedCache distributedCache,
             [Inject(nameof(Shield))] IMapper mapper,
             ILogger logger)
         {
             GuardClauses.NotNull(jobService, nameof(jobService));
             GuardClauses.NotNull(environmentAccessor, nameof(environmentAccessor));
+            GuardClauses.NotNull(appAccessor, nameof(appAccessor));
             GuardClauses.NotNull(distributedCache, nameof(distributedCache));
             GuardClauses.NotNull(mapper, nameof(mapper));
             GuardClauses.NotNull(logger, nameof(logger));
 
             _jobService = jobService;
-            _dataAccessor = environmentAccessor;
+            _environmentAccessor = environmentAccessor;
+            _appAccessor = appAccessor;
             _distributedCache = distributedCache;
             _mapper = mapper;
             _logger = logger;
@@ -73,7 +78,7 @@ namespace Our.Shield.Core.Services
             var environments = _jobService
                 .Environments
                 .Select(x => x.Key)
-                .Where(x => x.SortOrder != Constants.Tree.DefaultEnvironmentSortOrder)
+                .Where(x => x.SortOrder != int.MaxValue)
                 .ToList();
 
             if (!environments.Any(x => x.Key == environment.Key))
@@ -104,7 +109,7 @@ namespace Our.Shield.Core.Services
 
             try
             {
-                var envs = await _dataAccessor.Read();
+                var envs = await _environmentAccessor.Read();
 
                 response.Environments = _mapper.Map<List<Models.Environment>>(envs);
             }
@@ -119,8 +124,7 @@ namespace Our.Shield.Core.Services
         }
 
         /// <inherit />
-        public GetEnvironmentsResponse Get() =>
-            Task.Run(async () => await GetAsync()).GetAwaiter().GetResult();
+        public GetEnvironmentsResponse Get() => GetAsync().Result;
 
         /// <inherit />
         public async Task<GetEnvironmentResponse> GetAsync(Guid key)
@@ -129,7 +133,7 @@ namespace Our.Shield.Core.Services
 
             try
             {
-                var environment = await _dataAccessor.Read(key);
+                var environment = await _environmentAccessor.Read(key);
 
                 if (environment != null)
                 {
@@ -147,8 +151,7 @@ namespace Our.Shield.Core.Services
         }
 
         /// <inherit />
-        public GetEnvironmentResponse Get(Guid key) =>
-            Task.Run(async () => await GetAsync(key)).GetAwaiter().GetResult();
+        public GetEnvironmentResponse Get(Guid key) => GetAsync(key).Result;
 
         /// <inherit />
         public async Task<DeleteEnvironmentResponse> DeleteAsync(Guid key)
@@ -163,7 +166,7 @@ namespace Our.Shield.Core.Services
 
             try
             {
-                response.Successful = await _dataAccessor.Delete(key);
+                response.Successful = await _environmentAccessor.Delete(key);
             }
             catch(Exception ex)
             {
@@ -175,15 +178,33 @@ namespace Our.Shield.Core.Services
             return response;
         }
 
+        /// <inherit />
+        public async Task<IReadOnlyList<IApp>> GetAppsForEnvironment(Guid key)
+        {
+            var result = await _appAccessor.ReadByEnvironment(key);
+            var apps = new List<IApp>();
+
+            foreach(var dbApp in result)
+            {
+                var app = App<IAppConfiguration>.Create(dbApp.AppId);
+
+                app.Key = dbApp.Key;
+
+                apps.Add(app);
+            }
+
+            return apps;
+        }
+
         private async Task<UpsertEnvironmentResponse> UpsertAsync(IEnvironment environment)
         {
             var response = new UpsertEnvironmentResponse();
 
-            if (environment.Key == default)
+            if (environment.Key == default(Guid))
             {
                 try
                 {
-                    response.Key = await _dataAccessor.Create(environment);
+                    response.Key = await _environmentAccessor.Create(environment);
                 }
                 catch (Exception ex)
                 {
@@ -197,7 +218,7 @@ namespace Our.Shield.Core.Services
 
             try
             {
-                if (await _dataAccessor.Update(environment))
+                if (await _environmentAccessor.Update(environment))
                 {
                     response.Key = environment.Key;
                 }

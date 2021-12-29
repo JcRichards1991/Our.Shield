@@ -1,5 +1,4 @@
 ﻿using NPoco;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Umbraco.Core.Persistence.DatabaseAnnotations;
 

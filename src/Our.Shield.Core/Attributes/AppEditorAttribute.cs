@@ -9,14 +9,14 @@ namespace Our.Shield.Core.Attributes
     [AttributeUsage(AttributeTargets.Class)]
     public class AppEditorAttribute : AppTabAttribute
     {
-        public string AppView { get; set; }
+        internal string AppView { get; set; }
 
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        /// <param name="filePath">location of the app's configuration html file</param>
-        /// <param name="caption"></param>
-        /// <param name="sortOrder"></param>
+        /// <param name="filePath">location of the app's configuration HTML file</param>
+        /// <param name="caption">The Text to display for the tab</param>
+        /// <param name="sortOrder">The order this tab should appear</param>
         public AppEditorAttribute(string filePath, string caption = "Configuration", int sortOrder = 0) : base(caption, sortOrder, "/App_Plugins/Shield/Backoffice/Views/EditApp.html?version=1.1.0")
         {
             AppView = filePath;

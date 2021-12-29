@@ -2,12 +2,15 @@
 
 namespace Our.Shield.Core.Attributes
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public abstract class AppTabAttribute : Attribute
     {
-        public readonly string FilePath;
-        public readonly int SortOrder;
-        public readonly string Caption;
+        internal readonly string FilePath;
+        internal readonly int SortOrder;
+        internal readonly string Caption;
 
         /// <inheritdoc />
         /// <summary>

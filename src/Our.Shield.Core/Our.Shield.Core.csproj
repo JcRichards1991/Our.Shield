@@ -15,7 +15,6 @@
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -283,8 +282,9 @@
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
     <Compile Include="CacheRefreshers\ConfigurationCacheRefresher.cs" />
     <Compile Include="CacheRefreshers\EnvironmentCacheRefresher.cs" />
-    <Compile Include="Components\ClearCacheComposer.cs" />
+    <Compile Include="Components\ClearCacheComponent.cs" />
     <Compile Include="Components\ShieldMigrationComponent.cs" />
+    <Compile Include="Components\StartupComponent.cs" />
     <Compile Include="Composers\BootUpComposer.cs" />
     <Compile Include="Composers\StartUpComposer.cs" />
     <Compile Include="Data\Accessors\Accessor.cs" />
@@ -304,7 +304,7 @@
     <Compile Include="Data\Dtos\Environment.cs" />
     <Compile Include="Data\Migrations\ShieldMigrationPlan.cs" />
     <Compile Include="Data\Migrations\Shield2_0_0Migration.cs" />
-    <Compile Include="Enums\CacheRefreshers.cs" />
+    <Compile Include="Enums\CacheRefreshType.cs" />
     <Compile Include="Enums\Cycle.cs" />
     <Compile Include="Enums\TransferType.cs" />
     <Compile Include="Enums\UmbracoUrlType.cs" />
@@ -322,9 +322,12 @@
     <Compile Include="Services\IEnvironmentService.cs" />
     <Compile Include="Services\IJobService.cs" />
     <Compile Include="Services\IJournalService.cs" />
+    <Compile Include="Services\IUmbracoContentService.cs" />
+    <Compile Include="Services\IUmbracoMediaService.cs" />
+    <Compile Include="Services\IUmbracoUrlService.cs" />
     <Compile Include="Services\JournalService.cs" />
     <Compile Include="Services\ShieldService.cs" />
-    <Compile Include="Settings\Configuration.cs" />
+    <Compile Include="Settings\ShieldConfiguration.cs" />
     <Compile Include="Settings\IpAddressValidation.cs" />
     <Compile Include="Settings\IpAddressValidationElement.cs" />
     <Compile Include="Models\IpAccessControl.cs" />

@@ -40,7 +40,10 @@ namespace Our.Shield.Core.Operation
                 foreach (var interest in Interests)
                 {
                     if ((type.BaseType == null || type.BaseType.Name != interest.Name ||
-                         type.BaseType.Namespace != interest.Namespace) && !type.IsSubclassOf(interest)) continue;
+                         type.BaseType.Namespace != interest.Namespace) && !type.IsSubclassOf(interest))
+                    {
+                        continue;
+                    }
 
                     IFrisk derivedObject = null;
                     if (type.ContainsGenericParameters)

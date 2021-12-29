@@ -19,6 +19,7 @@ namespace Our.Shield.Core.Tests.Services
             _environmentService = new EnvironmentService(
                 Mock.Of<IJobService>(),
                 MockEnvironmentAccess(),
+                MockAppAccess(),
                 Mock.Of<DistributedCache>(),
                 Mock.Of<IMapper>(),
                 Mock.Of<ILogger>());
@@ -35,14 +36,21 @@ namespace Our.Shield.Core.Tests.Services
             return dataAccessor.Object;
         }
 
+        private IAppAccessor MockAppAccess()
+        {
+            var dataAccessor = new Mock<IAppAccessor>();
+
+            return dataAccessor.Object;
+        }
+
         [Fact]
-        public async Task WhenNull_Upsert_ShouldThrowException()
+        public async Task Upsert_ShouldThrowException_WhenNull()
         {
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await _environmentService.UpsertAsync(null));
         }
 
         [Fact]
-        public async Task WhenNotNullAndNoKey_Upsert_ShouldInsertEnvironment()
+        public async Task Upsert_ShouldInsertEnvironment()
         {
             var env = new Models.Requests.UpsertEnvironmentRequest
             {
@@ -57,7 +65,7 @@ namespace Our.Shield.Core.Tests.Services
         }
 
         [Fact]
-        public async Task WhenNotNullAndWithKey_Upsert_ShouldUpdateEnvironment()
+        public async Task Upsert_ShouldUpdateEnvironment()
         {
             var env = new Models.Requests.UpsertEnvironmentRequest
             {
@@ -73,13 +81,13 @@ namespace Our.Shield.Core.Tests.Services
         }
 
         [Fact]
-        public async Task WhenEmptyGuid_Delete_ShouldThrowException()
+        public async Task Delete_ShouldThrowException_WhenEmptyGuid()
         {
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await _environmentService.DeleteAsync(Guid.Empty));
         }
 
         [Fact]
-        public async Task WhenNotNull_Delete_ShouldRemoveEnvironment()
+        public async Task Delete_ShouldRemoveEnvironment_WhenNotNull()
         {
             var env = new Models.Requests.UpsertEnvironmentRequest
             {

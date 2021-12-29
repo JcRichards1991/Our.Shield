@@ -19,7 +19,7 @@ namespace Our.Shield.Core.Components
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Initalizes a new instance of <see cref="ShieldMigrationComponent"/> class
+        /// Initializes a new instance of <see cref="ShieldMigrationComponent"/> class
         /// </summary>
         /// <param name="scopeProvider"></param>
         /// <param name="migrationBuilder"></param>

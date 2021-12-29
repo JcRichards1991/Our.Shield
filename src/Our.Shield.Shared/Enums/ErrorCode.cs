@@ -5,7 +5,7 @@ namespace Our.Shield.Shared.Enums
     public enum ErrorCode
     {
         [Description("None")]
-        None,
+        None = 0,
 
         [Description("Environment - Insert")]
         EnviromentInsert,

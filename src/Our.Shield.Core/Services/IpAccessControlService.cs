@@ -46,12 +46,12 @@ namespace Our.Shield.Core.Services
         {
             var ips = new List<IPAddress>();
 
-            if (Configuration.IpAddressValidation.CheckUserHostAddress)
+            if (ShieldConfiguration.IpAddressValidation.CheckUserHostAddress)
             {
                 ips.Add(GetIpAddressRange(request.UserHostAddress).Begin.MapToIPv6());
             }
 
-            foreach (var requestHeader in Configuration.IpAddressValidation.RequestHeaders)
+            foreach (var requestHeader in ShieldConfiguration.IpAddressValidation.RequestHeaders)
             {
                 var headerValue = request.Headers[requestHeader];
 

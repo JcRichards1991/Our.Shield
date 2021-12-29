@@ -127,7 +127,19 @@ namespace Our.Shield.Core.UI
 
                 if (environemnt != null)
                 {
+                    var apps = _environmentService.GetAppsForEnvironment(key).Result;
 
+                    foreach(var app in apps)
+                    {
+                        tree.Add(CreateTreeNode(
+                            app.Key.ToString(),
+                            id,
+                            new FormDataCollection(Enumerable.Empty<KeyValuePair<string, string>>()),
+                            Services.TextService.Localize($"Shield.{app.Id}/Name"),
+                            app.Icon,
+                            false,
+                            $"settings/{Constants.App.Alias}/app/{app.Key}"));
+                    }
                 }
             }
 

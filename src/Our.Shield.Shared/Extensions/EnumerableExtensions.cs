@@ -10,16 +10,16 @@ namespace Our.Shield.Shared.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="items"></param>
-        /// <param name="predict"></param>
+        /// <param name="predicate"></param>
         /// <returns>The index of the item if found, otherwise, -1</returns>
-        public static int IndexOf<T>(this IEnumerable<T> items, Func<T, bool> predict)
+        public static int IndexOf<T>(this IEnumerable<T> items, Func<T, bool> predicate)
         {
             var found = false;
             int index = 0;
 
             foreach(var item in items)
             {
-                if (predict(item))
+                if (predicate(item))
                 {
                     found = true;
                     break;

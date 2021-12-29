@@ -17,7 +17,7 @@ namespace Our.Shield.Core.Models.Requests
         /// Key of the Environment
         /// </summary>
         [JsonProperty("key")]
-        public Guid Key { get; set; } = default;
+        public Guid Key { get; set; } = default(Guid);
 
         /// <summary>
         /// Icon of the Environment

@@ -9,6 +9,16 @@ namespace Our.Shield.Core.CacheRefreshers
     /// <inheritdoc />
     public class ConfigurationCacheRefresher : JsonCacheRefresherBase<ConfigurationCacheRefresher>
     {
+        private readonly IJobService _jobService;
+
+        /// <inheritdoc />
+        public ConfigurationCacheRefresher(
+            AppCaches appCaches,
+            IJobService jobService) : base(appCaches)
+        {
+            _jobService = jobService;
+        }
+
         /// <inheritdoc />
         public override Guid RefresherUniqueId => new Guid(Constants.DistributedCache.ConfigurationCacheRefresherId);
 
@@ -19,32 +29,27 @@ namespace Our.Shield.Core.CacheRefreshers
         protected override ConfigurationCacheRefresher This => this;
 
         /// <inheritdoc />
-        public ConfigurationCacheRefresher(AppCaches appCaches) : base (appCaches)
-        {
-        }
-
-        /// <inheritdoc />
         public override void Refresh(string json)
         {
-            //var cacheInstruction = Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigurationCacheRefresherJsonModel>(json);
+            var cacheInstruction = Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigurationCacheRefresherJsonModel>(json);
 
-            //var job = JobService.Instance.Job(cacheInstruction.Key);
+            var job = _jobService.Job(cacheInstruction.Key);
 
-            //if (job == null)
-            //{
-            //    //  Invalid id
-            //    return;
-            //}
+            if (job == null)
+            {
+                //  Invalid id
+                return;
+            }
 
-            //switch (cacheInstruction.CacheRefreshType)
-            //{
-            //    case Enums.CacheRefreshType.Write:
-            //        JobService.Instance.Execute((Job)job);
-            //        break;
+            switch (cacheInstruction.CacheRefreshType)
+            {
+                case Enums.CacheRefreshType.Upsert:
+                    _jobService.Execute((Job)job);
+                    break;
 
-            //    default:
-            //        return;
-            //}
+                default:
+                    return;
+            }
 
             base.Refresh(json);
         }

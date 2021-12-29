@@ -1,4 +1,5 @@
 ﻿using Our.Shield.Core.Attributes;
+using Our.Shield.Core.Enums;
 using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
@@ -47,10 +48,10 @@ namespace Our.Shield.FrontendAccess.Models
             },
             Unauthorized = new TransferUrl
             {
-                TransferType = TransferTypes.Redirect,
+                TransferType = TransferType.Redirect,
                 Url = new UmbracoUrl
                 {
-                    Type = UmbracoUrlTypes.Url,
+                    Type = UmbracoUrlType.Url,
                     Value = string.Empty
                 }
             }
@@ -70,7 +71,7 @@ namespace Our.Shield.FrontendAccess.Models
                 return false;
             }
 
-            if (!c.Enable || !job.Environment.Enable)
+            if (!c.Enable || !job.Environment.Enabled)
             {
                 return true;
             }
@@ -80,7 +81,7 @@ namespace Our.Shield.FrontendAccess.Models
                 job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
             }
 
-            if (config.Unauthorized.TransferType != TransferTypes.PlayDead)
+            if (config.Unauthorized.TransferType != TransferType.PlayDead)
             {
                 job.ExceptionWebRequest(config.Unauthorized.Url);
             }
@@ -93,7 +94,7 @@ namespace Our.Shield.FrontendAccess.Models
                 {
                     httpApp.Context.Items.Add(_allowKey, true);
                 }
-                return new WatchResponse(WatchResponse.Cycles.Continue);
+                return new WatchResponse(Cycle.Continue);
             });
 
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400500, (count, httpApp) =>
@@ -101,18 +102,18 @@ namespace Our.Shield.FrontendAccess.Models
                 if ((bool?)httpApp.Context.Items[_allowKey] == true
                     || (config.UmbracoUserEnable && AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)))
                 {
-                    return new WatchResponse(WatchResponse.Cycles.Continue);
+                    return new WatchResponse(Cycle.Continue);
                 }
 
                 var url = new UmbracoUrlService().Url(config.Unauthorized.Url);
                 if (url == null)
                 {
-                    return new WatchResponse(WatchResponse.Cycles.Error);
+                    return new WatchResponse(Cycle.Error);
                 }
 
                 if (httpApp.Context.Request.Url.LocalPath.Equals(url))
                 {
-                    return new WatchResponse(WatchResponse.Cycles.Continue);
+                    return new WatchResponse(Cycle.Continue);
                 }
 
                 job.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access Page: {httpApp.Context.Request.Url}. Access was denied"));

@@ -28,6 +28,7 @@ namespace Our.Shield.Core.Composers
 
         private void RegisterComponents(Composition composition)
         {
+            composition.Components().Append<StartupComponent>();
             composition.Components().Append<ClearCacheComponent>();
         }
 
@@ -42,6 +43,8 @@ namespace Our.Shield.Core.Composers
         {
             composition.Register<IJobService, JobService>(Lifetime.Singleton);
             composition.Register<IEnvironmentService, EnvironmentService>();
+            composition.Register<IUmbracoContentService, UmbracoContentService>();
+            composition.Register<IUmbracoMediaService, UmbracoMediaService>();
         }
 
         private void RegisterCacheRefreshers(Composition composition)

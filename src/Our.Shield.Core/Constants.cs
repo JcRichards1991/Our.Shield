@@ -27,28 +27,6 @@
         }
 
         /// <summary>
-        /// Constants relating to the dashboards of shield
-        /// </summary>
-        public class Dashboard
-        {
-            /// <summary>
-            /// The Environment Node Root Id
-            /// </summary>
-            public const int EnvironmentsDashboardId = 0;
-        }
-
-        /// <summary>
-        /// Constants for the tree controller
-        /// </summary>
-        public class Tree
-        {
-            /// <summary>
-            /// The default environment Sort Order
-            /// </summary>
-            public const int DefaultEnvironmentSortOrder = 999999;
-        }
-
-        /// <summary>
         /// Constants for the Distributed Cache
         /// </summary>
         public class DistributedCache

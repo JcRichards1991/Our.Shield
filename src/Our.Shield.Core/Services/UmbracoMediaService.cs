@@ -1,5 +1,4 @@
 ﻿using Umbraco.Core.Cache;
-using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 using Umbraco.Web;
 using Umbraco.Web.PublishedCache;
@@ -7,7 +6,7 @@ using UmbConsts = Umbraco.Core.Constants;
 
 namespace Our.Shield.Core.Services
 {
-    public class UmbracoMediaService : UmbracoServiceBase
+    public class UmbracoMediaService : UmbracoServiceBase, IUmbracoMediaService
     {
         private const string CacheKeyId = "8bad404c-82bb-477a-89a7-37bac7e75319";
         private const string CacheKeyXPath = "84ada488-7e7c-4e32-b46b-6c5968e4c629";
@@ -31,14 +30,7 @@ namespace Our.Shield.Core.Services
             ClearApplicationCacheItem(CacheKeyUrl);
         }
 
-        public void ClearCache(Umbraco.Core.Services.IMediaService sender,
-            Umbraco.Core.Events.SaveEventArgs<IMedia> e)
-        {
-            ClearMediaCache();
-        }
-
-        public void ClearCache(Umbraco.Core.Services.IMediaService sender,
-            Umbraco.Core.Events.DeleteEventArgs<IMedia> e)
+        public void ClearCache()
         {
             ClearMediaCache();
         }

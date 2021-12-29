@@ -1,132 +1,130 @@
-﻿using Our.Shield.Core.Models;
+﻿using Our.Shield.Core.Enums;
+using Our.Shield.Core.Models;
 using System;
-using System.IO;
-using System.Web;
-using System.Web.Hosting;
+using Umbraco.Core;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Logging;
 using Umbraco.Web;
-using Umbraco.Web.Security;
 
 namespace Our.Shield.Core.Services
 {
-    public class UmbracoUrlService
+    /// <summary>
+    /// 
+    /// </summary>
+    public class UmbracoUrlService : IUmbracoUrlService
     {
-        //private IRuntimeCacheProvider cache = null;
-        private string CacheKeyUrl = "c3ee352b-e80f-4db1-9d13-d74a9a5a532d:";
-        private string CacheKeyIsUmbracoUrl = "524ecafb-adc6-1054-a867-171e57f0e76c:";
+        private readonly IUmbracoContentService _umbracoContentService;
+        private readonly IUmbracoContextFactory _umbracoContextFactory;
+        private readonly AppCaches _appCaches;
+        private readonly ILogger _logger;
+
+        private const string CacheKeyUrl = "c3ee352b-e80f-4db1-9d13-d74a9a5a532d:";
+        private const string CacheKeyIsUmbracoUrl = "524ecafb-adc6-1054-a867-171e57f0e76c:";
         private TimeSpan CacheDuration = new TimeSpan(TimeSpan.TicksPerMinute * 10);
 
-        public void EnsureUmbracoContext(HttpContext context)
+        internal UmbracoUrlService()
         {
-            throw new NotImplementedException();
-
-            //if (UmbracoContext.Current == null)
-            //{
-            //    var dummyHttpContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest(context.Request.Url.AbsolutePath, "", new StringWriter())));
-            //    UmbracoContext.EnsureContext(
-            //        dummyHttpContext,
-            //        ApplicationContext.Current,
-            //        new WebSecurity(dummyHttpContext, ApplicationContext.Current),
-            //        UmbracoConfig.For.UmbracoSettings(),
-            //        UrlProviderResolver.Current.Providers,
-            //        false);
-            //}
+            _umbracoContentService = Umbraco.Core.Composing.Current.Factory.GetInstance<IUmbracoContentService>();
+            _umbracoContextFactory = Umbraco.Core.Composing.Current.Factory.GetInstance<IUmbracoContextFactory>();
+            _appCaches = Umbraco.Core.Composing.Current.AppCaches;
+            _logger = Umbraco.Core.Composing.Current.Logger;
         }
 
         /// <summary>
-        /// Gets the Url from the UmbracoUrl type
+        /// Initializes a new instance of <see cref="UmbracoUrlService"/>
         /// </summary>
-        /// <param name="umbracoUrl">The umbraco url object from the app's config</param>
-        /// <returns>The Unauthorised Url, or null</returns>
+        /// <param name="umbracoContentService"></param>
+        /// <param name="umbracoContextFactory"></param>
+        /// <param name="appCaches"></param>
+        /// <param name="logger"></param>
+        public UmbracoUrlService(
+            IUmbracoContentService umbracoContentService,
+            IUmbracoContextFactory umbracoContextFactory,
+            AppCaches appCaches,
+            ILogger logger)
+        {
+            _umbracoContentService = umbracoContentService;
+            _umbracoContextFactory = umbracoContextFactory;
+            _appCaches = appCaches;
+            _logger = logger;
+        }
+
+        /// <inheritdoc />
         public string Url(UmbracoUrl umbracoUrl)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(umbracoUrl.Value))
+            {
+                _logger.Error<UmbracoUrlService>("Error: No Unauthorized URL set in configuration", null);
 
-            //if (string.IsNullOrEmpty(umbracoUrl.Value))
-            //{
-            //    LogHelper.Error<UmbracoUrlService>("Error: No Unauthorized URL set in configuration", null);
-            //    return null;
-            //}
+                return null;
+            }
 
-            //if (umbracoUrl.Type == UmbracoUrlTypes.Url)
-            //{
-            //    return umbracoUrl.Value;
-            //}
+            if (umbracoUrl.Type == UmbracoUrlType.Url)
+            {
+                return umbracoUrl.Value;
+            }
 
-            //if (cache == null)
-            //{
-            //    cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
-            //}
+            return _appCaches.RuntimeCache.GetCacheItem<string>(CacheKeyUrl + umbracoUrl.Value, () =>
+            {
+                using (var umbContextRef = _umbracoContextFactory.EnsureUmbracoContext())
+                {
 
-            //return cache.GetCacheItem<string>(CacheKeyUrl + umbracoUrl.Value, () =>
-            //{
-            //    EnsureUmbracoContext(HttpContext.Current);
-            //    var umbContext = UmbracoContext.Current;
-            //    if (umbContext == null)
-            //    {
-            //        LogHelper.Error<UmbracoUrlService>("Need to run this method from within a valid HttpContext request", null);
-            //        return null;
-            //    }
+                }
 
-            //    var umbracoContentService = new UmbracoContentService(umbContext);
-            //    switch (umbracoUrl.Type)
-            //    {
-            //        case UmbracoUrlTypes.XPath:
-            //            var xpathId = umbracoContentService.XPath(umbracoUrl.Value);
-            //            if (xpathId != null)
-            //                return umbracoContentService.Url((int)xpathId);
+                switch (umbracoUrl.Type)
+                {
+                    case UmbracoUrlType.XPath:
+                        var xpathId = _umbracoContentService.XPath(umbracoUrl.Value);
+                        if (xpathId != null)
+                        {
+                            return _umbracoContentService.Url((int)xpathId);
+                        }
 
-            //            LogHelper.Error<UmbracoUrlService>($"Error: Unable to find content using xpath of '{umbracoUrl.Value}'", null);
-            //            break;
+                        _logger.Error<UmbracoUrlService>($"Error: Unable to find content using XPath of '{umbracoUrl.Value}'", null);
+                        break;
 
-            //        case UmbracoUrlTypes.ContentPicker:
-            //            if (int.TryParse(umbracoUrl.Value, out var id))
-            //                return umbracoContentService.Url(id);
+                    case UmbracoUrlType.ContentPicker:
+                        if (int.TryParse(umbracoUrl.Value, out var id))
+                        {
+                            return _umbracoContentService.Url(id);
+                        }
 
-            //            LogHelper.Error<UmbracoUrlService>("Error: Unable to parse the selected unauthorized URL content picker item. Please ensure a valid content node is selected", null);
-            //            break;
+                        _logger.Error<UmbracoUrlService>("Error: Unable to parse the selected unauthorized URL content picker item. Please ensure a valid content node is selected", null);
+                        break;
 
-            //        default:
-            //            LogHelper.Error<UmbracoUrlService>("Error: Unable to determine which method to use to get the unauthorized URL. Please ensure URL, XPath or Content Picker is selected", null);
-            //            break;
-            //    }
-            //    return null;
-            //}, CacheDuration);
+                    default:
+                        _logger.Error<UmbracoUrlService>("Error: Unable to determine which method to use to get the unauthorized URL. Please ensure URL, XPath or Content Picker is selected", null);
+                        break;
+                }
+                return null;
+            }, CacheDuration);
         }
 
-
-        /// <summary>
-        /// States whether an Url is handled by Umbraco
-        /// </summary>
-        /// <param name="umbracoUrl">The umbraco url object from the app's config</param>
-        /// <returns>Url is an Ubraco Url</returns>
+        /// <inheritdoc />
         public bool IsUmbracoUrl(UmbracoUrl umbracoUrl)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(umbracoUrl.Value))
+            {
+                _logger.Error<UmbracoUrlService>("Error: No Unauthorized URL set in configuration", null);
 
-            //if (string.IsNullOrEmpty(umbracoUrl.Value))
-            //{
-            //    LogHelper.Error<UmbracoUrlService>("Error: No Unauthorized URL set in configuration", null);
-            //    return false;
-            //}
+                return false;
+            }
 
-            //if (umbracoUrl.Type == UmbracoUrlTypes.XPath || umbracoUrl.Type == UmbracoUrlTypes.ContentPicker)
-            //{
-            //    return true;
-            //}
-            //if (cache == null)
-            //{
-            //    cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
-            //}
+            if (umbracoUrl.Type == UmbracoUrlType.XPath || umbracoUrl.Type == UmbracoUrlType.ContentPicker)
+            {
+                return true;
+            }
 
-            //return cache.GetCacheItem<bool>(CacheKeyIsUmbracoUrl + umbracoUrl.Value, () =>
-            //{
-            //    EnsureUmbracoContext(HttpContext.Current);
-            //    var umbContext = UmbracoContext.Current;
-
-            //    return umbContext.ContentCache.GetByRoute(umbracoUrl.Value) != null;
-            //}, CacheDuration);
+            return _appCaches.RuntimeCache.GetCacheItem(
+                CacheKeyIsUmbracoUrl + umbracoUrl.Value,
+                () =>
+                {
+                    using (var umbContextRef = _umbracoContextFactory.EnsureUmbracoContext())
+                    {
+                        return umbContextRef.UmbracoContext.Content.GetByRoute(umbracoUrl.Value) != null;
+                    }
+                },
+                CacheDuration);
         }
     }
 }

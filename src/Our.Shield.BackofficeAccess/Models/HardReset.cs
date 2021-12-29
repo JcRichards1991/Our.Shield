@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Our.Shield.Core.Settings;
+using System;
 using System.Configuration;
 using System.IO;
 using System.Text;
@@ -6,7 +7,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Configuration = Our.Shield.Core.Settings.Configuration;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.BackofficeAccess.Models.HardReset), nameof(Our.Shield.BackofficeAccess.Models.HardReset.Start))]
 namespace Our.Shield.BackofficeAccess.Models
@@ -24,7 +24,7 @@ namespace Our.Shield.BackofficeAccess.Models
 
             var curUmbVersion = Umbraco.Core.Configuration.UmbracoVersion.SemanticVersion.ToString();
 
-            if(!curUmbVersion.Equals(Configuration.UmbracoVersion, StringComparison.InvariantCultureIgnoreCase))
+            if (!curUmbVersion.Equals(ShieldConfiguration.UmbracoVersion, StringComparison.InvariantCultureIgnoreCase))
             {
                 return;
             }
@@ -42,7 +42,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 {
                     DeleteDirectory(resetter.SoftLocation);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Serilog.Log.Error(ex, "Unable to delete directory {SoftLocation}", resetter.SoftLocation);
                     return;
@@ -76,7 +76,7 @@ namespace Our.Shield.BackofficeAccess.Models
             {
                 Directory.Move(resetter.HardLocation, resetter.SoftLocation);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Serilog.Log.Error(ex, "Unable to rename directory from {SoftLocation} to {HardLocation}", resetter.SoftLocation, resetter.HardLocation);
                 return;
@@ -86,7 +86,7 @@ namespace Our.Shield.BackofficeAccess.Models
             {
                 resetter.Delete();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Serilog.Log.Error(ex, "Unable to delete the Hard Resetter File located at {FilePath}", resetter.FilePath);
                 return;
@@ -96,7 +96,7 @@ namespace Our.Shield.BackofficeAccess.Models
             {
                 webConfig.Save();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Serilog.Log.Error(ex, "Failed to save changes to the website's web.config file");
                 Directory.Move(resetter.SoftLocation, resetter.HardLocation);
