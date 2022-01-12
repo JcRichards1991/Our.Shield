@@ -13,7 +13,7 @@ namespace Our.Shield.Core.Data.Accessors
     /// <summary>
     /// Implements <see cref="IEnvironmentAccessor"/>
     /// </summary>
-    public class EnvironmentAccessor : Accessor, IEnvironmentAccessor
+    internal class EnvironmentAccessor : Accessor, IEnvironmentAccessor
     {
         /// <summary>
         /// Initializes a new instance of <see cref="EnvironmentAccessor"/> class

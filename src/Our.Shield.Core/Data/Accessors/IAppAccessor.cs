@@ -40,7 +40,7 @@ namespace Our.Shield.Core.Data.Accessors
         /// </summary>
         /// <param name="environmentKey">The key of the environment</param>
         /// <returns>List of apps associated to the environment</returns>
-        Task<IReadOnlyList<App>> ReadByEnvironment(Guid environmentKey);
+        Task<IReadOnlyCollection<IApp>> ReadByEnvironmentKey(Guid environmentKey);
 
         /// <summary>
         /// 

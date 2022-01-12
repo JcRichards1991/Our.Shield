@@ -308,6 +308,8 @@
     <Compile Include="Enums\Cycle.cs" />
     <Compile Include="Enums\TransferType.cs" />
     <Compile Include="Enums\UmbracoUrlType.cs" />
+    <Compile Include="Factories\AppFactory.cs" />
+    <Compile Include="Factories\IAppFactory.cs" />
     <Compile Include="Mappers\GlobalMapper.cs" />
     <Compile Include="Models\CacheRefresherJson\ConfigurationCacheRefresherJsonModel.cs" />
     <Compile Include="Models\CacheRefresherJson\EnvironmentCacheRefresherJsonModel.cs" />
@@ -315,6 +317,7 @@
     <Compile Include="Models\Requests\UpsertEnvironmentRequest.cs" />
     <Compile Include="Models\Responses\BaseResponse.cs" />
     <Compile Include="Models\Responses\DeleteEnvironmentResponse.cs" />
+    <Compile Include="Models\Responses\GetEnvironmentAppsResponse.cs" />
     <Compile Include="Models\Responses\GetEnvironmentResponse.cs" />
     <Compile Include="Models\Responses\GetEnvironmentsResponse.cs" />
     <Compile Include="Models\Responses\UpsertEnvironmentResponse.cs" />

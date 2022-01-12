@@ -69,7 +69,7 @@ angular
           addEnvironment: function () {
             $location.path('/settings/shield/CreateEnvironment');
           },
-          editEnvironment: function (key) {
+          clickEnvironment: function (key) {
             $location.path('/settings/shield/environment/' + key);
           },
           sortEnvironments: function () {
@@ -219,6 +219,15 @@ angular
               enabled: false,
               continueProcessing: false
             },
+            init: function () {
+              shieldResource
+                .getEnvironments()
+                .then(function (response) {
+                  //  TODO: determine from response.environments the correct sort order for this environment
+                  vm.environment.sortOrder = 20;
+                  vm.loading = false;
+                });
+            },
             loading: true,
             save: function ($form) {
               vm.button.state = 'busy';
@@ -282,7 +291,7 @@ angular
             environmentKey: $routeParams.id,
             editing: $routeParams.edit === 'true',
             loading: true,
-            environment: {},
+            environment: null,
             path: [],
             ancestors: null,
             apps: [],
@@ -318,10 +327,17 @@ angular
             init: function () {
               shieldResource
                 .getEnvironment(vm.environmentKey)
-                .then(function (response) {
-                  vm.environment = response.environment;
-                  navigationService.syncTree({ tree: 'shield', path: vm.path, forceReload: true, activate: true });
-                  vm.loading = false;
+                .then(function (environmentResponse) {
+                  vm.environment = environmentResponse.environment;
+
+                  shieldResource
+                    .getEnvironmentApps(vm.environmentKey)
+                    .then(function (appsResponse) {
+                      vm.apps = appsResponse.apps;
+
+                      navigationService.syncTree({ tree: 'shield', path: vm.path, forceReload: true, activate: true });
+                      vm.loading = false;
+                    });
                 });
             },
             save: function ($form) {
@@ -363,6 +379,15 @@ angular
                       });
                   }
                 });
+            },
+            appClick: function (key) {
+              $location.path('/settings/shield/app/' + key);
+            },
+            getAppNameKey: function (appId) {
+              return 'Shield.' + appId + '_Name'
+            },
+            getAppDescriptionKey: function (appId) {
+              return 'Shield.' + appId + '_Description'
             }
           });
       }
@@ -1002,6 +1027,13 @@ angular
           },
           getEnvironments: function () {
             return shieldResourceHelper.get(apiRoot + 'GetEnvironments');
+          },
+          getEnvironmentApps: function (environmentKey) {
+            return shieldResourceHelper.get(
+              apiRoot + 'GetEnvironmentApps',
+              {
+                environmentKey: environmentKey
+              });
           },
           getJournals: function (method, id, page, orderBy, orderByDirection) {
             return shieldResourceHelper.get(

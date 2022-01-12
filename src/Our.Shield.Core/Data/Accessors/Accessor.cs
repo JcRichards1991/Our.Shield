@@ -7,7 +7,7 @@ namespace Our.Shield.Core.Data.Accessors
     /// <summary>
     /// Base Data Accessor
     /// </summary>
-    public abstract class Accessor
+    internal abstract class Accessor
     {
         /// <summary>
         /// Scope Provider

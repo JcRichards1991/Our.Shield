@@ -79,7 +79,7 @@ namespace Our.Shield.Core.Operation
             }
         }
 
-        private static readonly Lazy<Dictionary<string, Dictionary<string, Type>>> RegisterApp = new Lazy<Dictionary<string, Dictionary<string, Type>>>(() =>
+        private static readonly Lazy<Dictionary<string, Dictionary<string, Type>>> RegisteredInterests = new Lazy<Dictionary<string, Dictionary<string, Type>>>(() =>
         {
             var installed = Interests.ToDictionary(key => key.FullName, value => new Dictionary<string, Type>());
             var filenames = new HashSet<string>();
@@ -96,9 +96,10 @@ namespace Our.Shield.Core.Operation
 
             //  Now see if any dlls haven't been loaded yet
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
             if (string.IsNullOrEmpty(path))
+            {
                 return null;
+            }
 
             var di = new DirectoryInfo(path);
             foreach (var file in di.GetFiles("*.dll"))
@@ -122,6 +123,7 @@ namespace Our.Shield.Core.Operation
                     // Not a .net assembly  - ignore
                 }
             }
+
             return installed;
         });
 
@@ -130,16 +132,15 @@ namespace Our.Shield.Core.Operation
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static IDictionary<string, Type> Register<T>()
+        public static IDictionary<string, Type> GetRegistedInterestTypes<T>()
         {
             var typeFullName = typeof(T).FullName;
 
-            if(string.IsNullOrEmpty(typeFullName))
-                return new Dictionary<string, Type>();
-
-            return RegisterApp.Value.TryGetValue(typeFullName, out var results)
-                ? results
-                : new Dictionary<string, Type>();
+            return string.IsNullOrEmpty(typeFullName)
+                ? new Dictionary<string, Type>()
+                : RegisteredInterests.Value.TryGetValue(typeFullName, out var results)
+                    ? results
+                    : new Dictionary<string, Type>();
         }
     }
 }

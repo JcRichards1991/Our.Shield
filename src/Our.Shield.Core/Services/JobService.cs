@@ -2,11 +2,13 @@
 using LightInject;
 using Newtonsoft.Json;
 using Our.Shield.Core.Data.Accessors;
+using Our.Shield.Core.Factories;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using Our.Shield.Shared;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Our.Shield.Core.Services
 {
@@ -20,19 +22,23 @@ namespace Our.Shield.Core.Services
 
         private readonly IEnvironmentAccessor _environmentAccessor;
         private readonly IAppAccessor _appAccessor;
+        private readonly IAppFactory _appFactory;
         private readonly IMapper _mapper;
 
         public JobService(
             IEnvironmentAccessor environmentAccessor,
             IAppAccessor appAccessor,
+            IAppFactory appFactory,
             [Inject(nameof(Shield))] IMapper mapper)
         {
             GuardClauses.NotNull(environmentAccessor, nameof(environmentAccessor));
             GuardClauses.NotNull(appAccessor, nameof(appAccessor));
+            GuardClauses.NotNull(appFactory, nameof(appFactory));
             GuardClauses.NotNull(mapper, nameof(mapper));
 
             _environmentAccessor = environmentAccessor;
             _appAccessor = appAccessor;
+            _appFactory = appFactory;
             _mapper = mapper;
         }
 
@@ -51,7 +57,8 @@ namespace Our.Shield.Core.Services
                             jobs = new List<IJob>();
                             results.Add(kvp.Value.Environment, jobs);
                         }
-                        jobs.Add(kvp.Value.DeepCopy());
+
+                        jobs.Add(kvp.Value.DeepCopy(_appFactory.Create(kvp.Value.App.Id)));
                     }
 
                     return results;
@@ -61,41 +68,46 @@ namespace Our.Shield.Core.Services
 
         public IJob Job(Guid key)
         {
-            return JobLock.Read(() => Jobs.Value[key].DeepCopy());
+            return JobLock.Read(() =>
+            {
+                var job = Jobs.Value[key];
+
+                return job.DeepCopy(_appFactory.Create(job.App.Id));
+            });
         }
 
-        public void Init()
+        public async void Init()
         {
-            var environments = _environmentAccessor.Read().Result;
+            var environments = await _environmentAccessor.Read();
 
             foreach (var environment in environments)
             {
-                Register(_mapper.Map<Models.Environment>(environment));
+                await Register(_mapper.Map<Models.Environment>(environment));
             }
         }
 
-        public void Register(IEnvironment environment)
+        public async Task Register(IEnvironment environment)
         {
-            var appIds = App<IAppConfiguration>.Register;
+            var appIds = _appFactory.GetRegistedAppsIds();
 
             foreach (var appId in appIds)
             {
-                var app = App<IAppConfiguration>.Create(appId.Key);
+                var app = _appFactory.Create(appId);
 
                 if (app.Init())
                 {
-                    Register(environment, app);
+                    await Register(environment, app);
                 }
             }
         }
 
-        public bool Execute(Job job)
+        public async Task<bool> Execute(Job job)
         {
             try
             {
                 job.CancelToken?.Token.ThrowIfCancellationRequested();
 
-                var config = ReadConfiguration(job, job.App.DefaultConfiguration);
+                var config = await ReadConfiguration(job, job.App.DefaultConfiguration);
 
                 if (JobLock.Read(() => job.LastRan != null && config.LastModified < job.LastRan))
                 {
@@ -137,9 +149,9 @@ namespace Our.Shield.Core.Services
             //return DbContext.Instance.Journal.Write(job.Environment.Id, job.App.Id, journal);
         }
 
-        internal Data.Dtos.App ReadApp(string appId, Guid environmentKey, IAppConfiguration appConfiguration = null)
+        internal async Task<Data.Dtos.App> ReadApp(string appId, Guid environmentKey, IAppConfiguration appConfiguration)
         {
-            var app = _appAccessor.Read(appId, environmentKey).Result;
+            var app = await _appAccessor.Read(appId, environmentKey);
 
             if (app != null)
             {
@@ -150,7 +162,7 @@ namespace Our.Shield.Core.Services
             {
                 AppId = appId,
                 EnvironmentKey = environmentKey,
-                Configuration = JsonConvert.SerializeObject(appConfiguration ?? App<IAppConfiguration>.Create(appId).DefaultConfiguration)
+                Configuration = JsonConvert.SerializeObject(appConfiguration ?? _appFactory.Create(appId).DefaultConfiguration)
             };
 
             app.Key = _appAccessor.Create(app).Result;
@@ -158,16 +170,9 @@ namespace Our.Shield.Core.Services
             return app;
         }
 
-        public IAppConfiguration ReadConfiguration(IJob job, IAppConfiguration defaultConfiguration = null)
+        public async Task<IAppConfiguration> ReadConfiguration(IJob job, IAppConfiguration defaultConfiguration)
         {
-            return ReadConfiguration(job.App.Id, job.Environment.Key, defaultConfiguration);
-        }
-
-        public IAppConfiguration ReadConfiguration(string appId, Guid environmentKey, IAppConfiguration defaultConfiguration = null)
-        {
-            defaultConfiguration = defaultConfiguration ?? App<IAppConfiguration>.Create(appId).DefaultConfiguration;
-
-            var app = ReadApp(appId, environmentKey, defaultConfiguration);
+            var app = await ReadApp(job.App.Id, job.Environment.Key, defaultConfiguration);
             if (app == null)
             {
                 return defaultConfiguration;
@@ -179,10 +184,10 @@ namespace Our.Shield.Core.Services
         public IEnumerable<T> ListJournals<T>(IJob job, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
             throw new NotImplementedException(); //DbContext.Instance.Journal.Read<T>(job.Environment.Id, job.App.Id, page, itemsPerPage, out totalPages);
 
-        public bool Register(IEnvironment environment, IApp app)
+        public async Task<bool> Register(IEnvironment environment, IApp app)
         {
             Job job = null;
-            var dbApp = ReadApp(app.Id, environment.Key);
+            var dbApp = await ReadApp(app.Id, environment.Key, app.DefaultConfiguration);
             app.Key = dbApp.Key;
 
             if (JobLock.Write(() =>
@@ -200,7 +205,7 @@ namespace Our.Shield.Core.Services
             {
                 if (job != null)
                 {
-                    return Execute(job);
+                    return await Execute(job);
                 }
             }
 

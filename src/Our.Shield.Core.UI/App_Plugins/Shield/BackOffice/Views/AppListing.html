@@ -1,8 +1,4 @@
-﻿<div class="umb-el-wrap control-group umb-control-group">
-    <div>
-        <h4 ng-bind-html="vm.environment.description"></h4>
-    </div>
-</div>
+﻿<!--<umb-load-indicator ng-show="!vm.environment && vm.apps.length == 0"></umb-load-indicator>-->
 
 <div class="umb-table">
     <div class="umb-table-head">
@@ -37,8 +33,9 @@
 
     <div class="umb-table-body">
         <div class="umb-table-row"
-             ng-repeat="app in vm.environment.apps track by app.key"
-             ng-class="{'-selected': app.enable}">
+             ng-repeat="app in vm.apps track by app.id"
+             ng-class="{'-selected': app.enable}"
+             ng-click="vm.appClick(app.key)">
 
             <div class="umb-table-cell app-icon-cell">
                 <i class="umb-table-body__icon umb-table-body__fileicon">
@@ -46,12 +43,12 @@
                 </i>
             </div>
 
-            <div class="umb-table-cell shield-table__name" ng-click="vm.editApp(app.key)">
-                <span ng-bind-html="app.name"></span>
+            <div class="umb-table-cell shield-table__name">
+              <localize key="{{vm.getAppNameKey(app.id)}}"></localize>
             </div>
 
             <div class="umb-table-cell">
-                <span ng-bind-html="app.description"></span>
+              <localize key="{{vm.getAppDescriptionKey(app.id)}}"></localize>
             </div>
 
             <div class="umb-table-cell shield-table__name-enable">

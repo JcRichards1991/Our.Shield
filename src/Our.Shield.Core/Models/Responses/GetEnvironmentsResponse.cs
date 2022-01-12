@@ -12,6 +12,6 @@ namespace Our.Shield.Core.Models.Responses
         /// <summary>
         /// The Environments in the system
         /// </summary>
-        public IReadOnlyList<IEnvironment> Environments { get; set; }
+        public IEnumerable<IEnvironment> Environments { get; set; }
     }
 }

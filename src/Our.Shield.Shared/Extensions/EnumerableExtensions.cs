@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Our.Shield.Shared.Extensions
 {
     public static class EnumerableExtensions
     {
         /// <summary>
-        /// Trys to find the index of the item in the collection with matching predict
+        /// Tries to find the index of the item in the collection with matching predict
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="items"></param>
@@ -17,7 +18,7 @@ namespace Our.Shield.Shared.Extensions
             var found = false;
             int index = 0;
 
-            foreach(var item in items)
+            foreach (var item in items)
             {
                 if (predicate(item))
                 {
@@ -31,6 +32,26 @@ namespace Our.Shield.Shared.Extensions
             return found
                 ? index
                 : -1;
+        }
+
+        public static bool HasValues<T>(this IEnumerable<T> items)
+        {
+            return items?.Any() ?? false;
+        }
+
+        public static bool HasValues<T>(this IEnumerable<T> items, Func<T, bool> predicate)
+        {
+            return items?.Any(predicate) ?? false;
+        }
+
+        public static bool None<T>(this IEnumerable<T> items)
+        {
+            return !items?.Any() ?? true;
+        }
+
+        public static bool None<T>(this IEnumerable<T> items, Func<T, bool> predicate)
+        {
+            return !items?.Any(predicate) ?? true;
         }
     }
 }

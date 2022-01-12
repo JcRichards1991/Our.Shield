@@ -32,7 +32,6 @@ namespace Our.Shield.Core.CacheRefreshers
         public override void Refresh(string json)
         {
             var cacheInstruction = Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigurationCacheRefresherJsonModel>(json);
-
             var job = _jobService.Job(cacheInstruction.Key);
 
             if (job == null)

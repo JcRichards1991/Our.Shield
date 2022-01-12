@@ -3,6 +3,7 @@ using LightInject;
 using Our.Shield.Core.CacheRefreshers;
 using Our.Shield.Core.Components;
 using Our.Shield.Core.Data.Accessors;
+using Our.Shield.Core.Factories;
 using Our.Shield.Core.Services;
 using System;
 using Umbraco.Core;
@@ -21,6 +22,7 @@ namespace Our.Shield.Core.Composers
         {
             RegisterComponents(composition);
             RegisterDataAccessors(composition);
+            RegisterFactories(composition);
             RegisterServices(composition);
             RegisterCacheRefreshers(composition);
             RegisterAutoMapper(composition);
@@ -37,6 +39,11 @@ namespace Our.Shield.Core.Composers
             composition.Register<IEnvironmentAccessor, EnvironmentAccessor>();
             composition.Register<IAppAccessor, AppAccessor>();
             composition.Register<IJournalAccessor, JournalAccessor>();
+        }
+
+        private void RegisterFactories(Composition composition)
+        {
+            composition.Register<IAppFactory, AppFactory>(Lifetime.Singleton);
         }
 
         private void RegisterServices(Composition composition)

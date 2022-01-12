@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using Umbraco.Core.Migrations;
 
 namespace Our.Shield.Core.Models
 {
     /// <summary>
-    /// Definition of an App to plugin to Our.Shield custom umbraco section
+    /// Definition of an App to plug-in to Our.Shield custom umbraco section
     /// </summary>
     public interface IApp : IFrisk
     {
@@ -26,12 +25,6 @@ namespace Our.Shield.Core.Models
         /// </summary>
         [JsonIgnore]
         IAppConfiguration DefaultConfiguration { get; }
-
-        /// <summary>
-        /// The Migrations for the App
-        /// </summary>
-        [JsonIgnore]
-        IDictionary<string, IMigration> Migrations { get; set; }
 
         /// <summary>
         /// The initialize method for the App

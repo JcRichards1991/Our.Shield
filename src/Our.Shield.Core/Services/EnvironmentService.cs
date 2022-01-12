@@ -3,6 +3,7 @@ using LightInject;
 using Newtonsoft.Json;
 using Our.Shield.Core.Data.Accessors;
 using Our.Shield.Core.Enums;
+using Our.Shield.Core.Factories;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Models.CacheRefresherJson;
 using Our.Shield.Core.Models.Requests;
@@ -26,6 +27,7 @@ namespace Our.Shield.Core.Services
         private readonly IJobService _jobService;
         private readonly IEnvironmentAccessor _environmentAccessor;
         private readonly IAppAccessor _appAccessor;
+        private readonly IAppFactory _appFactory;
         private readonly DistributedCache _distributedCache;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
@@ -36,6 +38,7 @@ namespace Our.Shield.Core.Services
         /// <param name="jobService"><see cref="IJobService"/></param>
         /// <param name="environmentAccessor"><see cref="IEnvironmentAccessor"/></param>
         /// <param name="appAccessor"></param>
+        /// <param name="appFactory"><see cref="IAppFactory"/></param>
         /// <param name="distributedCache"><see cref="DistributedCache"/></param>
         /// <param name="mapper"></param>
         /// <param name="logger"><see cref="ILogger"/></param>
@@ -43,6 +46,7 @@ namespace Our.Shield.Core.Services
             IJobService jobService,
             IEnvironmentAccessor environmentAccessor,
             IAppAccessor appAccessor,
+            IAppFactory appFactory,
             DistributedCache distributedCache,
             [Inject(nameof(Shield))] IMapper mapper,
             ILogger logger)
@@ -50,6 +54,7 @@ namespace Our.Shield.Core.Services
             GuardClauses.NotNull(jobService, nameof(jobService));
             GuardClauses.NotNull(environmentAccessor, nameof(environmentAccessor));
             GuardClauses.NotNull(appAccessor, nameof(appAccessor));
+            GuardClauses.NotNull(appFactory, nameof(appFactory));
             GuardClauses.NotNull(distributedCache, nameof(distributedCache));
             GuardClauses.NotNull(mapper, nameof(mapper));
             GuardClauses.NotNull(logger, nameof(logger));
@@ -57,6 +62,7 @@ namespace Our.Shield.Core.Services
             _jobService = jobService;
             _environmentAccessor = environmentAccessor;
             _appAccessor = appAccessor;
+            _appFactory = appFactory;
             _distributedCache = distributedCache;
             _mapper = mapper;
             _logger = logger;
@@ -72,21 +78,9 @@ namespace Our.Shield.Core.Services
                 Icon = request.Icon,
                 Domains = request.Domains,
                 Enabled = request.Enabled,
-                ContinueProcessing = request.ContinueProcessing
+                ContinueProcessing = request.ContinueProcessing,
+                SortOrder = request.SortOrder
             };
-
-            var environments = _jobService
-                .Environments
-                .Select(x => x.Key)
-                .Where(x => x.SortOrder != int.MaxValue)
-                .ToList();
-
-            if (!environments.Any(x => x.Key == environment.Key))
-            {
-                environment.SortOrder = environments.Any()
-                    ? environments.Max(x => x.SortOrder) + 1
-                    : 0;
-            }
 
             var response = await UpsertAsync(environment);
 
@@ -142,7 +136,7 @@ namespace Our.Shield.Core.Services
             }
             catch (Exception ex)
             {
-                _logger.Error<EnvironmentService>(ex, "Error occurred reading environment with {Key}", key);
+                _logger.Error<EnvironmentService>(ex, "Error occurred reading environment with Key: {Key}", key);
 
                 response.ErrorCode = ErrorCode.EnvironmentRead;
             }
@@ -179,21 +173,30 @@ namespace Our.Shield.Core.Services
         }
 
         /// <inherit />
-        public async Task<IReadOnlyList<IApp>> GetAppsForEnvironment(Guid key)
+        public async Task<GetEnvironmentAppsResponse> GetAppsForEnvironment(Guid environmentKey)
         {
-            var result = await _appAccessor.ReadByEnvironment(key);
+            var response = new GetEnvironmentAppsResponse();
             var apps = new List<IApp>();
 
-            foreach(var dbApp in result)
+            try
             {
-                var app = App<IAppConfiguration>.Create(dbApp.AppId);
+                var result = await _appAccessor.ReadByEnvironmentKey(environmentKey);
 
-                app.Key = dbApp.Key;
+                foreach (var dbApp in result)
+                {
+                    var app = _appFactory.Create(dbApp.AppId, dbApp.Key);
 
-                apps.Add(app);
+                    apps.Add(app);
+                }
+
+                response.Apps = apps;
+            }
+            catch(Exception ex)
+            {
+                _logger?.Error<EnvironmentService>(ex, "Error occurred reading apps for environment with Key: {key}", environmentKey);
             }
 
-            return apps;
+            return response;
         }
 
         private async Task<UpsertEnvironmentResponse> UpsertAsync(IEnvironment environment)

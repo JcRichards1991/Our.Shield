@@ -127,9 +127,9 @@ namespace Our.Shield.Core.UI
 
                 if (environemnt != null)
                 {
-                    var apps = _environmentService.GetAppsForEnvironment(key).Result;
+                    var result = _environmentService.GetAppsForEnvironment(key).Result;
 
-                    foreach(var app in apps)
+                    foreach(var app in result.Apps)
                     {
                         tree.Add(CreateTreeNode(
                             app.Key.ToString(),

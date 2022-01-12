@@ -3,10 +3,10 @@ using NPoco;
 using Our.Shield.Core.Data.Dtos;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Umbraco.Core.Scoping;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Core.Persistence;
+using Umbraco.Core.Scoping;
 
 namespace Our.Shield.Core.Data.Accessors
 {
@@ -44,7 +44,7 @@ namespace Our.Shield.Core.Data.Accessors
             }
         }
 
-        public async Task<IReadOnlyList<App>> ReadByEnvironment(Guid environmentKey)
+        public async Task<IReadOnlyCollection<IApp>> ReadByEnvironmentKey(Guid environmentKey)
         {
             using (var scope = ScopeProvider.CreateScope(autoComplete: true))
             {

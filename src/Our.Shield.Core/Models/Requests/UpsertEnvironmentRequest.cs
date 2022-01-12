@@ -50,5 +50,11 @@ namespace Our.Shield.Core.Models.Requests
         /// </summary>
         [JsonProperty("continueProcessing")]
         public bool ContinueProcessing { get; set; }
+
+        /// <summary>
+        /// The Sort Order of this environment
+        /// </summary>
+        [JsonProperty("sortOrder")]
+        public int SortOrder { get; set; }
     }
 }

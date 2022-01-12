@@ -7,6 +7,7 @@ using Our.Shield.Core.Models.Requests;
 using Our.Shield.Core.Models.Responses;
 using Our.Shield.Core.Services;
 using Our.Shield.Shared;
+using Our.Shield.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -70,7 +71,7 @@ namespace Our.Shield.Core.Controllers.Api
         }
 
         /// <summary>
-        /// Get all environments available in the system
+        /// Gets all environments available in the system
         /// </summary>
         /// <returns>Collection of environments</returns>
         [HttpGet]
@@ -93,17 +94,11 @@ namespace Our.Shield.Core.Controllers.Api
         {
             var response = await _environmentService.GetAsync(key);
 
-            if (response.HasError())
-            {
-                return ApiResponse(response, HttpStatusCode.BadRequest);
-            }
-
-            if (response.Environment == null)
-            {
-                return NotFound();
-            }
-
-            return ApiResponse(response);
+            return response.HasError()
+                ? ApiResponse(response, HttpStatusCode.BadGateway)
+                : response.Environment == null
+                    ? StatusCode(HttpStatusCode.NoContent) 
+                    : ApiResponse(response);
         }
 
         /// <summary>
@@ -160,6 +155,23 @@ namespace Our.Shield.Core.Controllers.Api
             //    Configuration = job.ReadConfiguration(),
             //    Tabs = tabs
             //};
+        }
+
+        /// <summary>
+        /// Gets all apps for an environment
+        /// </summary>
+        /// <param name="environmentKey">The Id of the environment to fetch the apps for</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IHttpActionResult> GetEnvironmentApps(Guid environmentKey)
+        {
+            var response = await _environmentService.GetAppsForEnvironment(environmentKey);
+
+            return response.HasError()
+                ? ApiResponse(response, HttpStatusCode.BadGateway)
+                : response.Apps.None()
+                    ? StatusCode(HttpStatusCode.NoContent)
+                    : ApiResponse(response);
         }
 
         /// <summary>

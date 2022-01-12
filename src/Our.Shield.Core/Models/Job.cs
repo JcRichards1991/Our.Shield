@@ -31,12 +31,8 @@ namespace Our.Shield.Core.Models
         internal Task<bool> Task;
         internal CancellationTokenSource CancelToken;
 
-        internal IJob DeepCopy()
+        internal IJob DeepCopy(IApp app)
         {
-            var app = App<IAppConfiguration>.Create(App.Id);
-
-            app.Migrations = App.Migrations;
-
             return new Job
             {
                 Key = Key,

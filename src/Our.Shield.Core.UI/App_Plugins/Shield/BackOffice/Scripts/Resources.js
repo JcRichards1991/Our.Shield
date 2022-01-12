@@ -105,6 +105,13 @@ angular
           getEnvironments: function () {
             return shieldResourceHelper.get(apiRoot + 'GetEnvironments');
           },
+          getEnvironmentApps: function (environmentKey) {
+            return shieldResourceHelper.get(
+              apiRoot + 'GetEnvironmentApps',
+              {
+                environmentKey: environmentKey
+              });
+          },
           getJournals: function (method, id, page, orderBy, orderByDirection) {
             return shieldResourceHelper.get(
               apiRoot + 'Journals',

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Umbraco.Core.Migrations;
 
 namespace Our.Shield.Core.Models
 {
@@ -20,30 +19,15 @@ namespace Our.Shield.Core.Models
         /// <inheritdoc />
         public abstract string Icon { get; }
 
-        /// <inheritdoc />
-        public virtual bool Init() =>
-            true;
-
-        /// <inheritdoc />
-        public static IDictionary<string, Type> Register => Operation.Frisk.Register<App<TC>>();
+        /// <summary>
+        /// The initialize method for the App
+        /// </summary>
+        /// <returns>True if successfully initialized; Otherwise, False</returns>
+        public virtual bool Init() => true;
 
         /// <inheritdoc />
         [JsonIgnore]
         public virtual IAppConfiguration DefaultConfiguration => default(TC);
-
-        /// <inheritdoc />
-        public static IApp Create(string id)
-        {
-            if (!Register.TryGetValue(id, out var derivedType))
-            {
-                return null;
-            }
-
-            return Activator.CreateInstance(derivedType) as IApp;
-        }
-
-        /// <inheritdoc />
-        public static IApp Create(Type type) => Activator.CreateInstance(type) as IApp;
 
         /// <inheritdoc />
         public virtual bool Execute(IJob job, IAppConfiguration config) => true;
@@ -85,17 +69,5 @@ namespace Our.Shield.Core.Models
 
         /// <inheritdoc />
         public override int GetHashCode() => Id.GetHashCode();
-
-        /// <inheritdoc />
-        [JsonIgnore]
-        private IDictionary<string, IMigration> _migrations;
-
-        /// <inheritdoc />
-        [JsonIgnore]
-        public IDictionary<string, IMigration> Migrations
-        {
-            get => _migrations;
-            set => _migrations = value;
-        }
     }
 }

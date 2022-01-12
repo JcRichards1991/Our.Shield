@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Moq;
 using Our.Shield.Core.Data.Accessors;
+using Our.Shield.Core.Factories;
 using Our.Shield.Core.Services;
 using System;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace Our.Shield.Core.Tests.Services
                 Mock.Of<IJobService>(),
                 MockEnvironmentAccess(),
                 MockAppAccess(),
+                Mock.Of<IAppFactory>(),
                 Mock.Of<DistributedCache>(),
                 Mock.Of<IMapper>(),
                 Mock.Of<ILogger>());

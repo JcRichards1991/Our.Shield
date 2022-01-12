@@ -1,8 +1,6 @@
-﻿using Our.Shield.Core.Models;
-using Our.Shield.Core.Models.Requests;
+﻿using Our.Shield.Core.Models.Requests;
 using Our.Shield.Core.Models.Responses;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Our.Shield.Core.Services
@@ -51,12 +49,12 @@ namespace Our.Shield.Core.Services
         /// <param name="Key">The key of the environment to delete</param>
         /// <returns></returns>
         Task<DeleteEnvironmentResponse> DeleteAsync(Guid Key);
-        
+
         /// <summary>
         /// Gets the Apps for the environment by the environment's key
         /// </summary>
-        /// <param name="key">The Key of the environment</param>
+        /// <param name="environmentKey">The Key of the environment</param>
         /// <returns>List of Apps for the environment</returns>
-        Task<IReadOnlyList<IApp>> GetAppsForEnvironment(Guid key);
+        Task<GetEnvironmentAppsResponse> GetAppsForEnvironment(Guid environmentKey);
     }
 }

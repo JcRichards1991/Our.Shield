@@ -1,6 +1,7 @@
 ﻿using Our.Shield.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Our.Shield.Core.Services
 {
@@ -12,9 +13,9 @@ namespace Our.Shield.Core.Services
 
         void Init();
 
-        void Register(IEnvironment environment);
+        Task Register(IEnvironment environment);
 
-        bool Execute(Job job);
+        Task<bool> Execute(Job job);
 
         bool WriteConfiguration(
             IJob job,
@@ -24,14 +25,9 @@ namespace Our.Shield.Core.Services
             IJob job,
             IJournal journal);
 
-        IAppConfiguration ReadConfiguration(
+        Task<IAppConfiguration> ReadConfiguration(
             IJob job,
-            IAppConfiguration defaultConfiguration = null);
-
-        IAppConfiguration ReadConfiguration(
-            string appId,
-            Guid environmentKey,
-            IAppConfiguration defaultConfiguration = null);
+            IAppConfiguration defaultConfiguration);
 
         IEnumerable<T> ListJournals<T>(
             IJob job,
@@ -40,7 +36,7 @@ namespace Our.Shield.Core.Services
             out int totalPages)
             where T : IJournal;
 
-        bool Register(IEnvironment environment, IApp app);
+        Task<bool> Register(IEnvironment environment, IApp app);
 
         bool Unregister(Guid id);
 
