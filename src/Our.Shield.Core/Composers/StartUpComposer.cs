@@ -49,7 +49,8 @@ namespace Our.Shield.Core.Composers
         private void RegisterServices(Composition composition)
         {
             composition.Register<IJobService, JobService>(Lifetime.Singleton);
-            composition.Register<IEnvironmentService, EnvironmentService>();
+            composition.Register<IEnvironmentService, EnvironmentService>(Lifetime.Singleton);
+            composition.Register<IAppService, AppService>(Lifetime.Singleton);
             composition.Register<IUmbracoContentService, UmbracoContentService>();
             composition.Register<IUmbracoMediaService, UmbracoMediaService>();
         }

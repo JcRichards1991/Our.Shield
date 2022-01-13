@@ -275,6 +275,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\Shield.BackofficeAccess\Lang\en-us.xml" />
+    <Content Include="App_Plugins\Shield.BackofficeAccess\Views\BackofficeAccess.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Dashboards\Environments.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\Dashboard.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Dashboards\Journal.html" />

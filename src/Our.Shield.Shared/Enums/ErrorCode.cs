@@ -8,15 +8,24 @@ namespace Our.Shield.Shared.Enums
         None = 0,
 
         [Description("Environment - Insert")]
-        EnviromentInsert,
+        EnviromentInsert = 1,
 
         [Description("Environment - Update")]
-        EnvironmentUpdate,
+        EnvironmentUpdate = 2,
 
         [Description("Environment - Read")]
-        EnvironmentRead,
+        EnvironmentRead = 3,
 
         [Description("Environment - Delete")]
-        EnvrionmentDelete
+        EnvrionmentDelete = 4,
+
+        [Description("App - Read")]
+        AppRead = 100,
+
+        [Description("App - Create")]
+        AppCreate = 101,
+
+        [Description("Apps - Read")]
+        AppsRead = 5,
     }
 }

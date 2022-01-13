@@ -1,25 +1,51 @@
-﻿<div class="umb-el-wrap control-group umb-control-group">
-    <div>
-        <h4 ng-bind-html="vm.app.description"></h4>
-    </div>
-</div>
+﻿<div class="umb-editor-sub-views">
+  <div class="umb-editor-sub-view sub-view-Content">
+    <div class="umb-editor-sub-view__content">
+      <div class="form-horizontal">
+        <div class="umb-group-panel">
+          <div class="umb-group-panel__content">
 
-<div class="umb-el-wrap control-group umb-control-group">
-    <div>
-        <label for="enable" class="control-label">
-            <localize key="Shield.Properties_EnableLabel">Enable</localize>
-            <small>
-                <localize key="Shield.Properties_EnableDescription">Is this App active</localize>
-            </small>
-        </label>
-        <div class="controls">
-            <div class="umb-editor umb-checkbox">
-                <input type="checkbox" id="enable" ng-model="vm.app.configuration.enable" />
+            <h4 ng-bind-html="vm.description"></h4>
+
+            <div class="umb-property">
+              <div class="control-group umb-control-group">
+                <div class="umb-el-wrap">
+
+                  <div class="control-header">
+                    <label class="control-label">
+                      <localize key="Shield.Properties_AppEnabledLabel"></localize>
+                    </label>
+                    <small class="control-description">
+                      <localize key="Shield.Properties_AppEnabledDescription"></localize>
+                    </small>
+                  </div>
+
+                  <div class="controls">
+                    <div class="umb-property-editor db">
+                      <div class="umb-property-editor umb-boolean">
+                        <umb-toggle input-id="Enabled"
+                                    checked="vm.config.enable"
+                                    on-click="vm.config.enable = !vm.config.enable"
+                                    show-labels="false"
+                                    label-position="right"
+                                    label-on="true"
+                                    label-off="false">
+                        </umb-toggle>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
             </div>
-        </div>
-    </div>
-</div>
 
-<div ng-if="vm.app.configuration.enable == true">
-    <shield-app view="tab.configView" configuration="vm.app.configuration"></shield-app>
+            <div ng-if="vm.config.enable">
+              <shield-app view="tab.configView" configuration="vm.config"></shield-app>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

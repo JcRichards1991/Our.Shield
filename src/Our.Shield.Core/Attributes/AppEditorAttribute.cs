@@ -17,7 +17,10 @@ namespace Our.Shield.Core.Attributes
         /// <param name="filePath">location of the app's configuration HTML file</param>
         /// <param name="caption">The Text to display for the tab</param>
         /// <param name="sortOrder">The order this tab should appear</param>
-        public AppEditorAttribute(string filePath, string caption = "Configuration", int sortOrder = 0) : base(caption, sortOrder, "/App_Plugins/Shield/Backoffice/Views/EditApp.html?version=1.1.0")
+        public AppEditorAttribute(
+            string filePath,
+            int sortOrder = 0)
+            : base("Configuration", sortOrder, "/App_Plugins/Shield/Backoffice/Views/EditApp.html?version=1.1.0", "icon-settings")
         {
             AppView = filePath;
         }

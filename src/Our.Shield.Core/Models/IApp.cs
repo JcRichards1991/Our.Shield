@@ -12,6 +12,7 @@ namespace Our.Shield.Core.Models
         /// <summary>
         /// The Unique key of the App
         /// </summary>
+        [JsonProperty("key")]
         Guid Key { get; set; }
 
         /// <summary>

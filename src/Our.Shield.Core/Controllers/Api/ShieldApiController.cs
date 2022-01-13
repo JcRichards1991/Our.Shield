@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using Our.Shield.Core.Models;
 using Our.Shield.Core.Models.Requests;
 using Our.Shield.Core.Models.Responses;
 using Our.Shield.Core.Services;
@@ -30,7 +28,7 @@ using UmbConstants = Umbraco.Core.Constants;
 namespace Our.Shield.Core.Controllers.Api
 {
     /// <summary>
-    /// API Controller for the Umbraco Access area of the custom section
+    /// API Controller for Shield
     /// </summary>
     /// <example>
     /// Endpoint: /Umbraco/BackOffice/Shield/ShieldApi/{Action}
@@ -40,6 +38,7 @@ namespace Our.Shield.Core.Controllers.Api
     public class ShieldApiController : UmbracoAuthorizedApiController
     {
         private readonly IEnvironmentService _environmentService;
+        private readonly IAppService _appService;
 
         /// <summary>
         /// Initializes a new instance of <see cref="ShieldApiController"/> class
@@ -52,7 +51,8 @@ namespace Our.Shield.Core.Controllers.Api
         /// <param name="profilingLogger"><see cref="IProfilingLogger"/></param>
         /// <param name="runtimeState"><see cref="IRuntimeState"/></param>
         /// <param name="umbHelper"><see cref="UmbracoHelper"/></param>
-        /// /// <param name="environmentService"><see cref="IEnvironmentService"/>.</param>
+        /// <param name="environmentService"><see cref="IEnvironmentService"/>.</param>
+        /// <param name="appService"><see cref="IAppService"/></param>
         public ShieldApiController(
             IGlobalSettings globalSettings,
             IUmbracoContextAccessor umbContextAccessor,
@@ -62,12 +62,15 @@ namespace Our.Shield.Core.Controllers.Api
             IProfilingLogger profilingLogger,
             IRuntimeState runtimeState,
             UmbracoHelper umbHelper,
-            IEnvironmentService environmentService)
+            IEnvironmentService environmentService,
+            IAppService appService)
             : base(globalSettings, umbContextAccessor, sqlContext, serviceContext, appCaches, profilingLogger, runtimeState, umbHelper)
         {
             GuardClauses.NotNull(environmentService, nameof(environmentService));
+            GuardClauses.NotNull(appService, nameof(appService));
 
             _environmentService = environmentService;
+            _appService = appService;
         }
 
         /// <summary>
@@ -77,7 +80,7 @@ namespace Our.Shield.Core.Controllers.Api
         [HttpGet]
         public async Task<IHttpActionResult> GetEnvironments()
         {
-            var response = await _environmentService.GetAsync();
+            var response = await _environmentService.Get();
 
             return ApiResponse(
                 response,
@@ -92,13 +95,35 @@ namespace Our.Shield.Core.Controllers.Api
         [HttpGet]
         public async Task<IHttpActionResult> GetEnvironment(Guid key)
         {
-            var response = await _environmentService.GetAsync(key);
+            var response = await _environmentService.Get(key);
 
             return response.HasError()
                 ? ApiResponse(response, HttpStatusCode.BadGateway)
                 : response.Environment == null
-                    ? StatusCode(HttpStatusCode.NoContent) 
+                    ? StatusCode(HttpStatusCode.NoContent)
                     : ApiResponse(response);
+        }
+
+        /// <summary>
+        /// Updates an environment in the database
+        /// </summary>
+        /// <param name="request"><see cref="UpsertEnvironmentRequest"/>.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IHttpActionResult> UpsertEnvironment(UpsertEnvironmentRequest request)
+        {
+            if (request == null || !ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var response = await _environmentService.Upsert(request);
+
+            return ApiResponse(
+                response,
+                response.HasError()
+                    ? HttpStatusCode.BadRequest
+                    : HttpStatusCode.OK);
         }
 
         /// <summary>
@@ -109,52 +134,11 @@ namespace Our.Shield.Core.Controllers.Api
         [HttpDelete]
         public async Task<IHttpActionResult> DeleteEnvironment(Guid key)
         {
-            var response = await _environmentService.DeleteAsync(key);
+            var response = await _environmentService.Delete(key);
 
             return ApiResponse(
                 response,
                 response.HasError() ? HttpStatusCode.BadRequest : HttpStatusCode.OK);
-        }
-
-        /// <summary>
-        /// Gets an app by it's key
-        /// </summary>
-        /// <param name="key">The key of the app to fetch</param>
-        /// <returns>The app with the corresponding key</returns>
-        [HttpGet]
-        public IHttpActionResult GetApp(Guid key)
-        {
-            throw new NotImplementedException();
-
-            //var environment = JobService.Instance.Environments.FirstOrDefault(x => x.Value.Any(y => y.Key == key));
-
-            //if (environment.Key == null)
-            //    return null;
-
-            //var job = environment.Value.First(x => x.Key == key);
-
-            //var tabAttrs = (job.App.GetType().GetCustomAttributes(typeof(AppTabAttribute), true) as IEnumerable<AppTabAttribute> ?? new List<AppTabAttribute>()).ToList();
-
-            ////  TODO: Make tab captions localized
-            //var tabs = new List<ITab>();
-            //foreach (var tabAttr in tabAttrs.OrderBy(x => x.SortOrder))
-            //{
-            //    if (tabAttr is AppEditorAttribute appEditorAttr)
-            //    {
-            //        tabs.Add(new AppConfigTab(appEditorAttr));
-            //        continue;
-            //    }
-
-            //    tabs.Add(new Tab(tabAttr));
-            //}
-
-            //return new AppApiResponseModel(job)
-            //{
-            //    //Environments = environments.Keys,
-            //    Environment = environment.Key,
-            //    Configuration = job.ReadConfiguration(),
-            //    Tabs = tabs
-            //};
         }
 
         /// <summary>
@@ -165,13 +149,28 @@ namespace Our.Shield.Core.Controllers.Api
         [HttpGet]
         public async Task<IHttpActionResult> GetEnvironmentApps(Guid environmentKey)
         {
-            var response = await _environmentService.GetAppsForEnvironment(environmentKey);
+            var response = await _appService.GetApps(environmentKey);
 
             return response.HasError()
                 ? ApiResponse(response, HttpStatusCode.BadGateway)
                 : response.Apps.None()
                     ? StatusCode(HttpStatusCode.NoContent)
                     : ApiResponse(response);
+        }
+
+        /// <summary>
+        /// Gets an app by it's key
+        /// </summary>
+        /// <param name="key">The key of the app to fetch</param>
+        /// <returns>The app with the corresponding key</returns>
+        [HttpGet]
+        public async Task<IHttpActionResult> GetApp(Guid key)
+        {
+            var response = await _appService.GetApp(key);
+
+            return response.HasError()
+                ? ApiResponse(response, HttpStatusCode.BadGateway)
+                : ApiResponse(response);
         }
 
         /// <summary>
@@ -183,8 +182,8 @@ namespace Our.Shield.Core.Controllers.Api
         /// App: Returns only the Journals for a given app</param>
         /// <param name="id">Ignored if method is Environments. Guid Key of the Environment or App to retrieve Journals for</param>
         /// <param name="page">The page of Journals to retrieve</param>
-        /// <param name="orderBy">The type to sort the Journals by(currently ignored)</param>
-        /// <param name="orderByDirection">The order in which to order. acs or desc</param>
+        /// <param name="orderBy">The type to sort the Journals by (currently ignored)</param>
+        /// <param name="orderByDirection">The order in which to sort by. acs or desc</param>
         /// <returns>Collection of Journals based on the parameters passed in</returns>
         [HttpGet]
         public IHttpActionResult Journals(string method, string id, int page, string orderBy, string orderByDirection)
@@ -338,28 +337,6 @@ namespace Our.Shield.Core.Controllers.Api
             //return false;
         }
 
-        /// <summary>
-        /// Updates an environment in the database
-        /// </summary>
-        /// <param name="request"><see cref="UpsertEnvironmentRequest"/>.</param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<IHttpActionResult> UpsertEnvironment(UpsertEnvironmentRequest request)
-        {
-            if (request == null || !ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var response = await _environmentService.UpsertAsync(request);
-
-            return ApiResponse(
-                response,
-                response.HasError()
-                    ? HttpStatusCode.BadRequest
-                    : HttpStatusCode.OK);
-        }
-
         private IHttpActionResult ApiResponse<T>(T response, HttpStatusCode statusCode = HttpStatusCode.OK)
             where T : BaseResponse
         {
@@ -377,14 +354,6 @@ namespace Our.Shield.Core.Controllers.Api
                         Encoding.UTF8,
                         "application/json")
                 });
-        }
-
-        private class DomainConverter : CustomCreationConverter<IDomain>
-        {
-            public override IDomain Create(Type objectType)
-            {
-                return new Domain();
-            }
         }
     }
 }

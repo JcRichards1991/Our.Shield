@@ -59,7 +59,7 @@ namespace Our.Shield.Core.CacheRefreshers
             {
                 case Enums.CacheRefreshType.Upsert:
                     {
-                        var response = _environmentService.Get(cacheInstruction.Key);
+                        var response = _environmentService.Get(cacheInstruction.Key).Result;
 
                         if (environment == null)
                         {

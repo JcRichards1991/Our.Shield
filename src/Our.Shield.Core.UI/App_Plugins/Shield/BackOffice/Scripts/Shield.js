@@ -417,26 +417,40 @@ angular
         angular.extend(vm,
           {
             appKey: $routeParams.id,
-            loading: true,
-            app: {},
-            path: [],
-            ancestors: [],
+            state: {
+              loading: true
+            },
             button: {
               label: 'Update',
               labelKey: 'general_update',
               state: 'init'
             },
+            app: null,
+            config: null,
+            tabs: [],
+            name: '',
+            description: '',
             init: function () {
-              shieldResource.getApp(vm.appKey).then(function (app) {
-                vm.app = app;
-                vm.path = ['-1', vm.app.environment.key, vm.appKey];
-                vm.ancestors = [{ id: vm.app.environment.key, name: vm.app.environment.name }, { id: vm.appKey, name: vm.app.name }];
+              shieldResource
+                .getApp(vm.appKey)
+                .then(function (response) {
+                  vm.app = response.app;
+                  vm.config = response.configuration;
+                  vm.tabs = response.tabs;
 
-                $timeout(function () {
-                  navigationService.syncTree({ tree: 'shield', path: vm.path, forceReload: true, activate: true });
-                  vm.loading = false;
+                  localizationService
+                    .localize('Shield.' + vm.app.id + '_Name')
+                    .then(function (name) {
+                      vm.name = name;
+
+                      localizationService
+                        .localize('Shield.' + vm.app.id + '_Description')
+                        .then(function (description) {
+                          vm.description = description;
+                          vm.state.loading = false;
+                        });
+                    });
                 });
-              });
             },
             save: function () {
               vm.button.state = 'busy';
@@ -452,21 +466,23 @@ angular
 
               $scope.appForm.$setPristine();
 
-              shieldResource.postConfiguration(vm.appKey, vm.app.configuration).then(function (response) {
-                if (response === true || response === 'true') {
-                  localizationService.localize('Shield.General_SaveConfigurationSuccess').then(function (value) {
-                    notificationsService.success(value);
-                  });
+              shieldResource
+                .postConfiguration(vm.appKey, vm.config)
+                .then(function (response) {
+                  if (response === true || response === 'true') {
+                    localizationService.localize('Shield.General_SaveConfigurationSuccess').then(function (value) {
+                      notificationsService.success(value);
+                    });
 
-                  navigationService.syncTree({ tree: "shield", path: vm.path, forceReload: true, activate: true });
-                  $route.reload();
-                } else {
-                  localizationService.localize('Shield.General_SaveConfigurationError').then(function (value) {
-                    notificationsService.error(value);
-                  });
-                  vm.button.state = 'error';
-                }
-              });
+                    navigationService.syncTree({ tree: "shield", path: vm.path, forceReload: true, activate: true });
+                    $route.reload();
+                  } else {
+                    localizationService.localize('Shield.General_SaveConfigurationError').then(function (value) {
+                      notificationsService.error(value);
+                    });
+                    vm.button.state = 'error';
+                  }
+                });
             }
           });
       }

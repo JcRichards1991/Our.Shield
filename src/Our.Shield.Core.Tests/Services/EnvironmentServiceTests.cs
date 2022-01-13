@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Moq;
 using Our.Shield.Core.Data.Accessors;
-using Our.Shield.Core.Factories;
 using Our.Shield.Core.Services;
 using System;
 using System.Threading.Tasks;
@@ -20,8 +19,6 @@ namespace Our.Shield.Core.Tests.Services
             _environmentService = new EnvironmentService(
                 Mock.Of<IJobService>(),
                 MockEnvironmentAccess(),
-                MockAppAccess(),
-                Mock.Of<IAppFactory>(),
                 Mock.Of<DistributedCache>(),
                 Mock.Of<IMapper>(),
                 Mock.Of<ILogger>());
@@ -38,17 +35,10 @@ namespace Our.Shield.Core.Tests.Services
             return dataAccessor.Object;
         }
 
-        private IAppAccessor MockAppAccess()
-        {
-            var dataAccessor = new Mock<IAppAccessor>();
-
-            return dataAccessor.Object;
-        }
-
         [Fact]
         public async Task Upsert_ShouldThrowException_WhenNull()
         {
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _environmentService.UpsertAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _environmentService.Upsert(null));
         }
 
         [Fact]
@@ -61,7 +51,7 @@ namespace Our.Shield.Core.Tests.Services
                 Icon = "icon-settings"
             };
 
-            var result = await _environmentService.UpsertAsync(env);
+            var result = await _environmentService.Upsert(env);
 
             Assert.False(result.HasError());
         }
@@ -77,7 +67,7 @@ namespace Our.Shield.Core.Tests.Services
                 Icon = "icon-settings"
             };
 
-            var result = await _environmentService.UpsertAsync(env);
+            var result = await _environmentService.Upsert(env);
 
             Assert.False(result.HasError());
         }
@@ -85,7 +75,7 @@ namespace Our.Shield.Core.Tests.Services
         [Fact]
         public async Task Delete_ShouldThrowException_WhenEmptyGuid()
         {
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _environmentService.DeleteAsync(Guid.Empty));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _environmentService.Delete(Guid.Empty));
         }
 
         [Fact]
@@ -98,9 +88,9 @@ namespace Our.Shield.Core.Tests.Services
                 Icon = "icon-settings"
             };
 
-            await _environmentService.UpsertAsync(env);
+            await _environmentService.Upsert(env);
 
-            var response = await _environmentService.DeleteAsync(env.Key);
+            var response = await _environmentService.Delete(env.Key);
 
             Assert.True(response.Successful);
         }

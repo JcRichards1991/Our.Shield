@@ -33,15 +33,21 @@
   </area>
 
   <area alias="Shield.Properties">
-    <key alias="EnableLabel">Enable</key>
-    <key alias="EnableDescription">Is this App active</key>
+    <key alias="EnvironmentEnabledLabel">Is This Environment Enabled?</key>
+    <key alias="EnvironmentEnabledDescription">Whether or not this environment's installed plug-ins should be listening to requests and handling requests</key>
+    <key alias="EnvironmentContinueProcessingLabel">Continue Processing</key>
+    <key alias="EnvironmentContinueProcessingDescription">When this environment matches active security requests, do you allow later environments to process requests too (False is recommended, otherwise you can have multiple actions on a single request)</key>
+    <key alias="EnvironmentDomainsLabel">Domains</key>
+    <key alias="EnvironmentDomainsDescription">The domains that are associated to this environment</key>
+    <key alias="EnvironmentColorIndicatorLabel">Color Indicator</key>
+    <key alias="EnvironmentColorIndicatorDescription">Change the color of Umbraco favicon and navigation to easily determine the environment your on</key>
 
+    <key alias="AppEnabledLabel">Is This App Enabled?</key>
+    <key alias="AppEnabledDescription">Whether or not this App should be listening to requests and handling requests</key>
     <key alias="IpAccessControlLabel">IP Addresses Access</key>
     <key alias="IpAccessControlDescription">Whether or not to add IP Address restrictions</key>
-
     <key alias="UnauthorizedLabel">Unauthorized</key>
     <key alias="UnauthorizedDescription">The page to redirect / rewrite the user to, when access is being denied</key>
-
     <key alias="UmbracoUsersEnableLabel">Allow Authenticated Umbraco Users</key>
   </area>
 
@@ -49,17 +55,15 @@
     <key alias="Required">Required</key>
   </area>
 
-  <area alias="Shield.Properties.IpAccessControl.AccessType">
-    <key alias="All">Open to all IP addresses</key>
-    <key alias="None">No access for all IP addresses</key>
-  </area>
+  <area alias="Shield.Properties.IpAccessControl">
+    <key alias="AccessTypeAll">Open to all IP addresses</key>
+    <key alias="AccessTypeNone">No access for all IP addresses</key>
 
-  <area alias="Shield.Properties.IpAccessControl.Exceptions">
-    <key alias="Description">Except for these IP Addresses:</key>
-    <key alias="IpAddressHeader">IP Address</key>
-    <key alias="DescriptionHeader">Description</key>
-    <key alias="IpAddressFrom">IP Address Range From</key>
-    <key alias="IpAddressTo">IP Address Range To</key>
+    <key alias="ExceptionsDescription">Except for these IP Addresses:</key>
+    <key alias="ExceptionsIpAddressHeader">IP Address</key>
+    <key alias="ExceptionsDescriptionHeader">Description</key>
+    <key alias="ExceptionsIpAddressFrom">IP Address Range From</key>
+    <key alias="ExceptionsIpAddressTo">IP Address Range To</key>
   </area>
 
   <area alias="Shield.Properties.IpAccessControl.Validation">
@@ -73,19 +77,6 @@
 
   <area alias="Shield.Properties.UmbracoUrl.Validation">
     <key alias="InvalidStrUrl">Invalid Url, please provide a valid relative Url i.e. /404</key>
-  </area>
-
-  <area alias="Shield.Environment.Properties">
-    <key alias="EnableDescription">Is this Environment active</key>
-
-    <key alias="ContinueProcessingLabel">Continue Processing</key>
-    <key alias="ContinueProcessingDescription">When this environment matches active security requests, do you allow later environments to process requests too (False is recommended, otherwise you can have multiple actions on a single request)</key>
-
-    <key alias="DomainsLabel">Domains</key>
-    <key alias="DomainsDescription">The domains that are associated to this environment</key>
-
-    <key alias="ColorIndicatorLabel">Color Indicator</key>
-    <key alias="ColorIndicatorDescription">Change the color of Umbraco favicon and navigation to easily determine the environment your on</key>
   </area>
 
   <area alias="Shield.Environment.Properties.Domains.Table">

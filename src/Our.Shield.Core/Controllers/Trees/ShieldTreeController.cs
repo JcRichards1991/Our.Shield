@@ -31,6 +31,7 @@ namespace Our.Shield.Core.UI
     public class ShieldTreeController : TreeController
     {
         private readonly IEnvironmentService _environmentService;
+        private readonly IAppService _appService;
 
         /// <summary>
         /// Initializes a new instance of <see cref="ShieldTreeController"/> class.
@@ -44,6 +45,7 @@ namespace Our.Shield.Core.UI
         /// <param name="runtimeState"><see cref="IRuntimeState"/></param>
         /// <param name="umbHelper"><see cref="UmbracoHelper"/></param>
         /// <param name="environmentService"><see cref="IEnvironmentService"/></param>
+        /// <param name="appService"><see cref="IAppService"/></param>
         public ShieldTreeController(
             IGlobalSettings globalSettings,
             IUmbracoContextAccessor umbContextAccessor,
@@ -53,12 +55,15 @@ namespace Our.Shield.Core.UI
             IProfilingLogger profilingLogger,
             IRuntimeState runtimeState,
             UmbracoHelper umbHelper,
-            IEnvironmentService environmentService)
+            IEnvironmentService environmentService,
+            IAppService appService)
             : base (globalSettings, umbContextAccessor, sqlContext, serviceContext, appCaches, profilingLogger, runtimeState, umbHelper)
         {
             GuardClauses.NotNull(environmentService, nameof(environmentService));
+            GuardClauses.NotNull(appService, nameof(appService));
 
             _environmentService = environmentService;
+            _appService = appService;
         }
 
         /// <inheritdoc />
@@ -87,7 +92,7 @@ namespace Our.Shield.Core.UI
             }
             else if (Guid.TryParse(id, out var key))
             {
-                var response = _environmentService.Get(key);
+                var response = _environmentService.Get(key).Result;
 
                 if (response.Environment != null)
                 {
@@ -107,7 +112,7 @@ namespace Our.Shield.Core.UI
 
             if (id == UmbConsts.System.Root.ToString())
             {
-                var response = _environmentService.Get();
+                var response = _environmentService.Get().Result;
 
                 foreach (var environment in response.Environments)
                 {
@@ -123,22 +128,22 @@ namespace Our.Shield.Core.UI
             }
             else if (Guid.TryParse(id, out var key))
             {
-                var environemnt = _environmentService.Get(key);
+                var result = _environmentService.Get(key).Result;
 
-                if (environemnt != null)
+                if (result.Environment != null)
                 {
-                    var result = _environmentService.GetAppsForEnvironment(key).Result;
+                    var appsResult = _appService.GetApps(result.Environment.Key).Result;
 
-                    foreach(var app in result.Apps)
+                    foreach(var app in appsResult.Apps)
                     {
                         tree.Add(CreateTreeNode(
-                            app.Key.ToString(),
+                            app.Key.Key.ToString(),
                             id,
                             new FormDataCollection(Enumerable.Empty<KeyValuePair<string, string>>()),
-                            Services.TextService.Localize($"Shield.{app.Id}/Name"),
-                            app.Icon,
+                            Services.TextService.Localize($"Shield.{app.Key.Id}/Name"),
+                            app.Key.Icon,
                             false,
-                            $"settings/{Constants.App.Alias}/app/{app.Key}"));
+                            $"settings/{Constants.App.Alias}/app/{app.Key.Key}"));
                     }
                 }
             }

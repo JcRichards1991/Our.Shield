@@ -38,6 +38,11 @@ namespace Our.Shield.Core.Factories
         {
             var app = Create(appId);
 
+            if (app == null)
+            {
+                return null;
+            }
+
             app.Key = appKey;
 
             return app;
