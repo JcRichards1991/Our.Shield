@@ -113,80 +113,66 @@ angular
           restrict: 'E',
           templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/IpAccessControl.html',
           scope: {
-            model: '='
-          }
-        };
-      }
-    ]
-  );
-
-angular
-  .module('umbraco.directives')
-  .directive('shieldIpAccessControlRanges',
-    [
-      function () {
-        return {
-          restrict: 'E',
-          templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/IpAccessControlRanges.html',
-          scope: {
-            exceptions: '='
+            ipAccessControl: '='
           },
           controller: [
             '$scope',
             'localizationService',
-            'dialogService',
+            'editorService',
             function ($scope,
               localizationService,
-              dialogService) {
+              editorService) {
               angular.extend($scope, {
-                add: function () {
-                  $scope.openDialog(-1);
-                },
-                edit: function ($index) {
-                  $scope.openDialog($index);
-                },
                 openDialog: function ($index) {
-                  var dialogData;
+                  var ipAccessRule;
                   if ($index === -1) {
-                    dialogData = {
+                    ipAccessRule = {
                       fromIpAddress: '',
                       toIpAddress: '',
                       description: '',
                       ipAddressType: 0
                     };
                   } else {
-                    dialogData = angular.copy($scope.exceptions[$index]);
+                    ipAccessRule = angular.copy($scope.ipAccessControl.ipAccessRules[$index]);
                   }
 
-                  dialogService.open({
-                    template: '../App_Plugins/Shield/Backoffice/Views/Dialogs/EditIpException.html',
-                    dialogData: dialogData,
-                    callback: function (ipException) {
+                  editorService.open({
+                    view: '../App_Plugins/Shield/Backoffice/Views/Dialogs/EditIpAccessRule.html',
+                    size: 'small',
+                    ipAccessRule: ipAccessRule,
+                    submit: function () {
                       if ($index === -1) {
-                        $scope.exceptions.push(ipException);
+                        $scope.ipAccessControl.ipAccessRules.push(ipAccessRule);
                       } else {
-                        $scope.exceptions[$index] = ipException;
+                        $scope.ipAccessControl.ipAccessRules[$index] = ipAccessRule;
                       }
+
+                      editorService.close();
+                    },
+                    close: function () {
+                      editorService.close();
                     }
                   });
                 },
                 remove: function ($index) {
-                  var exception = $scope.exceptions[$index];
+                  var ipAccessRule = $scope.ipAccessControl.ipAccessRules[$index];
 
-                  if (exception.value !== '') {
-                    var msg = exception.value;
+                  if (ipAccessRule.value !== '') {
+                    var msg = ipAccessRule.value;
 
-                    if (exception.description !== '') {
-                      msg += ' - ' + exception.description;
+                    if (ipAccessRule.description !== '') {
+                      msg += ' - ' + ipAccessRule.description;
                     }
 
-                    localizationService.localize('Shield.Properties.IpAccessControl.Messages_ConfirmRemoveIp').then(function (warningMsg) {
-                      if (confirm(warningMsg + msg)) {
-                        $scope.exceptions.splice($index, 1);
-                      }
-                    });
+                    localizationService
+                      .localize('Shield.Properties.IpAccessControl.Messages_ConfirmRemoveIp')
+                      .then(function (warningMsg) {
+                        if (confirm(warningMsg + msg)) {
+                          $scope.ipAccessControl.ipAccessRules.splice($index, 1);
+                        }
+                      });
                   } else {
-                    $scope.exceptions.splice($index, 1);
+                    $scope.ipAccessControl.ipAccessRules.splice($index, 1);
                   }
                 }
               });
@@ -267,15 +253,15 @@ angular
 
             scope.$on('formSubmitting', function () {
               switch (scope.model.type) {
-              case 0:
-                scope.model.value = scope.model.urlValue;
-                break;
-              case 1:
-                scope.model.value = scope.model.xpathValue;
-                break;
-              case 2:
-                scope.model.value = scope.model.contentPickerProperty.value;
-                break;
+                case 0:
+                  scope.model.value = scope.model.urlValue;
+                  break;
+                case 1:
+                  scope.model.value = scope.model.xpathValue;
+                  break;
+                case 2:
+                  scope.model.value = scope.model.contentPickerProperty.value;
+                  break;
               }
             });
           }

@@ -304,8 +304,10 @@
     <Compile Include="Data\Dtos\Environment.cs" />
     <Compile Include="Data\Migrations\ShieldMigrationPlan.cs" />
     <Compile Include="Data\Migrations\Shield2_0_0Migration.cs" />
+    <Compile Include="Enums\AccessType.cs" />
     <Compile Include="Enums\CacheRefreshType.cs" />
     <Compile Include="Enums\Cycle.cs" />
+    <Compile Include="Enums\IpAddressType.cs" />
     <Compile Include="Enums\TransferType.cs" />
     <Compile Include="Enums\UmbracoUrlType.cs" />
     <Compile Include="Factories\AppFactory.cs" />
@@ -318,6 +320,7 @@
     <Compile Include="Models\CacheRefresherJson\ConfigurationCacheRefresherJsonModel.cs" />
     <Compile Include="Models\CacheRefresherJson\EnvironmentCacheRefresherJsonModel.cs" />
     <Compile Include="Models\CacheRefresherJson\ICacheRefreshJsonModel.cs" />
+    <Compile Include="Models\IpAccessRule.cs" />
     <Compile Include="Models\Requests\UpsertEnvironmentRequest.cs" />
     <Compile Include="Models\Responses\BaseResponse.cs" />
     <Compile Include="Models\Responses\DeleteEnvironmentResponse.cs" />

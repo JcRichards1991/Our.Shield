@@ -9,13 +9,6 @@
     "sourceMap": true
   },
   {
-    "outputFileName": "src/Our.Shield.BackofficeAccess/App_Plugins/Shield.BackofficeAccess/Scripts/BackofficeAccess.min.js",
-    "inputFiles": [
-      "src/Our.Shield.BackofficeAccess/App_Plugins/Shield.BackofficeAccess/Scripts/BackofficeAccess.js"
-    ],
-    "sourceMap": true
-  },
-  {
     "outputFileName": "src/Our.Shield.Elmah/App_Plugins/Shield.Elmah/Scripts/Elmah.js",
     "inputFiles": [
       "src/Our.Shield.Elmah/App_Plugins/Shield.Elmah/Scripts/Controllers.js",

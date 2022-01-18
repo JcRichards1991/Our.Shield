@@ -17,14 +17,14 @@
           <div class="umb-property-editor umb-radiobuttons">
             <ul class="unstyled">
               <li>
-                <label class="radio umb-form-check umb-form-check--radiobutton" ng-class="{ 'umb-form-check--disabled': model.accessType }">
+                <label class="radio umb-form-check umb-form-check--radiobutton">
                   <span class="umb-form-check__symbol">
                     <input type="radio"
                            id="accessType_AllowAll"
                            name="accessType_AllowAll"
                            value="0"
                            class="umb-form-check__input"
-                           ng-model="model.accessType"
+                           ng-model="ipAccessControl.accessType"
                            no-dirty-check
                            shield-convert-to-number />
                     <span class="umb-form-check__state" aria-hidden="true">
@@ -39,14 +39,14 @@
                 </label>
               </li>
               <li>
-                <label class="radio umb-form-check umb-form-check--radiobutton" ng-class="{ 'umb-form-check--disabled': model.accessType }">
+                <label class="radio umb-form-check umb-form-check--radiobutton">
                   <span class="umb-form-check__symbol">
                     <input type="radio"
                            id="accessType_AllowNone"
                            name="accessType_AllowNone"
                            value="1"
                            class="umb-form-check__input"
-                           ng-model="model.accessType"
+                           ng-model="ipAccessControl.accessType"
                            no-dirty-check
                            shield-convert-to-number />
                     <span class="umb-form-check__state" aria-hidden="true">
@@ -55,27 +55,33 @@
                   </span>
                   <span class="umb-form-check__info">
                     <span class="umb-form-check__text">
-                      <localize key="Shield.Properties.IpAccessControl_AccessTypeAll"></localize>
+                      <localize key="Shield.Properties.IpAccessControl_AccessTypeNone"></localize>
                     </span>
                   </span>
                 </label>
               </li>
             </ul>
 
-          </div>
-        </div>
-
-        <div class="umb-node-preview" ng-repeat="exception in model.exceptions track by $index">
-          <div class="flex" style="min-width: 90%">
             <small style="margin-left: 20px;">
               <localize key="Shield.Properties.IpAccessControl_ExceptionsDescription"></localize>
             </small>
-            <div class="umb-node-preview__name" style="width: 100%" ng-attr-title="{{exception}}">
-              <input type="text" class="umb-property-editor umb-textstring textstring" style="width:50%" ng-model="exception" />
+
+          </div>
+        </div>
+
+        <div class="umb-node-preview" ng-repeat="ipAccessRule in ipAccessControl.ipAccessRules track by $index">
+          <div class="flex" style="min-width: 90%">
+            <div class="umb-node-preview__name" style="width: 100%">
+              <span>{{ipAccessRule.fromIpAddress}}</span>
+              <span ng-hide="ipAccessRule.toIpAddress === ''">{{ipAccessRule.toIpAddress}}</span>
+              <span>{{ipAccessRule.description}}</span>
             </div>
           </div>
           <div class="umb-node-preview__actions">
-            <button type="button" class="umb-node-preview__action umb-node-preview__action--red" ng-click="model.exception.splice($index, 1)">
+            <button type="button" class="umb-node-preview__action umb-node-preview__action--red" ng-click="openDialog($index)">
+              <localize key="general_edit"></localize>
+            </button>
+            <button type="button" class="umb-node-preview__action umb-node-preview__action--red" ng-click="remove($index)">
               <localize key="general_remove"></localize>
             </button>
           </div>
@@ -83,7 +89,7 @@
 
         <button type="button"
                 class="umb-node-preview-add"
-                ng-click="model.exception.push({})">
+                ng-click="openDialog(-1)">
           <localize key="general_add"></localize>
         </button>
 

@@ -34,10 +34,10 @@ namespace Our.Shield.BackofficeAccess.Models
         {
             BackendAccessUrl = "umbraco",
             ExcludeUrls = Enumerable.Empty<string>(),
-            IpAccessRules = new IpAccessControl
+            IpAccessControl = new IpAccessControl
             {
-                AccessType = IpAccessControl.AccessTypes.AllowAll,
-                Exceptions = Enumerable.Empty<IpAccessControl.Entry>()
+                AccessType = AccessTypes.AllowAll,
+                IpAccessRules = Enumerable.Empty<IpAccessRule>()
             },
             Unauthorized = new TransferUrl
             {

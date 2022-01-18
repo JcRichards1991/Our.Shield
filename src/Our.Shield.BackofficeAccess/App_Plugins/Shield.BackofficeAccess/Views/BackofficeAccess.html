@@ -1,85 +1,83 @@
-﻿<div>
-  <ng-form name="BackofficeAccessForm">
+﻿<ng-form name="BackofficeAccessForm">
 
-    <div class="umb-property">
-      <div class="control-group umb-control-group">
-        <div class="umb-el-wrap">
+  <div class="umb-property">
+    <div class="control-group umb-control-group">
+      <div class="umb-el-wrap">
 
-          <div class="control-header">
-            <label class="control-label">
-              <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlLabel"></localize>
-            </label>
-            <small class="control-description">
-              <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlDescription"></localize>
-            </small>
-          </div>
+        <div class="control-header">
+          <label class="control-label">
+            <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlLabel"></localize>
+          </label>
+          <small class="control-description">
+            <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlDescription"></localize>
+          </small>
+        </div>
 
-          <div class="controls">
-            <div class="umb-property-editor db">
-              <div class="umb-property-editor umb-textstring">
+        <div class="controls">
+          <div class="umb-property-editor db">
+            <div class="umb-property-editor umb-textstring">
 
-                <div class="umb-node-preview">
-                  <div class="flex">
-                    <div class="umb-node-preview__name">
-                      <input type="text" class="umb-property-editor umb-textstring textstring" ng-model="configuration.backendAccessUrl" />
-                    </div>
+              <div class="umb-node-preview">
+                <div class="flex">
+                  <div class="umb-node-preview__name">
+                    <input type="text" class="umb-property-editor umb-textstring textstring" ng-model="configuration.backendAccessUrl" />
                   </div>
                 </div>
-
               </div>
+
             </div>
           </div>
-
         </div>
+
       </div>
     </div>
+  </div>
 
-    <div class="umb-property">
-      <div class="control-group umb-control-group">
-        <div class="umb-el-wrap">
+  <div class="umb-property">
+    <div class="control-group umb-control-group">
+      <div class="umb-el-wrap">
 
-          <div class="control-header">
-            <label class="control-label">
-              <localize key="Shield.BackofficeAccess.Properties_ExcludeUrlsLabel"></localize>
-            </label>
-            <small class="control-description">
-              <localize key="Shield.BackofficeAccess.Properties_ExcludeUrlsDescription"></localize>
-            </small>
-          </div>
+        <div class="control-header">
+          <label class="control-label">
+            <localize key="Shield.BackofficeAccess.Properties_ExcludeUrlsLabel"></localize>
+          </label>
+          <small class="control-description">
+            <localize key="Shield.BackofficeAccess.Properties_ExcludeUrlsDescription"></localize>
+          </small>
+        </div>
 
-          <div class="controls">
-            <div class="umb-property-editor db">
-              <div class="umb-property-editor umb-contentpicker">
+        <div class="controls">
+          <div class="umb-property-editor db">
+            <div class="umb-property-editor umb-contentpicker">
 
-                <div class="umb-node-preview" ng-repeat="excludeUrl in configuration.excludeUrls track by $index">
-                  <div class="flex" style="min-width: 90%">
-                    <div class="umb-node-preview__name" style="width: 100%" ng-attr-title="{{excludeUrl}}">
-                      <input type="text" class="umb-property-editor umb-textstring textstring" ng-model="excludeUrl" />
-                    </div>
-                  </div>
-                  <div class="umb-node-preview__actions">
-                    <button type="button" class="umb-node-preview__action umb-node-preview__action--red" ng-click="configuration.excludeUrls.splice($index, 1)">
-                      <localize key="general_remove"></localize>
-                    </button>
+              <div class="umb-node-preview" ng-repeat="excludeUrl in configuration.excludeUrls track by $index">
+                <div class="flex" style="min-width: 90%">
+                  <div class="umb-node-preview__name" style="width: 100%" ng-attr-title="{{excludeUrl}}">
+                    <input type="text" class="umb-property-editor umb-textstring textstring" ng-model="excludeUrl" />
                   </div>
                 </div>
-
-                <button type="button"
-                        class="umb-node-preview-add"
-                        ng-click="configuration.excludeUrls.push('')">
-                  <localize key="general_add"></localize>
-                </button>
-
+                <div class="umb-node-preview__actions">
+                  <button type="button" class="umb-node-preview__action umb-node-preview__action--red" ng-click="configuration.excludeUrls.splice($index, 1)">
+                    <localize key="general_remove"></localize>
+                  </button>
+                </div>
               </div>
+
+              <button type="button"
+                      class="umb-node-preview-add"
+                      ng-click="configuration.excludeUrls.push('')">
+                <localize key="general_add"></localize>
+              </button>
+
             </div>
           </div>
-
         </div>
+
       </div>
     </div>
+  </div>
 
-    <shield-ip-access-control model="configuration.ipAccessRules"></shield-ip-access-control>
+  <shield-ip-access-control ip-access-control="configuration.ipAccessControl"></shield-ip-access-control>
 
-    <!--<shield-transfer-url model="configuration.unauthorized"></shield-transfer-url>-->
-  </ng-form>
-</div>
+  <!--<shield-transfer-url model="configuration.unauthorized"></shield-transfer-url>-->
+</ng-form>
