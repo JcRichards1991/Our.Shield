@@ -5,7 +5,7 @@
       <div class="umb-editor-header">
         <div class="flex items-center">
           <h1 class="umb-panel-header-name">
-            <localize key="Shield.Properties.IpAccessControl_ExceptionsDescriptionHeader"></localize>
+            <localize key="{{'shield.Properties.IpAccessControl_' + (model.ipAccessRule.fromIpAddress === '' ? 'IpAccessRulesAddNewIpAccessRuleTitle' : 'IpAccessRulesEditIpAccessRuleTitle')}}"></localize>
           </h1>
         </div>
       </div>
@@ -21,7 +21,7 @@
 
                     <div class="control-header">
                       <label class="control-label">
-                        <localize key="Shield.Properties.IpAccessControl_ExceptionsIpAddressHeader"></localize>
+                        <localize key="Shield.Properties.IpAccessControl_IpAccessRulesIpAddressHeader"></localize>
                       </label>
                     </div>
 
@@ -54,8 +54,8 @@
 
                     <div class="control-header">
                       <label class="control-label">
-                        <localize key="Shield.Properties.IpAccessControl_ExceptionsIpAddressHeader" ng-if="model.ipAccessRule.ipAddressType === 0"></localize>
-                        <localize key="Shield.Properties.IpAccessControl_ExceptionsIpAddressFrom" ng-if="model.ipAccessRule.ipAddressType === 1"></localize>
+                        <localize key="Shield.Properties.IpAccessControl_IpAccessRulesIpAddressHeader" ng-if="model.ipAccessRule.ipAddressType === 0"></localize>
+                        <localize key="Shield.Properties.IpAccessControl_IpAccessRulesIpAddressFrom" ng-if="model.ipAccessRule.ipAddressType === 1"></localize>
                       </label>
                     </div>
 
@@ -85,7 +85,7 @@
 
                     <div class="control-header">
                       <label class="control-label">
-                        <localize key="Shield.Properties.IpAccessControl_ExceptionsIpAddressTo"></localize>
+                        <localize key="Shield.Properties.IpAccessControl_IpAccessRulesIpAddressTo"></localize>
                       </label>
                     </div>
 
@@ -115,7 +115,7 @@
 
                     <div class="control-header">
                       <label class="control-label">
-                        <localize key="Shield.Properties.IpAccessControl_ExceptionsDescriptionHeader"></localize>
+                        <localize key="Shield.Properties.IpAccessControl_IpAccessRulesDescriptionHeader"></localize>
                       </label>
                     </div>
 

@@ -13,6 +13,21 @@
     <key alias="shieldJournalDashboard">Journal</key>
   </area>
 
+  <area alias="Shield.Dashboard.Environments">
+    <key alias="ButtonAddEnvironment">Add Environment</key>
+    <key alias="ButtonSortEnvironments">Sort Environments</key>
+    <key alias="TableHeaderName">Name</key>
+    <key alias="TableHeaderEnabled">Enabled</key>
+    <key alias="TableHeaderDomain">Domains</key>
+  </area>
+
+  <area alias="Shield.Dashboard.Journal">
+    <key alias="TableHeaderDate">Date</key>
+    <key alias="TableHeaderEnvironment">Environment</key>
+    <key alias="TableHeaderApp">App</key>
+    <key alias="TableHeaderMessage">Message</key>
+  </area>
+
   <area alias="Shield.General">
     <key alias="SaveConfigurationSuccess">Have successfully updated the App</key>
     <key alias="SaveConfigurationError">Unable to update configuration</key>
@@ -44,62 +59,35 @@
 
     <key alias="AppEnabledLabel">Is This App Enabled?</key>
     <key alias="AppEnabledDescription">Whether or not this App should be listening to requests and handling requests</key>
-    <key alias="IpAccessControlLabel">IP Addresses Access</key>
-    <key alias="IpAccessControlDescription">Whether or not to add IP Address restrictions</key>
-    <key alias="UnauthorizedLabel">Unauthorized</key>
-    <key alias="UnauthorizedDescription">The page to redirect / rewrite the user to, when access is being denied</key>
-    <key alias="UmbracoUsersEnableLabel">Allow Authenticated Umbraco Users</key>
-  </area>
-
-  <area alias="Shield.Properties.Validation">
-    <key alias="Required">Required</key>
   </area>
 
   <area alias="Shield.Properties.IpAccessControl">
+    <key alias="Label">IP Address Accesses</key>
+    <key alias="Description">Whether or not to add IP Address restrictions</key>
+
     <key alias="AccessTypeAll">Open to all IP addresses</key>
     <key alias="AccessTypeNone">No access for all IP addresses</key>
 
-    <key alias="ExceptionsDescription">Except for these IP Addresses:</key>
-    <key alias="ExceptionsIpAddressHeader">IP Address</key>
-    <key alias="ExceptionsDescriptionHeader">Description</key>
-    <key alias="ExceptionsIpAddressFrom">IP Address Range From</key>
-    <key alias="ExceptionsIpAddressTo">IP Address Range To</key>
+    <key alias="IpAccessRulesDescription">Except for these IP Addresses:</key>
+    <key alias="IpAccessRulesIpAddressHeader">IP Address</key>
+    <key alias="IpAccessRulesDescriptionHeader">Description</key>
+    <key alias="IpAccessRulesIpAddressFrom">IP Address Range From</key>
+    <key alias="IpAccessRulesIpAddressTo">IP Address Range To</key>
+    <key alias="IpAccessRulesAddNewIpAccessRuleTitle">Add New IP Access Rule</key>
+    <key alias="IpAccessRulesEditIpAccessRuleTitle">Edit IP Access Rule</key>
   </area>
 
-  <area alias="Shield.Properties.IpAccessControl.Validation">
-    <key alias="IpDuplicate">IP Address has already been added</key>
-    <key alias="IpInvalid">Invalid IP Address. Please enter a valid IPv4 or IPv6 address</key>
-  </area>
+  <area alias="Shield.Properties.Unauthorized">
+    <key alias="Label">Unauthorized</key>
+    <key alias="Description">The page to redirect / rewrite the user to, when access is being denied</key>
+    <key alias="UmbracoUsersEnableLabel">Allow Authenticated Umbraco Users</key>
+    
+    <key alias="PlayDeadOption">Play Dead</key>
+    <key alias="RedirectOption">Redirect</key>
+    <key alias="RewriteOption">Rewrite</key>
 
-  <area alias="Shield.Properties.IpAccessControl.Messages">
-    <key alias="ConfirmRemoveIp">Are you sure you want to remove this IP Address: </key>
-  </area>
-
-  <area alias="Shield.Properties.UmbracoUrl.Validation">
-    <key alias="InvalidStrUrl">Invalid Url, please provide a valid relative Url i.e. /404</key>
-  </area>
-
-  <area alias="Shield.Environment.Properties.Domains.Table">
-    <key alias="DomainHeader">Domain</key>
-  </area>
-
-  <area alias="Shield.Environment.Properties.Validation">
-    <key alias="DomainInvalid">Domain is invalid</key>
-    <key alias="ColorIndicatorInvalid">Invalid hexadecimal color</key>
-  </area>
-
-  <area alias="Shield.Dashboard.Environments">
-    <key alias="ButtonAddEnvironment">Add Environment</key>
-    <key alias="ButtonSortEnvironments">Sort Environments</key>
-    <key alias="TableHeaderName">Name</key>
-    <key alias="TableHeaderEnabled">Enabled</key>
-    <key alias="TableHeaderDomain">Domains</key>
-  </area>
-
-  <area alias="Shield.Dashboard.Journal">
-    <key alias="TableHeaderDate">Date</key>
-    <key alias="TableHeaderEnvironment">Environment</key>
-    <key alias="TableHeaderApp">App</key>
-    <key alias="TableHeaderMessage">Message</key>
+    <key alias="TransferTypeUrlOption">URL</key>
+    <key alias="TransferTypeXPathOption">XPath</key>
+    <key alias="TransferTypeContentPickerOption">Content Picker</key>
   </area>
 </language>

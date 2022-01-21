@@ -21,7 +21,7 @@ namespace Our.Shield.Core.Models
         /// </summary>
         /// <param name="transfer"></param>
         /// <param name="isExceptionUrl"></param>
-        public WatchResponse(TransferUrl transfer, bool isExceptionUrl = false)
+        public WatchResponse(TransferUrlControl transfer, bool isExceptionUrl = false)
         {
             Transfer = transfer;
             IsExceptionUrl = isExceptionUrl;
@@ -35,7 +35,7 @@ namespace Our.Shield.Core.Models
         /// <summary>
         /// 
         /// </summary>
-        public TransferUrl Transfer;
+        public TransferUrlControl Transfer;
 
         /// <summary>
         /// 

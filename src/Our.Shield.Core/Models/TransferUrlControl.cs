@@ -3,7 +3,10 @@ using Our.Shield.Core.Enums;
 
 namespace Our.Shield.Core.Models
 {
-    public class TransferUrl
+    /// <summary>
+    /// 
+    /// </summary>
+    public class TransferUrlControl
     {
         /// <summary>
         /// What action do we take for this URL

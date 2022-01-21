@@ -294,8 +294,7 @@
     <Content Include="App_Plugins\Shield\BackOffice\Views\AppListing.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Views\Dialogs\EditIpAccessRule.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Views\Directives\IpAccessControl.html" />
-    <Content Include="App_Plugins\Shield\BackOffice\Views\Directives\TransferUrl.html" />
-    <Content Include="App_Plugins\Shield\BackOffice\Views\Directives\UmbracoUrl.html" />
+    <Content Include="App_Plugins\Shield\BackOffice\Views\Directives\TransferUrlControl.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Views\EditApp.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Views\EditEnvironment.html" />
     <Content Include="App_Plugins\Shield\Lang\en-us.xml" />

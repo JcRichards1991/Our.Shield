@@ -185,50 +185,35 @@ angular
 
 angular
   .module('umbraco.directives')
-  .directive('shieldTransferUrl',
+  .directive('shieldTransferUrlControl',
     [
       function () {
         return {
           restrict: 'E',
-          templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/TransferUrl.html?version=1.1.0',
+          templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/TransferUrlControl.html',
           scope: {
-            model: '='
-          }
-        };
-      }
-    ]
-  );
-
-angular
-  .module('umbraco.directives')
-  .directive('shieldUmbracoUrl',
-    [
-      function () {
-        return {
-          restrict: 'E',
-          templateUrl: '/App_Plugins/Shield/Backoffice/Views/Directives/UmbracoUrl.html',
-          scope: {
-            model: '='
+            transferUrlControl: '='
           },
           link: function (scope) {
-            if (scope.model === null)
-              scope.model = { type: 0, value: '' };
+            if (scope.transferUrlControl.url === null) {
+              scope.transferUrlControl = { type: 0, value: '' }
+            };
 
-            switch (scope.model.type) {
+            switch (scope.transferUrlControl.url.type) {
               case 0:
-                scope.model.urlValue = scope.model.value;
+                scope.transferUrlControl.url.urlValue = scope.transferUrlControl.url.value;
                 break;
 
               case 1:
-                scope.model.xpathValue = scope.model.value;
+                scope.transferUrlControl.url.xpathValue = scope.transferUrlControl.url.value;
                 break;
 
               case 2:
-                scope.model.mntpValue = scope.model.value || '';
+                scope.transferUrlControl.url.mntpValue = scope.transferUrlControl.url.value || '';
                 break;
             }
 
-            angular.extend(scope.model, {
+            angular.extend(scope, {
               contentPickerProperty: {
                 view: 'contentpicker',
                 alias: 'contentPicker',
@@ -247,20 +232,22 @@ angular
                   minNumber: 1,
                   maxNumber: 1
                 },
-                value: scope.model.mntpValue
+                value: scope.transferUrlControl.url.mntpValue
               }
             });
 
             scope.$on('formSubmitting', function () {
               switch (scope.model.type) {
                 case 0:
-                  scope.model.value = scope.model.urlValue;
+                  scope.transferUrlControl.url.value = scope.transferUrlControl.url.urlValue;
                   break;
+
                 case 1:
-                  scope.model.value = scope.model.xpathValue;
+                  scope.transferUrlControl.url.value = scope.transferUrlControl.url.xpathValue;
                   break;
+
                 case 2:
-                  scope.model.value = scope.model.contentPickerProperty.value;
+                  scope.transferUrlControl.url.value = scope.contentPickerProperty.value;
                   break;
               }
             });

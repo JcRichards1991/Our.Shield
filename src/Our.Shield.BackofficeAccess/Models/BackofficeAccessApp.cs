@@ -39,7 +39,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 AccessType = AccessTypes.AllowAll,
                 IpAccessRules = Enumerable.Empty<IpAccessRule>()
             },
-            Unauthorized = new TransferUrl
+            Unauthorized = new TransferUrlControl
             {
                 TransferType = TransferType.Redirect,
                 Url = new UmbracoUrl
@@ -194,7 +194,7 @@ namespace Our.Shield.BackofficeAccess.Models
                         || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".asmx")
                         || httpApp.Context.Request.CurrentExecutionFilePathExtension.Equals(".ashx"))
                     {
-                        return new WatchResponse(new TransferUrl
+                        return new WatchResponse(new TransferUrlControl
                         {
                             TransferType = TransferType.TransferRequest,
                             Url = new UmbracoUrl
@@ -205,7 +205,7 @@ namespace Our.Shield.BackofficeAccess.Models
                         });
                     }
 
-                    return new WatchResponse(new TransferUrl
+                    return new WatchResponse(new TransferUrlControl
                     {
                         TransferType = TransferType.TransmitFile,
                         Url = new UmbracoUrl
@@ -219,7 +219,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 httpApp.Context.Items.Add(_allowKey, true);
                 rewritePath += httpApp.Request.Url.Query;
 
-                return new WatchResponse(new TransferUrl
+                return new WatchResponse(new TransferUrlControl
                 {
                     TransferType = rewrite ? TransferType.Rewrite : TransferType.Redirect,
                     Url = new UmbracoUrl

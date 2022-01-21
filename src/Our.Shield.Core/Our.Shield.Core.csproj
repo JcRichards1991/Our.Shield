@@ -340,7 +340,6 @@
     <Compile Include="Services\IUmbracoMediaService.cs" />
     <Compile Include="Services\IUmbracoUrlService.cs" />
     <Compile Include="Services\JournalService.cs" />
-    <Compile Include="Services\ShieldService.cs" />
     <Compile Include="Settings\ShieldConfiguration.cs" />
     <Compile Include="Settings\IpAddressValidation.cs" />
     <Compile Include="Settings\IpAddressValidationElement.cs" />
@@ -348,7 +347,7 @@
     <Compile Include="Settings\ApplicationSettings.cs" />
     <Compile Include="Models\JournalMessage.cs" />
     <Compile Include="Models\UmbracoUrl.cs" />
-    <Compile Include="Models\TransferUrl.cs" />
+    <Compile Include="Models\TransferUrlControl.cs" />
     <Compile Include="Services\IpAccessControlService.cs" />
     <Compile Include="Services\EnvironmentService.cs" />
     <Compile Include="Helpers\AccessHelper.cs" />
