@@ -2,7 +2,7 @@
 
 namespace Our.Shield.Core.Settings
 {
-    public class ShieldSettings : IShieldSettings
+    internal class ShieldSettings : IShieldSettings
     {
         internal ShieldSettings()
         {

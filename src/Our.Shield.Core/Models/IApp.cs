@@ -1,25 +1,22 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using Umbraco.Core.Persistence.Migrations;
 
 namespace Our.Shield.Core.Models
 {
+    /// <summary>
+    /// Definition of an App to plug-in to Our.Shield custom umbraco section
+    /// </summary>
     public interface IApp : IFrisk
     {
         /// <summary>
-        /// Name of the plugin
+        /// The Unique key of the App
         /// </summary>
-        [JsonProperty("name")]
-        string Name { get; }
+        [JsonProperty("key")]
+        Guid Key { get; set; }
 
         /// <summary>
-        /// Description of the plugin
-        /// </summary>
-        [JsonProperty("description")]
-        string Description { get; }
-
-        /// <summary>
-        /// Css class of icon
+        /// CSS class of icon
         /// </summary>
         [JsonProperty("icon")]
         string Icon { get; }
@@ -31,21 +28,15 @@ namespace Our.Shield.Core.Models
         IAppConfiguration DefaultConfiguration { get; }
 
         /// <summary>
-        /// The Migrations for the App
+        /// The initialize method for the App
         /// </summary>
-        [JsonIgnore]
-        IDictionary<string, IMigration> Migrations { get; set; }
-
-        /// <summary>
-        /// The initialise method for the App
-        /// </summary>
-        /// <returns>True if successfully initialised; Otherwise, False</returns>
+        /// <returns>True if successfully initialized; Otherwise, False</returns>
         bool Init();
 
         /// <summary>
-        /// Execute the config of a derived app
+        /// Execute the config of a derived App
         /// </summary>
-        /// <param name="job">The job to to execute the config</param>
+        /// <param name="job">The job to execute the config</param>
         /// <param name="config">The current config to execute</param>
         /// <returns>True, if successfully executed; Otherwise, False</returns>
         bool Execute(IJob job, IAppConfiguration config);

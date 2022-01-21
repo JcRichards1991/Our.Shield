@@ -1,82 +1,83 @@
-﻿<div ng-controller="Shield.Editors.BackofficeAccess.Edit as vm" ng-init="vm.init()">
-    <ng-form name="BackofficeAccessForm">
+﻿<ng-form name="BackofficeAccessForm">
 
-        <div class="umb-el-wrap control-group umb-control-group">
-            <label for="backendAccessUrl" class="control-label">
-                <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlLabel">Backend Office Access URL</localize>
-                <small>
-                    <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlDescription">The URL used to access the CMS.</localize>
-                </small>
-            </label>
+  <div class="umb-property">
+    <div class="control-group umb-control-group">
+      <div class="umb-el-wrap">
 
-            <div class="controls">
-                <div class="umb-editor">
-                    <input type="text" id="backendAccessUrl" name="backendAccessUrl" ng-model="vm.configuration.backendAccessUrl" required ng-trim="false" ng-pattern="/^(?:[a-zA-Z0-9]+)?$/" />
-                    <span class="help-inline" val-msg-for="backendAccessUrl" val-toggle-msg="required">
-                        <localize key="Shield.BackofficeAccess.ErrorMessages_Required">Required</localize>
-                    </span>
-                    <span class="help-inline" val-msg-for="backendAccessUrl" val-toggle-msg="pattern">
-                        <localize key="Shield.BackofficeAccess.ErrorMessages_InvalidBackendAccessUrl">This can be any valid combination of letters and/or numbers, non-case sensitive. You cannot use white space, symbols or special characters</localize>
-                    </span>
-                </div>
-            </div>
+        <div class="control-header">
+          <label class="control-label">
+            <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlLabel"></localize>
+          </label>
+          <small class="control-description">
+            <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlDescription"></localize>
+          </small>
         </div>
 
-        <div class="umb-el-wrap control-group umb-control-group">
-          <label for="exludeUrls" class="control-label">
-            <localize key="Shield.BackofficeAccess.Properties_ExcludeUrlsLabel">Exclude Urls</localize>
-            <small>
-              <localize key="Shield.BackofficeAccess.Properties_ExcludeUrlsDescription">Any URL(s) which should not be blocked. For Example ~/Umbraco/Surface/ControllerName</localize>
-            </small>
-          </label>
+        <div class="controls">
+          <div class="umb-property-editor db">
+            <div class="umb-property-editor umb-textstring">
 
-          <div class="controls">
-            <div class="umb-editor umb-multiple-textbox">
-              <div class="umb-editor umb-multiple-textbox">
-
-                <div ui-sortable="sortableOptions" ng-model="vm.excludeUrls">
-                  <div class="flex flex-wrap textbox-wrapper" ng-repeat="item in vm.excludeUrls">
-                    <input type="text" name="item_{{$index}}" ng-model="item.value" class="umb-editor umb-textstring textstring" focus-when="{{item.hasFocus}}" />
-                    <i class="icon icon-navigation handle" localize="title" title="@general_move"></i>
-                    <a prevent-default href="" class="remove" localize="title" title="@content_removeTextBox" ng-show="vm.excludeUrls.length > 0" ng-click="vm.removeExcludeUrl($index)">
-                    <i class="icon icon-remove"></i>
-                    </a>
+              <div class="umb-node-preview">
+                <div class="flex">
+                  <div class="umb-node-preview__name">
+                    <input type="text" class="umb-property-editor umb-textstring textstring" ng-model="configuration.backendAccessUrl" />
                   </div>
                 </div>
-
-                <a prevent-default href="" class="add-link" localize="title" title="@content_addTextBox" ng-click="vm.addExcludeUrl()">
-                  <localize key="general_add">Add</localize>
-                </a>
-
               </div>
+
             </div>
           </div>
         </div>
 
-        <div class="umb-el-wrap control-group umb-control-group">
-            <label class="control-label">
-                <localize key="Shield.Properties_IpAccessControlLabel"></localize>
-                <small>
-                    <localize key="Shield.Properties_IpAccessControlDescription"></localize>
-                </small>
-            </label>
-            
-            <div class="controls">
-                <shield-ip-access-control model="vm.configuration.ipAccessRules"></shield-ip-access-control>
-            </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="umb-property">
+    <div class="control-group umb-control-group">
+      <div class="umb-el-wrap">
+
+        <div class="control-header">
+          <label class="control-label">
+            <localize key="Shield.BackofficeAccess.Properties_ExcludeUrlsLabel"></localize>
+          </label>
+          <small class="control-description">
+            <localize key="Shield.BackofficeAccess.Properties_ExcludeUrlsDescription"></localize>
+          </small>
         </div>
 
-        
-        <div class="umb-el-wrap control-group umb-control-group">
-            <label for="unauthorizedAction" class="control-label">
-                <localize key="Shield.Properties_UnauthorizedLabel"></localize>
-                <small>
-                    <localize key="Shield.Properties_UnauthorizedDescription"></localize>
-                </small>
-            </label>
-            <div class="controls">
-                <shield-transfer-url model="vm.configuration.unauthorized"></shield-transfer-url>
+        <div class="controls">
+          <div class="umb-property-editor db">
+            <div class="umb-property-editor umb-contentpicker">
+
+              <div class="umb-node-preview" ng-repeat="excludeUrl in configuration.excludeUrls track by $index">
+                <div class="flex" style="min-width: 90%">
+                  <div class="umb-node-preview__name" style="width: 100%" ng-attr-title="{{excludeUrl}}">
+                    <input type="text" class="umb-property-editor umb-textstring textstring" ng-model="excludeUrl" />
+                  </div>
+                </div>
+                <div class="umb-node-preview__actions">
+                  <button type="button" class="umb-node-preview__action umb-node-preview__action--red" ng-click="configuration.excludeUrls.splice($index, 1)">
+                    <localize key="general_remove"></localize>
+                  </button>
+                </div>
+              </div>
+
+              <button type="button"
+                      class="umb-node-preview-add"
+                      ng-click="configuration.excludeUrls.push('')">
+                <localize key="general_add"></localize>
+              </button>
+
             </div>
+          </div>
         </div>
-    </ng-form>
-</div>
+
+      </div>
+    </div>
+  </div>
+
+  <shield-ip-access-control ip-access-control="configuration.ipAccessControl"></shield-ip-access-control>
+
+  <shield-transfer-url-control transfer-url-control="configuration.unauthorized"></shield-transfer-control>
+</ng-form>

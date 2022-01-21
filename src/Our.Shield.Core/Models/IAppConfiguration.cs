@@ -15,7 +15,7 @@ namespace Our.Shield.Core.Models
         bool Enable { get; set; }
 
         /// <summary>
-        /// Gets or sets the configuration last modified data time
+        /// Gets or sets the configuration last modified date time
         /// </summary>
         [JsonProperty("lastModified")]
         DateTime? LastModified { get; }

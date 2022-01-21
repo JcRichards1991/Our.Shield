@@ -1,5 +1,6 @@
 ﻿using System.Web;
-using Umbraco.Core.Security;
+using Umbraco.Web.Security;
+
 namespace Our.Shield.Core.Helpers
 {
     public static class AccessHelper

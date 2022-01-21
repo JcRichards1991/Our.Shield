@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language alias="en" intName="English (US)" localName="English (US)" lcid="" culture="en-US">
+  <creator>
+    <name>Joshua Richards</name>
+  </creator>
+
+  <area alias="sections">
+    <key alias="shield">Shield</key>
+  </area>
+
+  <area alias="dashboardTabs">
+    <key alias="shieldEnvironmentsDashboard">Environments</key>
+    <key alias="shieldJournalDashboard">Journal</key>
+  </area>
+
+  <area alias="Shield.Dashboard.Environments">
+    <key alias="ButtonAddEnvironment">Add Environment</key>
+    <key alias="ButtonSortEnvironments">Sort Environments</key>
+    <key alias="TableHeaderName">Name</key>
+    <key alias="TableHeaderEnabled">Enabled</key>
+    <key alias="TableHeaderDomain">Domains</key>
+  </area>
+
+  <area alias="Shield.Dashboard.Journal">
+    <key alias="TableHeaderDate">Date</key>
+    <key alias="TableHeaderEnvironment">Environment</key>
+    <key alias="TableHeaderApp">App</key>
+    <key alias="TableHeaderMessage">Message</key>
+  </area>
+
+  <area alias="Shield.General">
+    <key alias="SaveConfigurationSuccess">Have successfully updated the App</key>
+    <key alias="SaveConfigurationError">Unable to update configuration</key>
+    <key alias="SaveConfigurationInvalid">Unable to update app, there are validation errors</key>
+
+    <key alias="SaveEnvironmentSuccess">Have successfully updated the environment</key>
+    <key alias="SaveEnvironmentError">Unable to update environment</key>
+    <key alias="SaveEnvironmentInvalid">Unable to update environment, there are validation errors</key>
+
+    <key alias="DeleteEnvironmentSuccess">Successfully deleted environment</key>
+    <key alias="DeleteEnvironmentError">Unable to delete environment</key>
+
+    <key alias="CreateEnvironmentSuccess">Successfully created new environment</key>
+    <key alias="CreateEnvironmentError">Unable to create environment</key>
+    <key alias="CreateEnvironmentInvalid">Unable to create environment, there are validation errors</key>
+
+    <key alias="SortEnvironmentError">Unable to re-order the environments, there was an error</key>
+  </area>
+
+  <area alias="Shield.Properties">
+    <key alias="EnvironmentEnabledLabel">Is This Environment Enabled?</key>
+    <key alias="EnvironmentEnabledDescription">Whether or not this environment's installed plug-ins should be listening to requests and handling requests</key>
+    <key alias="EnvironmentContinueProcessingLabel">Continue Processing</key>
+    <key alias="EnvironmentContinueProcessingDescription">When this environment matches active security requests, do you allow later environments to process requests too (False is recommended, otherwise you can have multiple actions on a single request)</key>
+    <key alias="EnvironmentDomainsLabel">Domains</key>
+    <key alias="EnvironmentDomainsDescription">The domains that are associated to this environment</key>
+    <key alias="EnvironmentColorIndicatorLabel">Color Indicator</key>
+    <key alias="EnvironmentColorIndicatorDescription">Change the color of Umbraco favicon and navigation to easily determine the environment your on</key>
+
+    <key alias="AppEnabledLabel">Is This App Enabled?</key>
+    <key alias="AppEnabledDescription">Whether or not this App should be listening to requests and handling requests</key>
+  </area>
+
+  <area alias="Shield.Properties.IpAccessControl">
+    <key alias="Label">IP Address Accesses</key>
+    <key alias="Description">Whether or not to add IP Address restrictions</key>
+
+    <key alias="AccessTypeAll">Open to all IP addresses</key>
+    <key alias="AccessTypeNone">No access for all IP addresses</key>
+
+    <key alias="IpAccessRulesDescription">Except for these IP Addresses:</key>
+    <key alias="IpAccessRulesIpAddressHeader">IP Address</key>
+    <key alias="IpAccessRulesDescriptionHeader">Description</key>
+    <key alias="IpAccessRulesIpAddressFrom">IP Address Range From</key>
+    <key alias="IpAccessRulesIpAddressTo">IP Address Range To</key>
+    <key alias="IpAccessRulesAddNewIpAccessRuleTitle">Add New IP Access Rule</key>
+    <key alias="IpAccessRulesEditIpAccessRuleTitle">Edit IP Access Rule</key>
+  </area>
+
+  <area alias="Shield.Properties.Unauthorized">
+    <key alias="Label">Unauthorized</key>
+    <key alias="Description">The page to redirect / rewrite the user to, when access is being denied</key>
+    <key alias="UmbracoUsersEnableLabel">Allow Authenticated Umbraco Users</key>
+    
+    <key alias="PlayDeadOption">Play Dead</key>
+    <key alias="RedirectOption">Redirect</key>
+    <key alias="RewriteOption">Rewrite</key>
+
+    <key alias="TransferTypeUrlOption">URL</key>
+    <key alias="TransferTypeXPathOption">XPath</key>
+    <key alias="TransferTypeContentPickerOption">Content Picker</key>
+  </area>
+</language>

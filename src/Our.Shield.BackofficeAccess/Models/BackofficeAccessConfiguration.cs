@@ -26,13 +26,13 @@ namespace Our.Shield.BackofficeAccess.Models
         /// <summary>
         /// Client access
         /// </summary>
-        [JsonProperty("ipAccessRules")]
-        public IpAccessControl IpAccessRules { get; set; }
+        [JsonProperty("ipAccessControl")]
+        public IpAccessControl IpAccessControl { get; set; }
 
         /// <summary>
-        /// The Url Type Selector and the url
+        /// The URL Type Selector and the URL
         /// </summary>
         [JsonProperty("unauthorized")]
-        public TransferUrl Unauthorized { get; set; }
+        public TransferUrlControl Unauthorized { get; set; }
     }
 }

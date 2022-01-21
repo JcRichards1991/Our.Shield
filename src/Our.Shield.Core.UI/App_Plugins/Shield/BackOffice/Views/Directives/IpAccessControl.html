@@ -1,0 +1,100 @@
+﻿<div class="umb-property">
+  <div class="control-group umb-control-group">
+    <div class="umb-el-wrap">
+
+      <div class="control-header">
+        <label class="control-label">
+          <localize key="Shield.Properties.IpAccessControl_Label"></localize>
+        </label>
+        <small class="control-description">
+          <localize key="Shield.Properties.IpAccessControl_Description"></localize>
+        </small>
+      </div>
+
+      <div class="controls">
+
+        <div class="umb-property-editor db">
+          <div class="umb-property-editor umb-radiobuttons">
+            <ul class="unstyled">
+              <li>
+                <label class="radio umb-form-check umb-form-check--radiobutton">
+                  <span class="umb-form-check__symbol">
+                    <input type="radio"
+                           id="accessType_AllowAll"
+                           name="accessType_AllowAll"
+                           value="0"
+                           class="umb-form-check__input"
+                           ng-model="ipAccessControl.accessType"
+                           no-dirty-check
+                           shield-convert-to-number />
+                    <span class="umb-form-check__state" aria-hidden="true">
+                      <span class="umb-form-check__check"></span>
+                    </span>
+                  </span>
+                  <span class="umb-form-check__info">
+                    <span class="umb-form-check__text">
+                      <localize key="Shield.Properties.IpAccessControl_AccessTypeAll"></localize>
+                    </span>
+                  </span>
+                </label>
+              </li>
+              <li>
+                <label class="radio umb-form-check umb-form-check--radiobutton">
+                  <span class="umb-form-check__symbol">
+                    <input type="radio"
+                           id="accessType_AllowNone"
+                           name="accessType_AllowNone"
+                           value="1"
+                           class="umb-form-check__input"
+                           ng-model="ipAccessControl.accessType"
+                           no-dirty-check
+                           shield-convert-to-number />
+                    <span class="umb-form-check__state" aria-hidden="true">
+                      <span class="umb-form-check__check"></span>
+                    </span>
+                  </span>
+                  <span class="umb-form-check__info">
+                    <span class="umb-form-check__text">
+                      <localize key="Shield.Properties.IpAccessControl_AccessTypeNone"></localize>
+                    </span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+
+            <small style="margin-left: 20px;">
+              <localize key="Shield.Properties.IpAccessControl_IpAccessRulesDescription"></localize>
+            </small>
+
+          </div>
+        </div>
+
+        <div class="umb-node-preview" ng-repeat="ipAccessRule in ipAccessControl.ipAccessRules track by $index">
+          <div class="flex" style="min-width: 90%">
+            <div class="umb-node-preview__name" style="width: 100%">
+              <span>{{ipAccessRule.fromIpAddress}}</span>
+              <span ng-hide="ipAccessRule.toIpAddress === ''">{{ipAccessRule.toIpAddress}}</span>
+              <span>{{ipAccessRule.description}}</span>
+            </div>
+          </div>
+          <div class="umb-node-preview__actions">
+            <button type="button" class="umb-node-preview__action umb-node-preview__action--red" ng-click="openDialog($index)">
+              <localize key="general_edit"></localize>
+            </button>
+            <button type="button" class="umb-node-preview__action umb-node-preview__action--red" ng-click="remove($index)">
+              <localize key="general_remove"></localize>
+            </button>
+          </div>
+        </div>
+
+        <button type="button"
+                class="umb-node-preview-add"
+                ng-click="openDialog(-1)">
+          <localize key="general_add"></localize>
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,4 +1,5 @@
-﻿using Our.Shield.Core.Models;
+﻿using Our.Shield.Core.Enums;
+using Our.Shield.Core.Models;
 using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
-using Umbraco.Core.Logging;
-using Umbraco.Web;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Our.Shield.Core.Operation.WebRequestHandler), nameof(Our.Shield.Core.Operation.WebRequestHandler.Register))]
 namespace Our.Shield.Core.Operation
@@ -44,30 +43,28 @@ namespace Our.Shield.Core.Operation
 
         private class Environ
         {
-            public readonly int Id;
+            public readonly Guid Key;
             public readonly string Name;
             public readonly int SortOrder;
             public readonly bool ContinueProcessing;
-            // ReSharper disable once MemberHidesStaticFromOuterClass
             public readonly List<string> Domains;
             public readonly Locker[] WatchLocks;
             public readonly List<Watcher>[] Watchers;
 
             public Environ(IEnvironment environment)
             {
-                Id = environment.Id;
                 Name = string.Copy(environment.Name);
                 SortOrder = environment.SortOrder;
                 ContinueProcessing = environment.ContinueProcessing;
-                Domains = Domains(environment.Domains);
+                //Domains = Domains(environment.Domains);
                 WatchLocks = new Locker[PipeLineStagesLength];
                 Watchers = new List<Watcher>[PipeLineStagesLength];
+
                 for (var index = 0; index != PipeLineStagesLength; index++)
                 {
                     WatchLocks[index] = new Locker();
                     Watchers[index] = new List<Watcher>();
                 }
-
             }
         }
 
@@ -81,7 +78,7 @@ namespace Our.Shield.Core.Operation
 
         private class UrlException
         {
-            public int EnvironmentId;
+            public Guid EnvironmentKey;
             public string AppId;
             public Regex Regex;
             public UmbracoUrl Url;
@@ -125,12 +122,12 @@ namespace Our.Shield.Core.Operation
                 UriBuilder urlwithPort, urlWithoutPort;
                 try
                 {
-                    urlwithPort = urlWithoutPort = new UriBuilder(domain.Name);
+                    urlwithPort = urlWithoutPort = new UriBuilder(domain.FullyQualifiedUrl);
 
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.Error<WebRequestHandler>($"{domain.Name} is not a valid domain", ex);
+                    Serilog.Log.Error(ex, "{DomainName} is not a valid domain", domain.FullyQualifiedUrl);
                     continue;
                 }
 
@@ -141,7 +138,7 @@ namespace Our.Shield.Core.Operation
                     // ReSharper disable once HeuristicUnreachableCode
                     urlwithPort.Scheme = Uri.UriSchemeHttp;
                     UriBuilder urlHttpsWithoutPort;
-                    var urlHttpsWithPort = urlHttpsWithoutPort = new UriBuilder(domain.Name)
+                    var urlHttpsWithPort = urlHttpsWithoutPort = new UriBuilder(domain.FullyQualifiedUrl)
                     {
                         Scheme = Uri.UriSchemeHttps
                     };
@@ -149,9 +146,11 @@ namespace Our.Shield.Core.Operation
                     results.Add(urlHttpsWithoutPort.ToString().Replace($":{urlHttpsWithPort.Port}", string.Empty));
                     results.Add(urlHttpsWithPort.ToString());
                 }
+
                 results.Add(urlWithoutPort.ToString().Replace($":{urlwithPort.Port}", string.Empty));
                 results.Add(urlwithPort.ToString());
             }
+
             return results;
         }
 
@@ -229,12 +228,12 @@ namespace Our.Shield.Core.Operation
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="environmentId"></param>
+        /// <param name="environmentKey"></param>
         /// <param name="appId"></param>
         /// <param name="stage"></param>
         /// <param name="regex"></param>
         /// <returns></returns>
-        public static int Unwatch(int? environmentId = null, string appId = null, PipeLineStages? stage = null, Regex regex = null)
+        public static int Unwatch(Guid? environmentKey = null, string appId = null, PipeLineStages? stage = null, Regex regex = null)
         {
             var watchRemovedCounter = 0;
             var deleteEnvirons = new List<int>();
@@ -243,7 +242,7 @@ namespace Our.Shield.Core.Operation
             if (EnvironLock.Read(() =>
             {
                 var regy = regex?.ToString();
-                foreach (var environ in Environs.Where(x => environmentId == null || x.Value.Id == environmentId))
+                foreach (var environ in Environs.Where(x => environmentKey == null || x.Value.Key == environmentKey))
                 {
                     var watchRemainCounter = 0;
                     foreach (var objectStage in Enum.GetValues(typeof(PipeLineStages)))
@@ -310,11 +309,13 @@ namespace Our.Shield.Core.Operation
             {
                 return false;
             }
+
             exception.CalculatedUrl = true;
             if (string.IsNullOrWhiteSpace(url))
             {
                 return false;
             }
+
             var query = url.IndexOf('?');
             if (query == 0)
             {
@@ -322,6 +323,7 @@ namespace Our.Shield.Core.Operation
                 exception.CalculatedUrlWithSlash = "/" + url;
                 return true;
             }
+
             var point = (query == -1 ? url.Length : query) - 1;
             var builder = new StringBuilder(url.Length);
             if (url[point] == '/')
@@ -338,6 +340,7 @@ namespace Our.Shield.Core.Operation
                 exception.CalculatedUrlWithoutSlash = builder.ToString();
                 return true;
             }
+
             exception.CalculatedUrlWithoutSlash = url;
             for (var i = 0; i != url.Length; i++)
             {
@@ -347,38 +350,43 @@ namespace Our.Shield.Core.Operation
                     builder.Append('/');
                 }
             }
+
             exception.CalculatedUrlWithSlash = builder.ToString();
             return true;
         }
 
         private bool ExceptionsProcess()
         {
-            return UrlExceptionLock.Write<bool?>(() =>
-            {
-                foreach (var exception in UrlExceptions.Where(x => x.CalculatedUrl == false && x.Url != null))
+            return UrlExceptionLock
+                .Write<bool?>(() =>
                 {
-                    if (!UrlProcess(exception))
+                    foreach (var exception in UrlExceptions.Where(x => x.CalculatedUrl == false && x.Url != null))
                     {
-                        return false;
+                        if (!UrlProcess(exception))
+                        {
+                            return false;
+                        }
                     }
-                }
-                return true;
-            }).Value;
+                    return true;
+                })
+                .Value;
         }
 
         private bool IgnoresProcess()
         {
-            return UrlIgnoresLock.Write<bool?>(() =>
-            {
-                foreach (var ignore in UrlIgnores.Where(x => x.CalculatedUrl == false && x.Url != null))
+            return UrlIgnoresLock
+                .Write<bool?>(() =>
                 {
-                    if (!UrlProcess(ignore))
+                    foreach (var ignore in UrlIgnores.Where(x => x.CalculatedUrl == false && x.Url != null))
                     {
-                        return false;
+                        if (!UrlProcess(ignore))
+                        {
+                            return false;
+                        }
                     }
-                }
-                return true;
-            }).Value;
+                    return true;
+                })
+                .Value;
         }
 
         private void RewritePage(HttpApplication application, string url)
@@ -428,7 +436,7 @@ namespace Our.Shield.Core.Operation
                 }
             }
 
-            HttpWebResponse result = null;
+            HttpWebResponse result;
             try
             {
                 result = client.GetResponse() as HttpWebResponse;
@@ -463,25 +471,24 @@ namespace Our.Shield.Core.Operation
             application.Response.Close();
         }
 
-        // ReSharper disable once UnusedParameter.Local
-        private WatchResponse.Cycles ExecuteTransfer(int environmentId, Watcher watch, WatchResponse response, HttpApplication application)
+        private Cycle ExecuteTransfer(Guid environmentKey, Watcher watch, WatchResponse response, HttpApplication application)
         {
-            if (response.Transfer.TransferType == TransferTypes.PlayDead)
+            if (response.Transfer.TransferType == TransferType.PlayDead)
             {
                 application.Context.Response.Close();
-                return WatchResponse.Cycles.Stop;
+                return Cycle.Stop;
             }
 
             if (!ExceptionsProcess())
             {
-                return WatchResponse.Cycles.Error;
+                return Cycle.Error;
             }
 
             if (UrlExceptionLock.Read(() =>
             {
                 var requestUrl = application.Context.Request.Url;
 
-                foreach (var exception in UrlExceptions.Where(x => x.EnvironmentId == environmentId))
+                foreach (var exception in UrlExceptions.Where(x => x.EnvironmentKey == environmentKey))
                 {
                     if (exception.Regex != null && (exception.Regex.IsMatch(requestUrl.PathAndQuery) ||
                         exception.Regex.IsMatch(requestUrl.AbsoluteUri)))
@@ -501,7 +508,7 @@ namespace Our.Shield.Core.Operation
                 return false;
             }))
             {
-                return WatchResponse.Cycles.Continue;
+                return Cycle.Continue;
             }
 
             var urlService = new UmbracoUrlService();
@@ -509,33 +516,37 @@ namespace Our.Shield.Core.Operation
 
             switch (response.Transfer.TransferType)
             {
-                case TransferTypes.Redirect:
+                case TransferType.Redirect:
                     application.Context.Response.Redirect(url, true);
-                    return WatchResponse.Cycles.Stop;
 
-                case TransferTypes.TransferRequest:
+                    return Cycle.Stop;
+
+                case TransferType.TransferRequest:
                     application.Server.TransferRequest(url, true);
-                    return WatchResponse.Cycles.Stop;
 
-                case TransferTypes.TransmitFile:
-                    // Request is for a css etc. file, transmit the file and set correct mime type
+                    return Cycle.Stop;
+
+                case TransferType.TransmitFile:
+                    // Request is for a CSS etc. file, transmit the file and set correct mime type
                     var mimeType = MimeMapping.GetMimeMapping(url);
 
                     application.Response.ContentType = mimeType;
                     application.Response.TransmitFile(application.Server.MapPath(url));
-                    return WatchResponse.Cycles.Kill;
+                    return Cycle.Kill;
 
-                case TransferTypes.Rewrite:
+                case TransferType.Rewrite:
                     if (urlService.IsUmbracoUrl(response.Transfer.Url))
                     {
                         RewritePage(application, url);
-                        return WatchResponse.Cycles.Kill;
+                        return Cycle.Kill;
                     }
+
                     application.Context.RewritePath(url);
-                    return WatchResponse.Cycles.Restart;
+
+                    return Cycle.Restart;
             }
 
-            return WatchResponse.Cycles.Error;
+            return Cycle.Error;
         }
 
         private bool ProcessRequest(PipeLineStages stage, int count, HttpApplication application)
@@ -562,6 +573,7 @@ namespace Our.Shield.Core.Operation
                 foreach (var environ in Environs)
                 {
                     string filePath;
+
                     if (environ.Value.Domains == null)
                     {
                         if (uriWithoutDomain == null)
@@ -587,7 +599,7 @@ namespace Our.Shield.Core.Operation
                     {
                         var ignores = UrlIgnoresLock.Read(() =>
                         {
-                            return UrlIgnores.Where(x => x.EnvironmentId == environ.Value.Id && x.Regex.IsMatch(filePath)).Select(x => x.AppId);
+                            return UrlIgnores.Where(x => x.EnvironmentKey == environ.Value.Key && x.Regex.IsMatch(filePath)).Select(x => x.AppId);
                         });
 
                         foreach (var watch in environ.Value.Watchers[(int)stage])
@@ -607,12 +619,12 @@ namespace Our.Shield.Core.Operation
 #if TRACE
                                 debug += "by transfer then ";
 #endif
-                                watchResponse.Cycle = ExecuteTransfer(environ.Value.Id, watch, watchResponse, application);
+                                watchResponse.Cycle = ExecuteTransfer(environ.Value.Key, watch, watchResponse, application);
                             }
 
                             switch (watchResponse.Cycle)
                             {
-                                case WatchResponse.Cycles.Kill:
+                                case Cycle.Kill:
 #if TRACE
                                     Debug.WriteLine(debug + "Kill");
 #endif
@@ -620,19 +632,19 @@ namespace Our.Shield.Core.Operation
                                     //application.CompleteRequest();
                                     return true;
 
-                                case WatchResponse.Cycles.Stop:
+                                case Cycle.Stop:
 #if TRACE
                                     Debug.WriteLine(debug + "Stop");
 #endif
                                     return true;
 
-                                case WatchResponse.Cycles.Restart:
+                                case Cycle.Restart:
 #if TRACE
                                     Debug.WriteLine(debug + "Restart");
 #endif
                                     return false;
 
-                                case WatchResponse.Cycles.Error:
+                                case Cycle.Error:
 #if TRACE
                                     Debug.WriteLine(debug + "Error");
 #endif
@@ -717,9 +729,10 @@ namespace Our.Shield.Core.Operation
                 }
             }
 
-            //	To many redirects
+            //  To many redirects
             application.Context.Response.StatusCode = 500;
             application.CompleteRequest();
+
             return;
         }
 
@@ -765,7 +778,7 @@ namespace Our.Shield.Core.Operation
                 var count = Interlocked.Increment(ref _requestCount);
                 UrlExceptions.Add(new UrlException
                 {
-                    EnvironmentId = job.Environment.Id,
+                    EnvironmentKey = job.Environment.Key,
                     AppId = job.App.Id,
                     Regex = regex,
                     Url = url
@@ -774,21 +787,22 @@ namespace Our.Shield.Core.Operation
             });
         }
 
-        // ReSharper disable once MethodOverloadWithOptionalParameter
-        public static int Unexception(IJob job, Regex regex = null) => Unexception(job.Environment.Id, job.App.Id, regex);
-        // ReSharper disable once MethodOverloadWithOptionalParameter
-        public static int Unexception(IJob job, UmbracoUrl url = null) => Unexception(job.Environment.Id, job.App.Id, null, url);
-        public static int Unexception(IJob job) => Unexception(job.Environment.Id, job.App.Id);
+        public static int Unexception(IJob job, Regex regex = null) => Unexception(job.Environment.Key, job.App.Id, regex);
+
+        public static int Unexception(IJob job, UmbracoUrl url = null) => Unexception(job.Environment.Key, job.App.Id, null, url);
+
+        public static int Unexception(IJob job) => Unexception(job.Environment.Key, job.App.Id);
+
         public static int Unexception(string appId = null, Regex regex = null) => Unexception(null, appId, regex);
 
-        public static int Unexception(int? environmentId = null, string appId = null, Regex regex = null, UmbracoUrl url = null)
+        public static int Unexception(Guid? environmentKey = null, string appId = null, Regex regex = null, UmbracoUrl url = null)
         {
             return UrlExceptionLock.Write(() =>
             {
                 var regy = regex?.ToString();
 
                 return UrlExceptions.RemoveAll(x =>
-                    (environmentId == null || x.EnvironmentId == environmentId) && (appId == null || x.AppId == appId) &&
+                    (environmentKey == null || x.EnvironmentKey == environmentKey) && (appId == null || x.AppId == appId) &&
                     ((regex == null || x.Regex.ToString() == regy) || (url == null || x.Url.Equals(url))));
             });
         }
@@ -798,7 +812,6 @@ namespace Our.Shield.Core.Operation
         /// </summary>
         /// <param name="job">The job that created this Exception</param>
         /// <param name="regex">The url / url rule that can be shown, try and match with or without trailing slash</param>
-        /// <param name="url"></param>
         /// <returns>A Unique id for this Exception, or -1 if we failed to create it</returns>
         public static int Ignore(IJob job, Regex regex = null)
         {
@@ -807,7 +820,7 @@ namespace Our.Shield.Core.Operation
                 var count = Interlocked.Increment(ref _requestCount);
                 UrlIgnores.Add(new UrlException
                 {
-                    EnvironmentId = job.Environment.Id,
+                    EnvironmentKey = job.Environment.Key,
                     AppId = job.App.Id,
                     Regex = regex
                 });
@@ -815,24 +828,23 @@ namespace Our.Shield.Core.Operation
             });
         }
 
-        // ReSharper disable once MethodOverloadWithOptionalParameter
-        public static int Unignore(IJob job, Regex regex = null) => Unignore(job.Environment.Id, job.App.Id, regex);
-        // ReSharper disable once MethodOverloadWithOptionalParameter
-        public static int Unignore(IJob job) => Unignore(job.Environment.Id, job.App.Id);
+        public static int Unignore(IJob job, Regex regex = null) => Unignore(job.Environment.Key, job.App.Id, regex);
+
+        public static int Unignore(IJob job) => Unignore(job.Environment.Key, job.App.Id);
+
         public static int Unignore(string appId = null, Regex regex = null) => Unignore(null, appId, regex);
 
-        public static int Unignore(int? environmentId = null, string appId = null, Regex regex = null)
+        public static int Unignore(Guid? environmentKey = null, string appId = null, Regex regex = null)
         {
             return UrlIgnoresLock.Write(() =>
             {
                 var regy = regex?.ToString();
 
                 return UrlIgnores.RemoveAll(x =>
-                    (environmentId == null || x.EnvironmentId == environmentId)
+                    (environmentKey == null || x.EnvironmentKey == environmentKey)
                     && (appId == null || x.AppId == appId) &&
                     (regex == null || x.Regex.ToString() == regy));
             });
         }
-
     }
 }

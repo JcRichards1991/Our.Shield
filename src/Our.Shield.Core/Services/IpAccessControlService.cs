@@ -1,4 +1,5 @@
 ﻿using NetTools;
+using Our.Shield.Core.Enums;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Settings;
 using System;
@@ -18,9 +19,9 @@ namespace Our.Shield.Core.Services
         public IEnumerable<string> InitIpAccessControl(IpAccessControl rule)
         {
             var errors = new List<string>();
-            foreach (var exception in rule.Exceptions)
+            foreach (var exception in rule.IpAccessRules)
             {
-                var ipAddressRange = exception.IpAddressType == IpAccessControl.IpAddressType.Single
+                var ipAddressRange = exception.IpAddressType == IpAddressType.Single
                     ? exception.FromIpAddress
                     : $"{exception.FromIpAddress}-{exception.ToIpAddress}";
 
@@ -46,12 +47,12 @@ namespace Our.Shield.Core.Services
         {
             var ips = new List<IPAddress>();
 
-            if (Configuration.IpAddressValidation.CheckUserHostAddress)
+            if (ShieldConfiguration.IpAddressValidation.CheckUserHostAddress)
             {
                 ips.Add(GetIpAddressRange(request.UserHostAddress).Begin.MapToIPv6());
             }
 
-            foreach (var requestHeader in Configuration.IpAddressValidation.RequestHeaders)
+            foreach (var requestHeader in ShieldConfiguration.IpAddressValidation.RequestHeaders)
             {
                 var headerValue = request.Headers[requestHeader];
 
@@ -69,12 +70,12 @@ namespace Our.Shield.Core.Services
                 }
             }
 
-            if (rule.Exceptions.Where(x => x.Range != null).Any(exception => exception.Range.Contains(ips)))
+            if (rule.IpAccessRules.Where(x => x.Range != null).Any(exception => exception.Range.Contains(ips)))
             {
-                return rule.AccessType != IpAccessControl.AccessTypes.AllowAll;
+                return rule.AccessType != AccessTypes.AllowAll;
             }
 
-            return rule.AccessType == IpAccessControl.AccessTypes.AllowAll;
+            return rule.AccessType == AccessTypes.AllowAll;
         }
 
         private IPAddressRange GetIpAddressRange(string ipAddress)

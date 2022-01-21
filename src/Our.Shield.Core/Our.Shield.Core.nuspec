@@ -12,20 +12,16 @@
     <description>$description$</description>
     <releaseNotes>
       <![CDATA[
-      - Fixed issue with AccessHelper class causing Membership authentication to not work correctly when Umbraco User is logged into Umbraco
-      - Fixed issue with Shield App Configurations not being applied on application startup.
+      - Updated to support Umbraco v8
       ]]>
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>Umbraco UmbracoCms Security</tags>
     <dependencies>
-      <dependency id="UmbracoCms" version="[7.3.0,8)" />
+      <dependency id="UmbracoCms" version="[8.1,9)" />
+      <dependency id="Automapper" version="10.1.1" />
       <dependency id="WebActivatorEx" version="2.2.0" />
       <dependency id="IPAddressRange" version="2.0.0.3" />
     </dependencies>
   </metadata>
-  <files>
-    <file src="App_Plugins\Shield\package.manifest" target="Content\App_Plugins\Shield" />
-    <file src="Transforms\**\*.*" target="Content\Transforms" />
-  </files>
 </package>

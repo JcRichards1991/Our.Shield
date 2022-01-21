@@ -1,18 +1,19 @@
 ﻿using System;
+using System.IO;
 
 namespace Our.Shield.BackofficeAccess.Models
 {
     internal class HardResetFileHandler
     {
-        private const string Directory = "App_Data\\Temp\\" + nameof(Shield) + "\\" + nameof(BackofficeAccess) + "\\";
+        private const string DirectoryLocation = "App_Data\\Temp\\" + nameof(Shield) + "\\" + nameof(BackofficeAccess) + "\\";
 
-        private const string File = "HardReset.txt";
+        private const string FileName = "HardReset.txt";
 
         private bool _hasInit;
 
-        private static string DirectoryPath => AppDomain.CurrentDomain.BaseDirectory + Directory;
+        private static string DirectoryPath => AppDomain.CurrentDomain.BaseDirectory + DirectoryLocation;
 
-        public string FilePath => DirectoryPath + File;
+        public string FilePath => DirectoryPath + FileName;
 
         private string _hardLocation;
         public string HardLocation
@@ -56,13 +57,13 @@ namespace Our.Shield.BackofficeAccess.Models
         {
             _hasInit = true;
             
-            if(!System.IO.File.Exists(FilePath))
+            if(!File.Exists(FilePath))
             {
                 HardLocation = SoftLocation = null;
                 return;
             }
 
-            using (var txtFile = System.IO.File.OpenText(FilePath))
+            using (var txtFile = File.OpenText(FilePath))
             {
                 HardLocation = txtFile.ReadLine();
                 SoftLocation = txtFile.ReadLine();
@@ -71,9 +72,9 @@ namespace Our.Shield.BackofficeAccess.Models
 
         public void Save()
         {
-            System.IO.Directory.CreateDirectory(DirectoryPath);
+            Directory.CreateDirectory(DirectoryPath);
 
-            using (var txtFile = System.IO.File.CreateText(FilePath))
+            using (var txtFile = File.CreateText(FilePath))
             {
                 txtFile.WriteLine(HardLocation);
                 txtFile.WriteLine(SoftLocation);
@@ -82,12 +83,12 @@ namespace Our.Shield.BackofficeAccess.Models
 
         public void Delete()
         {
-            if(!System.IO.File.Exists(FilePath))
+            if(!File.Exists(FilePath))
             {
                 return;
             }
 
-            System.IO.File.Delete(FilePath);
+            File.Delete(FilePath);
             HardLocation = SoftLocation = null;
         }
     }

@@ -6,20 +6,35 @@ using Umbraco.Core.Services;
 
 namespace Our.Shield.GoogleSafeBrowsing.Models
 {
-    [AppEditor("/App_Plugins/Shield.GoogleSafeBrowsing/Views/GoogleSafeBrowsing.html?version=1.1.0")]
+    /// <summary>
+    /// 
+    /// </summary>
+    [AppEditor("/App_Plugins/Shield.GoogleSafeBrowsing/Views/GoogleSafeBrowsing.html?version=2.0.0")]
     [AppJournal]
     public class GoogleSafeBrowsingApp : App<GoogleSafeBrowsingConfiguration>
     {
+        private readonly IContentService _contentService;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="localizedTextService"></param>
+        /// <param name="contentService"></param>
+        public GoogleSafeBrowsingApp(
+            ILocalizedTextService localizedTextService,
+            IContentService contentService)
+            : base(localizedTextService)
+        {
+        }
+
         /// <inheritdoc />
         public override string Id => nameof(GoogleSafeBrowsing);
 
         /// <inheritdoc />
-        public override string Name =>
-            ApplicationContext.Current.Services.TextService.Localize("Shield.GoogleSafeBrowsing.General/Name", CultureInfo.CurrentCulture);
+        public override string Name => LocalizedTextService.Localize("Shield.GoogleSafeBrowsing.General/Name", CultureInfo.CurrentCulture);
 
         /// <inheritdoc />
-        public override string Description =>
-            ApplicationContext.Current.Services.TextService.Localize("Shield.GoogleSafeBrowsing.General/Description", CultureInfo.CurrentCulture);
+        public override string Description => LocalizedTextService.Localize("Shield.GoogleSafeBrowsing.General/Description", CultureInfo.CurrentCulture);
 
         /// <inheritdoc />
         public override string Icon => "icon-alert red";
@@ -36,17 +51,17 @@ namespace Our.Shield.GoogleSafeBrowsing.Models
                 return false;
             }
 
-            ContentService.Saving += (sender, e) =>
-            {
-                if (!config.Enable)
-                    return;
-            };
+            //_contentService.Saving += (sender, e) =>
+            //{
+            //    if (!config.Enable)
+            //        return;
+            //};
 
-            ContentService.Publishing += (sender, e) =>
-            {
-                if (!config.Enable)
-                    return;
-            };
+            //_contentService.Publishing += (sender, e) =>
+            //{
+            //    if (!config.Enable)
+            //        return;
+            //};
 
             return true;
         }

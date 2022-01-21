@@ -1,0 +1,74 @@
+﻿<div class="umb-enditor-container umb-scrollable row-fluid" ng-controller="Shield.Controllers.EnvironmentsDashboard as vm" ng-init="vm.init()">
+
+  <umb-load-indicator ng-show="vm.loading"></umb-load-indicator>
+
+  <div class="umb-pane" ng-if="!vm.loading">
+
+    <div class="umb-editor-sub-header umb-editor-sub-header--">
+      <div class="umb-editor-sub-header__content-left">
+        <umb-button button-style="outline"
+                    type="button"
+                    action="vm.addEnvironment()"
+                    label-key="Shield.Dashboard.Environments_ButtonAddEnvironment"></umb-button>
+
+        <umb-button button-style="outline"
+                    type="button"
+                    action="vm.sortEnvironments()"
+                    label-key="Shield.Dashboard.Environments_ButtonSortEnvironments"></umb-button>
+      </div>
+    </div>
+
+    <div class="umb-table">
+      <div class="umb-table-head">
+        <div class="umb-table-row">
+
+          <div class="umb-table-cell">
+            &nbsp;
+          </div>
+
+          <div class="umb-table-cell umb-table__name">
+            <localize key="Shield.Dashboard.Environments_TableHeaderName">Name</localize>
+          </div>
+
+          <div class="umb-table-cell" style="max-width: 100px;">
+            <localize key="Shield.Dashboard.Environments_TableHeaderEnabled">Enabled</localize>
+          </div>
+
+          <div class="umb-table-cell">
+            <localize key="Shield.Dashboard.Environments_TableHeaderDomain">Domains</localize>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="umb-table-body">
+        <div class="umb-table-row umb-outline"
+             ng-repeat="environment in vm.environments track by environment.key"
+             ng-click="vm.clickEnvironment(environment.key)">
+
+          <div class="umb-table-cell">
+            <i class="umb-table-body__icon" ng-class="environment.icon"></i>
+          </div>
+
+          <div class="umb-table-cell umb-table__name">
+            {{environment.name}}
+          </div>
+
+          <div class="umb-table-cell" style="max-width: 100px;">
+            <i style="font-size: 20px;"
+               ng-class="{'icon-check color-green': environment.enabled, 'icon-wrong color-red': !environment.enabled}"></i>
+          </div>
+
+          <div class="umb-table-cell">
+            <ul>
+              <li ng-repeat="domain in environment.domains track by $index">
+                {{domain.name}}
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+﻿<div class="editor-content" ng-controller="Shield.Controllers.EnvironmentEdit as vm" ng-init="vm.init()">
+
+  <umb-load-indicator ng-show="vm.loading"></umb-load-indicator>
+
+  <form name="createEnvironmentForm"
+        ng-submit="vm.save(createEnvironmentForm)"
+        novalidate
+        val-form-manager
+        ng-hide="vm.loading">
+
+    <umb-editor-view footer="true">
+
+      <umb-editor-header name="vm.environment.name"
+                         name-locked="false"
+                         hide-description="true"
+                         hide-alias="true"
+                         icon="vm.environment.icon"
+                         navigation="vm.tabs">
+      </umb-editor-header>
+
+      <umb-editor-container>
+        <div class="umb-group-panel" ng-repeat="tab in vm.tabs track by tab.id" ng-include="tab.view" ng-show="tab.active"></div>
+      </umb-editor-container>
+
+      <umb-editor-footer>
+        <umb-editor-footer-content-left>
+          <umb-breadcrumbs ancestors="vm.ancestors"
+                           entity-type="shield">
+          </umb-breadcrumbs>
+        </umb-editor-footer-content-left>
+
+        <umb-editor-footer-content-right>
+          <umb-button label="{{vm.button.label}}"
+                      label-key="{{vm.button.labelKey}}"
+                      type="submit"
+                      button-style="success"
+                      shortcut="ctrl+s"
+                      state="vm.button.state">
+          </umb-button>
+        </umb-editor-footer-content-right>
+      </umb-editor-footer>
+
+    </umb-editor-view>
+  </form>
+</div>

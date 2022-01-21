@@ -1,0 +1,162 @@
+﻿<div>
+  <form name="editIpExceptionForm" ng-submit="model.submit(model.ipAccessRule)">
+    <div class="umb-panel umb-editor-wrapper">
+      
+      <div class="umb-editor-header">
+        <div class="flex items-center">
+          <h1 class="umb-panel-header-name">
+            <localize key="{{'shield.Properties.IpAccessControl_' + (model.ipAccessRule.fromIpAddress === '' ? 'IpAccessRulesAddNewIpAccessRuleTitle' : 'IpAccessRulesEditIpAccessRuleTitle')}}"></localize>
+          </h1>
+        </div>
+      </div>
+
+      <div class="umb-editor-container">
+        <div class="umb-pane">
+          <div class="umb-box">
+            <div class="umb-box-content">
+
+              <div class="umb-property">
+                <div class="control-group umb-control-group">
+                  <div class="umb-el-wrap">
+
+                    <div class="control-header">
+                      <label class="control-label">
+                        <localize key="Shield.Properties.IpAccessControl_IpAccessRulesIpAddressHeader"></localize>
+                      </label>
+                    </div>
+
+                    <div class="controls">
+                      <div class="umb-property-editor db">
+                        <div class="umb-property-editor umb-dropdown">
+
+                          <div class="umb-node-preview">
+                            <div class="flex">
+                              <div class="umb-node-preview__name">
+                                <select class="umb-property-editor umb-dropdown" id="IpAddressType" name="IpAddressType" ng-model="model.ipAccessRule.ipAddressType" shield-convert-to-number>
+                                  <option value="0">Single IP Address</option>
+                                  <option value="1">IP Address Range</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="umb-property">
+                <div class="control-group umb-control-group">
+                  <div class="umb-el-wrap">
+
+                    <div class="control-header">
+                      <label class="control-label">
+                        <localize key="Shield.Properties.IpAccessControl_IpAccessRulesIpAddressHeader" ng-if="model.ipAccessRule.ipAddressType === 0"></localize>
+                        <localize key="Shield.Properties.IpAccessControl_IpAccessRulesIpAddressFrom" ng-if="model.ipAccessRule.ipAddressType === 1"></localize>
+                      </label>
+                    </div>
+
+                    <div class="controls">
+                      <div class="umb-property-editor db">
+                        <div class="umb-property-editor umb-textstring">
+
+                          <div class="umb-node-preview">
+                            <div class="flex">
+                              <div class="umb-node-preview__name">
+                                <input class="umb-property-editor umb-textstring textstring" type="text" id="ipAddress" name="ipAddress" ng-model="model.ipAccessRule.fromIpAddress" required />
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="umb-property" ng-if="model.ipAccessRule.ipAddressType === 1">
+                <div class="control-group umb-control-group">
+                  <div class="umb-el-wrap">
+
+                    <div class="control-header">
+                      <label class="control-label">
+                        <localize key="Shield.Properties.IpAccessControl_IpAccessRulesIpAddressTo"></localize>
+                      </label>
+                    </div>
+
+                    <div class="controls">
+                      <div class="umb-property-editor db">
+                        <div class="umb-property-editor umb-textstring">
+
+                          <div class="umb-node-preview">
+                            <div class="flex">
+                              <div class="umb-node-preview__name">
+                                <input class="umb-property-editor umb-textstring textstring" type="text" id="ipAddress" name="ipAddress" ng-model="model.ipAccessRule.toIpAddress" required />
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="umb-property">
+                <div class="control-group umb-control-group">
+                  <div class="umb-el-wrap">
+
+                    <div class="control-header">
+                      <label class="control-label">
+                        <localize key="Shield.Properties.IpAccessControl_IpAccessRulesDescriptionHeader"></localize>
+                      </label>
+                    </div>
+
+                    <div class="controls">
+                      <div class="umb-property-editor db">
+                        <div class="umb-property-editor umb-textstring">
+
+                          <div class="umb-node-preview">
+                            <div class="flex">
+                              <div class="umb-node-preview__name">
+                                <input class="umb-property-editor umb-textstring textstring" type="text" id="ipAddress" name="ipAddress" ng-model="model.ipAccessRule.description" required />
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="umb-editor-footer">
+        <div class="umb-editor-footer-content">
+          <div class="umb-editor-footer-content__right-side">
+            <a class="btn btn-link" ng-click="model.close()">
+              <localize key="general_cancel" />
+            </a>
+            <umb-button label-key="{{'general_' + (model.ipAccessRule.fromIpAddress === '' ? 'add' : 'update')}}"
+                        type="submit"
+                        button-style="success">
+            </umb-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

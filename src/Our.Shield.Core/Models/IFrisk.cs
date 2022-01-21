@@ -8,7 +8,7 @@ namespace Our.Shield.Core.Models
     public interface IFrisk
     {
         /// <summary>
-        /// The Id of Frisk
+        /// The Id of item being frisked
         /// </summary>
         [JsonProperty("id")]
         string Id { get; }

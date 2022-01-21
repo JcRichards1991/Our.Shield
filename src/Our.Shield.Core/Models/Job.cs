@@ -1,5 +1,4 @@
 ﻿using Our.Shield.Core.Operation;
-using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -13,17 +12,17 @@ namespace Our.Shield.Core.Models
     /// <summary>
     /// Class that contains each of our executions
     /// </summary>
-    internal class Job : IJob
+    public class Job : IJob
     {
-        /// <inheritdoc />
-        public int Id { get; set; }
-
         /// <inheritdoc />
         public IEnvironment Environment { get; set; }
 
         /// <inheritdoc />
         public IApp App { get; set; }
 
+        /// <summary>
+        /// The unique key of the job
+        /// </summary>
         public Guid Key { get; internal set; }
 
         internal Type ConfigType;
@@ -32,14 +31,10 @@ namespace Our.Shield.Core.Models
         internal Task<bool> Task;
         internal CancellationTokenSource CancelToken;
 
-        internal IJob DeepCopy()
+        internal IJob DeepCopy(IApp app)
         {
-            var app = App<IAppConfiguration>.Create(App.Id);
-            app.Migrations = App.Migrations;
-
             return new Job
             {
-                Id = Id,
                 Key = Key,
                 Environment = Environment,
                 App = app,
@@ -52,19 +47,19 @@ namespace Our.Shield.Core.Models
 
         /// <inheritdoc />
         public bool WriteConfiguration(IAppConfiguration config) =>
-            JobService.Instance.WriteConfiguration(this, config);
+            throw new NotImplementedException(); // JobService.Instance.WriteConfiguration(this, config);
 
         /// <inheritdoc />
         public bool WriteJournal(IJournal journal) =>
-            JobService.Instance.WriteJournal(this, journal);
+            throw new NotImplementedException(); // JobService.Instance.WriteJournal(this, journal);
 
         /// <inheritdoc />
         public IAppConfiguration ReadConfiguration() =>
-            JobService.Instance.ReadConfiguration(this);
+            throw new NotImplementedException(); //JobService.Instance.ReadConfiguration(this);
 
         /// <inheritdoc />
         public IEnumerable<T> ListJournals<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal =>
-            JobService.Instance.ListJournals<T>(this, page, itemsPerPage, out totalPages);
+            throw new NotImplementedException(); //JobService.Instance.ListJournals<T>(this, page, itemsPerPage, out totalPages);
 
         /// <inheritdoc />
         public int WatchWebRequests(PipeLineStages stage, Regex regex,
@@ -81,7 +76,7 @@ namespace Our.Shield.Core.Models
 
         /// <inheritdoc />
         public int UnwatchWebRequests() =>
-            WebRequestHandler.Unwatch(Environment.Id, App.Id);
+            WebRequestHandler.Unwatch(Environment.Key, App.Id);
 
         /// <inheritdoc />
         public int UnwatchWebRequests(IApp app) =>
@@ -103,7 +98,6 @@ namespace Our.Shield.Core.Models
         public int UnexceptionWebRequest() => WebRequestHandler.Unexception(this);
 
         public int IgnoreWebRequest(Regex regex) => WebRequestHandler.Ignore(this, regex);
-
 
         public Regex PathToRegex(string path)
         {

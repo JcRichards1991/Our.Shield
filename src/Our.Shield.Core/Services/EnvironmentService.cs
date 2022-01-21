@@ -1,116 +1,194 @@
-﻿using Our.Shield.Core.Models;
-using Our.Shield.Core.Persistence.Business;
+﻿using AutoMapper;
+using LightInject;
+using Newtonsoft.Json;
+using Our.Shield.Core.Data.Accessors;
+using Our.Shield.Core.Enums;
+using Our.Shield.Core.Models;
+using Our.Shield.Core.Models.CacheRefresherJson;
+using Our.Shield.Core.Models.Requests;
+using Our.Shield.Core.Models.Responses;
+using Our.Shield.Shared;
+using Our.Shield.Shared.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
+using Umbraco.Core.Logging;
+using Umbraco.Web.Cache;
 
 namespace Our.Shield.Core.Services
 {
-    internal class EnvironmentService
+    /// <summary>
+    /// Implements the <see cref="IEnvironmentService"/> interface
+    /// </summary>
+    public class EnvironmentService : IEnvironmentService
     {
-        private static readonly Lazy<EnvironmentService> EnvironmentServiceInstance = new Lazy<EnvironmentService>(() => new EnvironmentService());
+        private readonly IJobService _jobService;
+        private readonly IEnvironmentAccessor _environmentAccessor;
+        private readonly DistributedCache _distributedCache;
+        private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        private EnvironmentService()
+        /// <summary>
+        /// Initializes a new instance of <see cref="EnvironmentService"/> class
+        /// </summary>
+        /// <param name="jobService"><see cref="IJobService"/></param>
+        /// <param name="environmentAccessor"><see cref="IEnvironmentAccessor"/></param>
+        /// <param name="distributedCache"><see cref="DistributedCache"/></param>
+        /// <param name="mapper"></param>
+        /// <param name="logger"><see cref="ILogger"/></param>
+        public EnvironmentService(
+            IJobService jobService,
+            IEnvironmentAccessor environmentAccessor,
+            DistributedCache distributedCache,
+            [Inject(nameof(Shield))] IMapper mapper,
+            ILogger logger)
         {
+            GuardClauses.NotNull(jobService, nameof(jobService));
+            GuardClauses.NotNull(environmentAccessor, nameof(environmentAccessor));
+            GuardClauses.NotNull(distributedCache, nameof(distributedCache));
+            GuardClauses.NotNull(mapper, nameof(mapper));
+            GuardClauses.NotNull(logger, nameof(logger));
+
+            _jobService = jobService;
+            _environmentAccessor = environmentAccessor;
+            _distributedCache = distributedCache;
+            _mapper = mapper;
+            _logger = logger;
         }
 
-        /// <summary>
-        /// Accessor for instance
-        /// </summary>
-        public static EnvironmentService Instance => EnvironmentServiceInstance.Value;
-
-        /// <summary>
-        /// Writes an environment to the database
-        /// </summary>
-        /// <param name="environment">The environment to write</param>
-        /// <returns>True if successfully written; otherwise, False</returns>
-        public bool Write(IEnvironment environment)
+        /// <inherit />
+        public async Task<UpsertEnvironmentResponse> Upsert(UpsertEnvironmentRequest request)
         {
-            if (!DbContext.Instance.Environment.Write(environment))
+            var environment = new Models.Environment
             {
-                return false;
-            }
-            
-            if (!JobService.Instance.Environments.Any(x => x.Key.Id.Equals(environment.Id)))
+                Key = request.Key,
+                Name = request.Name,
+                Icon = request.Icon,
+                Domains = request.Domains,
+                Enabled = request.Enabled,
+                ContinueProcessing = request.ContinueProcessing,
+                SortOrder = request.SortOrder
+            };
+
+            var response = await Upsert(environment);
+
+            if (response.HasError())
             {
-                //created new environment, we need to register it
-                JobService.Instance.Register(environment);
-
-                var environments = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
-                var oldEnvironments = JobService.Instance.Environments.Keys;
-
-                foreach (var newEnv in environments)
-                {
-                    if (!oldEnvironments.Any(x => x.Id.Equals(newEnv.Id) && !x.SortOrder.Equals(newEnv.SortOrder)))
-                        continue;
-
-                    JobService.Instance.Unregister(newEnv);
-                    JobService.Instance.Register(newEnv);
-                }
+                return response;
             }
-            else
-            {
-                //Environment has changed, we need to unregister it
-                //and then re-register it with the new changes
-                if (!JobService.Instance.Unregister(environment))
-                {
-                    return false;
-                }
 
-                JobService.Instance.Register(environment);
-            }
-            return true;
+            _distributedCache.RefreshByJson(
+                new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
+                JsonConvert.SerializeObject(new EnvironmentCacheRefresherJsonModel(CacheRefreshType.Upsert, response.Key)));
+
+            return response;
         }
 
-        /// <summary>
-        /// Deletes an environment from the database
-        /// </summary>
-        /// <param name="environment">The environment to remove</param>
-        /// <returns></returns>
-        public bool Delete(Models.Environment environment)
+        /// <inherit />
+        public async Task<GetEnvironmentsResponse> Get()
         {
-            if (!JobService.Instance.Unregister(environment) || !DbContext.Instance.Environment.Delete(environment.Id))
+            var response = new GetEnvironmentsResponse();
+
+            try
             {
-                return false;
+                var envs = await _environmentAccessor.Read();
+
+                response.Environments = _mapper.Map<List<Models.Environment>>(envs);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error<EnvironmentService>(ex, "Error occurred reading environments");
+
+                response.ErrorCode = ErrorCode.EnvironmentRead;
             }
 
-            var environments = DbContext.Instance.Environment.Read().Select(x => new Models.Environment(x));
-            var oldEnvironments = JobService.Instance.Environments.Keys;
-
-            foreach (var newEnv in environments)
-            {
-                if (oldEnvironments.Any(x => x.Id.Equals(newEnv.Id) && !x.SortOrder.Equals(newEnv.SortOrder)))
-                {
-                    JobService.Instance.Unregister(newEnv);
-                    JobService.Instance.Register(newEnv);
-                }
-            }
-
-            return true;
+            return response;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id">Id of the environment to return the journals for</param>
-        /// <param name="page">The page of results to return</param>
-        /// <param name="itemsPerPage">The number of items to return per page</param>
-        /// <param name="type">The type of journal the the results should be</param>
-        /// <param name="totalPages">The total amount of pages that can be returned</param>
-        /// <returns></returns>
-        public IEnumerable<IJournal> JournalListing(int id, int page, int itemsPerPage, Type type, out int totalPages) =>
-            DbContext.Instance.Journal.Read(id, page, itemsPerPage, type, out totalPages);
+        /// <inherit />
+        public async Task<GetEnvironmentResponse> Get(Guid key)
+        {
+            var response = new GetEnvironmentResponse();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T">The type of journal the the results should be</typeparam>
-        /// <param name="id">Id of the environment to return the journals for</param>
-        /// <param name="page">The page of results to return</param>
-        /// <param name="itemsPerPage">The number of items to return per page</param>
-        /// <param name="totalPages">The total amount of pages that can be returned</param>
-        /// <returns></returns>
-        public IEnumerable<T> JournalListing<T>(int id, int page, int itemsPerPage, out int totalPages) where T : IJournal =>
-            DbContext.Instance.Journal.Read(id, page, itemsPerPage, typeof(T), out totalPages).Select(x => (T)x);
+            try
+            {
+                var environment = await _environmentAccessor.Read(key);
+
+                if (environment != null)
+                {
+                    response.Environment = _mapper.Map<Models.Environment>(environment);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error<EnvironmentService>(ex, "Error occurred reading environment with Key: {Key}", key);
+
+                response.ErrorCode = ErrorCode.EnvironmentRead;
+            }
+
+            return response;
+        }
+
+        /// <inherit />
+        public async Task<DeleteEnvironmentResponse> Delete(Guid key)
+        {
+            GuardClauses.NotNull(key, nameof(key));
+
+            _distributedCache.RefreshByJson(
+                new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
+                JsonConvert.SerializeObject(new EnvironmentCacheRefresherJsonModel(CacheRefreshType.Remove, key)));
+
+            var response = new DeleteEnvironmentResponse();
+
+            try
+            {
+                response.Successful = await _environmentAccessor.Delete(key);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error<EnvironmentService>(ex, "Error occurred deleting environment with {Key}", key);
+
+                response.ErrorCode = ErrorCode.EnvrionmentDelete;
+            }
+
+            return response;
+        }
+
+        private async Task<UpsertEnvironmentResponse> Upsert(IEnvironment environment)
+        {
+            var response = new UpsertEnvironmentResponse();
+
+            if (environment.Key == default(Guid))
+            {
+                try
+                {
+                    response.Key = await _environmentAccessor.Create(environment);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error<EnvironmentService>(ex, "Error occurred inserting Environment");
+
+                    response.ErrorCode = ErrorCode.EnviromentInsert;
+                }
+
+                return response;
+            }
+
+            try
+            {
+                if (await _environmentAccessor.Update(environment))
+                {
+                    response.Key = environment.Key;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error<EnvironmentService>(ex, "Error occurred updating Environment");
+
+                response.ErrorCode = ErrorCode.EnvironmentUpdate;
+            }
+
+            return response;
+        }
     }
 }

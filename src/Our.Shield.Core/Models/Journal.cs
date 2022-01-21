@@ -10,23 +10,23 @@ namespace Our.Shield.Core.Models
     public abstract class Journal : IJournal
     {
         /// <inheritdoc />
-        [JsonProperty("appId")]
-        public string AppId { get; internal set; }
+        [JsonProperty("appKey")]
+        public Guid AppKey { get; internal set; }
 
         /// <inheritdoc />
-        [JsonProperty("environmentId")]
-        public int EnvironmentId { get; internal set; }
+        [JsonProperty("environmentKey")]
+        public Guid EnvironmentKey { get; internal set; }
 
         /// <inheritdoc />
-        [JsonProperty("datestamp")]
-        public DateTime Datestamp { get; internal set; }
+        [JsonProperty("dateStamp")]
+        public DateTime DateStamp { get; internal set; }
 
         /// <inheritdoc />
         [JsonProperty("message")]
         public string Message { get; internal set; }
 
         /// <summary>
-        /// Initialises a JournalMessage Object with the desired message
+        /// Initializes a JournalMessage Object with the desired message
         /// </summary>
         /// <param name="message">The message for the journal</param>
         protected Journal(string message)

@@ -20,9 +20,12 @@ namespace Our.Shield.Core.Settings
                 while (enumerator.MoveNext())
                 {
                     if (enumerator.Current != null)
+                    {
                         requestHeaders.Add(enumerator.Current.Header);
+                    }
                 }
             }
+
             RequestHeaders = requestHeaders;
         }
 
