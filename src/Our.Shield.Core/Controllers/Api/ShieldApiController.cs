@@ -88,6 +88,48 @@ namespace Our.Shield.Core.Controllers.Api
         }
 
         /// <summary>
+        /// Sorts the environments
+        /// </summary>
+        /// <param name="environmentsJson">Collection of environments</param>
+        /// <returns>True if successfully updated the sort order, otherwise, false</returns>
+        [HttpPost]
+        public bool SortEnvironments([FromBody] IEnumerable<JObject> environmentsJson)
+        {
+            //var json = environmentsJson.ToList();
+            //if (!json.Any())
+            //{
+            //    return false;
+            //}
+
+            //var environments = json.Select(x => JsonConvert.DeserializeObject<Models.Environment>(x.ToString(), new DomainConverter()));
+            //var oldEnvironments = JobService.Instance.Environments.Keys;
+
+            //foreach (var environment in environments)
+            //{
+            //    if (!oldEnvironments.Any(x => x.Id.Equals(environment.Id) && !x.SortOrder.Equals(environment.SortOrder)))
+            //        continue;
+
+            //    if (!EnvironmentService.Instance.Write(environment))
+            //    {
+            //        return false;
+            //    }
+
+            //    if (!JobService.Instance.Unregister(environment))
+            //    {
+            //        return false;
+            //    }
+
+            //    JobService.Instance.Register(environment);
+            //}
+
+            //_distributedCache.RefreshByJson(
+            //    Guid.Parse(Constants.DistributedCache.EnvironmentCacheRefresherId),
+            //    GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.ReOrder, Guid.Empty)));
+
+            return true;
+        }
+
+        /// <summary>
         /// Gets an environment by it's key
         /// </summary>
         /// <param name="key">The Key of the environment to fetch</param>
@@ -174,6 +216,49 @@ namespace Our.Shield.Core.Controllers.Api
         }
 
         /// <summary>
+        /// Updates an apps configuration to the database
+        /// </summary>
+        /// <param name="key">The key of the app to update</param>
+        /// <param name="json">The new configuration as json</param>
+        /// <returns>True if successfully updated, otherwise, false</returns>
+        [HttpPost]
+        public bool UpdateAppConfiguration(Guid key, [FromBody] JObject json)
+        {
+            throw new NotImplementedException();
+
+            //if (json == null || key == Guid.Empty)
+            //    return false;
+
+            //var job = JobService.Instance.Job(key);
+
+            //if (job == null)
+            //{
+            //    //  Invalid id
+            //    return false;
+            //}
+
+            //if (!(json.ToObject(((Job)job).ConfigType) is IAppConfiguration configuration))
+            //{
+            //    return false;
+            //}
+
+            //configuration.Enable = json.GetValue(nameof(IAppConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase).Value<bool>();
+
+            //job.WriteJournal(new JournalMessage($"{Security.CurrentUser.Name} has updated the configuration"));
+
+            //if (job.WriteConfiguration(configuration))
+            //{
+            //    _distributedCache.RefreshByJson(
+            //        Guid.Parse(Constants.DistributedCache.ConfigurationCacheRefresherId),
+            //        GetJsonModel(new ConfigurationCacheRefresherJsonModel(Enums.CacheRefreshType.Write, key)));
+
+            //    return true;
+            //}
+
+            //return false;
+        }
+
+        /// <summary>
         /// Gets the journals based on the parameters passed in
         /// </summary>
         /// <param name="method">The level of which to return journals.
@@ -250,91 +335,6 @@ namespace Our.Shield.Core.Controllers.Api
             //    default:
             //        return null;
             //}
-        }
-
-        /// <summary>
-        /// Sorts the environments
-        /// </summary>
-        /// <param name="environmentsJson">Collection of environments</param>
-        /// <returns>True if successfully updated the sort order, otherwise, false</returns>
-        [HttpPost]
-        public bool SortEnvironments([FromBody] IEnumerable<JObject> environmentsJson)
-        {
-            //var json = environmentsJson.ToList();
-            //if (!json.Any())
-            //{
-            //    return false;
-            //}
-
-            //var environments = json.Select(x => JsonConvert.DeserializeObject<Models.Environment>(x.ToString(), new DomainConverter()));
-            //var oldEnvironments = JobService.Instance.Environments.Keys;
-
-            //foreach (var environment in environments)
-            //{
-            //    if (!oldEnvironments.Any(x => x.Id.Equals(environment.Id) && !x.SortOrder.Equals(environment.SortOrder)))
-            //        continue;
-
-            //    if (!EnvironmentService.Instance.Write(environment))
-            //    {
-            //        return false;
-            //    }
-
-            //    if (!JobService.Instance.Unregister(environment))
-            //    {
-            //        return false;
-            //    }
-
-            //    JobService.Instance.Register(environment);
-            //}
-
-            //_distributedCache.RefreshByJson(
-            //    Guid.Parse(Constants.DistributedCache.EnvironmentCacheRefresherId),
-            //    GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.ReOrder, Guid.Empty)));
-
-            return true;
-        }
-
-        /// <summary>
-        /// Updates an apps configuration to the database
-        /// </summary>
-        /// <param name="key">The key of the app to update</param>
-        /// <param name="json">The new configuration as json</param>
-        /// <returns>True if successfully updated, otherwise, false</returns>
-        [HttpPost]
-        public bool WriteConfiguration(Guid key, [FromBody] JObject json)
-        {
-            throw new NotImplementedException();
-
-            //if (json == null || key == Guid.Empty)
-            //    return false;
-
-            //var job = JobService.Instance.Job(key);
-
-            //if (job == null)
-            //{
-            //    //  Invalid id
-            //    return false;
-            //}
-
-            //if (!(json.ToObject(((Job)job).ConfigType) is IAppConfiguration configuration))
-            //{
-            //    return false;
-            //}
-
-            //configuration.Enable = json.GetValue(nameof(IAppConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase).Value<bool>();
-
-            //job.WriteJournal(new JournalMessage($"{Security.CurrentUser.Name} has updated the configuration"));
-
-            //if (job.WriteConfiguration(configuration))
-            //{
-            //    _distributedCache.RefreshByJson(
-            //        Guid.Parse(Constants.DistributedCache.ConfigurationCacheRefresherId),
-            //        GetJsonModel(new ConfigurationCacheRefresherJsonModel(Enums.CacheRefreshType.Write, key)));
-
-            //    return true;
-            //}
-
-            //return false;
         }
 
         private IHttpActionResult ApiResponse<T>(T response, HttpStatusCode statusCode = HttpStatusCode.OK)
