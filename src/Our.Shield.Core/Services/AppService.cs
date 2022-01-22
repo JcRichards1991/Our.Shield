@@ -4,6 +4,7 @@ using Our.Shield.Core.Data.Accessors;
 using Our.Shield.Core.Factories;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Models.AppTabs;
+using Our.Shield.Core.Models.Requests;
 using Our.Shield.Core.Models.Responses;
 using Our.Shield.Shared;
 using Our.Shield.Shared.Enums;
@@ -12,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Umbraco.Web.Cache;
 
 namespace Our.Shield.Core.Services
 {
@@ -22,21 +24,26 @@ namespace Our.Shield.Core.Services
     {
         private readonly IAppAccessor _appAccessor;
         private readonly IAppFactory _appFactory;
+        private readonly DistributedCache _distributedCache;
 
         /// <summary>
         /// Initializes a new instance of <see cref="AppService"/>
         /// </summary>
         /// <param name="appAccessor"><see cref="IAppAccessor"/></param>
         /// <param name="appFactory"><see cref="IAppFactory"/></param>
+        /// <param name="distributedCache"><see cref="DistributedCache"/></param>
         public AppService(
             IAppAccessor appAccessor,
-            IAppFactory appFactory)
+            IAppFactory appFactory,
+            DistributedCache distributedCache)
         {
             GuardClauses.NotNull(appAccessor, nameof(appAccessor));
             GuardClauses.NotNull(appFactory, nameof(appFactory));
+            GuardClauses.NotNull(distributedCache, nameof(distributedCache));
 
             _appAccessor = appAccessor;
             _appFactory = appFactory;
+            _distributedCache = distributedCache;
         }
 
         /// <inheritdoc />
@@ -99,6 +106,35 @@ namespace Our.Shield.Core.Services
             response.Apps = apps;
 
             return response;
+        }
+
+        /// <inheritdoc />
+        public async Task<UpdateAppConfigurationResponse> UpdateAppConfiguration(UpdateAppConfigurationRequest request)
+        {
+            var app = _appFactory.Create(request.AppId);
+
+            if (app == null)
+            {
+                return new UpdateAppConfigurationResponse
+                {
+                    ErrorCode = ErrorCode.AppCreate
+                };
+            }
+
+            var configuration = DeserializeAppConfiguration(request.Configuration.ToString(), app.GetType().BaseType?.GenericTypeArguments[0]);
+            var result = await _appAccessor.Update(request.Key, configuration);
+
+            if (!result)
+            {
+                return new UpdateAppConfigurationResponse
+                {
+                    ErrorCode = ErrorCode.AppUpdate
+                };
+            }
+
+            //_distributedCache.
+
+            return new UpdateAppConfigurationResponse();
         }
 
         private IAppConfiguration DeserializeAppConfiguration(string configurationJson, Type appConfigurationType) =>

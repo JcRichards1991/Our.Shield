@@ -25,7 +25,10 @@ namespace Our.Shield.Shared.Enums
         [Description("App - Create")]
         AppCreate = 101,
 
+        [Description("App - Update")]
+        AppUpdate = 102,
+
         [Description("Apps - Read")]
-        AppsRead = 5,
+        AppsRead = 103,
     }
 }

@@ -65,7 +65,7 @@ namespace Our.Shield.Core.Data.Accessors
         {
             using (var scope = ScopeProvider.CreateScope(autoComplete: true))
             {
-                var sql = new Sql<ISqlContext>(scope.Database.SqlContext)
+                var sql = new Sql<ISqlContext>(scope.SqlContext)
                     .Where<Dtos.Environment>(x => x.Key == key);
 
                 var dto = await scope.Database.SingleAsync<Dtos.Environment>(sql);
@@ -96,9 +96,13 @@ namespace Our.Shield.Core.Data.Accessors
         {
             using (var scope = ScopeProvider.CreateScope())
             {
-                var sql = new Sql<ISqlContext>(scope.Database.SqlContext)
+                var sql = new Sql<ISqlContext>(scope.SqlContext)
+                    .Delete<Dtos.App>()
+                    .Where<Dtos.App>(x => x.EnvironmentKey == key)
+                    .From<Dtos.App>()
                     .Delete<Dtos.Environment>()
-                    .Where<Dtos.Environment>(x => x.Key == key);
+                    .Where<Dtos.Environment>(x => x.Key == key)
+                    .From<Dtos.Environment>();
 
                 var result = await scope.Database.ExecuteAsync(sql);
 

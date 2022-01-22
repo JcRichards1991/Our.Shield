@@ -321,6 +321,7 @@
     <Compile Include="Models\CacheRefresherJson\EnvironmentCacheRefresherJsonModel.cs" />
     <Compile Include="Models\CacheRefresherJson\ICacheRefreshJsonModel.cs" />
     <Compile Include="Models\IpAccessRule.cs" />
+    <Compile Include="Models\Requests\UpdateAppConfigurationRequest.cs" />
     <Compile Include="Models\Requests\UpsertEnvironmentRequest.cs" />
     <Compile Include="Models\Responses\BaseResponse.cs" />
     <Compile Include="Models\Responses\DeleteEnvironmentResponse.cs" />
@@ -329,6 +330,7 @@
     <Compile Include="Models\Responses\GetEnvironmentAppsResponse.cs" />
     <Compile Include="Models\Responses\GetEnvironmentResponse.cs" />
     <Compile Include="Models\Responses\GetEnvironmentsResponse.cs" />
+    <Compile Include="Models\Responses\UpdateAppConfigurationResponse.cs" />
     <Compile Include="Models\Responses\UpsertEnvironmentResponse.cs" />
     <Compile Include="PackageActions\AddShieldConfigurationSection.cs" />
     <Compile Include="Services\AppService.cs" />

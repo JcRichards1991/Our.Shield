@@ -1,4 +1,5 @@
 ﻿using LightInject;
+using Newtonsoft.Json;
 using NPoco;
 using Our.Shield.Core.Data.Dtos;
 using System;
@@ -19,7 +20,7 @@ namespace Our.Shield.Core.Data.Accessors
         {
         }
 
-        public async Task<Guid> Create(App app)
+        public async Task<Guid> Write(App app)
         {
             using (var scope = ScopeProvider.CreateScope())
             {
@@ -48,7 +49,7 @@ namespace Our.Shield.Core.Data.Accessors
         {
             using (var scope = ScopeProvider.CreateScope(autoComplete: true))
             {
-                var sql = new Sql<ISqlContext>(scope.Database.SqlContext)
+                var sql = new Sql<ISqlContext>(scope.SqlContext)
                         .Where<App>(x => x.EnvironmentKey == environmentKey);
 
                 return await scope.Database.FetchAsync<App>(sql);
@@ -59,7 +60,7 @@ namespace Our.Shield.Core.Data.Accessors
         {
             using (var scope = ScopeProvider.CreateScope(autoComplete: true))
             {
-                var sql = new Sql<ISqlContext>(scope.Database.SqlContext)
+                var sql = new Sql<ISqlContext>(scope.SqlContext)
                         .Where<App>(x => x.Key == key);
 
                 return await scope.Database.SingleOrDefaultAsync<App>(sql);
@@ -70,20 +71,35 @@ namespace Our.Shield.Core.Data.Accessors
         {
             using (var scope = ScopeProvider.CreateScope(autoComplete: true))
             {
-                var sql = new Sql<ISqlContext>(scope.Database.SqlContext)
+                var sql = new Sql<ISqlContext>(scope.SqlContext)
                         .Where<App>(x => x.AppId == appName && x.EnvironmentKey == environmentKey);
 
                 return await scope.Database.SingleOrDefaultAsync<App>(sql);
             }
         }
 
-        public async Task<bool> Update(App app)
+        public async Task<bool> Update(Guid key, Models.IAppConfiguration configuration)
         {
-            app.LastModifiedDateUtc = DateTime.UtcNow;
-
             using (var scope = ScopeProvider.CreateScope())
             {
-                await scope.Database.UpdateAsync(app, a => app);
+                var sql = new Sql<ISqlContext>(scope.SqlContext)
+                    .Where<App>(x => x.Key == key);
+
+                var dto = await scope.Database.SingleOrDefaultAsync<App>(sql);
+
+                if (dto == null)
+                {
+                    scope.Complete();
+                    return false;
+                }
+
+                dto.LastModifiedDateUtc = DateTime.UtcNow;
+                dto.Configuration = JsonConvert.SerializeObject(configuration);
+                var result = scope.Database.Update(dto);
+
+                scope.Complete();
+
+                return result == 1;
             }
 
             throw new NotImplementedException();

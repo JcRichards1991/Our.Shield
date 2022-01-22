@@ -1,4 +1,5 @@
 ﻿using Our.Shield.Core.Models;
+using Our.Shield.Core.Models.Requests;
 using Our.Shield.Core.Models.Responses;
 using System;
 using System.Threading.Tasks;
@@ -23,5 +24,12 @@ namespace Our.Shield.Core.Services
         /// <param name="environmentKey">The environment key for the apps to return for</param>
         /// <returns></returns>
         Task<GetAppsResponse> GetApps(Guid environmentKey);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<UpdateAppConfigurationResponse> UpdateAppConfiguration(UpdateAppConfigurationRequest request);
     }
 }

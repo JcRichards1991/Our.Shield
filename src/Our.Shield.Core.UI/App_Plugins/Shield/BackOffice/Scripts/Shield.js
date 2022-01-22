@@ -1016,7 +1016,7 @@ angular
             return shieldResourceHelper.get(apiRoot + 'View', { id: id });
           },
           postConfiguration: function (key, config) {
-            return shieldResourceHelper.post(apiRoot + 'WriteConfiguration?key=' + key, config);
+            return shieldResourceHelper.post(apiRoot + 'UpdateAppConfiguration?key=' + key, config);
           },
           setEnvironmentsSortOrder: function (environments) {
             return shieldResourceHelper.post(apiRoot + 'SortEnvironments', environments);

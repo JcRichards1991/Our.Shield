@@ -76,7 +76,7 @@ namespace Our.Shield.Core.Controllers.Api
         /// <summary>
         /// Gets all environments available in the system
         /// </summary>
-        /// <returns>Collection of environments</returns>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IHttpActionResult> GetEnvironments()
         {
@@ -91,10 +91,14 @@ namespace Our.Shield.Core.Controllers.Api
         /// Sorts the environments
         /// </summary>
         /// <param name="environmentsJson">Collection of environments</param>
-        /// <returns>True if successfully updated the sort order, otherwise, false</returns>
+        /// <returns></returns>
         [HttpPost]
         public bool SortEnvironments([FromBody] IEnumerable<JObject> environmentsJson)
         {
+            //  TODO: Re-implement
+
+            throw new NotImplementedException();
+
             //var json = environmentsJson.ToList();
             //if (!json.Any())
             //{
@@ -126,14 +130,14 @@ namespace Our.Shield.Core.Controllers.Api
             //    Guid.Parse(Constants.DistributedCache.EnvironmentCacheRefresherId),
             //    GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.ReOrder, Guid.Empty)));
 
-            return true;
+            //return true;
         }
 
         /// <summary>
         /// Gets an environment by it's key
         /// </summary>
         /// <param name="key">The Key of the environment to fetch</param>
-        /// <returns>The environment with the corresponding key</returns>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IHttpActionResult> GetEnvironment(Guid key)
         {
@@ -172,7 +176,7 @@ namespace Our.Shield.Core.Controllers.Api
         /// Deletes an environment via its key
         /// </summary>
         /// <param name="key">The key of the environment to delete</param>
-        /// <returns>true if successfully deleted, otherwise, false.</returns>
+        /// <returns></returns>
         [HttpDelete]
         public async Task<IHttpActionResult> DeleteEnvironment(Guid key)
         {
@@ -204,7 +208,7 @@ namespace Our.Shield.Core.Controllers.Api
         /// Gets an app by it's key
         /// </summary>
         /// <param name="key">The key of the app to fetch</param>
-        /// <returns>The app with the corresponding key</returns>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IHttpActionResult> GetApp(Guid key)
         {
@@ -218,44 +222,16 @@ namespace Our.Shield.Core.Controllers.Api
         /// <summary>
         /// Updates an apps configuration to the database
         /// </summary>
-        /// <param name="key">The key of the app to update</param>
-        /// <param name="json">The new configuration as json</param>
-        /// <returns>True if successfully updated, otherwise, false</returns>
+        /// <param name="request"><see cref="UpdateAppConfigurationRequest"/></param>
+        /// <returns></returns>
         [HttpPost]
-        public bool UpdateAppConfiguration(Guid key, [FromBody] JObject json)
+        public async Task<IHttpActionResult> UpdateAppConfiguration(UpdateAppConfigurationRequest request)
         {
-            throw new NotImplementedException();
+            var response = await _appService.UpdateAppConfiguration(request);
 
-            //if (json == null || key == Guid.Empty)
-            //    return false;
-
-            //var job = JobService.Instance.Job(key);
-
-            //if (job == null)
-            //{
-            //    //  Invalid id
-            //    return false;
-            //}
-
-            //if (!(json.ToObject(((Job)job).ConfigType) is IAppConfiguration configuration))
-            //{
-            //    return false;
-            //}
-
-            //configuration.Enable = json.GetValue(nameof(IAppConfiguration.Enable), StringComparison.InvariantCultureIgnoreCase).Value<bool>();
-
-            //job.WriteJournal(new JournalMessage($"{Security.CurrentUser.Name} has updated the configuration"));
-
-            //if (job.WriteConfiguration(configuration))
-            //{
-            //    _distributedCache.RefreshByJson(
-            //        Guid.Parse(Constants.DistributedCache.ConfigurationCacheRefresherId),
-            //        GetJsonModel(new ConfigurationCacheRefresherJsonModel(Enums.CacheRefreshType.Write, key)));
-
-            //    return true;
-            //}
-
-            //return false;
+            return response.HasError()
+                ? ApiResponse(response, HttpStatusCode.BadGateway)
+                : ApiResponse(response);
         }
 
         /// <summary>
@@ -269,7 +245,7 @@ namespace Our.Shield.Core.Controllers.Api
         /// <param name="page">The page of Journals to retrieve</param>
         /// <param name="orderBy">The type to sort the Journals by (currently ignored)</param>
         /// <param name="orderByDirection">The order in which to sort by. acs or desc</param>
-        /// <returns>Collection of Journals based on the parameters passed in</returns>
+        /// <returns></returns>
         [HttpGet]
         public IHttpActionResult Journals(string method, string id, int page, string orderBy, string orderByDirection)
         {
