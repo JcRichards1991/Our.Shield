@@ -28,7 +28,10 @@ namespace Our.Shield.Shared.Enums
         [Description("App - Update")]
         AppUpdate = 102,
 
+        [Description("App - Deserialize Configuration")]
+        AppDeserializeConfiguration = 103,
+
         [Description("Apps - Read")]
-        AppsRead = 103,
+        AppsRead = 104,
     }
 }

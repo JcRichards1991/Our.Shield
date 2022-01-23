@@ -1,4 +1,4 @@
-﻿using Our.Shield.Core.Models;
+﻿using Newtonsoft.Json;
 using Our.Shield.Core.Models.CacheRefresherJson;
 using Our.Shield.Core.Services;
 using System;
@@ -10,13 +10,16 @@ namespace Our.Shield.Core.CacheRefreshers
     public class ConfigurationCacheRefresher : JsonCacheRefresherBase<ConfigurationCacheRefresher>
     {
         private readonly IJobService _jobService;
+        private readonly IAppService _appService;
 
         /// <inheritdoc />
         public ConfigurationCacheRefresher(
             AppCaches appCaches,
-            IJobService jobService) : base(appCaches)
+            IJobService jobService,
+            IAppService appService) : base(appCaches)
         {
             _jobService = jobService;
+            _appService = appService;
         }
 
         /// <inheritdoc />
@@ -31,19 +34,13 @@ namespace Our.Shield.Core.CacheRefreshers
         /// <inheritdoc />
         public override void Refresh(string json)
         {
-            var cacheInstruction = Newtonsoft.Json.JsonConvert.DeserializeObject<ConfigurationCacheRefresherJsonModel>(json);
-            var job = _jobService.Job(cacheInstruction.Key);
-
-            if (job == null)
-            {
-                //  Invalid id
-                return;
-            }
+            var cacheInstruction = JsonConvert.DeserializeObject<ConfigurationCacheRefresherJsonModel>(json);
 
             switch (cacheInstruction.CacheRefreshType)
             {
                 case Enums.CacheRefreshType.Upsert:
-                    _jobService.Execute((Job)job);
+                    var result = _appService.GetApp(cacheInstruction.Key).Result;
+                    _jobService.ExecuteApp(cacheInstruction.Key, result.Configuration);
                     break;
 
                 default:

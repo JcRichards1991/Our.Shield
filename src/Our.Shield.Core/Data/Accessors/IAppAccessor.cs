@@ -11,17 +11,10 @@ namespace Our.Shield.Core.Data.Accessors
     public interface IAppAccessor
     {
         /// <summary>
-        /// Writes an app to the system
+        /// Bulk writes multiple Apps to the database
         /// </summary>
-        /// <param name="app">The app to write</param>
-        /// <returns></returns>
-        Task<Guid> Write(App app);
-
-        /// <summary>
-        /// Gets all the Apps in the system
-        /// </summary>
-        /// <returns></returns>
-        Task<IReadOnlyList<App>> Read();
+        /// <param name="apps"></param>
+        void Write(IEnumerable<App> apps);
 
         /// <summary>
         /// Reads an App by it's Key
@@ -48,9 +41,10 @@ namespace Our.Shield.Core.Data.Accessors
         /// <summary>
         /// Updates the App's Configuration by the App's Key
         /// </summary>
+        /// <param name="appId">Id of the app</param>
         /// <param name="key">Key of the app to update</param>
         /// <param name="configuration">The configuration for the App</param>
         /// <returns></returns>
-        Task<bool> Update(Guid key, Models.IAppConfiguration configuration);
+        Task<bool> Update(string appId, Guid key, Models.IAppConfiguration configuration);
     }
 }

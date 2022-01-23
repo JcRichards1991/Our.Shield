@@ -1,10 +1,15 @@
 ﻿using LightInject;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NPoco;
+using Our.Shield.Core.Attributes;
+using Our.Shield.Core.ContractResolvers;
 using Our.Shield.Core.Data.Dtos;
+using Our.Shield.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Umbraco.Core.Persistence;
 using Umbraco.Core.Scoping;
@@ -20,28 +25,13 @@ namespace Our.Shield.Core.Data.Accessors
         {
         }
 
-        public async Task<Guid> Write(App app)
+        public void Write(IEnumerable<App> apps)
         {
             using (var scope = ScopeProvider.CreateScope())
             {
-                app.LastModifiedDateUtc = DateTime.UtcNow;
-                app.Key = Guid.NewGuid();
-
-                var result = await scope.Database.InsertAsync(app);
+                scope.Database.InsertBulk(apps);
 
                 scope.Complete();
-
-                return (Guid)result;
-            }
-        }
-
-        public async Task<IReadOnlyList<App>> Read()
-        {
-            using (var scope = ScopeProvider.CreateScope(autoComplete: true))
-            {
-                var result = await scope.Database.FetchAsync<App>();
-
-                return result.AsReadOnly();
             }
         }
 
@@ -78,8 +68,10 @@ namespace Our.Shield.Core.Data.Accessors
             }
         }
 
-        public async Task<bool> Update(Guid key, Models.IAppConfiguration configuration)
+        public async Task<bool> Update(string appId, Guid key, Models.IAppConfiguration configuration)
         {
+            await SetSingleEnvironmentValues(appId, key, configuration);
+
             using (var scope = ScopeProvider.CreateScope())
             {
                 var sql = new Sql<ISqlContext>(scope.SqlContext)
@@ -94,15 +86,80 @@ namespace Our.Shield.Core.Data.Accessors
                 }
 
                 dto.LastModifiedDateUtc = DateTime.UtcNow;
-                dto.Configuration = JsonConvert.SerializeObject(configuration);
+                dto.Enabled = configuration.Enabled;
+                dto.Configuration = JsonConvert.SerializeObject(
+                    configuration,
+                    Formatting.None,
+                    new JsonSerializerSettings
+                    {
+                        ContractResolver = new AppConfigurationShouldSerializeContractResolver()
+                    });
+
                 var result = scope.Database.Update(dto);
 
                 scope.Complete();
 
                 return result == 1;
             }
+        }
 
-            throw new NotImplementedException();
+        private async Task SetSingleEnvironmentValues(string appId, Guid ignoreKey, Models.IAppConfiguration configuration)
+        {
+            var configurationType = configuration.GetType();
+            var properties = configurationType.GetProperties();
+
+            if (properties.All(x => x.GetCustomAttribute<SingleEnvironmentAttribute>() == null))
+            {
+                return;
+            }
+
+            var singleEnvProperties = properties
+                .Where(x => x.GetCustomAttribute<SingleEnvironmentAttribute>() != null)
+                .ToArray();
+
+            using (var scope = ScopeProvider.CreateScope())
+            {
+                var sql = new Sql<ISqlContext>(scope.SqlContext)
+                        .Where<App>(x => x.Key != ignoreKey)
+                        .Where<App>(x => x.AppId == appId);
+
+                var dtos = await scope.Database.FetchAsync<App>(sql);
+
+                if (dtos.None())
+                {
+                    scope.Complete();
+
+                    return;
+                }
+
+                foreach (var dto in dtos)
+                {
+
+                    if (!(JsonConvert.DeserializeObject(dto.Configuration, configurationType) is Models.IAppConfiguration recordConfiguration))
+                    {
+                        continue;
+                    }
+
+                    foreach (var property in singleEnvProperties)
+                    {
+                        property.SetValue(recordConfiguration, property.GetValue(configuration));
+                    }
+
+                    dto.Configuration = JsonConvert.SerializeObject(
+                        recordConfiguration,
+                        Formatting.None,
+                        new JsonSerializerSettings
+                        {
+                            ContractResolver = new AppConfigurationShouldSerializeContractResolver()
+                        });
+
+                    dto.LastModifiedDateUtc = DateTime.UtcNow;
+
+                    scope.Database.Update(dto);
+                }
+
+                scope.Complete();
+            }
         }
     }
 }

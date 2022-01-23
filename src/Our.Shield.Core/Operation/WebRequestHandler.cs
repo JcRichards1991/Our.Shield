@@ -1,6 +1,7 @@
 ﻿using Our.Shield.Core.Enums;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Services;
+using Our.Shield.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -177,20 +178,20 @@ namespace Our.Shield.Core.Operation
                 return EnvironLock.Read(() =>
                 {
                     return environ.WatchLocks[(int)stage].Write(() =>
-                   {
-                       var watchList = environ.Watchers[(int)stage];
-                       var count = Interlocked.Increment(ref _requestCount);
-                       EnvironHasWatches[(int)stage] = true;
-                       watchList.Add(new Watcher
-                       {
-                           Priority = priority,
-                           AppId = job.App.Id,
-                           Regex = regex,
-                           Request = request
-                       });
-                       watchList.Sort(new WatchComparer());
-                       return count;
-                   });
+                    {
+                        var watchList = environ.Watchers[(int)stage];
+                        var count = Interlocked.Increment(ref _requestCount);
+                        EnvironHasWatches[(int)stage] = true;
+                        watchList.Add(new Watcher
+                        {
+                            Priority = priority,
+                            AppId = job.App.Id,
+                            Regex = regex,
+                            Request = request
+                        });
+                        watchList.Sort(new WatchComparer());
+                        return count;
+                    });
                 });
             }
             return -1;
@@ -254,14 +255,14 @@ namespace Our.Shield.Core.Operation
                         }
 
                         watchRemainCounter += environ.Value.WatchLocks[(int)currentStage].Write(() =>
-                       {
-                           watchRemovedCounter += environ.Value.Watchers[(int)currentStage].RemoveAll(x =>
-                               (appId == null ||
-                               x.AppId.Equals(appId, StringComparison.InvariantCultureIgnoreCase)) &&
-                               (regy == null ||
-                               (regy != null && x.Regex != null && regy.Equals(x.Regex.ToString(), StringComparison.InvariantCulture))));
-                           return environ.Value.Watchers[(int)currentStage].Count;
-                       });
+                        {
+                            watchRemovedCounter += environ.Value.Watchers[(int)currentStage].RemoveAll(x =>
+                                (appId == null ||
+                                x.AppId.Equals(appId, StringComparison.InvariantCultureIgnoreCase)) &&
+                                (regy == null ||
+                                (regy != null && x.Regex != null && regy.Equals(x.Regex.ToString(), StringComparison.InvariantCulture))));
+                            return environ.Value.Watchers[(int)currentStage].Count;
+                        });
                     }
 
                     if (watchRemainCounter == 0)
@@ -558,7 +559,7 @@ namespace Our.Shield.Core.Operation
 
             return EnvironLock.Read(() =>
             {
-                if (!Environs.Any())
+                if (Environs.None())
                 {
                     return true;
                 }

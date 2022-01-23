@@ -24,8 +24,8 @@
                     <div class="umb-property-editor db">
                       <div class="umb-property-editor umb-boolean">
                         <umb-toggle input-id="Enabled"
-                                    checked="vm.config.enable"
-                                    on-click="vm.config.enable = !vm.config.enable"
+                                    checked="vm.config.enabled"
+                                    on-click="vm.config.enabled = !vm.config.enabled"
                                     show-labels="false"
                                     label-position="right"
                                     label-on="true"
@@ -39,7 +39,7 @@
               </div>
             </div>
 
-            <div ng-if="vm.config.enable">
+            <div ng-if="vm.config.enabled">
               <shield-app view="tab.configView" configuration="vm.config"></shield-app>
             </div>
 

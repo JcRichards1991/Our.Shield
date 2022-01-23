@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Our.Shield.Core.Attributes;
+using Our.Shield.Core.ContractResolvers;
 using Our.Shield.Core.Data.Accessors;
 using Our.Shield.Core.Factories;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Models.AppTabs;
+using Our.Shield.Core.Models.CacheRefresherJson;
 using Our.Shield.Core.Models.Requests;
 using Our.Shield.Core.Models.Responses;
 using Our.Shield.Shared;
@@ -13,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Umbraco.Core.Logging;
 using Umbraco.Web.Cache;
 
 namespace Our.Shield.Core.Services
@@ -22,28 +25,38 @@ namespace Our.Shield.Core.Services
     /// </summary>
     public class AppService : IAppService
     {
+        private readonly IJobService _jobService;
         private readonly IAppAccessor _appAccessor;
         private readonly IAppFactory _appFactory;
         private readonly DistributedCache _distributedCache;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes a new instance of <see cref="AppService"/>
         /// </summary>
+        /// <param name="jobService"><see cref="IJobService"/></param>
         /// <param name="appAccessor"><see cref="IAppAccessor"/></param>
         /// <param name="appFactory"><see cref="IAppFactory"/></param>
         /// <param name="distributedCache"><see cref="DistributedCache"/></param>
+        /// <param name="logger"><see cref="ILogger"/></param>
         public AppService(
+            IJobService jobService,
             IAppAccessor appAccessor,
             IAppFactory appFactory,
-            DistributedCache distributedCache)
+            DistributedCache distributedCache,
+            ILogger logger)
         {
+            GuardClauses.NotNull(jobService, nameof(jobService));
             GuardClauses.NotNull(appAccessor, nameof(appAccessor));
             GuardClauses.NotNull(appFactory, nameof(appFactory));
             GuardClauses.NotNull(distributedCache, nameof(distributedCache));
+            GuardClauses.NotNull(logger, nameof(logger));
 
+            _jobService = jobService;
             _appAccessor = appAccessor;
             _appFactory = appFactory;
             _distributedCache = distributedCache;
+            _logger = logger;
         }
 
         /// <inheritdoc />
@@ -59,7 +72,8 @@ namespace Our.Shield.Core.Services
                 return response;
             }
 
-            var app = _appFactory.Create(dbApp.AppId, dbApp.Key);
+            var app = _appFactory.Create(dbApp.AppId);
+            app.Key = dbApp.Key;
 
             if (app == null)
             {
@@ -70,7 +84,7 @@ namespace Our.Shield.Core.Services
             }
 
             response.App = app;
-            response.Configuration = DeserializeAppConfiguration(dbApp.Configuration, app.GetType().BaseType?.GenericTypeArguments[0]);
+            response.Configuration = DeserializeAppConfiguration(dbApp, app.GetType().BaseType?.GenericTypeArguments[0]);
             response.Tabs = GetAppTabs(app);
 
             return response;
@@ -91,7 +105,7 @@ namespace Our.Shield.Core.Services
 
             foreach (var dbApp in dbApps)
             {
-                var app = _appFactory.Create(dbApp.AppId, dbApp.Key);
+                var app = _appFactory.Create(dbApp.AppId);
 
                 if (app == null)
                 {
@@ -100,7 +114,9 @@ namespace Our.Shield.Core.Services
                     continue;
                 }
 
-                apps.Add(app, DeserializeAppConfiguration(dbApp.Configuration, app.GetType().BaseType?.GenericTypeArguments[0]));
+                app.Key = dbApp.Key;
+
+                apps.Add(app, DeserializeAppConfiguration(dbApp, app.GetType().BaseType?.GenericTypeArguments[0]));
             }
 
             response.Apps = apps;
@@ -112,33 +128,97 @@ namespace Our.Shield.Core.Services
         public async Task<UpdateAppConfigurationResponse> UpdateAppConfiguration(UpdateAppConfigurationRequest request)
         {
             var app = _appFactory.Create(request.AppId);
+            var response = new UpdateAppConfigurationResponse();
 
             if (app == null)
             {
-                return new UpdateAppConfigurationResponse
-                {
-                    ErrorCode = ErrorCode.AppCreate
-                };
+                response.ErrorCode = ErrorCode.AppCreate;
+
+                return response;
             }
 
-            var configuration = DeserializeAppConfiguration(request.Configuration.ToString(), app.GetType().BaseType?.GenericTypeArguments[0]);
-            var result = await _appAccessor.Update(request.Key, configuration);
+            app.Key = request.Key;
 
-            if (!result)
+            IAppConfiguration configuration;
+
+            try
             {
-                return new UpdateAppConfigurationResponse
+                configuration = JsonConvert.DeserializeObject(
+                    request.Configuration.ToString(),
+                    app.GetType().BaseType?.GenericTypeArguments[0]) as IAppConfiguration;
+
+                if (!await _appAccessor.Update(app.Id, app.Key, configuration))
                 {
-                    ErrorCode = ErrorCode.AppUpdate
-                };
+                    response.ErrorCode = ErrorCode.AppUpdate;
+
+                    return response;
+                }
+            }
+            catch (JsonException ex)
+            {
+                _logger.Error<AppService>(ex, "Error occurred deserializing App's configuration for Updating");
+
+                response.ErrorCode = ErrorCode.AppDeserializeConfiguration;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error<AppService>(ex, "Error occurred updating App's configuration. AppId: {AppId}; Key: {AppKey}", app.Key, app.Id);
+
+                response.ErrorCode = ErrorCode.AppUpdate;
+
+                return response;
             }
 
-            //_distributedCache.
+            _jobService.ExecuteApp(app.Key, configuration);
 
-            return new UpdateAppConfigurationResponse();
+            _distributedCache.RefreshByJson(
+                Guid.Parse(Constants.DistributedCache.ConfigurationCacheRefresherId),
+                JsonConvert.SerializeObject(new ConfigurationCacheRefresherJsonModel(Enums.CacheRefreshType.Upsert, app.Key)));
+
+            return response;
         }
 
-        private IAppConfiguration DeserializeAppConfiguration(string configurationJson, Type appConfigurationType) =>
-            JsonConvert.DeserializeObject(configurationJson, appConfigurationType) as IAppConfiguration;
+        /// <inheritdoc />
+        public void WriteEnvironmentApps(Guid enviromentKey, IEnumerable<string> appIds = null)
+        {
+            appIds = appIds ?? _appFactory.GetRegistedAppsIds();
+            var apps = new List<Data.Dtos.App>();
+
+            foreach (var appId in appIds)
+            {
+                var app = _appFactory.Create(appId);
+
+                apps.Add(new Data.Dtos.App
+                {
+                    Key = Guid.NewGuid(),
+                    LastModifiedDateUtc = DateTime.UtcNow,
+                    AppId = appId,
+                    Configuration = JsonConvert.SerializeObject(
+                        app.DefaultConfiguration,
+                        Formatting.None,
+                        new JsonSerializerSettings
+                        {
+                            ContractResolver = new AppConfigurationShouldSerializeContractResolver()
+                        }),
+                    Enabled = app.DefaultConfiguration.Enabled,
+                    EnvironmentKey = enviromentKey
+                });
+            }
+
+            _appAccessor.Write(apps);
+        }
+
+        private IAppConfiguration DeserializeAppConfiguration(Data.Dtos.IApp app, Type appConfigurationType)
+        {
+            var configuration = JsonConvert.DeserializeObject(app.Configuration, appConfigurationType) as IAppConfiguration;
+
+            configuration.Enabled = app.Enabled;
+            configuration.LastModifiedDateUtc = app.LastModifiedDateUtc;
+
+            return configuration;
+        }
 
         private IEnumerable<ITab> GetAppTabs(IApp app)
         {

@@ -196,7 +196,7 @@ angular
           },
           link: function (scope) {
             if (scope.transferUrlControl.url === null) {
-              scope.transferUrlControl = { type: 0, value: '' }
+              scope.transferUrlControl.url = { type: 0, value: '' }
             };
 
             switch (scope.transferUrlControl.url.type) {
@@ -237,7 +237,7 @@ angular
             });
 
             scope.$on('formSubmitting', function () {
-              switch (scope.model.type) {
+              switch (scope.transferUrlControl.url.type) {
                 case 0:
                   scope.transferUrlControl.url.value = scope.transferUrlControl.url.urlValue;
                   break;
@@ -247,7 +247,7 @@ angular
                   break;
 
                 case 2:
-                  scope.transferUrlControl.url.value = scope.contentPickerProperty.value;
+                  scope.transferUrlControl.url.value = scope.contentPickerProperty.url.mntpValue;
                   break;
               }
             });

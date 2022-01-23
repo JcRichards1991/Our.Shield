@@ -1,10 +1,7 @@
-﻿using AutoMapper;
-using LightInject;
-using Our.Shield.Core.Models.CacheRefresherJson;
+﻿using Our.Shield.Core.Models.CacheRefresherJson;
 using Our.Shield.Core.Services;
 using Our.Shield.Shared;
 using System;
-using System.Linq;
 using Umbraco.Core.Cache;
 
 namespace Our.Shield.Core.CacheRefreshers
@@ -14,7 +11,7 @@ namespace Our.Shield.Core.CacheRefreshers
     {
         private readonly IJobService _jobService;
         private readonly IEnvironmentService _environmentService;
-        private readonly IMapper _mapper;
+        private readonly IAppService _appService;
 
         /// <summary>
         /// Initializes a new instance of <see cref="EnvironmentCacheRefresher"/>
@@ -22,21 +19,21 @@ namespace Our.Shield.Core.CacheRefreshers
         /// <param name="appCaches"><see cref="AppCaches"/></param>
         /// <param name="jobService"><see cref="IJobService"/></param>
         /// <param name="environmentService"><see cref="IEnvironmentService"/></param>
-        /// <param name="mapper"><see cref="IMapper"/></param>
-        public EnvironmentCacheRefresher (
+        /// <param name="appService"><see cref="IAppService"/></param>
+        public EnvironmentCacheRefresher(
             AppCaches appCaches,
             IJobService jobService,
             IEnvironmentService environmentService,
-            [Inject(nameof(Shield))] IMapper mapper)
+            IAppService appService)
             : base(appCaches)
         {
             GuardClauses.NotNull(jobService, nameof(jobService));
             GuardClauses.NotNull(environmentService, nameof(environmentService));
-            GuardClauses.NotNull(mapper, nameof(mapper));
+            GuardClauses.NotNull(appService, nameof(appService));
 
             _jobService = jobService;
             _environmentService = environmentService;
-            _mapper = mapper;
+            _appService = appService;
         }
 
         /// <inheritdoc />
@@ -49,26 +46,24 @@ namespace Our.Shield.Core.CacheRefreshers
         protected override EnvironmentCacheRefresher This => this;
 
         /// <inheritdoc />
-        public override void Refresh(string json)
+        public override async void Refresh(string json)
         {
             var cacheInstruction = Newtonsoft.Json.JsonConvert.DeserializeObject<EnvironmentCacheRefresherJsonModel>(json);
-            var environments = _jobService.Environments.Keys;
-            var environment = environments.FirstOrDefault(x => x.Key == cacheInstruction.Key);
 
             switch (cacheInstruction.CacheRefreshType)
             {
                 case Enums.CacheRefreshType.Upsert:
                     {
-                        var response = _environmentService.Get(cacheInstruction.Key).Result;
-
-                        if (environment == null)
+                        var envResult = await _environmentService.Get(cacheInstruction.Key);
+                        if (envResult.Environment != null)
                         {
-                            _jobService.Register(response.Environment);
+                            _jobService.Unregister(envResult.Environment);
                         }
-                        else
+
+                        var appsResult = await _appService.GetApps(cacheInstruction.Key);
+                        foreach (var app in appsResult.Apps)
                         {
-                            _jobService.Unregister(environment);
-                            _jobService.Register(response.Environment);
+                            _jobService.Register(envResult.Environment, app.Key, app.Value);
                         }
 
                         break;
@@ -76,38 +71,28 @@ namespace Our.Shield.Core.CacheRefreshers
 
                 case Enums.CacheRefreshType.Remove:
                     {
-                        if (environment == null)
+                        var envResult = await _environmentService.Get(cacheInstruction.Key);
+                        if (envResult.Environment != null)
                         {
-                            return;
+                            _jobService.Unregister(envResult.Environment);
                         }
-                        else
-                        {
-                            _jobService.Unregister(environment);
-                            break;
-                        }
+                        break;
                     }
 
                 case Enums.CacheRefreshType.ReOrder:
                     {
-                        throw new NotImplementedException();
+                        var environments = await _environmentService.Get();
 
-                        //var dtos = Task
-                        //    .Run(async () => await _dataAccessor.Read())
-                        //    .GetAwaiter()
-                        //    .GetResult();
+                        foreach (var env in environments.Environments)
+                        {
+                            _jobService.Unregister(env);
 
-                        //var envs = _mapper.Map<IList<Models.Environment>>(dtos);
-
-                        //foreach (var env in envs)
-                        //{
-                        //    if (!environments.Any(x => x.Key == env.Key && x.SortOrder != env.SortOrder))
-                        //    {
-                        //        continue;
-                        //    }
-
-                        //    _jobService.Unregister(env);
-                        //    _jobService.Register(env);
-                        //}
+                            var appsResult = await _appService.GetApps(cacheInstruction.Key);
+                            foreach (var app in appsResult.Apps)
+                            {
+                                _jobService.Register(env, app.Key, app.Value);
+                            }
+                        }
 
                         break;
                     }

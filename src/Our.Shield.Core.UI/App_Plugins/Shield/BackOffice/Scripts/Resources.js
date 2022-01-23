@@ -126,8 +126,14 @@ angular
           getView: function (id) {
             return shieldResourceHelper.get(apiRoot + 'View', { id: id });
           },
-          postConfiguration: function (key, config) {
-            return shieldResourceHelper.post(apiRoot + 'UpdateAppConfiguration?key=' + key, config);
+          postConfiguration: function (appId, key, config) {
+            return shieldResourceHelper.post(
+              apiRoot + 'UpdateAppConfiguration',
+              {
+                appId: appId,
+                key: key,
+                configuration: config
+              });
           },
           setEnvironmentsSortOrder: function (environments) {
             return shieldResourceHelper.post(apiRoot + 'SortEnvironments', environments);

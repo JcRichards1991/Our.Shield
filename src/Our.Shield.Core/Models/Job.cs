@@ -1,6 +1,5 @@
 ﻿using Our.Shield.Core.Operation;
 using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +30,7 @@ namespace Our.Shield.Core.Models
         internal Task<bool> Task;
         internal CancellationTokenSource CancelToken;
 
-        internal IJob DeepCopy(IApp app)
+        internal Job DeepCopy(IApp app)
         {
             return new Job
             {
@@ -46,41 +45,23 @@ namespace Our.Shield.Core.Models
         }
 
         /// <inheritdoc />
-        public bool WriteConfiguration(IAppConfiguration config) =>
-            throw new NotImplementedException(); // JobService.Instance.WriteConfiguration(this, config);
+        public int WatchWebRequests(
+            PipeLineStages stage,
+            Regex regex,
+            int priority,
+            Func<int, HttpApplication, WatchResponse> request) => WebRequestHandler.Watch(this, stage, regex, priority, request);
 
         /// <inheritdoc />
-        public bool WriteJournal(IJournal journal) =>
-            throw new NotImplementedException(); // JobService.Instance.WriteJournal(this, journal);
+        public int UnwatchWebRequests(PipeLineStages stage, Regex regex) => WebRequestHandler.Unwatch(this, stage, regex);
 
         /// <inheritdoc />
-        public IAppConfiguration ReadConfiguration() =>
-            throw new NotImplementedException(); //JobService.Instance.ReadConfiguration(this);
+        public int UnwatchWebRequests(PipeLineStages stage) => WebRequestHandler.Unwatch(this, stage);
 
         /// <inheritdoc />
-        public IEnumerable<T> ListJournals<T>(int page, int itemsPerPage, out int totalPages) where T : IJournal =>
-            throw new NotImplementedException(); //JobService.Instance.ListJournals<T>(this, page, itemsPerPage, out totalPages);
+        public int UnwatchWebRequests() => WebRequestHandler.Unwatch(Environment.Key, App.Id);
 
         /// <inheritdoc />
-        public int WatchWebRequests(PipeLineStages stage, Regex regex,
-            int priority, Func<int, HttpApplication, WatchResponse> request) =>
-            WebRequestHandler.Watch(this, stage, regex, priority, request);
-
-        /// <inheritdoc />
-        public int UnwatchWebRequests(PipeLineStages stage, Regex regex) =>
-            WebRequestHandler.Unwatch(this, stage, regex);
-
-        /// <inheritdoc />
-        public int UnwatchWebRequests(PipeLineStages stage) =>
-            WebRequestHandler.Unwatch(this, stage);
-
-        /// <inheritdoc />
-        public int UnwatchWebRequests() =>
-            WebRequestHandler.Unwatch(Environment.Key, App.Id);
-
-        /// <inheritdoc />
-        public int UnwatchWebRequests(IApp app) =>
-            WebRequestHandler.Unwatch(app.Id);
+        public int UnwatchWebRequests(IApp app) => WebRequestHandler.Unwatch(app.Id);
 
         /// <inheritdoc />
         public int ExceptionWebRequest(Regex regex) => WebRequestHandler.Exception(this, regex);
@@ -118,7 +99,6 @@ namespace Our.Shield.Core.Models
 
             return new Regex(@"^/" + path + "$|/" + path + "/", RegexOptions.IgnoreCase);
         }
-
 
         public int IgnoreWebRequest(string path) => WebRequestHandler.Ignore(this, PathToRegex(path));
 

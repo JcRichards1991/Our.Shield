@@ -399,7 +399,6 @@ angular
     [
       '$scope',
       '$routeParams',
-      '$timeout',
       '$route',
       'notificationsService',
       'localizationService',
@@ -407,7 +406,6 @@ angular
       'shieldResource',
       function ($scope,
         $routeParams,
-        $timeout,
         $route,
         notificationsService,
         localizationService,
@@ -467,9 +465,9 @@ angular
               $scope.appForm.$setPristine();
 
               shieldResource
-                .postConfiguration(vm.appKey, vm.config)
+                .postConfiguration(vm.app.id, vm.appKey, vm.config)
                 .then(function (response) {
-                  if (response === true || response === 'true') {
+                  if (response.errorCode === 0) {
                     localizationService.localize('Shield.General_SaveConfigurationSuccess').then(function (value) {
                       notificationsService.success(value);
                     });

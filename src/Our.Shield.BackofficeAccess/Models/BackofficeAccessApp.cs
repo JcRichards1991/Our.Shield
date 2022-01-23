@@ -1,8 +1,8 @@
 ﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Enums;
-using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
+using Our.Shield.Core.Services;
 using Our.Shield.Core.Settings;
 using System;
 using System.Linq;
@@ -21,6 +21,21 @@ namespace Our.Shield.BackofficeAccess.Models
     [AppJournal]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
     {
+        private readonly IIpAccessControlService _ipAccessControlService;
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="BackofficeAccessApp"/>
+        /// </summary>
+        /// <param name="journalService"><see cref="IJournalService"/></param>
+        /// <param name="ipAccessControlService"><see cref="IpAccessControlService"/></param>
+        public BackofficeAccessApp(
+            IJournalService journalService,
+            IIpAccessControlService ipAccessControlService)
+            : base(journalService)
+        {
+            _ipAccessControlService = ipAccessControlService;
+        }
+
         /// <summary>
         /// App Id
         /// </summary>
@@ -39,7 +54,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 AccessType = AccessTypes.AllowAll,
                 IpAccessRules = Enumerable.Empty<IpAccessRule>()
             },
-            Unauthorized = new TransferUrlControl
+            TransferUrlControl = new TransferUrlControl
             {
                 TransferType = TransferType.Redirect,
                 Url = new UmbracoUrl
@@ -51,29 +66,20 @@ namespace Our.Shield.BackofficeAccess.Models
         };
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="job"></param>
-        /// <param name="c"></param>
-        /// <returns></returns>
         public override bool Execute(IJob job, IAppConfiguration c)
         {
-            job.UnwatchWebRequests();
-            job.UnexceptionWebRequest();
-            job.UnignoreWebRequest();
-
             _reSetterLock = 0;
 
             if (!(c is BackofficeAccessConfiguration config))
             {
-                job.WriteJournal(new JournalMessage("Error: Config passed into Backoffice Access was not of the correct type"));
+                JournalService.WriteJournal(new JournalMessage("Error: Config passed into Backoffice Access was not of the correct type"));
 
                 return false;
             }
 
             var defaultUmbracoLocation = ((BackofficeAccessConfiguration)DefaultConfiguration).BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/');
             var onDiscUmbracoLocation = ShieldConfiguration.UmbracoPath.EnsureStartsWith('/').EnsureEndsWith('/');
-            var virtualUmbracoLocation = config.Enable && job.Environment.Enabled
+            var virtualUmbracoLocation = config.Enabled && job.Environment.Enabled
                 ? config.BackendAccessUrl.EnsureStartsWith('/').EnsureEndsWith('/')
                 : defaultUmbracoLocation;
 
@@ -96,9 +102,9 @@ namespace Our.Shield.BackofficeAccess.Models
                     false);
             }
 
-            if (config.Enable && job.Environment.Enabled && config.Unauthorized.TransferType != TransferType.PlayDead)
+            if (config.Enabled && job.Environment.Enabled && config.TransferUrlControl.TransferType != TransferType.PlayDead)
             {
-                job.ExceptionWebRequest(config.Unauthorized.Url);
+                job.ExceptionWebRequest(config.TransferUrlControl.Url);
             }
 
             if (!virtualUmbracoLocation.Equals(onDiscUmbracoLocation, StringComparison.InvariantCultureIgnoreCase))
@@ -133,7 +139,7 @@ namespace Our.Shield.BackofficeAccess.Models
                 {
                     if ((bool?)httpApp.Context.Items[_allowKey] == true
                         || !string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension)
-                        || AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp))
+                        || _ipAccessControlService.IsRequestAuthenticatedUmbracoUser(httpApp))
                     {
                         return new WatchResponse(Cycle.Continue);
                     }
@@ -144,29 +150,29 @@ namespace Our.Shield.BackofficeAccess.Models
                 });
             }
 
-            if (!config.Enable || !job.Environment.Enabled)
+            if (!config.Enabled || !job.Environment.Enabled)
             {
                 return true;
             }
 
-            //foreach (var error in _ipAccessControlService.InitIpAccessControl(config.IpAccessRules))
-            //{
-            //    job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
-            //}
+            foreach (var error in _ipAccessControlService.InitIpAccessControl(config.IpAccessControl))
+            {
+                JournalService.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
+            }
 
-            //job.WatchWebRequests(PipeLineStages.AuthenticateRequest, onDiscUmbracoRegex, 20300, (count, httpApp) =>
-            //{
-            //    if (AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)
-            //        || _ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request)
-            //        || config.ExcludeUrls.Any(x => httpApp.Request.Url.AbsolutePath.StartsWith(x.EnsureStartsWith('/'), StringComparison.OrdinalIgnoreCase)))
-            //    {
-            //        return new WatchResponse(Cycle.Continue);
-            //    }
+            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, onDiscUmbracoRegex, 20300, (count, httpApp) =>
+            {
+                if (_ipAccessControlService.IsRequestAuthenticatedUmbracoUser(httpApp)
+                    || _ipAccessControlService.IsValid(config.IpAccessControl, httpApp.Context.Request)
+                    || config.ExcludeUrls.Any(x => httpApp.Request.Url.AbsolutePath.StartsWith(x.EnsureStartsWith('/'), StringComparison.OrdinalIgnoreCase)))
+                {
+                    return new WatchResponse(Cycle.Continue);
+                }
 
-            //    job.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access the backoffice access URL. Access was denied"));
+                JournalService.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access the backoffice access URL. Access was denied"));
 
-            //    return new WatchResponse(config.Unauthorized);
-            //});
+                return new WatchResponse(config.TransferUrlControl);
+            });
 
             return true;
         }

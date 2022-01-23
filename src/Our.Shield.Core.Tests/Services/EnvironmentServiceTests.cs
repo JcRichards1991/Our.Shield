@@ -19,6 +19,7 @@ namespace Our.Shield.Core.Tests.Services
             _environmentService = new EnvironmentService(
                 Mock.Of<IJobService>(),
                 MockEnvironmentAccess(),
+                Mock.Of<IAppService>(),
                 Mock.Of<DistributedCache>(),
                 Mock.Of<IMapper>(),
                 Mock.Of<ILogger>());

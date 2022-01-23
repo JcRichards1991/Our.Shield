@@ -399,7 +399,6 @@ angular
     [
       '$scope',
       '$routeParams',
-      '$timeout',
       '$route',
       'notificationsService',
       'localizationService',
@@ -407,7 +406,6 @@ angular
       'shieldResource',
       function ($scope,
         $routeParams,
-        $timeout,
         $route,
         notificationsService,
         localizationService,
@@ -467,9 +465,9 @@ angular
               $scope.appForm.$setPristine();
 
               shieldResource
-                .postConfiguration(vm.appKey, vm.config)
+                .postConfiguration(vm.app.id, vm.appKey, vm.config)
                 .then(function (response) {
-                  if (response === true || response === 'true') {
+                  if (response.errorCode === 0) {
                     localizationService.localize('Shield.General_SaveConfigurationSuccess').then(function (value) {
                       notificationsService.success(value);
                     });
@@ -827,7 +825,7 @@ angular
           },
           link: function (scope) {
             if (scope.transferUrlControl.url === null) {
-              scope.transferUrlControl = { type: 0, value: '' }
+              scope.transferUrlControl.url = { type: 0, value: '' }
             };
 
             switch (scope.transferUrlControl.url.type) {
@@ -868,7 +866,7 @@ angular
             });
 
             scope.$on('formSubmitting', function () {
-              switch (scope.model.type) {
+              switch (scope.transferUrlControl.url.type) {
                 case 0:
                   scope.transferUrlControl.url.value = scope.transferUrlControl.url.urlValue;
                   break;
@@ -878,7 +876,7 @@ angular
                   break;
 
                 case 2:
-                  scope.transferUrlControl.url.value = scope.contentPickerProperty.value;
+                  scope.transferUrlControl.url.value = scope.contentPickerProperty.url.mntpValue;
                   break;
               }
             });
@@ -1015,8 +1013,14 @@ angular
           getView: function (id) {
             return shieldResourceHelper.get(apiRoot + 'View', { id: id });
           },
-          postConfiguration: function (key, config) {
-            return shieldResourceHelper.post(apiRoot + 'UpdateAppConfiguration?key=' + key, config);
+          postConfiguration: function (appId, key, config) {
+            return shieldResourceHelper.post(
+              apiRoot + 'UpdateAppConfiguration',
+              {
+                appId: appId,
+                key: key,
+                configuration: config
+              });
           },
           setEnvironmentsSortOrder: function (environments) {
             return shieldResourceHelper.post(apiRoot + 'SortEnvironments', environments);

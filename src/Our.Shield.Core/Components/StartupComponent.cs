@@ -5,16 +5,16 @@ namespace Our.Shield.Core.Components
 {
     internal class StartupComponent : IComponent
     {
-        private readonly IJobService _jobService;
+        private readonly IShieldService _shieldService;
 
-        public StartupComponent(IJobService jobService)
+        public StartupComponent(IShieldService shieldService)
         {
-            _jobService = jobService;
+            _shieldService = shieldService;
         }
 
-        public void Initialize()
+        public async void Initialize()
         {
-            _jobService.Init();
+            await _shieldService.Init();
         }
 
         public void Terminate()

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Our.Shield.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,6 +11,20 @@ namespace Our.Shield.Core.Models
     [DebuggerDisplay("Id: {Id}; Key: {Key}")]
     public abstract class App<TC> : IApp where TC : IAppConfiguration
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        protected IJournalService JournalService;
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="App{TC}"/>
+        /// </summary>
+        /// <param name="journalService"></param>
+        public App(IJournalService journalService)
+        {
+            JournalService = journalService;
+        }
+
         /// <inheritdoc />
         public Guid Key { get; set; }
 

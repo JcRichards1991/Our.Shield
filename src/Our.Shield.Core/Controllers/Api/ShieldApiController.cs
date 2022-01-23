@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models.Requests;
 using Our.Shield.Core.Models.Responses;
 using Our.Shield.Core.Services;
@@ -225,6 +226,7 @@ namespace Our.Shield.Core.Controllers.Api
         /// <param name="request"><see cref="UpdateAppConfigurationRequest"/></param>
         /// <returns></returns>
         [HttpPost]
+        [ValidateModel]
         public async Task<IHttpActionResult> UpdateAppConfiguration(UpdateAppConfigurationRequest request)
         {
             var response = await _appService.UpdateAppConfiguration(request);

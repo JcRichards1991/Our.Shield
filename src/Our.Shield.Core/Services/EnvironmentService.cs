@@ -3,7 +3,6 @@ using LightInject;
 using Newtonsoft.Json;
 using Our.Shield.Core.Data.Accessors;
 using Our.Shield.Core.Enums;
-using Our.Shield.Core.Models;
 using Our.Shield.Core.Models.CacheRefresherJson;
 using Our.Shield.Core.Models.Requests;
 using Our.Shield.Core.Models.Responses;
@@ -24,6 +23,7 @@ namespace Our.Shield.Core.Services
     {
         private readonly IJobService _jobService;
         private readonly IEnvironmentAccessor _environmentAccessor;
+        private readonly IAppService _appService;
         private readonly DistributedCache _distributedCache;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
@@ -33,24 +33,28 @@ namespace Our.Shield.Core.Services
         /// </summary>
         /// <param name="jobService"><see cref="IJobService"/></param>
         /// <param name="environmentAccessor"><see cref="IEnvironmentAccessor"/></param>
+        /// <param name="appService"></param>
         /// <param name="distributedCache"><see cref="DistributedCache"/></param>
         /// <param name="mapper"></param>
         /// <param name="logger"><see cref="ILogger"/></param>
         public EnvironmentService(
             IJobService jobService,
             IEnvironmentAccessor environmentAccessor,
+            IAppService appService,
             DistributedCache distributedCache,
             [Inject(nameof(Shield))] IMapper mapper,
             ILogger logger)
         {
             GuardClauses.NotNull(jobService, nameof(jobService));
             GuardClauses.NotNull(environmentAccessor, nameof(environmentAccessor));
+            GuardClauses.NotNull(appService, nameof(appService));
             GuardClauses.NotNull(distributedCache, nameof(distributedCache));
             GuardClauses.NotNull(mapper, nameof(mapper));
             GuardClauses.NotNull(logger, nameof(logger));
 
             _jobService = jobService;
             _environmentAccessor = environmentAccessor;
+            _appService = appService;
             _distributedCache = distributedCache;
             _mapper = mapper;
             _logger = logger;
@@ -70,11 +74,49 @@ namespace Our.Shield.Core.Services
                 SortOrder = request.SortOrder
             };
 
-            var response = await Upsert(environment);
+            var response = new UpsertEnvironmentResponse();
 
-            if (response.HasError())
+            if (environment.Key == default(Guid))
             {
-                return response;
+                try
+                {
+                    response.Key = await _environmentAccessor.Create(environment);
+                    _appService.WriteEnvironmentApps(response.Key);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error<EnvironmentService>(ex, "Error occurred inserting Environment");
+
+                    response.ErrorCode = ErrorCode.EnviromentInsert;
+
+                    return response;
+                }
+            }
+            else
+            {
+                try
+                {
+                    if (await _environmentAccessor.Update(environment))
+                    {
+                        response.Key = environment.Key;
+
+                        _jobService.Unregister(environment);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error<EnvironmentService>(ex, "Error occurred updating Environment");
+
+                    response.ErrorCode = ErrorCode.EnvironmentUpdate;
+
+                    return response;
+                }
+            }
+
+            var appsResult = await _appService.GetApps(environment.Key);
+            foreach (var app in appsResult.Apps)
+            {
+                _jobService.Register(environment, app.Key, app.Value);
             }
 
             _distributedCache.RefreshByJson(
@@ -149,43 +191,6 @@ namespace Our.Shield.Core.Services
                 _logger.Error<EnvironmentService>(ex, "Error occurred deleting environment with {Key}", key);
 
                 response.ErrorCode = ErrorCode.EnvrionmentDelete;
-            }
-
-            return response;
-        }
-
-        private async Task<UpsertEnvironmentResponse> Upsert(IEnvironment environment)
-        {
-            var response = new UpsertEnvironmentResponse();
-
-            if (environment.Key == default(Guid))
-            {
-                try
-                {
-                    response.Key = await _environmentAccessor.Create(environment);
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error<EnvironmentService>(ex, "Error occurred inserting Environment");
-
-                    response.ErrorCode = ErrorCode.EnviromentInsert;
-                }
-
-                return response;
-            }
-
-            try
-            {
-                if (await _environmentAccessor.Update(environment))
-                {
-                    response.Key = environment.Key;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error<EnvironmentService>(ex, "Error occurred updating Environment");
-
-                response.ErrorCode = ErrorCode.EnvironmentUpdate;
             }
 
             return response;

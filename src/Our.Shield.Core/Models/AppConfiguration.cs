@@ -3,11 +3,16 @@ using System.Diagnostics;
 
 namespace Our.Shield.Core.Models
 {
-    [DebuggerDisplay("Enable: {Enable}")]
+    /// <summary>
+    /// Implements <see cref="IAppConfiguration"/> for the required properties for configurations
+    /// </summary>
+    [DebuggerDisplay("Enable: {Enabled}")]
     public abstract class AppConfiguration : IAppConfiguration
     {
-        public bool Enable { get; set; }
-        
-        public DateTime? LastModified { get; internal set; }
+        /// <inheritdoc />
+        public bool Enabled { get; set; }
+
+        /// <inheritdoc />
+        public DateTime? LastModifiedDateUtc { get; set; }
     }
 }

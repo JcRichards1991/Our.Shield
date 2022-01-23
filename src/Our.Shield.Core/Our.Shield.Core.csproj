@@ -279,7 +279,9 @@
     <Compile Include="Attributes\AppJournalAttribute.cs" />
     <Compile Include="Attributes\AppTabAttribute.cs" />
     <Compile Include="Attributes\CustomAppTabAttribute.cs" />
+    <Compile Include="Attributes\NotEmptyAttribute.cs" />
     <Compile Include="Attributes\SingleEnvironmentAttribute.cs" />
+    <Compile Include="Attributes\ValidateModelAttribute.cs" />
     <Compile Include="CacheRefreshers\ConfigurationCacheRefresher.cs" />
     <Compile Include="CacheRefreshers\EnvironmentCacheRefresher.cs" />
     <Compile Include="Components\ClearCacheComponent.cs" />
@@ -287,6 +289,7 @@
     <Compile Include="Components\StartupComponent.cs" />
     <Compile Include="Composers\BootUpComposer.cs" />
     <Compile Include="Composers\StartUpComposer.cs" />
+    <Compile Include="ContractResolvers\AppConfigurationShouldSerializeContractResolver.cs" />
     <Compile Include="Data\Accessors\Accessor.cs" />
     <Compile Include="Data\Accessors\AppAccessor.cs" />
     <Compile Include="Data\Accessors\EnvironmentAccessor.cs" />
@@ -310,6 +313,7 @@
     <Compile Include="Enums\IpAddressType.cs" />
     <Compile Include="Enums\TransferType.cs" />
     <Compile Include="Enums\UmbracoUrlType.cs" />
+    <Compile Include="Extensions\IpAddressRangeExtensions.cs" />
     <Compile Include="Factories\AppFactory.cs" />
     <Compile Include="Factories\IAppFactory.cs" />
     <Compile Include="JsonConverters\DictionaryAppConfigurationJsonConverter.cs" />
@@ -336,12 +340,15 @@
     <Compile Include="Services\AppService.cs" />
     <Compile Include="Services\IAppService.cs" />
     <Compile Include="Services\IEnvironmentService.cs" />
+    <Compile Include="Services\IIpAccessControlService.cs" />
     <Compile Include="Services\IJobService.cs" />
     <Compile Include="Services\IJournalService.cs" />
+    <Compile Include="Services\IShieldService.cs" />
     <Compile Include="Services\IUmbracoContentService.cs" />
     <Compile Include="Services\IUmbracoMediaService.cs" />
     <Compile Include="Services\IUmbracoUrlService.cs" />
     <Compile Include="Services\JournalService.cs" />
+    <Compile Include="Services\ShieldService.cs" />
     <Compile Include="Settings\ShieldConfiguration.cs" />
     <Compile Include="Settings\IpAddressValidation.cs" />
     <Compile Include="Settings\IpAddressValidationElement.cs" />
@@ -352,7 +359,6 @@
     <Compile Include="Models\TransferUrlControl.cs" />
     <Compile Include="Services\IpAccessControlService.cs" />
     <Compile Include="Services\EnvironmentService.cs" />
-    <Compile Include="Helpers\AccessHelper.cs" />
     <Compile Include="Operation\Locker.cs" />
     <Compile Include="Services\UmbracoServiceBase.cs" />
     <Compile Include="Services\UmbracoMediaService.cs" />

@@ -1,5 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Our.Shield.Core.Attributes;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Our.Shield.Core.Models.Requests
 {
@@ -9,18 +12,24 @@ namespace Our.Shield.Core.Models.Requests
     public class UpdateAppConfigurationRequest
     {
         /// <summary>
-        /// The Key of the App to update the configuration for
-        /// </summary>
-        public Guid Key { get; set; }
-
-        /// <summary>
         /// The App Id of the App updating
         /// </summary>
+        [Required]
+        [JsonProperty("appId")]
         public string AppId { get; set; }
+
+        /// <summary>
+        /// The Key of the App to update the configuration for
+        /// </summary>
+        [NotEmpty]
+        [JsonProperty("key")]
+        public Guid Key { get; set; }
 
         /// <summary>
         /// The new configuration
         /// </summary>
+        [Required]
+        [JsonProperty("configuration")]
         public JObject Configuration { get; set; }
     }
 }

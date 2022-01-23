@@ -1,4 +1,5 @@
 ﻿using Our.Shield.Core.Models;
+using Our.Shield.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -67,7 +68,30 @@ namespace Our.Shield.Core.Operation
                     }
                     else
                     {
-                        derivedObject = Activator.CreateInstance(type) as IFrisk;
+                        var constructors = type.GetConstructors();
+
+                        if (constructors.None())
+                        {
+                            derivedObject = Activator.CreateInstance(type) as IFrisk;
+                        }
+                        else
+                        {
+                            foreach (var constructor in constructors)
+                            {
+                                var objectList = new List<object>();
+                                var constructorParameters = constructor.GetParameters();
+
+                                if (constructorParameters.HasValues())
+                                {
+                                    foreach (var constructorParameter in constructorParameters)
+                                    {
+                                        objectList.Add(Umbraco.Core.Composing.Current.Factory.GetInstance(constructorParameter.ParameterType));
+                                    }
+                                }
+
+                                derivedObject = constructor.Invoke(objectList.ToArray()) as IFrisk;
+                            }
+                        }
                     }
 
                     if (derivedObject != null && !string.IsNullOrEmpty(interest.FullName))
@@ -120,7 +144,7 @@ namespace Our.Shield.Core.Operation
                 }
                 catch (BadImageFormatException)
                 {
-                    // Not a .net assembly  - ignore
+                    // Not a .net assembly - ignore
                 }
             }
 

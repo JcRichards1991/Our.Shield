@@ -2,6 +2,7 @@
 using Our.Shield.Core.Models.Requests;
 using Our.Shield.Core.Models.Responses;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Our.Shield.Core.Services
@@ -31,5 +32,13 @@ namespace Our.Shield.Core.Services
         /// <param name="request"></param>
         /// <returns></returns>
         Task<UpdateAppConfigurationResponse> UpdateAppConfiguration(UpdateAppConfigurationRequest request);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enviromentKey"></param>
+        /// <param name="appIds"></param>
+        /// <returns></returns>
+        void WriteEnvironmentApps(Guid enviromentKey, IEnumerable<string> appIds = null);
     }
 }

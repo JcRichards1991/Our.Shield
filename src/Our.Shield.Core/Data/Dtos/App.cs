@@ -33,6 +33,7 @@ namespace Our.Shield.Core.Data.Dtos
         /// <inheritdoc />
         [Column(nameof(Configuration))]
         [NullSetting(NullSetting = NullSettings.NotNull)]
+        [Length(4000)]
         public string Configuration { get; set; }
     }
 }

@@ -2,18 +2,19 @@
 using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Our.Shield.BackofficeAccess.Models
 {
-    /// <inheritdoc />
     /// <summary>
     /// The Backoffice Access Configuration
     /// </summary>
+    [DebuggerDisplay("Enable: {Enabled}; Backend Access Url: {BackendAccessUrl}")]
     [JsonObject(MemberSerialization.OptIn)]
     public class BackofficeAccessConfiguration : AppConfiguration
     {
         /// <summary>
-        /// The desired backoffice access url
+        /// The desired backoffice access URL
         /// </summary>
         [JsonProperty("backendAccessUrl")]
         [SingleEnvironment]
@@ -32,7 +33,7 @@ namespace Our.Shield.BackofficeAccess.Models
         /// <summary>
         /// The URL Type Selector and the URL
         /// </summary>
-        [JsonProperty("unauthorized")]
-        public TransferUrlControl Unauthorized { get; set; }
+        [JsonProperty("transferUrlControl")]
+        public TransferUrlControl TransferUrlControl { get; set; }
     }
 }

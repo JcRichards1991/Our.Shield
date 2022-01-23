@@ -1,5 +1,4 @@
 ﻿using Our.Shield.Core.Models;
-using System;
 using System.Collections.Generic;
 
 namespace Our.Shield.Core.Factories
@@ -21,13 +20,5 @@ namespace Our.Shield.Core.Factories
         /// <param name="appId"></param>
         /// <returns></returns>
         IApp Create(string appId);
-
-        /// <summary>
-        /// Creates an <see cref="App{TC}"/>
-        /// </summary>
-        /// <param name="appId"></param>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        IApp Create(string appId, Guid key);
     }
 }

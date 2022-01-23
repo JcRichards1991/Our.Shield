@@ -116,14 +116,15 @@ namespace Our.Shield.Core.UI
 
                 foreach (var environment in response.Environments)
                 {
-                    tree.Add(CreateTreeNode(
-                        environment.Key.ToString(),
-                        UmbConsts.System.Root.ToString(),
-                        new FormDataCollection(Enumerable.Empty<KeyValuePair<string, string>>()),
-                        environment.Name,
-                        environment.Icon,
-                        true,
-                        $"settings/{Constants.App.Alias}/environment/{environment.Key}"));
+                    tree.Add(
+                        CreateTreeNode(
+                            environment.Key.ToString(),
+                            UmbConsts.System.Root.ToString(),
+                            new FormDataCollection(Enumerable.Empty<KeyValuePair<string, string>>()),
+                            environment.Name,
+                            environment.Icon,
+                            true,
+                            $"settings/{Constants.App.Alias}/environment/{environment.Key}"));
                 }
             }
             else if (Guid.TryParse(id, out var key))
@@ -136,14 +137,15 @@ namespace Our.Shield.Core.UI
 
                     foreach(var app in appsResult.Apps)
                     {
-                        tree.Add(CreateTreeNode(
-                            app.Key.Key.ToString(),
-                            id,
-                            new FormDataCollection(Enumerable.Empty<KeyValuePair<string, string>>()),
-                            Services.TextService.Localize($"Shield.{app.Key.Id}/Name"),
-                            app.Key.Icon,
-                            false,
-                            $"settings/{Constants.App.Alias}/app/{app.Key.Key}"));
+                        tree.Add(
+                            CreateTreeNode(
+                                app.Key.Key.ToString(),
+                                id,
+                                new FormDataCollection(Enumerable.Empty<KeyValuePair<string, string>>()),
+                                Services.TextService.Localize($"Shield.{app.Key.Id}/Name"),
+                                app.Key.Icon,
+                                false,
+                                $"settings/{Constants.App.Alias}/app/{app.Key.Key}"));
                     }
                 }
             }
