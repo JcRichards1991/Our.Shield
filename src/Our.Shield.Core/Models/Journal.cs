@@ -3,19 +3,18 @@ using System;
 
 namespace Our.Shield.Core.Models
 {
-    /// <inheritdoc />
     /// <summary>
-    /// The Journal class to inherit from
+    /// Implements <see cref="IJournal"/>
     /// </summary>
-    public abstract class Journal : IJournal
+    public class Journal : IJournal
     {
-        /// <inheritdoc />
-        [JsonProperty("appKey")]
-        public Guid AppKey { get; internal set; }
-
         /// <inheritdoc />
         [JsonProperty("environmentKey")]
         public Guid EnvironmentKey { get; internal set; }
+
+        /// <inheritdoc />
+        [JsonProperty("appKey")]
+        public Guid? AppKey { get; internal set; }
 
         /// <inheritdoc />
         [JsonProperty("dateStamp")]
@@ -24,14 +23,5 @@ namespace Our.Shield.Core.Models
         /// <inheritdoc />
         [JsonProperty("message")]
         public string Message { get; internal set; }
-
-        /// <summary>
-        /// Initializes a JournalMessage Object with the desired message
-        /// </summary>
-        /// <param name="message">The message for the journal</param>
-        protected Journal(string message)
-        {
-            Message = message;
-        }
     }
 }

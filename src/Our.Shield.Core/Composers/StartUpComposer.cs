@@ -52,7 +52,7 @@ namespace Our.Shield.Core.Composers
             composition.Register<IJobService, JobService>(Lifetime.Singleton);
             composition.Register<IEnvironmentService, EnvironmentService>(Lifetime.Singleton);
             composition.Register<IAppService, AppService>(Lifetime.Singleton);
-            composition.Register<IJournalService, JournalService>(Lifetime.Singleton);
+            composition.Register<IJournalService, JournalService>(Lifetime.Request);
             composition.Register<IUmbracoContentService, UmbracoContentService>();
             composition.Register<IUmbracoMediaService, UmbracoMediaService>();
             composition.Register<IIpAccessControlService, IpAccessControlService>(Lifetime.Request);

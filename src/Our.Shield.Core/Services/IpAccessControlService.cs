@@ -20,25 +20,22 @@ namespace Our.Shield.Core.Services
         /// <inheritdoc />
         public IEnumerable<string> InitIpAccessControl(IpAccessControl rule)
         {
-            var errors = new List<string>();
-            foreach (var exception in rule.IpAccessRules)
+            foreach (var ipAccessRule in rule.IpAccessRules)
             {
-                var ipAddressRange = exception.IpAddressType == IpAddressType.Single
-                    ? exception.FromIpAddress
-                    : $"{exception.FromIpAddress}-{exception.ToIpAddress}";
-
+                var ipAddressRange = ipAccessRule.IpAddressType == IpAddressType.Single
+                    ? ipAccessRule.FromIpAddress
+                    : $"{ipAccessRule.FromIpAddress}-{ipAccessRule.ToIpAddress}";
 
                 if (!IPAddressRange.TryParse(ipAddressRange, out var range))
                 {
-                    errors.Add(ipAddressRange);
+                    yield return ipAddressRange;
+                    continue;
                 }
 
                 range.Begin = range.Begin.MapToIPv6();
                 range.End = range.End.MapToIPv6();
-                exception.Range = range;
+                ipAccessRule.Range = range;
             }
-
-            return errors;
         }
 
         /// <inheritdoc />

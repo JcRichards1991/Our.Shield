@@ -3,6 +3,7 @@ using LightInject;
 using Newtonsoft.Json;
 using Our.Shield.Core.Data.Accessors;
 using Our.Shield.Core.Enums;
+using Our.Shield.Core.Models;
 using Our.Shield.Core.Models.CacheRefresherJson;
 using Our.Shield.Core.Models.Requests;
 using Our.Shield.Core.Models.Responses;
@@ -24,6 +25,7 @@ namespace Our.Shield.Core.Services
         private readonly IJobService _jobService;
         private readonly IEnvironmentAccessor _environmentAccessor;
         private readonly IAppService _appService;
+        private readonly IJournalService _journalService;
         private readonly DistributedCache _distributedCache;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
@@ -33,7 +35,8 @@ namespace Our.Shield.Core.Services
         /// </summary>
         /// <param name="jobService"><see cref="IJobService"/></param>
         /// <param name="environmentAccessor"><see cref="IEnvironmentAccessor"/></param>
-        /// <param name="appService"></param>
+        /// <param name="appService"><see cref="IAppService"/></param>
+        /// <param name="journalService"><see cref="IJournalService"/></param>
         /// <param name="distributedCache"><see cref="DistributedCache"/></param>
         /// <param name="mapper"></param>
         /// <param name="logger"><see cref="ILogger"/></param>
@@ -41,6 +44,7 @@ namespace Our.Shield.Core.Services
             IJobService jobService,
             IEnvironmentAccessor environmentAccessor,
             IAppService appService,
+            IJournalService journalService,
             DistributedCache distributedCache,
             [Inject(nameof(Shield))] IMapper mapper,
             ILogger logger)
@@ -48,6 +52,7 @@ namespace Our.Shield.Core.Services
             GuardClauses.NotNull(jobService, nameof(jobService));
             GuardClauses.NotNull(environmentAccessor, nameof(environmentAccessor));
             GuardClauses.NotNull(appService, nameof(appService));
+            GuardClauses.NotNull(journalService, nameof(journalService));
             GuardClauses.NotNull(distributedCache, nameof(distributedCache));
             GuardClauses.NotNull(mapper, nameof(mapper));
             GuardClauses.NotNull(logger, nameof(logger));
@@ -55,6 +60,7 @@ namespace Our.Shield.Core.Services
             _jobService = jobService;
             _environmentAccessor = environmentAccessor;
             _appService = appService;
+            _journalService = journalService;
             _distributedCache = distributedCache;
             _mapper = mapper;
             _logger = logger;
@@ -82,6 +88,10 @@ namespace Our.Shield.Core.Services
                 {
                     response.Key = await _environmentAccessor.Create(environment);
                     _appService.WriteEnvironmentApps(response.Key);
+                    await _journalService.WriteEnvironmentJournal(
+                        environment.Name,
+                        environment.Key,
+                        JournalEnvironmentAction.Created);
                 }
                 catch (Exception ex)
                 {
@@ -101,6 +111,10 @@ namespace Our.Shield.Core.Services
                         response.Key = environment.Key;
 
                         _jobService.Unregister(environment);
+                        await _journalService.WriteEnvironmentJournal(
+                            environment.Name,
+                            environment.Key, 
+                            JournalEnvironmentAction.Updated);
                     }
                 }
                 catch (Exception ex)

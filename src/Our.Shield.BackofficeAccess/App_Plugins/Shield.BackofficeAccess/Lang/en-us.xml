@@ -12,13 +12,18 @@
   <area alias="Shield.BackofficeAccess.Properties">
     <key alias="BackendAccessUrlLabel">Backend Office Access URL</key>
     <key alias="BackendAccessUrlDescription">The URL used to access the CMS</key>
-    <key alias="ExcludeUrlsLabel">Exclude Urls From Backoffice Access</key>
+    <key alias="ExcludeUrlsLabel">Exclude URLs From Backoffice Access</key>
     <key alias="ExcludeUrlsDescription">Any URL(s) which should not be blocked. For Example /umbraco/surface</key>
   </area>
 
   <area alias="Shield.BackofficeAccess.ErrorMessages">
     <key alias="InvalidBackendAccessUrl">This can be any valid combination of letters and/or numbers, non-case sensitive. You cannot use white space, symbols or special characters</key>
-    <key alias="InvalidUnauthorisedUrl">Invalid Url, please provide a valid relative Url i.e. /404</key>
-    <key alias="InvalidExcludeUrl">Invalid Url, please provide a valid relative Url. i.e. /umbraco/surface</key>
+    <key alias="InvalidUnauthorisedUrl">Invalid URL, please provide a valid relative URL i.e. /404</key>
+    <key alias="InvalidExcludeUrl">Invalid URL, please provide a valid relative URL. i.e. /umbraco/surface</key>
+  </area>
+
+  <area alias="Shield.BackofficeAccess.General">
+    <key alias="InvalidIpControlRules">Error: Invalid IP Address(es): %0%; unable to add these to the exception list"</key>
+    <key alias="DeniedAccess">User with IP Address: %0%; tried to access the backoffice access URL. Access was denied</key>
   </area>
 </language>

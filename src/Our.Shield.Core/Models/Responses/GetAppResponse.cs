@@ -1,4 +1,5 @@
 ﻿using Our.Shield.Core.Models.AppTabs;
+using System;
 using System.Collections.Generic;
 
 namespace Our.Shield.Core.Models.Responses
@@ -22,5 +23,10 @@ namespace Our.Shield.Core.Models.Responses
         /// The Tabs for rendering in the UI
         /// </summary>
         public IEnumerable<ITab> Tabs { get; set; }
+
+        /// <summary>
+        /// The Environment's Key for this App &amp; Configuration
+        /// </summary>
+        public Guid EnvironmentKey { get; internal set; }
     }
 }

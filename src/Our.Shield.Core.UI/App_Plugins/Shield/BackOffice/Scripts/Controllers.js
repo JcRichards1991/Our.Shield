@@ -254,7 +254,7 @@ angular
                       notificationsService.success(value);
                     });
                     navigationService.syncTree({ tree: "shield", path: ['-1', '-21'], forceReload: true, activate: true });
-                    $location.path('/shield');
+                    $location.path('/settings/shield/environment/' + response.key);
                   } else {
                     vm.button.state = 'error';
                     localizationService.localize('Shield.General_CreateEnvironmentError').then(function (value) {
@@ -276,14 +276,12 @@ angular
       '$location',
       'notificationsService',
       'localizationService',
-      'navigationService',
       'shieldResource',
       function ($scope,
         $routeParams,
         $location,
         notificationsService,
         localizationService,
-        navigationService,
         shieldResource) {
         var vm = this;
         angular.extend(vm,
@@ -334,8 +332,6 @@ angular
                     .getEnvironmentApps(vm.environmentKey)
                     .then(function (appsResponse) {
                       vm.apps = appsResponse.apps;
-
-                      navigationService.syncTree({ tree: 'shield', path: vm.path, forceReload: true, activate: true });
                       vm.loading = false;
                     });
                 });
@@ -367,16 +363,16 @@ angular
                       .localize('Shield.General_SaveEnvironmentSuccess')
                       .then(function (value) {
                         notificationsService.success(value);
+                        $location.path('/settings/shield/environment/' + key);
                       });
-
-                    navigationService.syncTree({ tree: "shield", path: vm.path, forceReload: true, activate: true });
                   } else {
-                    vm.button.state = 'error';
                     localizationService
                       .localize('Shield.General_SaveEnvironmentError')
                       .then(function (value) {
                         notificationsService.error(value);
                       });
+
+                    vm.button.state = 'error';
                   }
                 });
             },
@@ -399,17 +395,13 @@ angular
     [
       '$scope',
       '$routeParams',
-      '$route',
       'notificationsService',
       'localizationService',
-      'navigationService',
       'shieldResource',
       function ($scope,
         $routeParams,
-        $route,
         notificationsService,
         localizationService,
-        navigationService,
         shieldResource) {
         var vm = this;
         angular.extend(vm,
@@ -426,6 +418,7 @@ angular
             app: null,
             config: null,
             tabs: [],
+            environmentKey: '',
             name: '',
             description: '',
             init: function () {
@@ -435,6 +428,7 @@ angular
                   vm.app = response.app;
                   vm.config = response.configuration;
                   vm.tabs = response.tabs;
+                  vm.environmentKey = response.environmentKey;
 
                   localizationService
                     .localize('Shield.' + vm.app.id + '_Name')
@@ -465,15 +459,14 @@ angular
               $scope.appForm.$setPristine();
 
               shieldResource
-                .postConfiguration(vm.app.id, vm.appKey, vm.config)
+                .postConfiguration(vm.app.id, vm.appKey, vm.config, vm.environmentKey)
                 .then(function (response) {
                   if (response.errorCode === 0) {
                     localizationService.localize('Shield.General_SaveConfigurationSuccess').then(function (value) {
                       notificationsService.success(value);
                     });
 
-                    navigationService.syncTree({ tree: "shield", path: vm.path, forceReload: true, activate: true });
-                    $route.reload();
+                    vm.button.state = 'busy';
                   } else {
                     localizationService.localize('Shield.General_SaveConfigurationError').then(function (value) {
                       notificationsService.error(value);
@@ -549,12 +542,7 @@ angular
                       notificationsService.success(value);
                       vm.currentNode.loading = false;
                       treeService.removeNode(vm.currentNode);
-
-                      if ($location.path() === '/shield') {
-                        $route.reload();
-                      } else {
-                        $location.path("/shield");
-                      }
+                      $location.path("/settings/shield/Dashboard");
                     });
                   navigationService.hideMenu();
                 } else {

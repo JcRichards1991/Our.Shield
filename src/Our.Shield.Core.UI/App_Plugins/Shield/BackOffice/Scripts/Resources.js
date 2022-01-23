@@ -126,12 +126,13 @@ angular
           getView: function (id) {
             return shieldResourceHelper.get(apiRoot + 'View', { id: id });
           },
-          postConfiguration: function (appId, key, config) {
+          postConfiguration: function (appId, key, config, environmentKey) {
             return shieldResourceHelper.post(
               apiRoot + 'UpdateAppConfiguration',
               {
                 appId: appId,
                 key: key,
+                environmentKey: environmentKey,
                 configuration: config
               });
           },

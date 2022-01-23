@@ -283,6 +283,10 @@
       <Project>{69737067-ab31-4c68-9c69-5e6ce00d1ab3}</Project>
       <Name>Our.Shield.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Our.Shield.Shared\Our.Shield.Shared.csproj">
+      <Project>{C3E0DFD3-A730-4388-BE45-53AC5B878E18}</Project>
+      <Name>Our.Shield.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

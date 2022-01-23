@@ -311,6 +311,7 @@
     <Compile Include="Enums\CacheRefreshType.cs" />
     <Compile Include="Enums\Cycle.cs" />
     <Compile Include="Enums\IpAddressType.cs" />
+    <Compile Include="Enums\JournalEnvironmentAction.cs" />
     <Compile Include="Enums\TransferType.cs" />
     <Compile Include="Enums\UmbracoUrlType.cs" />
     <Compile Include="Extensions\IpAddressRangeExtensions.cs" />
@@ -331,7 +332,6 @@
     <Compile Include="Models\Responses\DeleteEnvironmentResponse.cs" />
     <Compile Include="Models\Responses\GetAppResponse.cs" />
     <Compile Include="Models\Responses\GetAppsResponse.cs" />
-    <Compile Include="Models\Responses\GetEnvironmentAppsResponse.cs" />
     <Compile Include="Models\Responses\GetEnvironmentResponse.cs" />
     <Compile Include="Models\Responses\GetEnvironmentsResponse.cs" />
     <Compile Include="Models\Responses\UpdateAppConfigurationResponse.cs" />
@@ -354,7 +354,6 @@
     <Compile Include="Settings\IpAddressValidationElement.cs" />
     <Compile Include="Models\IpAccessControl.cs" />
     <Compile Include="Settings\ApplicationSettings.cs" />
-    <Compile Include="Models\JournalMessage.cs" />
     <Compile Include="Models\UmbracoUrl.cs" />
     <Compile Include="Models\TransferUrlControl.cs" />
     <Compile Include="Services\IpAccessControlService.cs" />

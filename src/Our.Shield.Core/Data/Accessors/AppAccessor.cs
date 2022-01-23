@@ -1,6 +1,5 @@
 ﻿using LightInject;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using NPoco;
 using Our.Shield.Core.Attributes;
 using Our.Shield.Core.ContractResolvers;

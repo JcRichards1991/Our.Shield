@@ -24,11 +24,13 @@ namespace Our.Shield.Core.Data.Dtos
         [Column(nameof(AppKey))]
         [ForeignKey(typeof(App), Name = "FK_" + nameof(Journal) + "_" + nameof(App))]
         [Index(IndexTypes.NonClustered, Name = "IX_" + nameof(AppKey))]
-        public Guid AppKey { get; set; }
+        [NullSetting(NullSetting = NullSettings.Null)]
+        public Guid? AppKey { get; set; }
 
         /// <inheritdoc />
         [Column(nameof(Message))]
         [NullSetting(NullSetting = NullSettings.NotNull)]
+        [Length(4000)]
         public string Message { get; set; }
 
         /// <summary>

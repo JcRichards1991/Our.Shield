@@ -4,6 +4,7 @@ using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using Our.Shield.Core.Services;
 using Our.Shield.Core.Settings;
+using Our.Shield.Shared.Extensions;
 using System;
 using System.Linq;
 using System.Net;
@@ -21,6 +22,9 @@ namespace Our.Shield.BackofficeAccess.Models
     [AppJournal]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
     {
+        private readonly string _allowKey = Guid.NewGuid().ToString();
+        private static int _reSetterLock;
+
         private readonly IIpAccessControlService _ipAccessControlService;
 
         /// <summary>
@@ -72,8 +76,6 @@ namespace Our.Shield.BackofficeAccess.Models
 
             if (!(c is BackofficeAccessConfiguration config))
             {
-                JournalService.WriteJournal(new JournalMessage("Error: Config passed into Backoffice Access was not of the correct type"));
-
                 return false;
             }
 
@@ -155,9 +157,14 @@ namespace Our.Shield.BackofficeAccess.Models
                 return true;
             }
 
-            foreach (var error in _ipAccessControlService.InitIpAccessControl(config.IpAccessControl))
+            var ipAddressesInvalid = _ipAccessControlService.InitIpAccessControl(config.IpAccessControl);
+            if (ipAddressesInvalid.HasValues())
             {
-                JournalService.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
+                JournalService.WriteAppJournal(
+                    job.App.Key,
+                    job.Environment.Key,
+                    "Shield.BackofficeAccess.General_InvalidIpControlRules",
+                    string.Join(", ", ipAddressesInvalid));
             }
 
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, onDiscUmbracoRegex, 20300, (count, httpApp) =>
@@ -169,16 +176,17 @@ namespace Our.Shield.BackofficeAccess.Models
                     return new WatchResponse(Cycle.Continue);
                 }
 
-                JournalService.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access the backoffice access URL. Access was denied"));
+                JournalService.WriteAppJournal(
+                    job.App.Key,
+                    job.Environment.Key,
+                    "Shield.BackofficeAccess.General_DeniedAccess",
+                    httpApp.Context.Request.UserHostAddress);
 
                 return new WatchResponse(config.TransferUrlControl);
             });
 
             return true;
         }
-
-        private readonly string _allowKey = Guid.NewGuid().ToString();
-        private static int _reSetterLock;
 
         private void SoftWatcher(
             IJob job,

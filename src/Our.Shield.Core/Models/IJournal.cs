@@ -9,16 +9,16 @@ namespace Our.Shield.Core.Models
     public interface IJournal
     {
         /// <summary>
-        /// App Id of the journal
-        /// </summary>
-        [JsonProperty("appId")]
-        Guid AppKey { get; }
-
-        /// <summary>
         /// Environment Id of the journal
         /// </summary>
         [JsonProperty("environmentId")]
         Guid EnvironmentKey { get; }
+
+        /// <summary>
+        /// App Id of the journal
+        /// </summary>
+        [JsonProperty("appId")]
+        Guid? AppKey { get; }
 
         /// <summary>
         /// Date stamp of when the journal was created

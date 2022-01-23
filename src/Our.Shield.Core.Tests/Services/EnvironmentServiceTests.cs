@@ -20,6 +20,7 @@ namespace Our.Shield.Core.Tests.Services
                 Mock.Of<IJobService>(),
                 MockEnvironmentAccess(),
                 Mock.Of<IAppService>(),
+                Mock.Of<IJournalService>(),
                 Mock.Of<DistributedCache>(),
                 Mock.Of<IMapper>(),
                 Mock.Of<ILogger>());

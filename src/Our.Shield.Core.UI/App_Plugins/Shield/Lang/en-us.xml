@@ -45,6 +45,9 @@
     <key alias="CreateEnvironmentInvalid">Unable to create environment, there are validation errors</key>
 
     <key alias="SortEnvironmentError">Unable to re-order the environments, there was an error</key>
+
+    <key alias="EnvironmentMessage">User %0% has %1% Environment %2%</key>
+    <key alias="UpdateAppConfigurationMessage">User %0% has updated App: %1% configuration</key>
   </area>
 
   <area alias="Shield.Properties">

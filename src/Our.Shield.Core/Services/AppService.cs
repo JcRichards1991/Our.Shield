@@ -28,6 +28,7 @@ namespace Our.Shield.Core.Services
         private readonly IJobService _jobService;
         private readonly IAppAccessor _appAccessor;
         private readonly IAppFactory _appFactory;
+        private readonly IJournalService _journalService;
         private readonly DistributedCache _distributedCache;
         private readonly ILogger _logger;
 
@@ -37,24 +38,28 @@ namespace Our.Shield.Core.Services
         /// <param name="jobService"><see cref="IJobService"/></param>
         /// <param name="appAccessor"><see cref="IAppAccessor"/></param>
         /// <param name="appFactory"><see cref="IAppFactory"/></param>
+        /// <param name="journalService"><see cref="IJournalService"/></param>
         /// <param name="distributedCache"><see cref="DistributedCache"/></param>
         /// <param name="logger"><see cref="ILogger"/></param>
         public AppService(
             IJobService jobService,
             IAppAccessor appAccessor,
             IAppFactory appFactory,
+            IJournalService journalService,
             DistributedCache distributedCache,
             ILogger logger)
         {
             GuardClauses.NotNull(jobService, nameof(jobService));
             GuardClauses.NotNull(appAccessor, nameof(appAccessor));
             GuardClauses.NotNull(appFactory, nameof(appFactory));
+            GuardClauses.NotNull(journalService, nameof(journalService));
             GuardClauses.NotNull(distributedCache, nameof(distributedCache));
             GuardClauses.NotNull(logger, nameof(logger));
 
             _jobService = jobService;
             _appAccessor = appAccessor;
             _appFactory = appFactory;
+            _journalService = journalService;
             _distributedCache = distributedCache;
             _logger = logger;
         }
@@ -86,6 +91,7 @@ namespace Our.Shield.Core.Services
             response.App = app;
             response.Configuration = DeserializeAppConfiguration(dbApp, app.GetType().BaseType?.GenericTypeArguments[0]);
             response.Tabs = GetAppTabs(app);
+            response.EnvironmentKey = dbApp.EnvironmentKey;
 
             return response;
         }
@@ -176,6 +182,8 @@ namespace Our.Shield.Core.Services
             _distributedCache.RefreshByJson(
                 Guid.Parse(Constants.DistributedCache.ConfigurationCacheRefresherId),
                 JsonConvert.SerializeObject(new ConfigurationCacheRefresherJsonModel(Enums.CacheRefreshType.Upsert, app.Key)));
+
+            await _journalService.WriteAppUpdateJournal(app.Id, app.Key, request.EnvironmentKey);
 
             return response;
         }

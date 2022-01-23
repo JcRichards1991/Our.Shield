@@ -26,6 +26,13 @@ namespace Our.Shield.Core.Models.Requests
         public Guid Key { get; set; }
 
         /// <summary>
+        /// The Environment's Key that the App's configuration is being updated for
+        /// </summary>
+        [NotEmpty]
+        [JsonProperty("environmentKey")]
+        public Guid EnvironmentKey { get; set; }
+
+        /// <summary>
         /// The new configuration
         /// </summary>
         [Required]
