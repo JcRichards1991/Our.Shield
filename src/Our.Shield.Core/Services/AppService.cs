@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Core.Logging;
+using Umbraco.Core.Services;
+using Umbraco.Web;
 using Umbraco.Web.Cache;
 
 namespace Our.Shield.Core.Services
@@ -28,9 +30,10 @@ namespace Our.Shield.Core.Services
         private readonly IJobService _jobService;
         private readonly IAppAccessor _appAccessor;
         private readonly IAppFactory _appFactory;
-        private readonly IJournalService _journalService;
-        private readonly DistributedCache _distributedCache;
+        private readonly IUmbracoContextAccessor _umbContextAccessor;
+        private readonly ILocalizedTextService _localizedTextService;
         private readonly ILogger _logger;
+        private readonly DistributedCache _distributedCache;
 
         /// <summary>
         /// Initializes a new instance of <see cref="AppService"/>
@@ -38,30 +41,34 @@ namespace Our.Shield.Core.Services
         /// <param name="jobService"><see cref="IJobService"/></param>
         /// <param name="appAccessor"><see cref="IAppAccessor"/></param>
         /// <param name="appFactory"><see cref="IAppFactory"/></param>
-        /// <param name="journalService"><see cref="IJournalService"/></param>
-        /// <param name="distributedCache"><see cref="DistributedCache"/></param>
+        /// <param name="umbContextAccessor"><see cref="IUmbracoContextAccessor"/></param>
+        /// <param name="localizedTextService"><see cref="ILocalizedTextService"/></param>
         /// <param name="logger"><see cref="ILogger"/></param>
+        /// <param name="distributedCache"><see cref="DistributedCache"/></param>
         public AppService(
             IJobService jobService,
             IAppAccessor appAccessor,
             IAppFactory appFactory,
-            IJournalService journalService,
-            DistributedCache distributedCache,
-            ILogger logger)
+            IUmbracoContextAccessor umbContextAccessor,
+            ILocalizedTextService localizedTextService,
+            ILogger logger,
+            DistributedCache distributedCache)
         {
             GuardClauses.NotNull(jobService, nameof(jobService));
             GuardClauses.NotNull(appAccessor, nameof(appAccessor));
             GuardClauses.NotNull(appFactory, nameof(appFactory));
-            GuardClauses.NotNull(journalService, nameof(journalService));
-            GuardClauses.NotNull(distributedCache, nameof(distributedCache));
+            GuardClauses.NotNull(umbContextAccessor, nameof(umbContextAccessor));
+            GuardClauses.NotNull(localizedTextService, nameof(localizedTextService));
             GuardClauses.NotNull(logger, nameof(logger));
+            GuardClauses.NotNull(distributedCache, nameof(distributedCache));
 
             _jobService = jobService;
             _appAccessor = appAccessor;
             _appFactory = appFactory;
-            _journalService = journalService;
-            _distributedCache = distributedCache;
+            _umbContextAccessor = umbContextAccessor;
+            _localizedTextService = localizedTextService;
             _logger = logger;
+            _distributedCache = distributedCache;
         }
 
         /// <inheritdoc />
@@ -183,7 +190,21 @@ namespace Our.Shield.Core.Services
                 Guid.Parse(Constants.DistributedCache.ConfigurationCacheRefresherId),
                 JsonConvert.SerializeObject(new ConfigurationCacheRefresherJsonModel(Enums.CacheRefreshType.Upsert, app.Key)));
 
-            await _journalService.WriteAppUpdateJournal(app.Id, app.Key, request.EnvironmentKey);
+            using (var umbContext = _umbContextAccessor.UmbracoContext)
+            {
+                var user = umbContext.Security.CurrentUser;
+                var appLocalisedName = _localizedTextService.Localize($"Shield.{app.Id}", "Name");
+                var localizedMessage = _localizedTextService.Localize(
+                    $"Shield.General/UpdateAppConfigurationMessage",
+                    new[]
+                    {
+                        user.Name,
+                        appLocalisedName,
+                        app.Key.ToString(),
+                        request.EnvironmentKey.ToString()
+                    });
+                _logger.Info<AppService>(localizedMessage);
+            }
 
             return response;
         }

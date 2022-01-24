@@ -10,7 +10,6 @@
 
   <area alias="dashboardTabs">
     <key alias="shieldEnvironmentsDashboard">Environments</key>
-    <key alias="shieldJournalDashboard">Journal</key>
   </area>
 
   <area alias="Shield.Dashboard.Environments">
@@ -19,13 +18,6 @@
     <key alias="TableHeaderName">Name</key>
     <key alias="TableHeaderEnabled">Enabled</key>
     <key alias="TableHeaderDomain">Domains</key>
-  </area>
-
-  <area alias="Shield.Dashboard.Journal">
-    <key alias="TableHeaderDate">Date</key>
-    <key alias="TableHeaderEnvironment">Environment</key>
-    <key alias="TableHeaderApp">App</key>
-    <key alias="TableHeaderMessage">Message</key>
   </area>
 
   <area alias="Shield.General">
@@ -47,7 +39,9 @@
     <key alias="SortEnvironmentError">Unable to re-order the environments, there was an error</key>
 
     <key alias="EnvironmentMessage">User %0% has %1% Environment %2%</key>
-    <key alias="UpdateAppConfigurationMessage">User %0% has updated App: %1% configuration</key>
+    <key alias="UpdateAppConfigurationMessage">User %0% has updated App: %1% with key: %2% configuration for Environment with key %3%</key>
+
+    <key alias="InvalidIpControlRules">Invalid IP Address(es): %0%; Unable to add these to the exception list for %1% for environment: %2%"</key>
   </area>
 
   <area alias="Shield.Properties">
@@ -82,8 +76,7 @@
 
   <area alias="Shield.Properties.Unauthorized">
     <key alias="Label">Unauthorized</key>
-    <key alias="Description">The page to redirect / rewrite the user to, when access is being denied</key>
-    <key alias="UmbracoUsersEnableLabel">Allow Authenticated Umbraco Users</key>
+    <key alias="Description">The page to redirect / rewrite the user too, when access is being denied</key>
     
     <key alias="PlayDeadOption">Play Dead</key>
     <key alias="RedirectOption">Redirect</key>
@@ -92,5 +85,7 @@
     <key alias="TransferTypeUrlOption">URL</key>
     <key alias="TransferTypeXPathOption">XPath</key>
     <key alias="TransferTypeContentPickerOption">Content Picker</key>
+
+    <key alias="InvalidUnauthorisedUrl">Invalid URL, please provide a valid relative URL i.e. /404</key>
   </area>
 </language>

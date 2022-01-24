@@ -29,10 +29,6 @@ namespace Our.Shield.Core.Data.Migrations.Install
                 .Table<Dtos.App>()
                 .Do();
 
-            Create
-                .Table<Dtos.Journal>()
-                .Do();
-
             Insert
                 .IntoTable(nameof(Shield) + "Environments")
                 .Row(new Dtos.Environment

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 
 namespace Our.Shield.Core.Mappers
@@ -20,10 +19,6 @@ namespace Our.Shield.Core.Mappers
 
             CreateMap<Models.Environment, Data.Dtos.Environment>()
                 .ForMember(dest => dest.Domains, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Domains)));
-
-            CreateMap<Models.Journal, Data.Dtos.Journal>()
-                .ForMember(x => x.Key, opt => opt.MapFrom(src => Guid.NewGuid()))
-                .ForMember(x => x.LastModifiedDateUtc, opt => opt.MapFrom(src => DateTime.UtcNow));
         }
     }
 }

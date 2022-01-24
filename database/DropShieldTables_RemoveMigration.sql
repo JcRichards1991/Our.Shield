@@ -1,9 +1,6 @@
 ﻿DELETE FROM [umbracoKeyValue]
 WHERE [key] like '%+Shield'
---AND name != 'ShieldMediaProtection'
-GO
-
-DROP TABLE [ShieldJournals]
+--AND [Key] Not Like '%MediaProtection%'
 GO
 
 DROP TABLE [ShieldApps]

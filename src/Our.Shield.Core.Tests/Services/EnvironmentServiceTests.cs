@@ -5,6 +5,8 @@ using Our.Shield.Core.Services;
 using System;
 using System.Threading.Tasks;
 using Umbraco.Core.Logging;
+using Umbraco.Core.Services;
+using Umbraco.Web;
 using Umbraco.Web.Cache;
 using Xunit;
 
@@ -20,10 +22,11 @@ namespace Our.Shield.Core.Tests.Services
                 Mock.Of<IJobService>(),
                 MockEnvironmentAccess(),
                 Mock.Of<IAppService>(),
-                Mock.Of<IJournalService>(),
-                Mock.Of<DistributedCache>(),
+                Mock.Of<IUmbracoContextAccessor>(),
+                Mock.Of<ILocalizedTextService>(),
                 Mock.Of<IMapper>(),
-                Mock.Of<ILogger>());
+                Mock.Of<ILogger>(),
+                Mock.Of<DistributedCache>());
         }
 
         private IEnvironmentAccessor MockEnvironmentAccess()
@@ -72,29 +75,6 @@ namespace Our.Shield.Core.Tests.Services
             var result = await _environmentService.Upsert(env);
 
             Assert.False(result.HasError());
-        }
-
-        [Fact]
-        public async Task Delete_ShouldThrowException_WhenEmptyGuid()
-        {
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _environmentService.Delete(Guid.Empty));
-        }
-
-        [Fact]
-        public async Task Delete_ShouldRemoveEnvironment_WhenNotNull()
-        {
-            var env = new Models.Requests.UpsertEnvironmentRequest
-            {
-                Name = "Test Environment",
-                Enabled = true,
-                Icon = "icon-settings"
-            };
-
-            await _environmentService.Upsert(env);
-
-            var response = await _environmentService.Delete(env.Key);
-
-            Assert.True(response.Successful);
         }
     }
 }

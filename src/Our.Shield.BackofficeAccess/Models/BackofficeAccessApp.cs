@@ -12,6 +12,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Services;
+using Umbraco.Web;
 
 namespace Our.Shield.BackofficeAccess.Models
 {
@@ -19,7 +22,6 @@ namespace Our.Shield.BackofficeAccess.Models
     /// 
     /// </summary>
     [AppEditor("/App_Plugins/Shield.BackofficeAccess/Views/BackofficeAccess.html?version=2.0.0")]
-    [AppJournal]
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
     {
         private readonly string _allowKey = Guid.NewGuid().ToString();
@@ -30,12 +32,16 @@ namespace Our.Shield.BackofficeAccess.Models
         /// <summary>
         /// Initializes a new instance of <see cref="BackofficeAccessApp"/>
         /// </summary>
-        /// <param name="journalService"><see cref="IJournalService"/></param>
+        /// <param name="umbContextAccessor"><see cref="IUmbracoContextAccessor"/></param>
+        /// <param name="localizedTextService"><see cref="ILocalizedTextService"/></param>
+        /// <param name="logger"><see cref="ILogger"/></param>
         /// <param name="ipAccessControlService"><see cref="IpAccessControlService"/></param>
         public BackofficeAccessApp(
-            IJournalService journalService,
+            IUmbracoContextAccessor umbContextAccessor,
+            ILocalizedTextService localizedTextService,
+            ILogger logger,
             IIpAccessControlService ipAccessControlService)
-            : base(journalService)
+            : base(umbContextAccessor, localizedTextService, logger)
         {
             _ipAccessControlService = ipAccessControlService;
         }
@@ -160,11 +166,23 @@ namespace Our.Shield.BackofficeAccess.Models
             var ipAddressesInvalid = _ipAccessControlService.InitIpAccessControl(config.IpAccessControl);
             if (ipAddressesInvalid.HasValues())
             {
-                JournalService.WriteAppJournal(
-                    job.App.Key,
-                    job.Environment.Key,
-                    "Shield.BackofficeAccess.General_InvalidIpControlRules",
-                    string.Join(", ", ipAddressesInvalid));
+                using (var umbContext = UmbContextAccessor.UmbracoContext)
+                {
+                    var localizedAppName = LocalizedTextService.Localize("Shield.BackofficeAccess", "Name");
+                    var localizedMessage = LocalizedTextService.Localize(
+                    "Shield.General_InvalidIpControlRules",
+                    new[]
+                    {
+                        string.Join(", ", ipAddressesInvalid),
+                        localizedAppName,
+                        job.Environment.Name,
+                    });
+
+                    Logger.Warn<BackofficeAccessApp>(
+                        localizedMessage + "App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        job.App.Key,
+                        job.Environment.Key);
+                }
             }
 
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, onDiscUmbracoRegex, 20300, (count, httpApp) =>
@@ -176,11 +194,22 @@ namespace Our.Shield.BackofficeAccess.Models
                     return new WatchResponse(Cycle.Continue);
                 }
 
-                JournalService.WriteAppJournal(
-                    job.App.Key,
-                    job.Environment.Key,
-                    "Shield.BackofficeAccess.General_DeniedAccess",
-                    httpApp.Context.Request.UserHostAddress);
+                using (var umbContext = UmbContextAccessor.UmbracoContext)
+                {
+                    var localizedAppName = LocalizedTextService.Localize("Shield.BackofficeAccess", "Name");
+                    var localizedMessage = LocalizedTextService.Localize(
+                    "Shield.BackofficeAccess_DeniedAccess",
+                    new[]
+                    {
+                        httpApp.Context.Request.UserHostAddress,
+                        job.Environment.Name
+                    });
+
+                    Logger.Warn<BackofficeAccessApp>(
+                        localizedMessage + "App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        job.App.Key,
+                        job.Environment.Key);
+                }
 
                 return new WatchResponse(config.TransferUrlControl);
             });

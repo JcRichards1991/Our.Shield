@@ -98,15 +98,20 @@ namespace Our.Shield.Core.Data.Accessors
             {
                 var sql = new Sql<ISqlContext>(scope.SqlContext)
                     .Delete<Dtos.App>()
-                    .Where<Dtos.App>(x => x.EnvironmentKey == key)
-                    .From<Dtos.App>()
-                    .Delete<Dtos.Environment>()
-                    .Where<Dtos.Environment>(x => x.Key == key)
-                    .From<Dtos.Environment>();
+                    .Where<Dtos.App>(x => x.EnvironmentKey == key);
 
                 var result = await scope.Database.ExecuteAsync(sql);
 
-                scope.Complete();
+                if (result == 1)
+                {
+                    sql = new Sql<ISqlContext>(scope.SqlContext)
+                        .Delete<Dtos.Environment>()
+                        .Where<Dtos.Environment>(x => x.Key == key);
+
+                    result = await scope.Database.ExecuteAsync(sql);
+
+                    scope.Complete();
+                }
 
                 return result == 1;
             }

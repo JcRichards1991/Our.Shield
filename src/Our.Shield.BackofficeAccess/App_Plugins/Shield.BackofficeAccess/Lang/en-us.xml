@@ -7,6 +7,8 @@
   <area alias="Shield.BackofficeAccess">
     <key alias="Name">Backoffice Access</key>
     <key alias="Description">Change the backoffice access URL and/or secure your backoffice access URL via IP restrictions</key>
+
+    <key alias="DeniedAccess">User with IP Address: %0%; tried to access the backoffice access URL. Access was denied. Environment: %2%</key>
   </area>
 
   <area alias="Shield.BackofficeAccess.Properties">
@@ -16,14 +18,8 @@
     <key alias="ExcludeUrlsDescription">Any URL(s) which should not be blocked. For Example /umbraco/surface</key>
   </area>
 
-  <area alias="Shield.BackofficeAccess.ErrorMessages">
+  <area alias="Shield.BackofficeAccess.Properties.Validation">
     <key alias="InvalidBackendAccessUrl">This can be any valid combination of letters and/or numbers, non-case sensitive. You cannot use white space, symbols or special characters</key>
-    <key alias="InvalidUnauthorisedUrl">Invalid URL, please provide a valid relative URL i.e. /404</key>
     <key alias="InvalidExcludeUrl">Invalid URL, please provide a valid relative URL. i.e. /umbraco/surface</key>
-  </area>
-
-  <area alias="Shield.BackofficeAccess.General">
-    <key alias="InvalidIpControlRules">Error: Invalid IP Address(es): %0%; unable to add these to the exception list"</key>
-    <key alias="DeniedAccess">User with IP Address: %0%; tried to access the backoffice access URL. Access was denied</key>
   </area>
 </language>

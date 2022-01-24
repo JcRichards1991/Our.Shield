@@ -1,4 +1,4 @@
-﻿<div class="editor-content" ng-controller="Shield.Controllers.EnvironmentEdit as vm" ng-init="vm.init()">
+﻿<div class="editor-content" ng-controller="Shield.Controllers.EnvironmentView as vm" ng-init="vm.init()">
 
   <umb-load-indicator ng-show="vm.loading"></umb-load-indicator>
 
@@ -11,15 +11,15 @@
     <umb-editor-view footer="true">
 
       <umb-editor-header name="vm.environment.name"
-                         name-locked="false"
+                         name-locked="!vm.tabs[1].active"
                          hide-description="true"
                          hide-alias="true"
                          icon="vm.environment.icon"
-                         navigation="vm.tabs">
+                         navigation="vm.navigation">
       </umb-editor-header>
 
       <umb-editor-container>
-        <div class="umb-group-panel" ng-repeat="tab in vm.tabs track by tab.id" ng-include="tab.view" ng-show="tab.active"></div>
+        <umb-editor-sub-views sub-views="vm.navigation"></umb-editor-sub-views>
       </umb-editor-container>
 
       <umb-editor-footer>
@@ -35,7 +35,8 @@
                       type="submit"
                       button-style="success"
                       shortcut="ctrl+s"
-                      state="vm.button.state">
+                      state="vm.button.state"
+                      ng-show="{{vm.tabs[1].active === true}}">
           </umb-button>
         </umb-editor-footer-content-right>
       </umb-editor-footer>

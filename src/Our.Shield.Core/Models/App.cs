@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
-using Our.Shield.Core.Services;
 using System;
 using System.Diagnostics;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Services;
+using Umbraco.Web;
 
 namespace Our.Shield.Core.Models
 {
@@ -13,15 +15,32 @@ namespace Our.Shield.Core.Models
         /// <summary>
         /// 
         /// </summary>
-        protected IJournalService JournalService;
+        protected readonly IUmbracoContextAccessor UmbContextAccessor;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected readonly ILocalizedTextService LocalizedTextService;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected readonly ILogger Logger;
 
         /// <summary>
         /// Initializes a new instance of <see cref="App{TC}"/>
         /// </summary>
-        /// <param name="journalService"></param>
-        public App(IJournalService journalService)
+        /// <param name="umbContextAccessor"><see cref="IUmbracoContextAccessor"/></param>
+        /// <param name="localizedTextService"><see cref="ILocalizedTextService"/></param>
+        /// <param name="logger"><see cref="ILogger"/></param>
+        public App(
+            IUmbracoContextAccessor umbContextAccessor,
+            ILocalizedTextService localizedTextService,
+            ILogger logger)
         {
-            JournalService = journalService;
+            UmbContextAccessor = umbContextAccessor;
+            LocalizedTextService = localizedTextService;
+            Logger = logger;
         }
 
         /// <inheritdoc />

@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Core.Logging;
+using Umbraco.Core.Services;
+using Umbraco.Web;
 using Umbraco.Web.Cache;
 
 namespace Our.Shield.Core.Services
@@ -25,10 +27,11 @@ namespace Our.Shield.Core.Services
         private readonly IJobService _jobService;
         private readonly IEnvironmentAccessor _environmentAccessor;
         private readonly IAppService _appService;
-        private readonly IJournalService _journalService;
-        private readonly DistributedCache _distributedCache;
+        private readonly IUmbracoContextAccessor _umbContextAccessor;
+        private readonly ILocalizedTextService _localizedTextService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
+        private readonly DistributedCache _distributedCache;
 
         /// <summary>
         /// Initializes a new instance of <see cref="EnvironmentService"/> class
@@ -36,34 +39,38 @@ namespace Our.Shield.Core.Services
         /// <param name="jobService"><see cref="IJobService"/></param>
         /// <param name="environmentAccessor"><see cref="IEnvironmentAccessor"/></param>
         /// <param name="appService"><see cref="IAppService"/></param>
-        /// <param name="journalService"><see cref="IJournalService"/></param>
-        /// <param name="distributedCache"><see cref="DistributedCache"/></param>
+        /// <param name="umbContextAccessor"><see cref="IUmbracoContextAccessor"/></param>
+        /// <param name="localizedTextService"><see cref="ILocalizedTextService"/></param>
         /// <param name="mapper"></param>
         /// <param name="logger"><see cref="ILogger"/></param>
+        /// <param name="distributedCache"><see cref="DistributedCache"/></param>
         public EnvironmentService(
             IJobService jobService,
             IEnvironmentAccessor environmentAccessor,
             IAppService appService,
-            IJournalService journalService,
-            DistributedCache distributedCache,
+            IUmbracoContextAccessor umbContextAccessor,
+            ILocalizedTextService localizedTextService,
             [Inject(nameof(Shield))] IMapper mapper,
-            ILogger logger)
+            ILogger logger,
+            DistributedCache distributedCache)
         {
             GuardClauses.NotNull(jobService, nameof(jobService));
             GuardClauses.NotNull(environmentAccessor, nameof(environmentAccessor));
             GuardClauses.NotNull(appService, nameof(appService));
-            GuardClauses.NotNull(journalService, nameof(journalService));
-            GuardClauses.NotNull(distributedCache, nameof(distributedCache));
+            GuardClauses.NotNull(umbContextAccessor, nameof(umbContextAccessor));
+            GuardClauses.NotNull(localizedTextService, nameof(localizedTextService));
             GuardClauses.NotNull(mapper, nameof(mapper));
             GuardClauses.NotNull(logger, nameof(logger));
+            GuardClauses.NotNull(distributedCache, nameof(distributedCache));
 
             _jobService = jobService;
             _environmentAccessor = environmentAccessor;
             _appService = appService;
-            _journalService = journalService;
-            _distributedCache = distributedCache;
+            _umbContextAccessor = umbContextAccessor;
+            _localizedTextService = localizedTextService;
             _mapper = mapper;
             _logger = logger;
+            _distributedCache = distributedCache;
         }
 
         /// <inherit />
@@ -82,48 +89,66 @@ namespace Our.Shield.Core.Services
 
             var response = new UpsertEnvironmentResponse();
 
-            if (environment.Key == default(Guid))
+            using (var umbContext = _umbContextAccessor.UmbracoContext)
             {
-                try
-                {
-                    response.Key = await _environmentAccessor.Create(environment);
-                    _appService.WriteEnvironmentApps(response.Key);
-                    await _journalService.WriteEnvironmentJournal(
-                        environment.Name,
-                        environment.Key,
-                        JournalEnvironmentAction.Created);
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error<EnvironmentService>(ex, "Error occurred inserting Environment");
+                var user = umbContext.Security.CurrentUser;
 
-                    response.ErrorCode = ErrorCode.EnviromentInsert;
-
-                    return response;
-                }
-            }
-            else
-            {
-                try
+                if (environment.Key == default(Guid))
                 {
-                    if (await _environmentAccessor.Update(environment))
+                    try
                     {
-                        response.Key = environment.Key;
+                        response.Key = await _environmentAccessor.Create(environment);
+                        _appService.WriteEnvironmentApps(response.Key);
 
-                        _jobService.Unregister(environment);
-                        await _journalService.WriteEnvironmentJournal(
-                            environment.Name,
-                            environment.Key, 
-                            JournalEnvironmentAction.Updated);
+                        var localizedMessage = _localizedTextService.Localize(
+                            $"Shield.General/EnvironmentMessage",
+                            new[]
+                            {
+                                user.Name,
+                                "created",
+                                environment.Name
+                            });
+                        _logger.Info<EnvironmentService>(localizedMessage);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error<EnvironmentService>(ex, "Error occurred inserting Environment");
+
+                        response.ErrorCode = ErrorCode.EnviromentInsert;
+
+                        return response;
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    _logger.Error<EnvironmentService>(ex, "Error occurred updating Environment");
+                    try
+                    {
+                        if (await _environmentAccessor.Update(environment))
+                        {
+                            response.Key = environment.Key;
 
-                    response.ErrorCode = ErrorCode.EnvironmentUpdate;
+                            _jobService.Unregister(environment);
 
-                    return response;
+                            var localizedMessage = _localizedTextService.Localize(
+                                $"Shield.General/EnvironmentMessage",
+                                new[]
+                                {
+                                    user.Name,
+                                    "updated",
+                                    environment.Name
+                                });
+                            _logger.Info<EnvironmentService>(localizedMessage);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error<EnvironmentService>(ex, "Error occurred updating Environment");
+
+                        response.ErrorCode = ErrorCode.EnvironmentUpdate;
+
+                        return response;
+                    }
                 }
             }
 
@@ -188,8 +213,6 @@ namespace Our.Shield.Core.Services
         /// <inherit />
         public async Task<DeleteEnvironmentResponse> Delete(Guid key)
         {
-            GuardClauses.NotNull(key, nameof(key));
-
             _distributedCache.RefreshByJson(
                 new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
                 JsonConvert.SerializeObject(new EnvironmentCacheRefresherJsonModel(CacheRefreshType.Remove, key)));

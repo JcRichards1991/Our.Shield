@@ -9,7 +9,7 @@ namespace Our.Shield.Core.Data.Migrations
     public class Shield2_0_0Migration : MigrationBase
     {
         /// <summary>
-        /// Initializes a new intace of <see cref="Shield2_0_0Migration"/> class
+        /// Initializes a new instance of <see cref="Shield2_0_0Migration"/> class
         /// </summary>
         /// <param name="context"></param>
         public Shield2_0_0Migration(IMigrationContext context)

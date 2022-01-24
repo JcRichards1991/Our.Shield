@@ -112,17 +112,6 @@ angular
                 environmentKey: environmentKey
               });
           },
-          getJournals: function (method, id, page, orderBy, orderByDirection) {
-            return shieldResourceHelper.get(
-              apiRoot + 'Journals',
-              {
-                method: method,
-                id: id,
-                page: page,
-                orderBy: orderBy,
-                orderByDirection: orderByDirection
-              });
-          },
           getView: function (id) {
             return shieldResourceHelper.get(apiRoot + 'View', { id: id });
           },

@@ -276,7 +276,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\AppJournalAttribute.cs" />
     <Compile Include="Attributes\AppTabAttribute.cs" />
     <Compile Include="Attributes\CustomAppTabAttribute.cs" />
     <Compile Include="Attributes\NotEmptyAttribute.cs" />
@@ -290,18 +289,16 @@
     <Compile Include="Composers\BootUpComposer.cs" />
     <Compile Include="Composers\StartUpComposer.cs" />
     <Compile Include="ContractResolvers\AppConfigurationShouldSerializeContractResolver.cs" />
+    <Compile Include="Dashboards\EnvironmentsDashboard.cs" />
     <Compile Include="Data\Accessors\Accessor.cs" />
     <Compile Include="Data\Accessors\AppAccessor.cs" />
     <Compile Include="Data\Accessors\EnvironmentAccessor.cs" />
     <Compile Include="Data\Accessors\IAppAccessor.cs" />
     <Compile Include="Data\Accessors\IEnvironmentAccessor.cs" />
-    <Compile Include="Data\Accessors\IJournalAccessor.cs" />
-    <Compile Include="Data\Accessors\JournalAccessor.cs" />
     <Compile Include="Data\Dtos\Dto.cs" />
     <Compile Include="Data\Dtos\IApp.cs" />
     <Compile Include="Data\Dtos\IDto.cs" />
     <Compile Include="Data\Dtos\IEnvironment.cs" />
-    <Compile Include="Data\Dtos\Journal.cs" />
     <Compile Include="Data\Migrations\InstallMigration.cs" />
     <Compile Include="Data\Dtos\App.cs" />
     <Compile Include="Data\Dtos\Environment.cs" />
@@ -311,7 +308,6 @@
     <Compile Include="Enums\CacheRefreshType.cs" />
     <Compile Include="Enums\Cycle.cs" />
     <Compile Include="Enums\IpAddressType.cs" />
-    <Compile Include="Enums\JournalEnvironmentAction.cs" />
     <Compile Include="Enums\TransferType.cs" />
     <Compile Include="Enums\UmbracoUrlType.cs" />
     <Compile Include="Extensions\IpAddressRangeExtensions.cs" />
@@ -342,12 +338,10 @@
     <Compile Include="Services\IEnvironmentService.cs" />
     <Compile Include="Services\IIpAccessControlService.cs" />
     <Compile Include="Services\IJobService.cs" />
-    <Compile Include="Services\IJournalService.cs" />
     <Compile Include="Services\IShieldService.cs" />
     <Compile Include="Services\IUmbracoContentService.cs" />
     <Compile Include="Services\IUmbracoMediaService.cs" />
     <Compile Include="Services\IUmbracoUrlService.cs" />
-    <Compile Include="Services\JournalService.cs" />
     <Compile Include="Services\ShieldService.cs" />
     <Compile Include="Settings\ShieldConfiguration.cs" />
     <Compile Include="Settings\IpAddressValidation.cs" />
@@ -380,8 +374,6 @@
     <Compile Include="Models\IEnvironment.cs" />
     <Compile Include="Models\IJob.cs" />
     <Compile Include="Models\IFrisk.cs" />
-    <Compile Include="Models\IJournal.cs" />
-    <Compile Include="Models\Journal.cs" />
     <Compile Include="Attributes\AppEditorAttribute.cs" />
     <Compile Include="Controllers\Api\ShieldApiController.cs" />
     <Compile Include="Controllers\Trees\ShieldTreeController.cs" />

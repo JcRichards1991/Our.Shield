@@ -82,123 +82,17 @@ angular
 
 angular
   .module('umbraco')
-  .controller('Shield.Controllers.JournalDashboard',
+  .controller('Shield.Controllers.EnvironmentEdit',
     [
       '$scope',
       '$routeParams',
-      '$location',
-      'listViewHelper',
-      'shieldResource',
-      function ($scope,
-        $routeParams,
-        $location,
-        listViewHelper,
-        shieldResource) {
-
-        var vm = this;
-
-        angular.extend(vm, {
-          id: $routeParams.id,
-          method: $routeParams.method,
-          loading: true,
-          items: [],
-          totalPages: 1,
-          pageNumber: 1,
-          type: null,
-          options: {
-            orderBy: 'datestamp',
-            orderDirection: 'desc'
-          },
-          columns: [
-            {
-              id: 0,
-              name: 'Date',
-              alias: 'datestamp',
-              allowSorting: true,
-              show: true
-            },
-            {
-              id: 1,
-              name: 'Environment',
-              alias: 'environment',
-              allowSorting: true,
-              show: true
-            },
-            {
-              id: 2,
-              name: 'App',
-              alias: 'app',
-              allowSorting: false,
-              show: true
-            },
-            {
-              id: 3,
-              name: 'Message',
-              alias: 'message',
-              allowSorting: false,
-              show: true
-            }
-          ],
-          init: function () {
-            if ($routeParams.method === undefined) {
-              vm.id = '';
-              vm.method = 'Environments';
-            }
-
-            vm.getListing();
-          },
-          editEnvironment: function (key) {
-            $location.path('/shield/shield/environment/' + key);
-          },
-          editApp: function (key) {
-            $location.path('/shield/shield/app/' + key);
-          },
-          nextPage: function (page) {
-            vm.pageNumber = page;
-            vm.getListing();
-          },
-          previousPage: function (page) {
-            vm.pageNumber = page;
-            vm.getListing();
-          },
-          gotoPage: function (page) {
-            vm.pageNumber = page;
-            vm.getListing();
-          },
-          isSortDirection: function (col, direction) {
-            return listViewHelper.setSortingDirection(col, direction, vm.options);
-          },
-          sort: function (field) {
-            vm.options.orderBySystemField = false;
-            listViewHelper.setSorting(field, allow, vm.options);
-            vm.getListing();
-          },
-          getListing: function () {
-            vm.loading = true;
-            shieldResource
-              .getJournals(vm.method, vm.id, vm.pageNumber, vm.options.orderBy, vm.options.orderDirection)
-              .then(function (response) {
-                vm.items = []; //response.items;
-                vm.totalPages = 0; //response.totalPages;
-                vm.loading = false;
-              });
-          }
-        });
-      }
-    ]
-  );
-
-angular
-  .module('umbraco')
-  .controller('Shield.Controllers.EnvironmentCreate',
-    [
-      '$scope',
       '$location',
       'localizationService',
       'navigationService',
       'notificationsService',
       'shieldResource',
       function ($scope,
+        $routeParams,
         $location,
         localizationService,
         navigationService,
@@ -207,6 +101,8 @@ angular
         var vm = this;
         angular.extend(vm,
           {
+            environmentKey: $routeParams.id,
+            editing: $routeParams.id !== undefined,
             button: {
               label: 'Create',
               labelKey: 'general_create',
@@ -220,13 +116,23 @@ angular
               continueProcessing: false
             },
             init: function () {
-              shieldResource
-                .getEnvironments()
-                .then(function (response) {
-                  //  TODO: determine from response.environments the correct sort order for this environment
-                  vm.environment.sortOrder = 20;
-                  vm.loading = false;
-                });
+              if (vm.editing) {
+                shieldResource
+                  .getEnvironment(vm.environmentKey)
+                  .then(function (response) {
+                    vm.environment = response.environment;
+                    vm.loading = false;
+                  });
+              }
+              else {
+                shieldResource
+                  .getEnvironments()
+                  .then(function (response) {
+                    //  TODO: determine from response.environments the correct sort order for this environment
+                    vm.environment.sortOrder = 20;
+                    vm.loading = false;
+                  });
+              }
             },
             loading: true,
             save: function ($form) {
@@ -238,7 +144,7 @@ angular
                 vm.button.state = 'error';
                 angular.element(event.target).addClass('show-validation');
 
-                localizationService.localize('Shield.General_CreateEnvironmentInvalid').then(function (value) {
+                localizationService.localize('Shield.General_' + vm.editing ? 'Edit' : 'Create' + 'EnvironmentInvalid').then(function (value) {
                   notificationsService.error(value);
                 });
                 return;
@@ -250,14 +156,14 @@ angular
                 .upsertEnvironment(vm.environment)
                 .then(function (response) {
                   if (response.errorCode === 0) {
-                    localizationService.localize('Shield.General_CreateEnvironmentSuccess').then(function (value) {
+                    localizationService.localize('Shield.General_' + vm.editing ? 'Edit' : 'Create' + 'EnvironmentSuccess').then(function (value) {
                       notificationsService.success(value);
                     });
                     navigationService.syncTree({ tree: "shield", path: ['-1', '-21'], forceReload: true, activate: true });
                     $location.path('/settings/shield/environment/' + response.key);
                   } else {
                     vm.button.state = 'error';
-                    localizationService.localize('Shield.General_CreateEnvironmentError').then(function (value) {
+                    localizationService.localize('Shield.General_' + vm.editing ? 'Edit' : 'Create' + 'EnvironmentError').then(function (value) {
                       notificationsService.error(value);
                     });
                   }
@@ -269,19 +175,13 @@ angular
 
 angular
   .module('umbraco')
-  .controller('Shield.Controllers.EnvironmentEdit',
+  .controller('Shield.Controllers.EnvironmentView',
     [
       '$scope',
       '$routeParams',
-      '$location',
-      'notificationsService',
-      'localizationService',
       'shieldResource',
       function ($scope,
         $routeParams,
-        $location,
-        notificationsService,
-        localizationService,
         shieldResource) {
         var vm = this;
         angular.extend(vm,
@@ -292,88 +192,60 @@ angular
             environment: null,
             path: [],
             ancestors: null,
-            apps: [],
-            //  TODO: Make tab labels localized
-            tabs: [
+            navigation: [
               {
-                id: 0,
                 name: 'Apps',
+                alias: 'apps',
                 icon: 'icon-thumbnail-list',
                 active: true,
                 view: '/App_Plugins/Shield/BackOffice/Views/AppListing.html?version=2.0.0',
               },
               {
-                id: 1,
                 name: 'Settings',
+                alias: 'settings',
                 icon: 'icon-settings',
                 active: false,
                 view: '/App_Plugins/Shield/BackOffice/Views/EditEnvironment.html?version=2.0.0',
-              },
-              {
-                id: 2,
-                name: 'Journal',
-                icon: 'icon-message',
-                active: false,
-                view: '/App_Plugins/Shield/BackOffice/Dashboards/Journal.html?version=2.0.0',
               }
             ],
-            button: {
-              label: 'Update',
-              labelKey: 'general_update',
-              state: 'init'
-            },
             init: function () {
               shieldResource
                 .getEnvironment(vm.environmentKey)
                 .then(function (environmentResponse) {
                   vm.environment = environmentResponse.environment;
-
-                  shieldResource
-                    .getEnvironmentApps(vm.environmentKey)
-                    .then(function (appsResponse) {
-                      vm.apps = appsResponse.apps;
-                      vm.loading = false;
-                    });
+                  vm.loading = false;
                 });
-            },
-            save: function ($form) {
-              vm.button.state = 'busy';
-              $scope.$broadcast('formSubmitting', { scope: $scope, action: 'publish' });
+            }
+          });
+      }
+    ]);
 
-              if ($form.$invalid) {
-                //validation error, don't save
-                vm.button.state = 'error';
-                angular.element(event.target).addClass('show-validation');
-
-                localizationService
-                  .localize('Shield.General_SaveEnvironmentInvalid')
-                  .then(function (value) {
-                    notificationsService.error(value);
-                  });
-                return;
-              }
-
-              $form.$setPristine();
-
+angular
+  .module('umbraco')
+  .controller('Shield.Controllers.EnvironmentAppsListing',
+    [
+      '$scope',
+      '$routeParams',
+      '$location',
+      'shieldResource',
+      function ($scope,
+        $routeParams,
+        $location,
+        shieldResource) {
+        var vm = this;
+        angular.extend(vm,
+          {
+            environmentKey: $routeParams.id,
+            editing: $routeParams.edit === 'true',
+            loading: true,
+            apps: [],
+            
+            init: function () {
               shieldResource
-                .upsertEnvironment(vm.environment)
-                .then(function (response) {
-                  if (response.errorCode === 0) {
-                    localizationService
-                      .localize('Shield.General_SaveEnvironmentSuccess')
-                      .then(function (value) {
-                        notificationsService.success(value);
-                        $location.path('/settings/shield/environment/' + key);
-                      });
-                  } else {
-                    localizationService
-                      .localize('Shield.General_SaveEnvironmentError')
-                      .then(function (value) {
-                        notificationsService.error(value);
-                      });
-
-                    vm.button.state = 'error';
-                  }
+                .getEnvironmentApps(vm.environmentKey)
+                .then(function (appsResponse) {
+                  vm.apps = appsResponse.apps;
+                  vm.loading = false;
                 });
             },
             appClick: function (key) {
@@ -466,7 +338,7 @@ angular
                       notificationsService.success(value);
                     });
 
-                    vm.button.state = 'busy';
+                    vm.button.state = 'init';
                   } else {
                     localizationService.localize('Shield.General_SaveConfigurationError').then(function (value) {
                       notificationsService.error(value);
@@ -985,17 +857,6 @@ angular
               apiRoot + 'GetEnvironmentApps',
               {
                 environmentKey: environmentKey
-              });
-          },
-          getJournals: function (method, id, page, orderBy, orderByDirection) {
-            return shieldResourceHelper.get(
-              apiRoot + 'Journals',
-              {
-                method: method,
-                id: id,
-                page: page,
-                orderBy: orderBy,
-                orderByDirection: orderByDirection
               });
           },
           getView: function (id) {

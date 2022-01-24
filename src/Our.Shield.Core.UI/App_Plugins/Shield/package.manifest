@@ -1,18 +1,4 @@
 ﻿{
-  "dashboards": [
-    {
-      "alias": "shieldEnvironmentsDashboard",
-      "view": "/App_Plugins/Shield/BackOffice/Dashboards/Environments.html?v=2.0.0",
-      "sections": [ "shield" ],
-      "weight": 1
-    },
-    {
-      "alias": "shieldJournalDashboard",
-      "view": "/App_Plugins/Shield/BackOffice/Dashboards/Journal.html?v=2.0.0",
-      "sections": [ "shield" ],
-      "weight": 2
-    }
-  ],
   "javascript": [
     "~/App_Plugins/Shield/BackOffice/Scripts/Shield.js?v=2.0.0"
   ]

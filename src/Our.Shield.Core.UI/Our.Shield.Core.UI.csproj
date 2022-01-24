@@ -245,8 +245,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="Transforms\Config\Dashboard.config.install.xdt" />
-    <None Include="Transforms\Config\Dashboard.config.uninstall.xdt" />
     <None Include="Transforms\Config\shield.config">
       <SubType>Designer</SubType>
     </None>
@@ -255,7 +253,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield\BackOffice\Dashboards\Environments.html" />
-    <Content Include="App_Plugins\Shield\BackOffice\Dashboards\Journal.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\ColorIndicator.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Controllers.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Directives.js" />
