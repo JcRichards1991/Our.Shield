@@ -1,17 +1,28 @@
-﻿<div class="editor-content" ng-controller="Shield.Controllers.EnvironmentView as vm" ng-init="vm.init()">
+﻿<div class="editor-content" ng-controller="Shield.Controllers.ViewEnvironment as vm" ng-init="vm.init()">
 
-  <umb-load-indicator ng-show="vm.loading"></umb-load-indicator>
+  <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
 
-  <form name="createEnvironmentForm"
-        ng-submit="vm.save(createEnvironmentForm)"
+  <form name="viewEnvironmentForm"
+        ng-submit="vm.save(viewEnvironmentForm)"
         novalidate
         val-form-manager
-        ng-hide="vm.loading">
+        ng-if="!vm.loading">
 
-    <umb-editor-view footer="true">
+    <umb-editor-view footer="vm.navigation[1].active">
 
-      <umb-editor-header name="vm.environment.name"
-                         name-locked="!vm.tabs[1].active"
+      <umb-editor-header ng-if="vm.navigation[0].active"
+                         name="vm.environment.name"
+                         name-locked="true"
+                         hide-description="true"
+                         hide-alias="true"
+                         hide-icon="false"
+                         icon="vm.environment.icon"
+                         navigation="vm.navigation">
+      </umb-editor-header>
+
+      <umb-editor-header ng-if="vm.navigation[1].active"
+                         name="vm.environment.name"
+                         name-locked="false"
                          hide-description="true"
                          hide-alias="true"
                          icon="vm.environment.icon"
@@ -22,13 +33,7 @@
         <umb-editor-sub-views sub-views="vm.navigation"></umb-editor-sub-views>
       </umb-editor-container>
 
-      <umb-editor-footer>
-        <umb-editor-footer-content-left>
-          <umb-breadcrumbs ancestors="vm.ancestors"
-                           entity-type="shield">
-          </umb-breadcrumbs>
-        </umb-editor-footer-content-left>
-
+      <umb-editor-footer ng-show="vm.navigation[1].active">
         <umb-editor-footer-content-right>
           <umb-button label="{{vm.button.label}}"
                       label-key="{{vm.button.labelKey}}"
@@ -36,7 +41,7 @@
                       button-style="success"
                       shortcut="ctrl+s"
                       state="vm.button.state"
-                      ng-show="{{vm.tabs[1].active === true}}">
+                      ng-show="vm.navigation[1].active">
           </umb-button>
         </umb-editor-footer-content-right>
       </umb-editor-footer>

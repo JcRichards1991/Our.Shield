@@ -82,7 +82,7 @@ angular
 
 angular
   .module('umbraco')
-  .controller('Shield.Controllers.EnvironmentEdit',
+  .controller('Shield.Controllers.CreateEnvironment',
     [
       '$scope',
       '$routeParams',
@@ -103,9 +103,10 @@ angular
           {
             environmentKey: $routeParams.id,
             editing: $routeParams.id !== undefined,
+            loading: true,
             button: {
               label: 'Create',
-              labelKey: 'general_create',
+              labelKey: 'actions_create',
               state: 'init'
             },
             environment: {
@@ -134,7 +135,6 @@ angular
                   });
               }
             },
-            loading: true,
             save: function ($form) {
               vm.button.state = 'busy';
               $scope.$broadcast('formSubmitting', { scope: $scope, action: 'publish' });
@@ -175,7 +175,7 @@ angular
 
 angular
   .module('umbraco')
-  .controller('Shield.Controllers.EnvironmentView',
+  .controller('Shield.Controllers.ViewEnvironment',
     [
       '$scope',
       '$routeParams',
@@ -187,25 +187,27 @@ angular
         angular.extend(vm,
           {
             environmentKey: $routeParams.id,
-            editing: $routeParams.edit === 'true',
             loading: true,
-            environment: null,
-            path: [],
-            ancestors: null,
+            environment: { domains: [] },
+            button: {
+              label: 'Save',
+              labelKey: 'buttons_save',
+              state: 'init'
+            },
             navigation: [
               {
                 name: 'Apps',
                 alias: 'apps',
                 icon: 'icon-thumbnail-list',
-                active: true,
                 view: '/App_Plugins/Shield/BackOffice/Views/AppListing.html?version=2.0.0',
+                active: true
               },
               {
                 name: 'Settings',
                 alias: 'settings',
                 icon: 'icon-settings',
-                active: false,
                 view: '/App_Plugins/Shield/BackOffice/Views/EditEnvironment.html?version=2.0.0',
+                active: false
               }
             ],
             init: function () {

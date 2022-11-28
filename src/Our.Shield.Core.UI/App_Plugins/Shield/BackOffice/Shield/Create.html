@@ -1,16 +1,14 @@
-﻿<div class="umb-dialog-body" ng-controller="Shield.Editors.Overview.Create as vm">
-    <div class="umb-pane">
-        <h5><localize key="create_createUnder">Create an item under</localize> {{vm.currentNode.name}}</h5>
-
-        <ul class="umb-actions umb-actions-child">
-            <li>
-                <a href="#" ng-click="vm.create()" prevent-default>
-                    <i class="large icon-firewall"></i>
-                    <span class="menu-label">
-                        Create New Environment
-                    </span>
-                </a>
-            </li>
-        </ul>
-    </div>
+﻿<div class="umbracoDialog umb-dialog-body" ng-controller="Shield.Editors.Overview.Create as vm">
+  <div class="umb-pane" ng-show="!model.creatingFolder &amp;&amp; !model.creatingDoctypeCollection" aria-hidden="false">
+    <ul class="umb-actions umb-actions-child">
+      <li data-element="action-documentType" class="umb-action" ng-hide="model.disableTemplates" aria-hidden="false">
+        <button type="button" ng-click="vm.create()" class="umb-action-link umb-outline btn-reset" umb-auto-focus="">
+          <i class="large icon icon-firewall" aria-hidden="true"></i>
+          <span class="menu-label">
+            <localize key="Shield.Dashboard.Environments_ButtonAddEnvironment" class="ng-isolate-scope">Add Environment</localize>
+          </span>
+        </button>
+      </li>
+    </ul>
+  </div>
 </div>

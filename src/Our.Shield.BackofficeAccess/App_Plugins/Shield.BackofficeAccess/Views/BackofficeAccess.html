@@ -7,6 +7,9 @@
         <div class="control-header">
           <label class="control-label">
             <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlLabel"></localize>
+            <span>
+              <strong class="umb-control-required">*</strong>
+            </span>
           </label>
           <small class="control-description">
             <localize key="Shield.BackofficeAccess.Properties_BackendAccessUrlDescription"></localize>
@@ -20,7 +23,19 @@
               <div class="umb-node-preview">
                 <div class="flex">
                   <div class="umb-node-preview__name">
-                    <input type="text" class="umb-property-editor umb-textstring textstring" ng-model="configuration.backendAccessUrl" />
+                    <input id="backendAccessUrl"
+                           name="backendAccessUrl"
+                           type="text"
+                           class="umb-property-editor umb-textstring textstring"
+                           ng-model="configuration.backendAccessUrl"
+                           ng-required="true"
+                           aria-required="true"
+                           aria-invalid="False"
+                           required="required" />
+
+                    <span ng-messages="BackofficeAccessForm.backendAccessUrl.$error" show-validation-on-submit>
+                      <span class="help-inline" ng-message="required">Required</span>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -51,13 +66,16 @@
             <div class="umb-property-editor umb-contentpicker">
 
               <div class="umb-node-preview" ng-repeat="excludeUrl in configuration.excludeUrls track by $index">
-                <div class="flex" style="min-width: 90%">
-                  <div class="umb-node-preview__name" style="width: 100%" ng-attr-title="{{excludeUrl}}">
-                    <input type="text" class="umb-property-editor umb-textstring textstring" ng-model="configuration.excludeUrls[$index]" />
+                <div class="flex" style="min-width: 50%;">
+                  <div class="umb-node-preview__name" ng-attr-title="{{excludeUrl}}">
+                    <input type="text"
+                           class="umb-property-editor umb-textstring textstring"
+                           ng-model="configuration.excludeUrls[$index]"/>
                   </div>
                 </div>
                 <div class="umb-node-preview__actions">
-                  <button type="button" class="umb-node-preview__action umb-node-preview__action--red" ng-click="configuration.excludeUrls.splice($index, 1)">
+                  <button type="button" class="umb-node-preview__action umb-node-preview__action--red"
+                          ng-click="configuration.excludeUrls.splice($index, 1)">
                     <localize key="general_remove"></localize>
                   </button>
                 </div>

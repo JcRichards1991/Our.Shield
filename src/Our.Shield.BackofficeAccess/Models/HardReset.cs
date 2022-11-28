@@ -143,10 +143,10 @@ namespace Our.Shield.BackofficeAccess.Models
 
             public string UmbracoPath
             {
-                get => _webConfig.XPathSelectElement("/configuration/appSettings/add[@key='umbracoPath']")?.Attribute("value")?.Value;
+                get => _webConfig.XPathSelectElement("/configuration/appSettings/add[@key='Umbraco.Core.Path']")?.Attribute("value")?.Value;
                 set
                 {
-                    var appKey = _webConfig?.XPathSelectElement("/configuration/appSettings/add[@key='umbracoPath']");
+                    var appKey = _webConfig?.XPathSelectElement("/configuration/appSettings/add[@key='Umbraco.Core.Path']");
                     var attr = appKey?.Attribute("value");
 
                     if (attr != null)
