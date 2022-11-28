@@ -18,7 +18,8 @@
       </umb-editor-header>
 
       <umb-editor-container>
-        <div class="umb-group-panel" ng-include="'/App_Plugins/Shield/BackOffice/Views/EditEnvironment.html?version=2.0.0'"></div>
+        <umb-editor-sub-views sub-views="vm.navigation"
+                              model="vm.environment"></umb-editor-sub-views>
       </umb-editor-container>
 
       <umb-editor-footer>

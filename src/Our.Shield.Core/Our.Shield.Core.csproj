@@ -323,6 +323,7 @@
     <Compile Include="Models\CacheRefresherJson\ICacheRefreshJsonModel.cs" />
     <Compile Include="Models\IpAccessRule.cs" />
     <Compile Include="Models\Requests\UpdateAppConfigurationRequest.cs" />
+    <Compile Include="Models\Requests\UpdateEnvironmentsSortOrderRequest.cs" />
     <Compile Include="Models\Requests\UpsertEnvironmentRequest.cs" />
     <Compile Include="Models\Responses\BaseResponse.cs" />
     <Compile Include="Models\Responses\DeleteEnvironmentResponse.cs" />

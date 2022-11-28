@@ -87,6 +87,7 @@ namespace Our.Shield.Core.UI
             {
                 menu.Items.Add<ActionNew>(Services.TextService, true);
                 menu.Items.Add<ActionSort>(Services.TextService, true);
+                menu.Items.Add(new RefreshNode(Services.TextService, true));
 
                 return menu;
             }

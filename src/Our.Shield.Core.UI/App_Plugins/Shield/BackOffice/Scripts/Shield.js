@@ -82,30 +82,32 @@ angular
 
 angular
   .module('umbraco')
-  .controller('Shield.Controllers.EnvironmentEdit',
+  .controller('Shield.Controllers.CreateEnvironment',
     [
       '$scope',
-      '$routeParams',
-      '$location',
       'localizationService',
-      'navigationService',
       'notificationsService',
       'shieldResource',
       function ($scope,
-        $routeParams,
-        $location,
         localizationService,
-        navigationService,
         notificationsService,
         shieldResource) {
         var vm = this;
         angular.extend(vm,
           {
-            environmentKey: $routeParams.id,
-            editing: $routeParams.id !== undefined,
+            loading: true,
+            navigation: [
+              {
+                name: 'Settings',
+                alias: 'settings',
+                icon: 'icon-settings',
+                view: '/App_Plugins/Shield/BackOffice/Views/EditEnvironment.html?version=2.0.0',
+                active: true
+              }
+            ],
             button: {
               label: 'Create',
-              labelKey: 'general_create',
+              labelKey: 'actions_create',
               state: 'init'
             },
             environment: {
@@ -116,25 +118,14 @@ angular
               continueProcessing: false
             },
             init: function () {
-              if (vm.editing) {
-                shieldResource
-                  .getEnvironment(vm.environmentKey)
-                  .then(function (response) {
-                    vm.environment = response.environment;
-                    vm.loading = false;
-                  });
-              }
-              else {
-                shieldResource
-                  .getEnvironments()
-                  .then(function (response) {
-                    //  TODO: determine from response.environments the correct sort order for this environment
-                    vm.environment.sortOrder = 20;
-                    vm.loading = false;
-                  });
-              }
+              shieldResource
+                .getEnvironments()
+                .then(function (response) {
+                  //  TODO: determine from response.environments the correct sort order for this environment
+                  vm.environment.sortOrder = 20;
+                  vm.loading = false;
+                });
             },
-            loading: true,
             save: function ($form) {
               vm.button.state = 'busy';
               $scope.$broadcast('formSubmitting', { scope: $scope, action: 'publish' });
@@ -144,7 +135,7 @@ angular
                 vm.button.state = 'error';
                 angular.element(event.target).addClass('show-validation');
 
-                localizationService.localize('Shield.General_' + vm.editing ? 'Edit' : 'Create' + 'EnvironmentInvalid').then(function (value) {
+                localizationService.localize('Shield.General_CreateEnvironmentInvalid').then(function (value) {
                   notificationsService.error(value);
                 });
                 return;
@@ -155,18 +146,14 @@ angular
               shieldResource
                 .upsertEnvironment(vm.environment)
                 .then(function (response) {
-                  if (response.errorCode === 0) {
-                    localizationService.localize('Shield.General_' + vm.editing ? 'Edit' : 'Create' + 'EnvironmentSuccess').then(function (value) {
-                      notificationsService.success(value);
+                  localizationService
+                    .localize('Shield.General_CreateEnvironment' + (response.errorCode === 0 ? 'Success' : 'Error'))
+                    .then(function (value) {
+                      vm.button.state = 'init';
+                      response.errorCode === 0
+                        ? notificationsService.success(value)
+                        : notificationsService.error(value);
                     });
-                    navigationService.syncTree({ tree: "shield", path: ['-1', '-21'], forceReload: true, activate: true });
-                    $location.path('/settings/shield/environment/' + response.key);
-                  } else {
-                    vm.button.state = 'error';
-                    localizationService.localize('Shield.General_' + vm.editing ? 'Edit' : 'Create' + 'EnvironmentError').then(function (value) {
-                      notificationsService.error(value);
-                    });
-                  }
                 });
             }
           });
@@ -175,37 +162,43 @@ angular
 
 angular
   .module('umbraco')
-  .controller('Shield.Controllers.EnvironmentView',
+  .controller('Shield.Controllers.ViewEnvironment',
     [
       '$scope',
       '$routeParams',
+      'localizationService',
+      'notificationsService',
       'shieldResource',
       function ($scope,
         $routeParams,
+        localizationService,
+        notificationsService,
         shieldResource) {
         var vm = this;
         angular.extend(vm,
           {
             environmentKey: $routeParams.id,
-            editing: $routeParams.edit === 'true',
             loading: true,
-            environment: null,
-            path: [],
-            ancestors: null,
+            environment: { domains: [] },
+            button: {
+              label: 'Save',
+              labelKey: 'buttons_save',
+              state: 'init'
+            },
             navigation: [
               {
                 name: 'Apps',
                 alias: 'apps',
                 icon: 'icon-thumbnail-list',
-                active: true,
                 view: '/App_Plugins/Shield/BackOffice/Views/AppListing.html?version=2.0.0',
+                active: true
               },
               {
                 name: 'Settings',
                 alias: 'settings',
                 icon: 'icon-settings',
-                active: false,
                 view: '/App_Plugins/Shield/BackOffice/Views/EditEnvironment.html?version=2.0.0',
+                active: false
               }
             ],
             init: function () {
@@ -214,6 +207,36 @@ angular
                 .then(function (environmentResponse) {
                   vm.environment = environmentResponse.environment;
                   vm.loading = false;
+                });
+            },
+            save: function ($form) {
+              vm.button.state = 'busy';
+              $scope.$broadcast('formSubmitting', { scope: $scope, action: 'publish' });
+
+              if ($form.$invalid) {
+                //validation error, don't save
+                vm.button.state = 'error';
+                angular.element(event.target).addClass('show-validation');
+
+                localizationService.localize('Shield.General_EditEnvironmentInvalid').then(function (value) {
+                  notificationsService.error(value);
+                });
+                return;
+              }
+
+              $form.$setPristine();
+
+              shieldResource
+                .upsertEnvironment(vm.environment)
+                .then(function (response) {
+                  localizationService
+                    .localize('Shield.General_EditEnvironment' + (response.errorCode === 0 ? 'Success' : 'Error'))
+                    .then(function (value) {
+                      vm.button.state = 'init';
+                      response.errorCode === 0
+                        ? notificationsService.success(value)
+                        : notificationsService.error(value);
+                    });
                 });
             }
           });
@@ -448,39 +471,41 @@ angular
 
         angular.extend(vm, {
           loading: true,
-          sorting: false,
-          sortingComplete: false,
-          environments: null,
+          environments: [],
+          button: {
+            state: 'init'
+          },
           init: function () {
             shieldResource.getEnvironments().then(function (response) {
-              vm.environments = response;
-              vm.environments.splice(vm.environments.length - 1, 1);
+              angular.forEach(response.environments, function (value) {
+                if (value.key != '705b8967-070e-44c8-805d-57e0f46af779') {
+                  vm.environments.push(value);
+                }
+              })
               vm.loading = false;
             });
           },
           save: function () {
-            if (vm.sorting) {
-              return;
-            }
-
-            vm.sorting = true;
-
+            vm.loading = true;
+            vm.button.state = 'busy';
             for (var i = 0; i < vm.environments.length; i++) {
               vm.environments[i].sortOrder = i;
             }
 
             shieldResource.setEnvironmentsSortOrder(vm.environments)
               .then(function (response) {
-                if (response === true || response === 'true') {
-                  vm.sortingComplete = true;
-                  vm.sorting = false;
-                } else {
+                if (response.errorCode !== 0) {
                   localizationService.localize('Shield.General_SortEnvironmentError')
                     .then(function (value) {
                       notificationsService.error(value);
+                      vm.button.state = 'error';
+                      vm.loading = false;
                     });
                 }
-                vm.sorting = false;
+                else {
+                  vm.button.state = 'init';
+                  vm.loading = false;
+                }
               });
           }
         });
@@ -873,7 +898,7 @@ angular
               });
           },
           setEnvironmentsSortOrder: function (environments) {
-            return shieldResourceHelper.post(apiRoot + 'SortEnvironments', environments);
+            return shieldResourceHelper.post(apiRoot + 'SortEnvironments', { environments: environments });
           },
           upsertEnvironment: function (environment) {
             return shieldResourceHelper.post(apiRoot + 'UpsertEnvironment', environment);

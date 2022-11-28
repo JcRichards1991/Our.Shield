@@ -30,7 +30,8 @@
       </umb-editor-header>
 
       <umb-editor-container>
-        <umb-editor-sub-views sub-views="vm.navigation"></umb-editor-sub-views>
+        <umb-editor-sub-views sub-views="vm.navigation"
+                              model="vm.environment"></umb-editor-sub-views>
       </umb-editor-container>
 
       <umb-editor-footer ng-show="vm.navigation[1].active">

@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Models.Requests;
@@ -8,7 +7,6 @@ using Our.Shield.Core.Services;
 using Our.Shield.Shared;
 using Our.Shield.Shared.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -39,6 +37,7 @@ namespace Our.Shield.Core.Controllers.Api
     public class ShieldApiController : UmbracoAuthorizedApiController
     {
         private readonly IEnvironmentService _environmentService;
+
         private readonly IAppService _appService;
 
         /// <summary>
@@ -91,47 +90,16 @@ namespace Our.Shield.Core.Controllers.Api
         /// <summary>
         /// Sorts the environments
         /// </summary>
-        /// <param name="environmentsJson">Collection of environments</param>
+        /// <param name="request"><see cref="UpdateEnvironmentsSortOrderRequest"/></param>
         /// <returns></returns>
         [HttpPost]
-        public bool SortEnvironments([FromBody] IEnumerable<JObject> environmentsJson)
+        public async Task<IHttpActionResult> SortEnvironments(UpdateEnvironmentsSortOrderRequest request)
         {
-            //  TODO: Re-implement
+            var response = await _environmentService.SortEnvironments(request);
 
-            throw new NotImplementedException();
-
-            //var json = environmentsJson.ToList();
-            //if (!json.Any())
-            //{
-            //    return false;
-            //}
-
-            //var environments = json.Select(x => JsonConvert.DeserializeObject<Models.Environment>(x.ToString(), new DomainConverter()));
-            //var oldEnvironments = JobService.Instance.Environments.Keys;
-
-            //foreach (var environment in environments)
-            //{
-            //    if (!oldEnvironments.Any(x => x.Id.Equals(environment.Id) && !x.SortOrder.Equals(environment.SortOrder)))
-            //        continue;
-
-            //    if (!EnvironmentService.Instance.Write(environment))
-            //    {
-            //        return false;
-            //    }
-
-            //    if (!JobService.Instance.Unregister(environment))
-            //    {
-            //        return false;
-            //    }
-
-            //    JobService.Instance.Register(environment);
-            //}
-
-            //_distributedCache.RefreshByJson(
-            //    Guid.Parse(Constants.DistributedCache.EnvironmentCacheRefresherId),
-            //    GetJsonModel(new EnvironmentCacheRefresherJsonModel(Enums.CacheRefreshType.ReOrder, Guid.Empty)));
-
-            //return true;
+            return ApiResponse(
+                response,
+                response.HasError() ? HttpStatusCode.BadRequest : HttpStatusCode.OK);
         }
 
         /// <summary>

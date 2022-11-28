@@ -1,54 +1,51 @@
-﻿<div ng-controller="Shield.Editors.Overview.Sort as vm" ng-init="vm.init()">
-    <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
-    <div class="umb-dialog-body with-footer shield-sort">
-        <div class="umb-pane " style="">
-            <div class="control-group umb-control-group" style="">
+﻿<div ng-controller="Shield.Editors.Overview.Sort as vm" ng-init="vm.init()" ng-cloak>
 
-                <div style="margin-bottom: 35px;" ng-show="vm.sorting">
-                    <div class="notice">
-                        <p>Please wait. Enviornments are being sorted, this can take a while.<br> <br> Do not close this window during sorting</p>
-                    </div>
+  <div class="umb-dialog-body with-footer sort-order">
 
-                    <div class="umb-loader-wrapper">
-                        <div class="umb-loader">
+    <div class="umb-pane">
 
-                        </div>
-                    </div>
-                </div>
+      <div ng-if="vm.error" class="alert alert-error">
+        <p>{{vm.error.errorMsg}}</p>
+      </div>
 
-                <div class="success" ng-show="vm.sortingComplete">
-                    <p>
-                        Sorting complete. To see the new environment order, please refresh the Environments
-                    </p>
-                </div>
+      <umb-load-indicator ng-show="vm.loading">
+      </umb-load-indicator>
 
-                <div id="sortArea" ng-show="!vm.sorting && !vm.sortingComplete">
-                    <p class="help">
-                        Drag the environment up or down below to set how they should be arranged.
-                    </p>
+      <div ng-if="!vm.loading">
+        <p class="abstract"><localize key="sort_sortHelp">Drag the different items up or down below to set how they should be arranged. Or click the column headers to sort the entire collection of items</localize></p>
+        <table class="table table-condensed table-sortable">
+          <thead>
+            <tr>
+              <th colspan="2">
+                <button type="button" class="btn-reset" ng-click="vm.sort('name')">
+                  <strong><localize key="general_name">Name</localize></strong>
+                  <span ng-if="vm.sortOrder.column === 'name'" aria-hidden="true">
+                    <i ng-class="{ 'icon-navigation-up': vm.sortOrder.reverse, 'icon-navigation-down': !vm.sortOrder.reverse }"></i>
+                  </span>
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody ui-sortable="vm.environments" ng-model="vm.environments">
+            <tr ng-repeat="environment in vm.environments track by environment.key">
+              <td class="tree-icon"><i class="{{ environment.icon }}"></i></td>
+              <td>{{ environment.name }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-                    <div class="sortableFrame">
-                        <table class="sortableNodes">
-                            <thead>
-                                <tr>
-                                    <th class="header">Environment</th>
-                                    <th class="nowrap header">Sort Order</th>
-                                </tr>
-                            </thead>
-                            <tbody ui:sortable ng-model="vm.environments">
-                                <tr ng-repeat="environment in vm.environments track by $index" id="environment_{{environment.id}}">
-                                    <td>{{environment.name}}</td>
-                                    <td style="text-align: center;">{{environment.sortOrder}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </div>
     </div>
-    <div class="umb-dialog-footer btn-toolbar umb-btn-toolbar">
-        <input type="button" class="btn btn-primary" value="Save" ng-click="vm.save()">
-    </div>
+
+  </div>
+
+  <div class="umb-dialog-footer btn-toolbar umb-btn-toolbar">
+    <umb-button type="button"
+                action="vm.save()"
+                state="vm.saveButtonState"
+                button-style="success"
+                label-key="buttons_save">
+    </umb-button>
+  </div>
+
 </div>

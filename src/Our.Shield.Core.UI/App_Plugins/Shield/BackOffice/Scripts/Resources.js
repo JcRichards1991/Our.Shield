@@ -126,7 +126,7 @@ angular
               });
           },
           setEnvironmentsSortOrder: function (environments) {
-            return shieldResourceHelper.post(apiRoot + 'SortEnvironments', environments);
+            return shieldResourceHelper.post(apiRoot + 'SortEnvironments', { environments: environments });
           },
           upsertEnvironment: function (environment) {
             return shieldResourceHelper.post(apiRoot + 'UpsertEnvironment', environment);

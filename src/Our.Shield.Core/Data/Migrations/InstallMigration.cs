@@ -33,7 +33,7 @@ namespace Our.Shield.Core.Data.Migrations.Install
                 .IntoTable(nameof(Shield) + "Environments")
                 .Row(new Dtos.Environment
                 {
-                    Key = Guid.NewGuid(),
+                    Key = new Guid("705b8967-070e-44c8-805d-57e0f46af779"),
                     LastModifiedDateUtc = DateTime.UtcNow,
                     Name = "Default",
                     Icon = "icon-globe",

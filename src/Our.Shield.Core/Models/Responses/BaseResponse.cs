@@ -1,13 +1,13 @@
 ﻿using Our.Shield.Shared.Enums;
+using Our.Shield.Shared.Extensions;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Our.Shield.Core.Models.Responses
 {
     /// <summary>
     /// Base Abstract class for Responses
     /// </summary>
-    public abstract class BaseResponse
+    public class BaseResponse
     {
         /// <summary>
         /// The Error Code if an error occurred
@@ -17,7 +17,7 @@ namespace Our.Shield.Core.Models.Responses
         /// <summary>
         /// Any Warnings if any occurred
         /// </summary>
-        public IList<string> Warnings { get; set; }
+        public IList<string> Warnings { get; set; } = new List<string>();
 
         /// <summary>
         /// Checks whether an error has occurred
@@ -29,6 +29,6 @@ namespace Our.Shield.Core.Models.Responses
         /// Checks if there are any warnings
         /// </summary>
         /// <returns>True if there are <see cref="Warnings"/>, otherwise, False</returns>
-        public bool HasWarnings() => Warnings?.Any() == true;
+        public bool HasWarnings() => Warnings.None();
     }
 }

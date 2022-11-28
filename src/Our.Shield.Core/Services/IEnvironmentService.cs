@@ -36,5 +36,12 @@ namespace Our.Shield.Core.Services
         /// <param name="Key">The key of the environment to delete</param>
         /// <returns></returns>
         Task<DeleteEnvironmentResponse> Delete(Guid Key);
+
+        /// <summary>
+        /// Sorts the environments in the given order
+        /// </summary>
+        /// <param name="request"><see cref="UpdateEnvironmentsSortOrderRequest"/></param>
+        /// <returns></returns>
+        Task<BaseResponse> SortEnvironments(UpdateEnvironmentsSortOrderRequest request);
     }
 }

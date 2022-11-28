@@ -1,4 +1,4 @@
-﻿<div class="umb-editor-sub-views" ng-controller="Shield.Controllers.EnvironmentEdit as vm" ng-init="vm.init()">
+﻿<div class="umb-editor-sub-views">
   <div class="umb-editor-sub-view sub-view-Content">
     <div class="umb-editor-sub-view__content">
       <div class="form-horizontal">
@@ -22,8 +22,8 @@
                     <div class="umb-property-editor db">
                       <div class="umb-property-editor umb-boolean">
                         <umb-toggle input-id="Enabled"
-                                    checked="vm.environment.enabled"
-                                    on-click="vm.environment.enabled = !vm.environment.enabled"
+                                    checked="model.enabled"
+                                    on-click="model.enabled = !model.enabled"
                                     show-labels="false"
                                     label-position="right"
                                     label-on="true"
@@ -53,7 +53,7 @@
                   <div class="controls">
                     <div class="umb-property-editor db">
                       <div class="umb-property-editor umb-text">
-                        <input type="text" id="colorIndicator" name="colorIndicator" ng-model="vm.environment.colorIndicator" required ng-trim="false" ng-pattern="/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i" />
+                        <input type="text" id="colorIndicator" name="colorIndicator" ng-model="model.colorIndicator" required ng-trim="false" ng-pattern="/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i" />
                         <span class="help-inline" val-msg-for="colorIndicator" val-toggle-msg="required">
                           <localize key="Shield.Properties.Validation_Required">Required</localize>
                         </span>
@@ -68,7 +68,7 @@
               </div>
             </div>-->
 
-            <div ng-if="vm.id !== '1'">
+            <div ng-if="vm.key !== '705b8967-070e-44c8-805d-57e0f46af779' && model.enabled">
 
               <div class="umb-property">
                 <div class="control-group umb-control-group">
@@ -87,8 +87,8 @@
                       <div class="umb-property-editor db">
                         <div class="umb-property-editor umb-boolean">
                           <umb-toggle input-id="ContinueProcessing"
-                                      checked="vm.environment.continueProcessing"
-                                      on-click="vm.environment.continueProcessing = !vm.environment.continueProcessing"
+                                      checked="model.continueProcessing"
+                                      on-click="model.continueProcessing = !model.continueProcessing"
                                       show-labels="false"
                                       label-position="right"
                                       label-on="true"
@@ -119,14 +119,14 @@
                       <div class="umb-property-editor db">
                         <div class="umb-property-editor umb-contentpicker">
 
-                          <div class="umb-node-preview" ng-repeat="domain in vm.environment.domains track by $index">
+                          <div class="umb-node-preview" ng-repeat="domain in model.domains track by $index">
                             <div class="flex" style="min-width: 90%">
                               <div class="umb-node-preview__name" style="width: 100%" ng-attr-title="{{domain.fullyQualifiedUrl}}">
                                 <input type="text" class="umb-property-editor umb-textstring textstring" ng-model="domain.fullyQualifiedUrl" />
                               </div>
                             </div>
                             <div class="umb-node-preview__actions">
-                              <button type="button" class="umb-node-preview__action umb-node-preview__action--red" ng-click="vm.environment.domains.splice($index, 1)">
+                              <button type="button" class="umb-node-preview__action umb-node-preview__action--red" ng-click="model.domains.splice($index, 1)">
                                 <localize key="general_remove"></localize>
                               </button>
                             </div>
@@ -134,7 +134,7 @@
 
                           <button type="button"
                                   class="umb-node-preview-add"
-                                  ng-click="vm.environment.domains.push({fullyQualifiedUrl: ''})">
+                                  ng-click="model.domains.push({fullyQualifiedUrl: ''})">
                             <localize key="general_add"></localize>
                           </button>
 

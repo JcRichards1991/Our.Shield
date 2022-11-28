@@ -9,8 +9,10 @@ using Our.Shield.Core.Models.Requests;
 using Our.Shield.Core.Models.Responses;
 using Our.Shield.Shared;
 using Our.Shield.Shared.Enums;
+using Our.Shield.Shared.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
@@ -231,6 +233,75 @@ namespace Our.Shield.Core.Services
             }
 
             return response;
+        }
+
+        /// <inherit />
+        public async Task<BaseResponse> SortEnvironments(UpdateEnvironmentsSortOrderRequest request)
+        {
+            if (request == null || request.Environments.None())
+            {
+                return new BaseResponse
+                {
+                    ErrorCode = ErrorCode.None
+                };
+            }
+
+            var oldEnvironments = await Get();
+
+            using (var umbContext = _umbContextAccessor.UmbracoContext)
+            {
+                var user = umbContext.Security.CurrentUser;
+
+                foreach (var environment in request.Environments)
+                {
+                    if (!oldEnvironments.Environments.Any(x => x.Key.Equals(environment.Key) && !x.SortOrder.Equals(environment.SortOrder)))
+                    {
+                        continue;
+                    }
+
+                    try
+                    {
+                        if (await _environmentAccessor.Update(environment))
+                        {
+                            _jobService.Unregister(environment);
+
+                            var localizedMessage = _localizedTextService.Localize(
+                                $"Shield.General/EnvironmentMessage",
+                                new[]
+                                {
+                                    user.Name,
+                                    "updated",
+                                    environment.Name
+                                });
+                            _logger.Info<EnvironmentService>(localizedMessage);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error<EnvironmentService>(ex, "Error occurred updating Environment");
+
+                        return new BaseResponse
+                        {
+                            ErrorCode = ErrorCode.EnvironmentUpdate
+                        };
+                    }
+
+                    var appsResult = await _appService.GetApps(environment.Key);
+                    foreach (var app in appsResult.Apps)
+                    {
+                        _jobService.Register(environment, app.Key, app.Value);
+                    }
+                }
+            }
+
+            _distributedCache.RefreshByJson(
+                new Guid(Constants.DistributedCache.EnvironmentCacheRefresherId),
+                JsonConvert.SerializeObject(new EnvironmentCacheRefresherJsonModel(CacheRefreshType.ReOrder, Guid.Empty)));
+
+            return new BaseResponse
+            {
+                ErrorCode = ErrorCode.None
+            };
         }
     }
 }
