@@ -729,12 +729,14 @@ angular
 
             angular.extend(scope, {
               contentPickerProperty: {
-                view: 'contentpicker',
+                editor: 'Umbraco.ContentPicker',
+                view: '/umbraco/views/propertyeditors/contentpicker/contentpicker.html',
                 alias: 'contentPicker',
                 currentNode: {
                   path: '-1'
                 },
                 config: {
+                  idType: 'udi',
                   multiPicker: '0',
                   entityType: 'Document',
                   startNode: {
@@ -761,7 +763,7 @@ angular
                   break;
 
                 case 2:
-                  scope.transferUrlControl.url.value = scope.contentPickerProperty.url.mntpValue;
+                  scope.transferUrlControl.url.value = scope.contentPickerProperty.value;
                   break;
               }
             });
