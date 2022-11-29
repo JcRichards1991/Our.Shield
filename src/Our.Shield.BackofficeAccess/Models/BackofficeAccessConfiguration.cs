@@ -9,7 +9,7 @@ namespace Our.Shield.BackofficeAccess.Models
     /// <summary>
     /// The Backoffice Access Configuration
     /// </summary>
-    [DebuggerDisplay("Enable: {Enabled}; Backend Access Url: {BackendAccessUrl}")]
+    [DebuggerDisplay("Enable: {Enabled}; Backend Access URL: {BackendAccessUrl}")]
     [JsonObject(MemberSerialization.OptIn)]
     public class BackofficeAccessConfiguration : AppConfiguration
     {
@@ -20,6 +20,9 @@ namespace Our.Shield.BackofficeAccess.Models
         [SingleEnvironment]
         public string BackendAccessUrl { get; set; }
 
+        /// <summary>
+        /// URLs to exclude from the backoffice access rules. i.e. ~/umbraco/surface
+        /// </summary>
         [JsonProperty("excludeUrls")]
         [SingleEnvironment]
         public IEnumerable<string> ExcludeUrls { get; set; }

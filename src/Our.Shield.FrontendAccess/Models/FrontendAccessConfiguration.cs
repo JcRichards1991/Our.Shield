@@ -3,6 +3,9 @@ using Our.Shield.Core.Models;
 
 namespace Our.Shield.FrontendAccess.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class FrontendAccessConfiguration : AppConfiguration
     {
         /// <summary>
@@ -14,13 +17,13 @@ namespace Our.Shield.FrontendAccess.Models
         /// <summary>
         /// Client access
         /// </summary>
-        [JsonProperty("ipAccessRules")]
-        public IpAccessControl IpAccessRules { get; set; }
+        [JsonProperty("ipAccessControl")]
+        public IpAccessControl IpAccessControl { get; set; }
 
         /// <summary>
         /// Where to send unauthorized users too
         /// </summary>
-        [JsonProperty("unauthorized")]
-        public TransferUrl Unauthorized { get; set; }
+        [JsonProperty("transferUrlControl")]
+        public TransferUrlControl TransferUrlControl { get; set; }
     }
 }

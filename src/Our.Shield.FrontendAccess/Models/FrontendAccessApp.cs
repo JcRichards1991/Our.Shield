@@ -1,26 +1,39 @@
 ﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Enums;
-using Our.Shield.Core.Helpers;
 using Our.Shield.Core.Models;
 using Our.Shield.Core.Operation;
 using Our.Shield.Core.Services;
+using Our.Shield.Shared.Extensions;
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
+using Umbraco.Web;
 
 namespace Our.Shield.FrontendAccess.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [AppEditor("/App_Plugins/Shield.FrontendAccess/Views/FrontendAccess.html?version=2.0.0")]
-    [AppJournal]
     public class FrontendAccessApp : App<FrontendAccessConfiguration>
     {
-        private readonly IpAccessControlService _ipAccessControlService;
+        private readonly IIpAccessControlService _ipAccessControlService;
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="FrontendAccessApp"/>
+        /// </summary>
+        /// <param name="umbContextAccessor"><see cref="IUmbracoContextAccessor"/></param>
+        /// <param name="localizedTextService"><see cref="ILocalizedTextService"/></param>
+        /// <param name="logger"><see cref="ILogger"/></param>
+        /// <param name="ipAccessControlService"><see cref="IIpAccessControlService"/></param>
         public FrontendAccessApp(
+            IUmbracoContextAccessor umbContextAccessor,
             ILocalizedTextService localizedTextService,
-            IpAccessControlService ipAccessControlService) : base(localizedTextService)
+            ILogger logger,
+            IIpAccessControlService ipAccessControlService)
+            : base(umbContextAccessor, localizedTextService, logger)
         {
             _ipAccessControlService = ipAccessControlService;
         }
@@ -29,24 +42,18 @@ namespace Our.Shield.FrontendAccess.Models
         public override string Id => nameof(FrontendAccess);
 
         /// <inheritdoc />
-        public override string Name => LocalizedTextService.Localize("Shield.FrontendAccess.General/Name", CultureInfo.CurrentCulture);
-
-        /// <inheritdoc />
-        public override string Description => LocalizedTextService.Localize("Shield.FrontendAccess.General/Description", CultureInfo.CurrentCulture);
-
-        /// <inheritdoc />
         public override string Icon => "icon-combination-lock red";
 
         /// <inheritdoc />
         public override IAppConfiguration DefaultConfiguration => new FrontendAccessConfiguration
         {
             UmbracoUserEnable = true,
-            IpAccessRules = new IpAccessControl
+            IpAccessControl = new IpAccessControl
             {
-                AccessType = IpAccessControl.AccessTypes.AllowAll,
-                Exceptions = Enumerable.Empty<IpAccessControl.Entry>()
+                AccessType = AccessTypes.AllowAll,
+                IpAccessRules = Enumerable.Empty<IpAccessRule>()
             },
-            Unauthorized = new TransferUrl
+            TransferUrlControl = new TransferUrlControl
             {
                 TransferType = TransferType.Redirect,
                 Url = new UmbracoUrl
@@ -62,35 +69,51 @@ namespace Our.Shield.FrontendAccess.Models
         /// <inheritdoc />
         public override bool Execute(IJob job, IAppConfiguration c)
         {
-            job.UnwatchWebRequests();
-            job.UnexceptionWebRequest();
-
             if (!(c is FrontendAccessConfiguration config))
             {
-                job.WriteJournal(new JournalMessage("Error: Config passed into Frontend Access was not of the correct type"));
                 return false;
             }
 
-            if (!c.Enable || !job.Environment.Enabled)
+            job.UnwatchWebRequests();
+            job.UnexceptionWebRequest();
+
+            if (!c.Enabled || !job.Environment.Enabled)
             {
                 return true;
             }
 
-            foreach (var error in _ipAccessControlService.InitIpAccessControl(config.IpAccessRules))
+            var ipAddressesInvalid = _ipAccessControlService.InitIpAccessControl(config.IpAccessControl);
+            if (ipAddressesInvalid.HasValues())
             {
-                job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
+                using (var umbContext = UmbContextAccessor.UmbracoContext)
+                {
+                    var localizedAppName = LocalizedTextService.Localize("Shield.BackofficeAccess", "Name");
+                    var localizedMessage = LocalizedTextService.Localize(
+                    "Shield.General_InvalidIpControlRules",
+                    new[]
+                    {
+                        string.Join(", ", ipAddressesInvalid),
+                        localizedAppName,
+                        job.Environment.Name,
+                    });
+
+                    Logger.Warn<FrontendAccessApp>(
+                        localizedMessage + "App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        job.App.Key,
+                        job.Environment.Key);
+                }
             }
 
-            if (config.Unauthorized.TransferType != TransferType.PlayDead)
+            if (config.TransferUrlControl.TransferType != TransferType.PlayDead)
             {
-                job.ExceptionWebRequest(config.Unauthorized.Url);
+                job.ExceptionWebRequest(config.TransferUrlControl.Url);
             }
 
             var regex = new Regex(@"^/([a-z0-9-_~&\+%/])*(\?([^\?])*)?$", RegexOptions.IgnoreCase);
 
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400000, (count, httpApp) =>
             {
-                if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
+                if (_ipAccessControlService.IsValid(config.IpAccessControl, httpApp.Context.Request))
                 {
                     httpApp.Context.Items.Add(_allowKey, true);
                 }
@@ -100,24 +123,29 @@ namespace Our.Shield.FrontendAccess.Models
             job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400500, (count, httpApp) =>
             {
                 if ((bool?)httpApp.Context.Items[_allowKey] == true
-                    || (config.UmbracoUserEnable && AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)))
+                    || (config.UmbracoUserEnable && _ipAccessControlService.IsRequestAuthenticatedUmbracoUser(httpApp)))
                 {
                     return new WatchResponse(Cycle.Continue);
                 }
 
-                var url = new UmbracoUrlService().Url(config.Unauthorized.Url);
-                if (url == null)
+                using (var umbContext = UmbContextAccessor.UmbracoContext)
                 {
-                    return new WatchResponse(Cycle.Error);
+                    var localizedAppName = LocalizedTextService.Localize("Shield.FrontendAccess", "Name");
+                    var localizedMessage = LocalizedTextService.Localize(
+                    "Shield.FrontendAccess_DeniedAccess",
+                    new[]
+                    {
+                        httpApp.Context.Request.UserHostAddress,
+                        job.Environment.Name
+                    });
+
+                    Logger.Warn<FrontendAccessApp>(
+                        localizedMessage + "App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        job.App.Key,
+                        job.Environment.Key);
                 }
 
-                if (httpApp.Context.Request.Url.LocalPath.Equals(url))
-                {
-                    return new WatchResponse(Cycle.Continue);
-                }
-
-                job.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access Page: {httpApp.Context.Request.Url}. Access was denied"));
-                return new WatchResponse(config.Unauthorized);
+                return new WatchResponse(config.TransferUrlControl);
             });
 
             return true;

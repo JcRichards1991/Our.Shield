@@ -278,22 +278,19 @@
       <Project>{69737067-ab31-4c68-9c69-5e6ce00d1ab3}</Project>
       <Name>Our.Shield.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Our.Shield.Shared\Our.Shield.Shared.csproj">
+      <Project>{c3e0dfd3-a730-4388-be45-53ac5b878e18}</Project>
+      <Name>Our.Shield.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="App_Plugins\Shield.FrontendAccess\package.manifest" />
-    <None Include="App_Plugins\Shield.FrontendAccess\Scripts\FrontendAccess.min.js.map">
-      <DependentUpon>FrontendAccess.min.js</DependentUpon>
-    </None>
     <None Include="Our.Shield.FrontendAccess.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield.FrontendAccess\Lang\en-us.xml" />
-    <Content Include="App_Plugins\Shield.FrontendAccess\Scripts\FrontendAccess.js" />
-    <Content Include="App_Plugins\Shield.FrontendAccess\Scripts\FrontendAccess.min.js">
-      <DependentUpon>FrontendAccess.js</DependentUpon>
-    </Content>
     <Content Include="App_Plugins\Shield.FrontendAccess\Views\FrontendAccess.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
