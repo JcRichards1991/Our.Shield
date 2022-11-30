@@ -303,11 +303,11 @@
     <Compile Include="Data\Dtos\App.cs" />
     <Compile Include="Data\Dtos\Environment.cs" />
     <Compile Include="Data\Migrations\ShieldMigrationPlan.cs" />
-    <Compile Include="Data\Migrations\Shield2_0_0Migration.cs" />
     <Compile Include="Enums\AccessType.cs" />
     <Compile Include="Enums\CacheRefreshType.cs" />
     <Compile Include="Enums\Cycle.cs" />
     <Compile Include="Enums\IpAddressType.cs" />
+    <Compile Include="Enums\PipeLineStages.cs" />
     <Compile Include="Enums\TransferType.cs" />
     <Compile Include="Enums\UmbracoUrlType.cs" />
     <Compile Include="Extensions\IpAddressRangeExtensions.cs" />
@@ -333,6 +333,10 @@
     <Compile Include="Models\Responses\GetEnvironmentsResponse.cs" />
     <Compile Include="Models\Responses\UpdateAppConfigurationResponse.cs" />
     <Compile Include="Models\Responses\UpsertEnvironmentResponse.cs" />
+    <Compile Include="Operation\Comparers\WatchComparer.cs" />
+    <Compile Include="Operation\Models\Environ.cs" />
+    <Compile Include="Operation\Models\UrlException.cs" />
+    <Compile Include="Operation\Models\Watcher.cs" />
     <Compile Include="PackageActions\AddShieldConfigurationSection.cs" />
     <Compile Include="Services\AppService.cs" />
     <Compile Include="Services\IAppService.cs" />

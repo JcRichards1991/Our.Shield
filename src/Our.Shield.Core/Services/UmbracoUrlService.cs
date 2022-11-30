@@ -30,25 +30,6 @@ namespace Our.Shield.Core.Services
             _logger = Umbraco.Core.Composing.Current.Logger;
         }
 
-        /// <summary>
-        /// Initializes a new instance of <see cref="UmbracoUrlService"/>
-        /// </summary>
-        /// <param name="umbracoContentService"></param>
-        /// <param name="umbracoContextFactory"></param>
-        /// <param name="appCaches"></param>
-        /// <param name="logger"></param>
-        public UmbracoUrlService(
-            IUmbracoContentService umbracoContentService,
-            IUmbracoContextFactory umbracoContextFactory,
-            AppCaches appCaches,
-            ILogger logger)
-        {
-            _umbracoContentService = umbracoContentService;
-            _umbracoContextFactory = umbracoContextFactory;
-            _appCaches = appCaches;
-            _logger = logger;
-        }
-
         /// <inheritdoc />
         public string Url(UmbracoUrl umbracoUrl)
         {
@@ -64,13 +45,8 @@ namespace Our.Shield.Core.Services
                 return umbracoUrl.Value;
             }
 
-            return _appCaches.RuntimeCache.GetCacheItem<string>(CacheKeyUrl + umbracoUrl.Value, () =>
+            return _appCaches.RuntimeCache.GetCacheItem(CacheKeyUrl + umbracoUrl.Value, () =>
             {
-                using (var umbContextRef = _umbracoContextFactory.EnsureUmbracoContext())
-                {
-
-                }
-
                 switch (umbracoUrl.Type)
                 {
                     case UmbracoUrlType.XPath:
@@ -84,9 +60,9 @@ namespace Our.Shield.Core.Services
                         break;
 
                     case UmbracoUrlType.ContentPicker:
-                        if (int.TryParse(umbracoUrl.Value, out var id))
+                        if (GuidUdi.TryParse(umbracoUrl.Value, out var udi))
                         {
-                            return _umbracoContentService.Url(id);
+                            return _umbracoContentService.Url(udi);
                         }
 
                         _logger.Error<UmbracoUrlService>("Error: Unable to parse the selected unauthorized URL content picker item. Please ensure a valid content node is selected", null);

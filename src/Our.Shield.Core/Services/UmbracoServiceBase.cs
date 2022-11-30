@@ -1,4 +1,5 @@
 ﻿using System;
+using Umbraco.Core;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
@@ -21,10 +22,16 @@ namespace Our.Shield.Core.Services
         }
 
         private static string CacheKeyId(string cacheKeyId, int id) => cacheKeyId + id;
+
         private static string CacheKeyXPath(string cacheKeyXPath, string xpath) => cacheKeyXPath + xpath;
+
+        private static string CacheKeyUdi(string cacheKeyXPath, GuidUdi udi) => cacheKeyXPath + udi;
 
         internal T GetApplicationCacheItem<T>(string cacheKeyXpath, string xpath, Func<T> getCacheItem) =>
             AppCaches.RuntimeCache.GetCacheItem(CacheKeyXPath(cacheKeyXpath, xpath), getCacheItem, CacheLength);
+
+        internal T GetApplicationCacheItem<T>(string cacheKeyXpath, GuidUdi udi, Func<T> getCacheItem) =>
+            AppCaches.RuntimeCache.GetCacheItem(CacheKeyUdi(cacheKeyXpath, udi), getCacheItem, CacheLength);
 
         internal T GetApplicationCacheItem<T>(string cacheKeyId, int id, Func<T> getCacheItem) =>
             AppCaches.RuntimeCache.GetCacheItem(CacheKeyId(cacheKeyId, id), getCacheItem, CacheLength);
@@ -40,6 +47,9 @@ namespace Our.Shield.Core.Services
 
         T GetRequestCacheItem<T>(string cacheKeyXpath, string xpath) =>
             (T)UmbContext.HttpContext.Items[CacheKeyXPath(cacheKeyXpath, xpath)];
+
+        T GetRequestCacheItem<T>(string cacheKeyXpath, GuidUdi udi) =>
+            (T)UmbContext.HttpContext.Items[CacheKeyUdi(cacheKeyXpath, udi)];
 
         T GetRequestCacheItem<T>(string cacheKeyId, int id) =>
             (T)UmbContext.HttpContext.Items[CacheKeyId(cacheKeyId, id)];
@@ -64,6 +74,20 @@ namespace Our.Shield.Core.Services
             return null;
         }
 
+        private IPublishedContent GetPublished<T>(GuidUdi udi)
+        {
+            if (typeof(T) == typeof(IPublishedMediaCache))
+            {
+                return UmbContext.Media.GetById(udi.Guid);
+            }
+            if (typeof(T) == typeof(IPublishedContentCache))
+            {
+                return UmbContext.Content.GetById(udi.Guid);
+            }
+
+            return null;
+        }
+
         internal IPublishedContent GetPublished<T>(string cacheKeyId, int id)
             where T : IPublishedCache
         {
@@ -74,6 +98,23 @@ namespace Our.Shield.Core.Services
             }
 
             published = GetPublished<T>(id);
+            if (published != null)
+            {
+                SetPublished<T>(cacheKeyId, published);
+            }
+            return published;
+        }
+
+        internal IPublishedContent GetPublished<T>(string cacheKeyId, GuidUdi udi)
+            where T : IPublishedCache
+        {
+            var published = GetRequestCacheItem<IPublishedContent>(cacheKeyId, udi);
+            if (published != null)
+            {
+                return published;
+            }
+
+            published = GetPublished<T>(udi);
             if (published != null)
             {
                 SetPublished<T>(cacheKeyId, published);
@@ -143,6 +184,34 @@ namespace Our.Shield.Core.Services
             });
         }
 
+        internal PublishCache GetPublishCache<T>(string cacheKeyUdi, GuidUdi udi) where T : IPublishedCache
+        {
+            if (udi == null)
+            {
+                return null;
+            }
+
+            var cacheKey = cacheKeyUdi + udi;
+
+            return GetApplicationCacheItem<PublishCache>(cacheKeyUdi, udi, () =>
+            {
+                var content = GetPublished<T>(cacheKey, udi);
+
+                if (content == null)
+                {
+                    return null;
+                }
+
+                return new PublishCache
+                {
+                    Id = content.Id,
+                    Name = content.Name,
+                    Url = content.Url,
+                    Path = content.Path
+                };
+            });
+        }
+
         internal void SetPublishCache<T>(string cacheKeyId, IPublishedContent published) where T : IPublishedCache =>
             InsertApplicationCacheItem(cacheKeyId, published.Id, () => new PublishCache
             {
@@ -153,6 +222,8 @@ namespace Our.Shield.Core.Services
             });
 
         internal string Url<T>(string cacheKeyId, int id) where T : IPublishedCache => GetPublishCache<T>(cacheKeyId, id)?.Url;
+
+        internal string Url<T>(string cacheKeyUdi, GuidUdi udi) where T : IPublishedCache => GetPublishCache<T>(cacheKeyUdi, udi)?.Url;
 
         internal string Name<T>(string cacheKeyId, int id) where T : IPublishedCache => GetPublishCache<T>(cacheKeyId, id)?.Name;
 

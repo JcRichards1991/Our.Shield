@@ -1,4 +1,4 @@
-﻿using Our.Shield.Core.Operation;
+﻿using Our.Shield.Core.Enums;
 using System;
 using System.Text.RegularExpressions;
 using System.Web;

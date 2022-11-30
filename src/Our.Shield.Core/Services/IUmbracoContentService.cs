@@ -1,4 +1,6 @@
-﻿namespace Our.Shield.Core.Services
+﻿using Umbraco.Core;
+
+namespace Our.Shield.Core.Services
 {
     /// <summary>
     /// 
@@ -16,6 +18,13 @@
         /// <param name="id"></param>
         /// <returns></returns>
         string Url(int id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="udi"></param>
+        /// <returns></returns>
+        string Url(GuidUdi udi);
 
         /// <summary>
         /// 
