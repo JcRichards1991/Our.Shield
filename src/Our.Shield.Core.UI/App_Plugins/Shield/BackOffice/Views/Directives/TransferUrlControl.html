@@ -4,10 +4,10 @@
 
       <div class="control-header">
         <label class="control-label">
-          <localize key="Shield.Properties.Unauthorized_Label"></localize>
+          <localize key="Shield.Properties.UrlTransferControl_Label"></localize>
         </label>
         <small class="control-description">
-          <localize key="Shield.Properties.Unauthorized_Description"></localize>
+          <localize key="Shield.Properties.UrlTransferControl_Description"></localize>
         </small>
       </div>
 
@@ -16,29 +16,23 @@
 
           <div class="umb-property-editor umb-dropdown">
             <select class="umb-property-editor umb-dropdown" id="unauthorizedAction" name="unauthorizedAction" ng-model="transferUrlControl.transferType" required shield-convert-to-number>
-              <option value="-1"><localize key="Shield.Properties.Unauthorized_PlayDeadOption">Play Dead</localize></option>
-              <option value="0"><localize key="Shield.Properties.Unauthorized_RedirectOption">Redirect</localize></option>
-              <option value="1"><localize key="Shield.Properties.Unauthorized_RewriteOption">Rewrite</localize></option>
+              <option value="-1"><localize key="Shield.Properties.UrlTransferControl_PlayDeadOption">Play Dead</localize></option>
+              <option value="0"><localize key="Shield.Properties.UrlTransferControl_RedirectOption">Redirect</localize></option>
+              <option value="1"><localize key="Shield.Properties.UrlTransferControl_RewriteOption">Rewrite</localize></option>
             </select>
           </div>
 
           <div ng-if="transferUrlControl.transferType >= 0">
             <div class="umb-property-editor umb-dropdown">
               <select class="umb-property-editor umb-dropdown" id="unauthorizedAction" name="unauthorizedAction" ng-model="transferUrlControl.url.type" required shield-convert-to-number>
-                <option value="0"><localize key="Shield.Properties.Unauthorized_TransferTypeUrlOption">URL</localize></option>
-                <option value="1"><localize key="Shield.Properties.Unauthorized_TransferTypeXPathOption">XPath</localize></option>
-                <option value="2"><localize key="Shield.Properties.Unauthorized_TransferTypeContentPickerOption">Content Picker</localize></option>
+                <option value="0"><localize key="Shield.Properties.UrlTransferControl_TransferTypeUrlOption">URL</localize></option>
+                <option value="1"><localize key="Shield.Properties.UrlTransferControl_TransferTypeXPathOption">XPath</localize></option>
+                <option value="2"><localize key="Shield.Properties.UrlTransferControl_TransferTypeContentPickerOption">Content Picker</localize></option>
               </select>
             </div>
               
             <div ng-if="transferUrlControl.url.type === 0" class="umb-property-editor umb-textstring">
-              <input class="umb-property-editor umb-textstring textstring" type="text" id="strUrl" name="strUrl" ng-model="transferUrlControl.url.urlValue" required ng-trim="false" ng-pattern="/^\/(([\w-]+(\/)?)+([\w-]+\.[\w-]+)?(\/)?(\?[\w-]+(=[\w-]+)?((&[\w-]+(=[\w-]+)?)+)?)?(#[\w-]+)?)?$/i" />
-              <span class="help-inline" val-msg-for="strUrl" val-toggle-msg="required">
-                <localize key="Shield.Properties.Validation_Required">Required</localize>
-              </span>
-              <span class="help-inline" val-msg-for="strUrl" val-toggle-msg="pattern">
-                <localize key="Shield.Properties.UmbracoUrl.Validation_InvalidStrUrl">Invalid URL; Please provide a valid relative URL i.e. /404</localize>
-              </span>
+              <input class="umb-property-editor umb-textstring textstring" type="text" ng-model="transferUrlControl.url.urlValue" ng-trim="false" ng-pattern="/^\/(([\w-]+(\/)?)+([\w-]+\.[\w-]+)?(\/)?(\?[\w-]+(=[\w-]+)?((&[\w-]+(=[\w-]+)?)+)?)?(#[\w-]+)?)?$/i" />
             </div>
 
             <div ng-if="transferUrlControl.url.type === 1" class="umb-property-editor umb-textstring textstring">

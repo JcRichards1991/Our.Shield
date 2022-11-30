@@ -74,7 +74,7 @@
     <key alias="IpAccessRulesEditIpAccessRuleTitle">Edit IP Access Rule</key>
   </area>
 
-  <area alias="Shield.Properties.Unauthorized">
+  <area alias="Shield.Properties.UrlTransferControl">
     <key alias="Label">Unauthorized</key>
     <key alias="Description">The page to redirect / rewrite the user too, when access is being denied</key>
     

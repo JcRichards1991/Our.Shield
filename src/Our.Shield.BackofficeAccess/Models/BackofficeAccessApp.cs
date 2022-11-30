@@ -1,7 +1,6 @@
 ﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Enums;
 using Our.Shield.Core.Models;
-using Our.Shield.Core.Operation;
 using Our.Shield.Core.Services;
 using Our.Shield.Core.Settings;
 using Our.Shield.Shared.Extensions;
@@ -25,6 +24,7 @@ namespace Our.Shield.BackofficeAccess.Models
     public class BackofficeAccessApp : App<BackofficeAccessConfiguration>
     {
         private readonly string _allowKey = Guid.NewGuid().ToString();
+
         private static int _reSetterLock;
 
         private readonly IIpAccessControlService _ipAccessControlService;
@@ -168,9 +168,9 @@ namespace Our.Shield.BackofficeAccess.Models
             {
                 using (var umbContext = UmbContextAccessor.UmbracoContext)
                 {
-                    var localizedAppName = LocalizedTextService.Localize("Shield.BackofficeAccess", "Name");
+                    var localizedAppName = LocalizedTextService.Localize($"{nameof(Shield)}.{nameof(BackofficeAccess)}", "Name");
                     var localizedMessage = LocalizedTextService.Localize(
-                    "Shield.General_InvalidIpControlRules",
+                    $"{nameof(Shield)}.General_InvalidIpControlRules",
                     new[]
                     {
                         string.Join(", ", ipAddressesInvalid),
@@ -196,9 +196,9 @@ namespace Our.Shield.BackofficeAccess.Models
 
                 using (var umbContext = UmbContextAccessor.UmbracoContext)
                 {
-                    var localizedAppName = LocalizedTextService.Localize("Shield.BackofficeAccess", "Name");
+                    var localizedAppName = LocalizedTextService.Localize($"{nameof(Shield)}.{nameof(BackofficeAccess)}", "Name");
                     var localizedMessage = LocalizedTextService.Localize(
-                    "Shield.BackofficeAccess_DeniedAccess",
+                    $"{nameof(Shield)}.{nameof(BackofficeAccess)}_DeniedAccess",
                     new[]
                     {
                         httpApp.Context.Request.UserHostAddress,

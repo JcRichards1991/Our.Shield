@@ -280,10 +280,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\Shield.Swagger\Lang\en-us.xml" />
-    <Content Include="App_Plugins\Shield.Swagger\Scripts\Swagger.js" />
-    <Content Include="App_Plugins\Shield.Swagger\Scripts\Swagger.min.js">
-      <DependentUpon>Swagger.js</DependentUpon>
-    </Content>
     <Content Include="App_Plugins\Shield.Swagger\Views\Swagger.html" />
   </ItemGroup>
   <ItemGroup>
@@ -296,6 +292,10 @@
     <ProjectReference Include="..\Our.Shield.Core\Our.Shield.Core.csproj">
       <Project>{69737067-ab31-4c68-9c69-5e6ce00d1ab3}</Project>
       <Name>Our.Shield.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Our.Shield.Shared\Our.Shield.Shared.csproj">
+      <Project>{c3e0dfd3-a730-4388-be45-53ac5b878e18}</Project>
+      <Name>Our.Shield.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

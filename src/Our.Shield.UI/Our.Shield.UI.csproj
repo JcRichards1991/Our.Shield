@@ -373,6 +373,10 @@
       <Project>{c3e0dfd3-a730-4388-be45-53ac5b878e18}</Project>
       <Name>Our.Shield.Shared</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Our.Shield.Swagger\Our.Shield.Swagger.csproj">
+      <Project>{ea5e50cf-3c82-4d89-98dc-04145a692811}</Project>
+      <Name>Our.Shield.Swagger</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
@@ -403,7 +407,8 @@
   <PropertyGroup>
     <PreBuildEvent>xcopy "$(solutiondir)Our.Shield.Core.UI\App_Plugins\*.*" "$(ProjectDir)App_Plugins\" /Y /e
 xcopy "$(solutiondir)Our.Shield.BackofficeAccess\App_Plugins\*.*" "$(ProjectDir)App_Plugins\" /Y /e
-xcopy "$(solutiondir)Our.Shield.FrontendAccess\App_Plugins\*.*" "$(ProjectDir)App_Plugins\" /Y /e</PreBuildEvent>
+xcopy "$(solutiondir)Our.Shield.FrontendAccess\App_Plugins\*.*" "$(ProjectDir)App_Plugins\" /Y /e
+xcopy "$(solutiondir)Our.Shield.Swagger\App_Plugins\*.*" "$(ProjectDir)App_Plugins\" /Y /e</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>

@@ -14,13 +14,13 @@ namespace Our.Shield.Swagger.Models
         /// <summary>
         /// Client access
         /// </summary>
-        [JsonProperty("ipAccessRules")]
-        public IpAccessControl IpAccessRules { get; set; }
+        [JsonProperty("IpAccessControl")]
+        public IpAccessControl IpAccessControl { get; set; }
 
         /// <summary>
         /// The Url Type Selector and the url
         /// </summary>
-        [JsonProperty("unauthorized")]
-        public TransferUrl Unauthorized { get; set; }
+        [JsonProperty("TransferUrlControl")]
+        public TransferUrlControl TransferUrlControl { get; set; }
     }
 }

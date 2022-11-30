@@ -1,7 +1,6 @@
 ﻿using Our.Shield.Core.Attributes;
 using Our.Shield.Core.Enums;
 using Our.Shield.Core.Models;
-using Our.Shield.Core.Operation;
 using Our.Shield.Core.Services;
 using Our.Shield.Shared.Extensions;
 using System;
@@ -87,9 +86,9 @@ namespace Our.Shield.FrontendAccess.Models
             {
                 using (var umbContext = UmbContextAccessor.UmbracoContext)
                 {
-                    var localizedAppName = LocalizedTextService.Localize("Shield.BackofficeAccess", "Name");
+                    var localizedAppName = LocalizedTextService.Localize($"{nameof(Shield)}.{nameof(FrontendAccess)}", "Name");
                     var localizedMessage = LocalizedTextService.Localize(
-                    "Shield.General_InvalidIpControlRules",
+                    $"{nameof(Shield)}.General_InvalidIpControlRules",
                     new[]
                     {
                         string.Join(", ", ipAddressesInvalid),
@@ -130,9 +129,9 @@ namespace Our.Shield.FrontendAccess.Models
 
                 using (var umbContext = UmbContextAccessor.UmbracoContext)
                 {
-                    var localizedAppName = LocalizedTextService.Localize("Shield.FrontendAccess", "Name");
+                    var localizedAppName = LocalizedTextService.Localize($"{nameof(Shield)}.{nameof(FrontendAccess)}", "Name");
                     var localizedMessage = LocalizedTextService.Localize(
-                    "Shield.FrontendAccess_DeniedAccess",
+                    $"{nameof(Shield)}.{nameof(FrontendAccess)}_DeniedAccess",
                     new[]
                     {
                         httpApp.Context.Request.UserHostAddress,

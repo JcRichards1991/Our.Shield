@@ -1,111 +1,147 @@
-﻿using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Our.Shield.Core.Attributes;
-using Our.Shield.Core.Helpers;
+﻿using Our.Shield.Core.Attributes;
+using Our.Shield.Core.Enums;
 using Our.Shield.Core.Models;
-using Our.Shield.Core.Operation;
 using Our.Shield.Core.Services;
-using Umbraco.Core;
+using Our.Shield.Shared.Extensions;
+using System;
+using System.Linq;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Services;
+using Umbraco.Web;
 
 namespace Our.Shield.Swagger.Models
 {
-	[AppEditor("/App_Plugins/Shield.Swagger/Views/Swagger.html?version=1.1.0")]
-	[AppJournal]
-	public class SwaggerApp : App<SwaggerConfiguration>
-	{
-		private readonly string _allowKey = Guid.NewGuid().ToString();
+    [AppEditor("/App_Plugins/Shield.Swagger/Views/Swagger.html?version=2.0.0")]
+    public class SwaggerApp : App<SwaggerConfiguration>
+    {
+        private readonly string _allowKey = Guid.NewGuid().ToString();
 
-		/// <inheritdoc />
-		public override string Id => nameof(Swagger);
+        private readonly IIpAccessControlService _ipAccessControlService;
 
-		/// <inheritdoc />
-		public override string Name => Localize("Shield.Swagger.General", "Name");
+        public SwaggerApp(
+            IUmbracoContextAccessor umbContextAccessor,
+            ILocalizedTextService localizedTextService,
+            ILogger logger,
+            IIpAccessControlService ipAccessControlService)
+            : base(umbContextAccessor, localizedTextService, logger)
+        {
+            _ipAccessControlService = ipAccessControlService;
+        }
 
-		/// <inheritdoc />
-		public override string Description => Localize("Shield.Swagger.General", "Description");
+        /// <inheritdoc />
+        public override string Id => nameof(Swagger);
 
-		/// <inheritdoc />
-		public override string Icon => "icon-gps orange";
-		/// <inheritdoc />
-		public override IAppConfiguration DefaultConfiguration => new SwaggerConfiguration
-		{
-			UmbracoUserEnable = true,
-			IpAccessRules = new IpAccessControl
-			{
-				AccessType = IpAccessControl.AccessTypes.AllowAll,
-				Exceptions = Enumerable.Empty<IpAccessControl.Entry>()
-			},
-			Unauthorized = new TransferUrl
-			{
-				TransferType = TransferTypes.Redirect,
-				Url = new UmbracoUrl
-				{
-					Type = UmbracoUrlTypes.Url,
-					Value = string.Empty
-				}
-			}
-		};
+        /// <inheritdoc />
+        public override string Icon => "icon-gps orange";
 
-		private readonly IpAccessControlService _ipAccessControlService;
-		public SwaggerApp()
-		{
-			_ipAccessControlService = new IpAccessControlService();
-		}
+        /// <inheritdoc />
+        public override IAppConfiguration DefaultConfiguration => new SwaggerConfiguration
+        {
+            UmbracoUserEnable = true,
+            IpAccessControl = new IpAccessControl
+            {
+                AccessType = AccessTypes.AllowAll,
+                IpAccessRules = Enumerable.Empty<IpAccessRule>()
+            },
+            TransferUrlControl = new TransferUrlControl
+            {
+                TransferType = TransferType.Redirect,
+                Url = new UmbracoUrl
+                {
+                    Type = UmbracoUrlType.Url,
+                    Value = string.Empty
+                }
+            }
+        };
 
-		public override bool Execute(IJob job, IAppConfiguration c)
-		{
-			job.UnwatchWebRequests();
-			job.UnexceptionWebRequest();
-			job.UnignoreWebRequest();
+        /// <inheritdoc />
+        public override bool Execute(IJob job, IAppConfiguration c)
+        {
+            if (!(c is SwaggerConfiguration config))
+            {
+                return false;
+            }
 
-			var regex = job.PathToRegex("swagger");
-			job.IgnoreWebRequest(regex);
+            job.UnwatchWebRequests();
+            job.UnexceptionWebRequest();
+            job.UnignoreWebRequest();
 
-			if (!c.Enable || !job.Environment.Enable)
-			{
-				job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500000, (count, httpApp) => new WatchResponse(WatchResponse.Cycles.Error));
-				return true;
-			}
+            var regex = job.PathToRegex("swagger");
+            job.IgnoreWebRequest(regex);
 
-			if (!(c is SwaggerConfiguration config))
-			{
-				job.WriteJournal(new JournalMessage("Error: Config passed into Swagger was not of the correct type"));
-				return false;
-			}
+            if (!c.Enabled || !job.Environment.Enabled)
+            {
+                job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500000, (count, httpApp) => new WatchResponse(Cycle.Error));
 
-			foreach (var error in new IpAccessControlService().InitIpAccessControl(config.IpAccessRules))
-			{
-				job.WriteJournal(new JournalMessage($"Error: Invalid IP Address {error}, unable to add to exception list"));
-			}
+                return true;
+            }
 
-			if (config.Unauthorized.TransferType != TransferTypes.PlayDead)
-			{
-				job.ExceptionWebRequest(config.Unauthorized.Url);
-			}
+            var ipAddressesInvalid = _ipAccessControlService.InitIpAccessControl(config.IpAccessControl);
+            if (ipAddressesInvalid.HasValues())
+            {
+                using (var umbContext = UmbContextAccessor.UmbracoContext)
+                {
+                    var localizedAppName = LocalizedTextService.Localize($"{nameof(Shield)}.{nameof(Swagger)}", "Name");
+                    var localizedMessage = LocalizedTextService.Localize(
+                    $"{nameof(Shield)}.General_InvalidIpControlRules",
+                    new[]
+                    {
+                        string.Join(", ", ipAddressesInvalid),
+                        localizedAppName,
+                        job.Environment.Name,
+                    });
 
-			job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500250, (count, httpApp) =>
-			{
-				if (_ipAccessControlService.IsValid(config.IpAccessRules, httpApp.Context.Request))
-				{
-					httpApp.Context.Items.Add(_allowKey, true);
-				}
-				return new WatchResponse(WatchResponse.Cycles.Continue);
-			});
+                    Logger.Warn<SwaggerApp>(
+                        localizedMessage + "App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        job.App.Key,
+                        job.Environment.Key);
+                }
+            }
 
-			job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500500, (count, httpApp) =>
-			{
-				if ((bool?)httpApp.Context.Items[_allowKey] == true || (config.UmbracoUserEnable && AccessHelper.IsRequestAuthenticatedUmbracoUser(httpApp)))
-				{
-					return new WatchResponse(WatchResponse.Cycles.Continue);
-				}
+            if (config.TransferUrlControl.TransferType != TransferType.PlayDead)
+            {
+                job.ExceptionWebRequest(config.TransferUrlControl.Url);
+            }
 
-				job.WriteJournal(new JournalMessage($"User with IP Address: {httpApp.Context.Request.UserHostAddress}; tried to access {httpApp.Context.Request.Url}. Access was denied"));
+            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500250, (count, httpApp) =>
+            {
+                if (_ipAccessControlService.IsValid(config.IpAccessControl, httpApp.Context.Request))
+                {
+                    httpApp.Context.Items.Add(_allowKey, true);
+                }
 
-				return new WatchResponse(config.Unauthorized);
-			});
+                return new WatchResponse(Cycle.Continue);
+            });
 
-			return true;
-		}
-	}
+            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500500, (count, httpApp) =>
+            {
+                if ((bool?)httpApp.Context.Items[_allowKey] == true
+                  || (config.UmbracoUserEnable && _ipAccessControlService.IsRequestAuthenticatedUmbracoUser(httpApp)))
+                {
+                    return new WatchResponse(Cycle.Continue);
+                }
+
+                using (var umbContext = UmbContextAccessor.UmbracoContext)
+                {
+                    var localizedAppName = LocalizedTextService.Localize($"{nameof(Shield)}.{nameof(Swagger)}", "Name");
+                    var localizedMessage = LocalizedTextService.Localize(
+                    $"{nameof(Shield)}.{nameof(Swagger)}_DeniedAccess",
+                    new[]
+                    {
+                        httpApp.Context.Request.UserHostAddress,
+                        job.Environment.Name
+                    });
+
+                    Logger.Warn<SwaggerApp>(
+                        localizedMessage + "App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        job.App.Key,
+                        job.Environment.Key);
+                }
+
+                return new WatchResponse(config.TransferUrlControl);
+            });
+
+            return true;
+        }
+    }
 }

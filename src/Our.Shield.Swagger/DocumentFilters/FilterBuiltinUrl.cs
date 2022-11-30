@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Web.Http.Description;
+using Our.Shield.Core.Settings;
 using Swashbuckle.Swagger;
 using Umbraco.Core.IO;
 
@@ -22,7 +23,7 @@ namespace Our.Shield.Swagger.DocumentFilters
                 if (!string.IsNullOrWhiteSpace(_umbracoUrl))
                     return _umbracoUrl;
 
-                return _umbracoUrl = IOHelper.ResolveUrl(Core.Settings.Configuration.UmbracoPath);
+                return _umbracoUrl = IOHelper.ResolveUrl(ShieldConfiguration.UmbracoPath);
             }
         }
 
