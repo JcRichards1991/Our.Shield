@@ -143,7 +143,7 @@ namespace Our.Shield.BackofficeAccess.Models
                     virtualUmbracoLocation,
                     true);
 
-                job.WatchWebRequests(PipeLineStages.AuthenticateRequest, new Regex($"^(({onDiscUmbracoLocation})|({onDiscUmbracoLocation.TrimEnd('/')}))$"), 20200, (count, httpApp) =>
+                job.WatchWebRequests(PipeLineStage.AuthenticateRequest, new Regex($"^(({onDiscUmbracoLocation})|({onDiscUmbracoLocation.TrimEnd('/')}))$"), 20200, (count, httpApp) =>
                 {
                     if ((bool?)httpApp.Context.Items[_allowKey] == true
                         || !string.IsNullOrEmpty(httpApp.Context.Request.CurrentExecutionFilePathExtension)
@@ -179,13 +179,14 @@ namespace Our.Shield.BackofficeAccess.Models
                     });
 
                     Logger.Warn<BackofficeAccessApp>(
-                        localizedMessage + "App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        localizedMessage + "App: {App}; App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        localizedAppName,
                         job.App.Key,
                         job.Environment.Key);
                 }
             }
 
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, onDiscUmbracoRegex, 20300, (count, httpApp) =>
+            job.WatchWebRequests(PipeLineStage.AuthenticateRequest, onDiscUmbracoRegex, 20300, (count, httpApp) =>
             {
                 if (_ipAccessControlService.IsRequestAuthenticatedUmbracoUser(httpApp)
                     || _ipAccessControlService.IsValid(config.IpAccessControl, httpApp.Context.Request)
@@ -196,7 +197,6 @@ namespace Our.Shield.BackofficeAccess.Models
 
                 using (var umbContext = UmbContextAccessor.UmbracoContext)
                 {
-                    var localizedAppName = LocalizedTextService.Localize($"{nameof(Shield)}.{nameof(BackofficeAccess)}", "Name");
                     var localizedMessage = LocalizedTextService.Localize(
                     $"{nameof(Shield)}.{nameof(BackofficeAccess)}_DeniedAccess",
                     new[]
@@ -206,7 +206,8 @@ namespace Our.Shield.BackofficeAccess.Models
                     });
 
                     Logger.Warn<BackofficeAccessApp>(
-                        localizedMessage + "App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        localizedMessage + "App: {App}; App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        LocalizedTextService.Localize($"{nameof(Shield)}.{nameof(BackofficeAccess)}", "Name"),
                         job.App.Key,
                         job.Environment.Key);
                 }
@@ -225,7 +226,7 @@ namespace Our.Shield.BackofficeAccess.Models
             string virtualUmbracoLocation,
             bool rewrite)
         {
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, priority, (count, httpApp) =>
+            job.WatchWebRequests(PipeLineStage.AuthenticateRequest, regex, priority, (count, httpApp) =>
             {
                 var path = httpApp.Request.Url.AbsolutePath.EnsureEndsWith('/');
                 var rewritePath = onDiscUmbracoLocation + path.Substring(virtualUmbracoLocation.Length);

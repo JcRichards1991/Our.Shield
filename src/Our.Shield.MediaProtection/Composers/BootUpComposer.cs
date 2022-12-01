@@ -1,8 +1,8 @@
-﻿using Our.Shield.Core.Components;
+﻿using Our.Shield.MediaProtection.Components;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
 
-namespace Our.Shield.Core.Composers
+namespace Our.Shield.MediaProtection.Composers
 {
     /// <summary>
     /// Initializes Shield's Boot Up requirements

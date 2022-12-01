@@ -24,7 +24,7 @@ namespace Our.Shield.Core.Operation
     {
         private const int RequestRestartLimit = 100;
 
-        private static readonly int PipeLineStagesLength = Enum.GetNames(typeof(PipeLineStages)).Length;
+        private static readonly int PipeLineStagesLength = Enum.GetNames(typeof(PipeLineStage)).Length;
 
         private static readonly Locker EnvironLock = new Locker();
 
@@ -75,7 +75,7 @@ namespace Our.Shield.Core.Operation
         /// <param name="priority"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public static int Watch(IJob job, PipeLineStages stage, Regex regex, int priority, Func<int, HttpApplication, WatchResponse> request)
+        public static int Watch(IJob job, PipeLineStage stage, Regex regex, int priority, Func<int, HttpApplication, WatchResponse> request)
         {
             Environ environ = null;
             if (EnvironLock.Write(() =>
@@ -115,7 +115,7 @@ namespace Our.Shield.Core.Operation
         /// <param name="stage"></param>
         /// <param name="regex"></param>
         /// <returns></returns>
-        public static int Unwatch(IJob job, PipeLineStages stage, Regex regex = null)
+        public static int Unwatch(IJob job, PipeLineStage stage, Regex regex = null)
         {
             return EnvironLock.Read(() =>
             {
@@ -150,7 +150,7 @@ namespace Our.Shield.Core.Operation
         /// <param name="stage"></param>
         /// <param name="regex"></param>
         /// <returns></returns>
-        public static int Unwatch(Guid? environmentKey = null, string appId = null, PipeLineStages? stage = null, Regex regex = null)
+        public static int Unwatch(Guid? environmentKey = null, string appId = null, PipeLineStage? stage = null, Regex regex = null)
         {
             var watchRemovedCounter = 0;
             var deleteEnvirons = new List<int>();
@@ -162,9 +162,9 @@ namespace Our.Shield.Core.Operation
                 foreach (var environ in Environs.Where(x => environmentKey == null || x.Value.Key == environmentKey))
                 {
                     var watchRemainCounter = 0;
-                    foreach (var objectStage in Enum.GetValues(typeof(PipeLineStages)))
+                    foreach (var objectStage in Enum.GetValues(typeof(PipeLineStage)))
                     {
-                        var currentStage = (PipeLineStages)objectStage;
+                        var currentStage = (PipeLineStage)objectStage;
                         if (stage != null && currentStage != stage)
                         {
                             continue;
@@ -291,30 +291,30 @@ namespace Our.Shield.Core.Operation
 
         private void Application_BeginRequest(object source, EventArgs e)
         {
-            Request(PipeLineStages.BeginRequest, (HttpApplication)source);
+            Request(PipeLineStage.BeginRequest, (HttpApplication)source);
         }
 
         private void Application_AuthenticateRequest(object source, EventArgs e)
         {
-            Request(PipeLineStages.AuthenticateRequest, (HttpApplication)source);
+            Request(PipeLineStage.AuthenticateRequest, (HttpApplication)source);
         }
 
         private void Application_ResolveRequestCache(object source, EventArgs e)
         {
-            Request(PipeLineStages.ResolveRequestCache, (HttpApplication)source);
+            Request(PipeLineStage.ResolveRequestCache, (HttpApplication)source);
         }
 
         private void Application_UpdateRequestCache(object source, EventArgs e)
         {
-            Request(PipeLineStages.UpdateRequestCache, (HttpApplication)source);
+            Request(PipeLineStage.UpdateRequestCache, (HttpApplication)source);
         }
 
         private void Application_EndRequest(object source, EventArgs e)
         {
-            Request(PipeLineStages.EndRequest, (HttpApplication)source);
+            Request(PipeLineStage.EndRequest, (HttpApplication)source);
         }
 
-        private void Request(PipeLineStages stage, HttpApplication application)
+        private void Request(PipeLineStage stage, HttpApplication application)
         {
             if (application.Context.Request.Url.AbsolutePath == "/umbraco/ping.aspx" || application.Context.Request.Url.AbsolutePath == "/umbraco/backoffice/UmbracoApi/Authentication/GetRemainingTimeoutSeconds")
             {
@@ -330,35 +330,35 @@ namespace Our.Shield.Core.Operation
 
             while (++count != RequestRestartLimit)
             {
-                if (ProcessRequest(PipeLineStages.BeginRequest, count, application) && stage == PipeLineStages.BeginRequest)
+                if (ProcessRequest(PipeLineStage.BeginRequest, count, application) && stage == PipeLineStage.BeginRequest)
                 {
                     return;
                 }
 
-                if (stage != PipeLineStages.BeginRequest)
+                if (stage != PipeLineStage.BeginRequest)
                 {
-                    if (ProcessRequest(PipeLineStages.AuthenticateRequest, count, application) && stage == PipeLineStages.AuthenticateRequest)
+                    if (ProcessRequest(PipeLineStage.AuthenticateRequest, count, application) && stage == PipeLineStage.AuthenticateRequest)
                     {
                         return;
                     }
 
-                    if (stage != PipeLineStages.AuthenticateRequest)
+                    if (stage != PipeLineStage.AuthenticateRequest)
                     {
-                        if (ProcessRequest(PipeLineStages.ResolveRequestCache, count, application) && stage == PipeLineStages.ResolveRequestCache)
+                        if (ProcessRequest(PipeLineStage.ResolveRequestCache, count, application) && stage == PipeLineStage.ResolveRequestCache)
                         {
                             return;
                         }
 
-                        if (stage != PipeLineStages.ResolveRequestCache)
+                        if (stage != PipeLineStage.ResolveRequestCache)
                         {
-                            if (ProcessRequest(PipeLineStages.UpdateRequestCache, count, application) && stage == PipeLineStages.UpdateRequestCache)
+                            if (ProcessRequest(PipeLineStage.UpdateRequestCache, count, application) && stage == PipeLineStage.UpdateRequestCache)
                             {
                                 return;
                             }
 
-                            if (stage != PipeLineStages.UpdateRequestCache)
+                            if (stage != PipeLineStage.UpdateRequestCache)
                             {
-                                if (ProcessRequest(PipeLineStages.EndRequest, count, application) && stage == PipeLineStages.EndRequest)
+                                if (ProcessRequest(PipeLineStage.EndRequest, count, application) && stage == PipeLineStage.EndRequest)
                                 {
                                     return;
                                 }
@@ -375,7 +375,7 @@ namespace Our.Shield.Core.Operation
             return;
         }
 
-        private bool ProcessRequest(PipeLineStages stage, int count, HttpApplication application)
+        private bool ProcessRequest(PipeLineStage stage, int count, HttpApplication application)
         {
             if (EnvironHasWatches[(int)stage] == false)
             {

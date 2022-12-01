@@ -284,7 +284,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="App_Plugins\Shield.Swagger\package.manifest" />
     <None Include="Our.Shield.Swagger.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>

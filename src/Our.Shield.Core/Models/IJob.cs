@@ -34,7 +34,7 @@ namespace Our.Shield.Core.Models
         /// <param name="request">The function to call when the regex matches a request</param>
         /// <returns></returns>
         int WatchWebRequests(
-            PipeLineStages stage,
+            PipeLineStage stage,
             Regex regex,
             int priority,
             Func<int, HttpApplication, WatchResponse> request);
@@ -45,14 +45,14 @@ namespace Our.Shield.Core.Models
         /// <param name="stage">The stage of the pipeline to remove a watch from</param>
         /// <param name="regex">The regex of the corresponding Web Request to remove</param>
         /// <returns></returns>
-        int UnwatchWebRequests(PipeLineStages stage, Regex regex);
+        int UnwatchWebRequests(PipeLineStage stage, Regex regex);
 
         /// <summary>
         /// Removes all Web Requests from the WebRequestHandler collection created by this job
         /// </summary>
         /// <param name="stage">The stage of the pipeline to remove watches from</param>
         /// <returns></returns>
-        int UnwatchWebRequests(PipeLineStages stage);
+        int UnwatchWebRequests(PipeLineStage stage);
 
         /// <summary>
         /// 

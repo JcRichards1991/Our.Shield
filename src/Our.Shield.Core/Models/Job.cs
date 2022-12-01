@@ -47,16 +47,16 @@ namespace Our.Shield.Core.Models
 
         /// <inheritdoc />
         public int WatchWebRequests(
-            PipeLineStages stage,
+            PipeLineStage stage,
             Regex regex,
             int priority,
             Func<int, HttpApplication, WatchResponse> request) => WebRequestHandler.Watch(this, stage, regex, priority, request);
 
         /// <inheritdoc />
-        public int UnwatchWebRequests(PipeLineStages stage, Regex regex) => WebRequestHandler.Unwatch(this, stage, regex);
+        public int UnwatchWebRequests(PipeLineStage stage, Regex regex) => WebRequestHandler.Unwatch(this, stage, regex);
 
         /// <inheritdoc />
-        public int UnwatchWebRequests(PipeLineStages stage) => WebRequestHandler.Unwatch(this, stage);
+        public int UnwatchWebRequests(PipeLineStage stage) => WebRequestHandler.Unwatch(this, stage);
 
         /// <inheritdoc />
         public int UnwatchWebRequests() => WebRequestHandler.Unwatch(Environment.Key, App.Id);

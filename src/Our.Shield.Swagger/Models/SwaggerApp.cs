@@ -11,6 +11,9 @@ using Umbraco.Web;
 
 namespace Our.Shield.Swagger.Models
 {
+    /// <summary>
+    /// An app to handle security on the swagger url
+    /// </summary>
     [AppEditor("/App_Plugins/Shield.Swagger/Views/Swagger.html?version=2.0.0")]
     public class SwaggerApp : App<SwaggerConfiguration>
     {
@@ -18,6 +21,13 @@ namespace Our.Shield.Swagger.Models
 
         private readonly IIpAccessControlService _ipAccessControlService;
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="SwaggerApp"/>
+        /// </summary>
+        /// <param name="umbContextAccessor"></param>
+        /// <param name="localizedTextService"></param>
+        /// <param name="logger"></param>
+        /// <param name="ipAccessControlService"></param>
         public SwaggerApp(
             IUmbracoContextAccessor umbContextAccessor,
             ILocalizedTextService localizedTextService,
@@ -71,7 +81,7 @@ namespace Our.Shield.Swagger.Models
 
             if (!c.Enabled || !job.Environment.Enabled)
             {
-                job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500000, (count, httpApp) => new WatchResponse(Cycle.Error));
+                job.WatchWebRequests(PipeLineStage.AuthenticateRequest, regex, 500000, (count, httpApp) => new WatchResponse(Cycle.Error));
 
                 return true;
             }
@@ -92,7 +102,8 @@ namespace Our.Shield.Swagger.Models
                     });
 
                     Logger.Warn<SwaggerApp>(
-                        localizedMessage + "App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        localizedMessage + "App: {App}; App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        localizedAppName,
                         job.App.Key,
                         job.Environment.Key);
                 }
@@ -103,7 +114,7 @@ namespace Our.Shield.Swagger.Models
                 job.ExceptionWebRequest(config.TransferUrlControl.Url);
             }
 
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500250, (count, httpApp) =>
+            job.WatchWebRequests(PipeLineStage.AuthenticateRequest, regex, 500250, (count, httpApp) =>
             {
                 if (_ipAccessControlService.IsValid(config.IpAccessControl, httpApp.Context.Request))
                 {
@@ -113,7 +124,7 @@ namespace Our.Shield.Swagger.Models
                 return new WatchResponse(Cycle.Continue);
             });
 
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 500500, (count, httpApp) =>
+            job.WatchWebRequests(PipeLineStage.AuthenticateRequest, regex, 500500, (count, httpApp) =>
             {
                 if ((bool?)httpApp.Context.Items[_allowKey] == true
                   || (config.UmbracoUserEnable && _ipAccessControlService.IsRequestAuthenticatedUmbracoUser(httpApp)))
@@ -123,7 +134,6 @@ namespace Our.Shield.Swagger.Models
 
                 using (var umbContext = UmbContextAccessor.UmbracoContext)
                 {
-                    var localizedAppName = LocalizedTextService.Localize($"{nameof(Shield)}.{nameof(Swagger)}", "Name");
                     var localizedMessage = LocalizedTextService.Localize(
                     $"{nameof(Shield)}.{nameof(Swagger)}_DeniedAccess",
                     new[]
@@ -133,7 +143,8 @@ namespace Our.Shield.Swagger.Models
                     });
 
                     Logger.Warn<SwaggerApp>(
-                        localizedMessage + "App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        localizedMessage + "App: {App}; App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        LocalizedTextService.Localize($"{nameof(Shield)}.{nameof(Swagger)}", "Name"),
                         job.App.Key,
                         job.Environment.Key);
                 }

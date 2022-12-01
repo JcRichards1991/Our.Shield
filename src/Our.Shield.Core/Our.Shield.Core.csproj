@@ -284,7 +284,7 @@
     <Compile Include="CacheRefreshers\ConfigurationCacheRefresher.cs" />
     <Compile Include="CacheRefreshers\EnvironmentCacheRefresher.cs" />
     <Compile Include="Components\ClearCacheComponent.cs" />
-    <Compile Include="Components\ShieldMigrationComponent.cs" />
+    <Compile Include="Components\MigrationComponent.cs" />
     <Compile Include="Components\StartupComponent.cs" />
     <Compile Include="Composers\BootUpComposer.cs" />
     <Compile Include="Composers\StartUpComposer.cs" />
@@ -302,12 +302,12 @@
     <Compile Include="Data\Migrations\InstallMigration.cs" />
     <Compile Include="Data\Dtos\App.cs" />
     <Compile Include="Data\Dtos\Environment.cs" />
-    <Compile Include="Data\Migrations\ShieldMigrationPlan.cs" />
+    <Compile Include="Data\Migrations\MigrationPlan.cs" />
     <Compile Include="Enums\AccessType.cs" />
     <Compile Include="Enums\CacheRefreshType.cs" />
     <Compile Include="Enums\Cycle.cs" />
     <Compile Include="Enums\IpAddressType.cs" />
-    <Compile Include="Enums\PipeLineStages.cs" />
+    <Compile Include="Enums\PipeLineStage.cs" />
     <Compile Include="Enums\TransferType.cs" />
     <Compile Include="Enums\UmbracoUrlType.cs" />
     <Compile Include="Extensions\IpAddressRangeExtensions.cs" />

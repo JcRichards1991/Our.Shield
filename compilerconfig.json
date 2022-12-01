@@ -1,6 +1,6 @@
 ﻿[
-  {
-    "outputFile": "src/Our.Shield.MediaProtection/App_Plugins/Shield.MediaProtection/Css/MediaProtection.css",
-    "inputFile": "src/Our.Shield.MediaProtection/App_Plugins/Shield.MediaProtection/Css/MediaProtection.scss"
-  }
+  //{
+  //  "outputFile": "src/Our.Shield.MediaProtection/App_Plugins/Shield.MediaProtection/Css/MediaProtection.css",
+  //  "inputFile": "src/Our.Shield.MediaProtection/App_Plugins/Shield.MediaProtection/Css/MediaProtection.scss"
+  //}
 ]

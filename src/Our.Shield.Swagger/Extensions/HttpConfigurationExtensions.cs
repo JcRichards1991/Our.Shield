@@ -8,36 +8,40 @@ namespace Our.Shield.Swagger.Extensions
     {
         private static Action<SwaggerDocsConfig> _swaggerDocsConfig { get; set; }
 
-        public static void SetSwaggerDocsConfig(this HttpConfiguration configuration, Action<SwaggerDocsConfig> swaggerDocsConfig)
+        public static void SetSwaggerDocsConfig(
+            this HttpConfiguration _,
+            Action<SwaggerDocsConfig> swaggerDocsConfig)
         {
-            if (swaggerDocsConfig == null)
-                throw new ArgumentNullException($"{nameof(swaggerDocsConfig)} cannot be null.");
-
-            _swaggerDocsConfig = swaggerDocsConfig;
+            _swaggerDocsConfig = swaggerDocsConfig
+                ?? throw new ArgumentNullException($"{nameof(swaggerDocsConfig)} cannot be null.");
         }
 
-        internal static Action<SwaggerDocsConfig> GetSwaggerDocsConfig(this HttpConfiguration configuration)
+        internal static Action<SwaggerDocsConfig> GetSwaggerDocsConfig(this HttpConfiguration _)
         {
             if (_swaggerDocsConfig == null)
+            {
                 throw new NullReferenceException($"Swagger Docs Config is null. Ensure {nameof(SetSwaggerDocsConfig)} is called first.");
+            }
 
             return _swaggerDocsConfig;
         }
 
         private static Action<SwaggerUiConfig> _swaggerUiConfig { get; set; }
 
-        public static void SetSwaggerUiConfig(this HttpConfiguration configuration, Action<SwaggerUiConfig> swaggerUiConfig)
+        public static void SetSwaggerUiConfig(
+            this HttpConfiguration _,
+            Action<SwaggerUiConfig> swaggerUiConfig)
         {
-            if (swaggerUiConfig == null)
-                throw new ArgumentNullException($"{nameof(swaggerUiConfig)} cannot be null.");
-
-            _swaggerUiConfig = swaggerUiConfig;
+            _swaggerUiConfig = swaggerUiConfig
+                ?? throw new ArgumentNullException($"{nameof(swaggerUiConfig)} cannot be null.");
         }
 
-        internal static Action<SwaggerUiConfig> GetSwaggerUiConfig(this HttpConfiguration configuration)
+        internal static Action<SwaggerUiConfig> GetSwaggerUiConfig(this HttpConfiguration _)
         {
             if (_swaggerUiConfig == null)
+            {
                 throw new NullReferenceException($"Swagger UI Config is null. Ensure {nameof(SetSwaggerUiConfig)} is called first.");
+            }
 
             return _swaggerUiConfig;
         }

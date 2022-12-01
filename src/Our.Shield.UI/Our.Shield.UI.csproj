@@ -277,6 +277,16 @@
   <ItemGroup>
     <Content Include="App_Plugins\Shield.BackofficeAccess\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.BackofficeAccess\Views\BackofficeAccess.html" />
+    <Content Include="App_Plugins\Shield.FrontendAccess\Lang\en-us.xml" />
+    <Content Include="App_Plugins\Shield.FrontendAccess\Views\FrontendAccess.html" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Lang\en-us.xml" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Scripts\Controllers.js" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Scripts\MediaProtection.js" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Scripts\MediaProtection.min.js" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Scripts\Resources.js" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Views\MediaProtection.html" />
+    <Content Include="App_Plugins\Shield.Swagger\Lang\en-us.xml" />
+    <Content Include="App_Plugins\Shield.Swagger\Views\Swagger.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Dashboards\Environments.html" />
     <Content Include="App_Plugins\Shield\BackOffice\Scripts\Controllers.js" />
     <Content Include="App_Plugins\Shield\BackOffice\Shield\Dashboard.html" />
@@ -339,6 +349,8 @@
     <Content Include="config\HealthChecks.config" />
     <Content Include="config\ClientDependency.config" />
     <Content Include="config\BackOfficeTours\getting-started.json" />
+    <Content Include="App_Plugins\Shield.MediaProtection\package.manifest" />
+    <Content Include="App_Plugins\Shield.MediaProtection\Scripts\MediaProtection.min.js.map" />
     <None Include="packages.config" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
@@ -368,6 +380,10 @@
     <ProjectReference Include="..\Our.Shield.FrontendAccess\Our.Shield.FrontendAccess.csproj">
       <Project>{ce78ddd4-f1c4-429c-9d76-2060eeec2042}</Project>
       <Name>Our.Shield.FrontendAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Our.Shield.MediaProtection\Our.Shield.MediaProtection.csproj">
+      <Project>{3c5eda13-8468-4386-8f74-3d5678695abe}</Project>
+      <Name>Our.Shield.MediaProtection</Name>
     </ProjectReference>
     <ProjectReference Include="..\Our.Shield.Shared\Our.Shield.Shared.csproj">
       <Project>{c3e0dfd3-a730-4388-be45-53ac5b878e18}</Project>
@@ -408,7 +424,8 @@
     <PreBuildEvent>xcopy "$(solutiondir)Our.Shield.Core.UI\App_Plugins\*.*" "$(ProjectDir)App_Plugins\" /Y /e
 xcopy "$(solutiondir)Our.Shield.BackofficeAccess\App_Plugins\*.*" "$(ProjectDir)App_Plugins\" /Y /e
 xcopy "$(solutiondir)Our.Shield.FrontendAccess\App_Plugins\*.*" "$(ProjectDir)App_Plugins\" /Y /e
-xcopy "$(solutiondir)Our.Shield.Swagger\App_Plugins\*.*" "$(ProjectDir)App_Plugins\" /Y /e</PreBuildEvent>
+xcopy "$(solutiondir)Our.Shield.Swagger\App_Plugins\*.*" "$(ProjectDir)App_Plugins\" /Y /e
+xcopy "$(solutiondir)Our.Shield.MediaProtection\App_Plugins\*.*" "$(ProjectDir)App_Plugins\" /Y /e</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>

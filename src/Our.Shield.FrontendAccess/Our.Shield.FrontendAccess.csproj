@@ -285,7 +285,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="App_Plugins\Shield.FrontendAccess\package.manifest" />
     <None Include="Our.Shield.FrontendAccess.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>

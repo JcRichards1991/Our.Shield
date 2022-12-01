@@ -24,9 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bunder And Minifier", "Bund
 	ProjectSection(SolutionItems) = preProject
 		..\bundleconfig.json = ..\bundleconfig.json
 		..\bundleconfig.json.bindings = ..\bundleconfig.json.bindings
-		..\compilerconfig.json = ..\compilerconfig.json
-		..\compilerconfig.json.bindings = ..\compilerconfig.json.bindings
-		..\compilerconfig.json.defaults = ..\compilerconfig.json.defaults
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Shield.Swagger", "Our.Shield.Swagger\Our.Shield.Swagger.csproj", "{EA5E50CF-3C82-4D89-98DC-04145A692811}"

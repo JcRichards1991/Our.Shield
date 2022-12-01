@@ -14,7 +14,7 @@ namespace Our.Shield.Core.Composers
     /// <summary>
     /// Initializes Shield's Start Up requirements
     /// </summary>
-    [RuntimeLevel(MinLevel = RuntimeLevel.Run)]
+    [RuntimeLevel(MinLevel = RuntimeLevel.Run, MaxLevel = RuntimeLevel.Run)]
     public class StartUpComposer : IUserComposer
     {
         /// <inheritdoc/>

@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using System.Web.Http.Description;
-using Our.Shield.Core.Settings;
+﻿using Our.Shield.Core.Settings;
 using Swashbuckle.Swagger;
+using System.Linq;
+using System.Web.Http.Description;
 using Umbraco.Core.IO;
 
 namespace Our.Shield.Swagger.DocumentFilters
@@ -21,7 +21,9 @@ namespace Our.Shield.Swagger.DocumentFilters
             get
             {
                 if (!string.IsNullOrWhiteSpace(_umbracoUrl))
+                {
                     return _umbracoUrl;
+                }
 
                 return _umbracoUrl = IOHelper.ResolveUrl(ShieldConfiguration.UmbracoPath);
             }
@@ -37,7 +39,9 @@ namespace Our.Shield.Swagger.DocumentFilters
             get
             {
                 if (!string.IsNullOrWhiteSpace(_umbracoBackofficeUrl))
+                {
                     return _umbracoBackofficeUrl;
+                }
 
                 return _umbracoBackofficeUrl = IOHelper.ResolveUrl($"{UmbracoUrl}backoffice");
             }
@@ -53,7 +57,9 @@ namespace Our.Shield.Swagger.DocumentFilters
             get
             {
                 if (!string.IsNullOrWhiteSpace(_installationUrl))
+                {
                     return _installationUrl;
+                }
 
                 return _installationUrl = IOHelper.ResolveUrl(SystemDirectories.Install);
             }
@@ -69,7 +75,9 @@ namespace Our.Shield.Swagger.DocumentFilters
             get
             {
                 if (!string.IsNullOrWhiteSpace(_canvasDesignerUrl))
+                {
                     return _canvasDesignerUrl;
+                }
 
                 return _canvasDesignerUrl = IOHelper.ResolveUrl($"{UmbracoUrl}Api/CanvasDesigner");
             }
@@ -85,7 +93,9 @@ namespace Our.Shield.Swagger.DocumentFilters
             get
             {
                 if (!string.IsNullOrWhiteSpace(_tagsUrl))
+                {
                     return _tagsUrl;
+                }
 
                 return _tagsUrl = IOHelper.ResolveUrl($"{UmbracoUrl}Api/Tags");
             }

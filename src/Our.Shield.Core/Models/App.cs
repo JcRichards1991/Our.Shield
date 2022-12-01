@@ -9,7 +9,7 @@ namespace Our.Shield.Core.Models
 {
     /// <inheritdoc />
     /// <typeparam name="TC">The type of configuration for the app</typeparam>
-    [DebuggerDisplay("Id: {Id}; Key: {Key}")]
+    [DebuggerDisplay("Id: {Id}; Key: {Key}; Enabled: {Enabled}")]
     public abstract class App<TC> : IApp where TC : IAppConfiguration
     {
         /// <summary>

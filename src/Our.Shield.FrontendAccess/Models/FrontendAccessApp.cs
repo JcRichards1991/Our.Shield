@@ -97,7 +97,8 @@ namespace Our.Shield.FrontendAccess.Models
                     });
 
                     Logger.Warn<FrontendAccessApp>(
-                        localizedMessage + "App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        localizedMessage + "App: {App}; App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        localizedAppName,
                         job.App.Key,
                         job.Environment.Key);
                 }
@@ -110,7 +111,7 @@ namespace Our.Shield.FrontendAccess.Models
 
             var regex = new Regex(@"^/([a-z0-9-_~&\+%/])*(\?([^\?])*)?$", RegexOptions.IgnoreCase);
 
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400000, (count, httpApp) =>
+            job.WatchWebRequests(PipeLineStage.AuthenticateRequest, regex, 400000, (count, httpApp) =>
             {
                 if (_ipAccessControlService.IsValid(config.IpAccessControl, httpApp.Context.Request))
                 {
@@ -119,7 +120,7 @@ namespace Our.Shield.FrontendAccess.Models
                 return new WatchResponse(Cycle.Continue);
             });
 
-            job.WatchWebRequests(PipeLineStages.AuthenticateRequest, regex, 400500, (count, httpApp) =>
+            job.WatchWebRequests(PipeLineStage.AuthenticateRequest, regex, 400500, (count, httpApp) =>
             {
                 if ((bool?)httpApp.Context.Items[_allowKey] == true
                     || (config.UmbracoUserEnable && _ipAccessControlService.IsRequestAuthenticatedUmbracoUser(httpApp)))
@@ -129,7 +130,6 @@ namespace Our.Shield.FrontendAccess.Models
 
                 using (var umbContext = UmbContextAccessor.UmbracoContext)
                 {
-                    var localizedAppName = LocalizedTextService.Localize($"{nameof(Shield)}.{nameof(FrontendAccess)}", "Name");
                     var localizedMessage = LocalizedTextService.Localize(
                     $"{nameof(Shield)}.{nameof(FrontendAccess)}_DeniedAccess",
                     new[]
@@ -139,7 +139,8 @@ namespace Our.Shield.FrontendAccess.Models
                     });
 
                     Logger.Warn<FrontendAccessApp>(
-                        localizedMessage + "App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        localizedMessage + "App: {App}; App Key: {AppKey}; Environment Key: {EnvironmentKey}",
+                        LocalizedTextService.Localize($"{nameof(Shield)}.{nameof(FrontendAccess)}", "Name"),
                         job.App.Key,
                         job.Environment.Key);
                 }

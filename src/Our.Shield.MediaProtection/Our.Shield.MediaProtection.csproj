@@ -270,18 +270,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\UmbracoDataTypes.cs" />
-    <Compile Include="Models\MediaProtectionMigration.cs" />
+    <Compile Include="Components\MigrationComponent.cs" />
+    <Compile Include="Composers\BootUpComposer.cs" />
+    <Compile Include="Composers\StartUpComposer.cs" />
+    <Compile Include="Migrations\MigrationPlan.cs" />
+    <Compile Include="Helpers\UmbracoDataTypes.cs" />
+    <Compile Include="Migrations\InstallMigration.cs" />
     <Compile Include="Models\MediaProtectionApp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\MediaProtectionConfiguration.cs" />
     <Compile Include="Controllers\Api\MediaProtectionApiController.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\Shield.MediaProtection\Css\MediaProtection.css" />
-    <Content Include="App_Plugins\Shield.MediaProtection\Css\MediaProtection.min.css">
-      <DependentUpon>MediaProtection.css</DependentUpon>
-    </Content>
     <Content Include="App_Plugins\Shield.MediaProtection\Scripts\MediaProtection.js" />
     <Content Include="App_Plugins\Shield.MediaProtection\Lang\en-us.xml" />
     <Content Include="App_Plugins\Shield.MediaProtection\Scripts\MediaProtection.min.js">
@@ -298,8 +298,6 @@
       <DependentUpon>MediaProtection.min.js</DependentUpon>
     </None>
     <None Include="Our.Shield.MediaProtection.nuspec" />
-    <None Include="App_Plugins\Shield.MediaProtection\Css\Partials\_hot-linking.scss" />
-    <None Include="App_Plugins\Shield.MediaProtection\Css\MediaProtection.scss" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
@@ -307,6 +305,10 @@
     <ProjectReference Include="..\Our.Shield.Core\Our.Shield.Core.csproj">
       <Project>{69737067-ab31-4c68-9c69-5e6ce00d1ab3}</Project>
       <Name>Our.Shield.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Our.Shield.Shared\Our.Shield.Shared.csproj">
+      <Project>{c3e0dfd3-a730-4388-be45-53ac5b878e18}</Project>
+      <Name>Our.Shield.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
