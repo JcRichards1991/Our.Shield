@@ -6,12 +6,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{710DC07B-C6EF-4E6D-9760-9497E106EB7B}</ProjectGuid>
+    <ProjectGuid>{0CAE77A5-CF49-47EE-B9C5-823B67AD60F6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Our.Shield.Shared.Tests</RootNamespace>
-    <AssemblyName>Our.Shield.Shared.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <RootNamespace>Our.Shield.Swagger.Tests</RootNamespace>
+    <AssemblyName>Our.Shield.Swagger.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
@@ -40,9 +40,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Extensions, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives, Version=4.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\packages\xunit.abstractions.2.0.3\lib\net35\xunit.abstractions.dll</HintPath>
     </Reference>
@@ -57,18 +64,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\EnumerableExtensionTests.cs" />
-    <Compile Include="GuardClausesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Our.Shield.Shared\Our.Shield.Shared.csproj">
-      <Project>{c3e0dfd3-a730-4388-be45-53ac5b878e18}</Project>
-      <Name>Our.Shield.Shared</Name>
-    </ProjectReference>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\Our.Shield.Core.Tests\Our.Shield.Core.Tests.csproj">
+      <Project>{b045a6f9-37c1-4003-84c8-9fbc1aa937ce}</Project>
+      <Name>Our.Shield.Core.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Our.Shield.Core\Our.Shield.Core.csproj">
+      <Project>{69737067-ab31-4c68-9c69-5e6ce00d1ab3}</Project>
+      <Name>Our.Shield.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Our.Shield.Swagger\Our.Shield.Swagger.csproj">
+      <Project>{ea5e50cf-3c82-4d89-98dc-04145a692811}</Project>
+      <Name>Our.Shield.Swagger</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\xunit.analyzers.1.1.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
