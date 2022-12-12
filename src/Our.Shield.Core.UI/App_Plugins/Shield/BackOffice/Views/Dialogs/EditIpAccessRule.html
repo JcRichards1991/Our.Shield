@@ -1,11 +1,15 @@
 ﻿<div>
-  <form name="editIpExceptionForm" ng-submit="model.submit(model.ipAccessRule)">
+  <form name="editIpExceptionForm"
+        ng-submit="model.submit(editIpExceptionForm)"
+        novalidate
+        val-form-manager>
+
     <div class="umb-panel umb-editor-wrapper">
       
       <div class="umb-editor-header">
         <div class="flex items-center">
           <h1 class="umb-panel-header-name">
-            <localize key="{{'shield.Properties.IpAccessControl_' + (model.ipAccessRule.fromIpAddress === '' ? 'IpAccessRulesAddNewIpAccessRuleTitle' : 'IpAccessRulesEditIpAccessRuleTitle')}}"></localize>
+            <localize key="{{'shield.Properties.IpAccessControl_' + (model.ipAccessRule.fromIpAddress.isNew ? 'IpAccessRulesAddNewIpAccessRuleTitle' : 'IpAccessRulesEditIpAccessRuleTitle')}}"></localize>
           </h1>
         </div>
       </div>
@@ -56,6 +60,9 @@
                       <label class="control-label">
                         <localize key="Shield.Properties.IpAccessControl_IpAccessRulesIpAddressHeader" ng-if="model.ipAccessRule.ipAddressType === 0"></localize>
                         <localize key="Shield.Properties.IpAccessControl_IpAccessRulesIpAddressFrom" ng-if="model.ipAccessRule.ipAddressType === 1"></localize>
+                        <span>
+                          <strong class="umb-control-required">*</strong>
+                        </span>
                       </label>
                     </div>
 
@@ -66,8 +73,21 @@
                           <div class="umb-node-preview">
                             <div class="flex">
                               <div class="umb-node-preview__name">
-                                <input class="umb-property-editor umb-textstring textstring" type="text" id="ipAddress" name="ipAddress" ng-model="model.ipAccessRule.fromIpAddress" required />
+                                <input id="ipAddress"
+                                       name="ipAddress"
+                                       type="text"
+                                       class="umb-property-editor umb-textstring textstring"
+                                       ng-model="model.ipAccessRule.fromIpAddress"
+                                       ng-required="true"
+                                       aria-required="true"
+                                       aria-invalid="false"
+                                       required="required"
+                                       ng-pattern="/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$|^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/" />
                               </div>
+                              <span ng-messages="editIpExceptionForm.ipAddress.$error" role="assertive">
+                                <span class="help-inline" ng-message="required">Required</span>
+                                <span class="help-inline" ng-message="pattern">Must be a valid IPv4 or IPv6 address. i.e. 127.0.0.1 or ::f</span>
+                              </span>
                             </div>
                           </div>
 
@@ -79,13 +99,16 @@
                 </div>
               </div>
 
-              <div class="umb-property" ng-if="model.ipAccessRule.ipAddressType === 1">
+              <div class="umb-property" ng-show="model.ipAccessRule.ipAddressType === 1">
                 <div class="control-group umb-control-group">
                   <div class="umb-el-wrap">
 
                     <div class="control-header">
                       <label class="control-label">
                         <localize key="Shield.Properties.IpAccessControl_IpAccessRulesIpAddressTo"></localize>
+                        <span>
+                          <strong class="umb-control-required">*</strong>
+                        </span>
                       </label>
                     </div>
 
@@ -96,7 +119,21 @@
                           <div class="umb-node-preview">
                             <div class="flex">
                               <div class="umb-node-preview__name">
-                                <input class="umb-property-editor umb-textstring textstring" type="text" id="ipAddress" name="ipAddress" ng-model="model.ipAccessRule.toIpAddress" required />
+                                <input id="ipAddressTo"
+                                       name="ipAddressTo"
+                                       type="text"
+                                       class="umb-property-editor umb-textstring textstring"
+                                       ng-model="model.ipAccessRule.toIpAddress"
+                                       ng-required="{{model.ipAccessRule.ipAddressType === 1 ? 'required' : ''}}"
+                                       aria-required="{{model.ipAccessRule.ipAddressType === 1 ? 'required' : ''}}"
+                                       aria-invalid="false"
+                                       required="{{model.ipAccessRule.ipAddressType === 1 ? 'required' : ''}}"
+                                       ng-pattern="/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$|^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/" />
+
+                                <span ng-messages="editIpExceptionForm.ipAddressTo.$error" role="alert">
+                                  <span class="help-inline" ng-message="required">Required</span>
+                                  <span class="help-inline" ng-message="pattern">Must be a valid IPv4 address. i.e. 127.0.0.1 or ::f</span>
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -116,6 +153,9 @@
                     <div class="control-header">
                       <label class="control-label">
                         <localize key="Shield.Properties.IpAccessControl_IpAccessRulesDescriptionHeader"></localize>
+                        <span>
+                          <strong class="umb-control-required">*</strong>
+                        </span>
                       </label>
                     </div>
 
@@ -126,7 +166,19 @@
                           <div class="umb-node-preview">
                             <div class="flex">
                               <div class="umb-node-preview__name">
-                                <input class="umb-property-editor umb-textstring textstring" type="text" id="ipAddress" name="ipAddress" ng-model="model.ipAccessRule.description" required />
+                                <input id="description"
+                                       name="description"
+                                       class="umb-property-editor umb-textstring textstring"
+                                       type="text"
+                                       ng-model="model.ipAccessRule.description"
+                                       ng-required="true"
+                                       aria-required="true"
+                                       aria-invalid="false"
+                                       required="required" />
+
+                                <span ng-messages="editIpExceptionForm.description.$error" role="alert">
+                                  <span class="help-inline" ng-message="required">Please enter a description to remind you what this IP Address (or range) is for</span>
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -150,7 +202,7 @@
             <a class="btn btn-link" ng-click="model.close()">
               <localize key="general_cancel" />
             </a>
-            <umb-button label-key="{{'general_' + (model.ipAccessRule.fromIpAddress === '' ? 'add' : 'update')}}"
+            <umb-button label-key="{{'general_' + (model.ipAccessRule.isNew ? 'add' : 'update')}}"
                         type="submit"
                         button-style="success">
             </umb-button>

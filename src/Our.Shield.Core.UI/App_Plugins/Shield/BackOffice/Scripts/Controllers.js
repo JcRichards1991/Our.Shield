@@ -342,11 +342,14 @@ angular
             save: function () {
               vm.button.state = 'busy';
               $scope.$broadcast('formSubmitting', { scope: $scope, action: 'publish' });
+
               if ($scope.appForm.$invalid) {
                 angular.element(event.target).addClass('show-validation');
+
                 localizationService.localize('Shield.General_SaveConfigurationInvalid').then(function (value) {
                   notificationsService.error(value);
                 });
+
                 vm.button.state = 'error';
                 return;
               }

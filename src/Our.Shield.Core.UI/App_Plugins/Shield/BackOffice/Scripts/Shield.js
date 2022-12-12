@@ -342,11 +342,14 @@ angular
             save: function () {
               vm.button.state = 'busy';
               $scope.$broadcast('formSubmitting', { scope: $scope, action: 'publish' });
+
               if ($scope.appForm.$invalid) {
                 angular.element(event.target).addClass('show-validation');
+
                 localizationService.localize('Shield.General_SaveConfigurationInvalid').then(function (value) {
                   notificationsService.error(value);
                 });
+
                 vm.button.state = 'error';
                 return;
               }
@@ -571,55 +574,6 @@ angular
 
 angular
   .module('umbraco.directives')
-  .directive('shieldAddToForm',
-    [
-      function () {
-        return {
-          restrict: 'A',
-          require: ['ngModel', '^form'],
-          link: function ($scope, $element, $attr, controllers) {
-            var ngModel = controllers[0],
-              $form = controllers[1];
-
-            $form.$removeControl(ngModel);
-            ngModel.$name = $attr.name;
-            $form.$addControl(ngModel);
-          }
-        };
-      }
-    ]
-  );
-
-angular
-  .module('umbraco.directives')
-  .directive('shieldIpaddressvalid',
-    [
-      function () {
-        return {
-          restrict: 'A',
-          require: 'ngModel',
-          link: function (scope, elm, attr, ctrl) {
-            ctrl.$parsers.push(function (modelValue) {
-              if (modelValue === '' || modelValue === undefined) {
-                ctrl.$setValidity('shieldIpaddressvalid', true);
-                return modelValue;
-              }
-
-              //Check if IPv4 & IPv6
-              var pattern = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$|^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
-
-              ctrl.$setValidity('shieldIpaddressvalid', pattern.test(modelValue));
-
-              return modelValue;
-            });
-          }
-        };
-      }
-    ]
-  );
-
-angular
-  .module('umbraco.directives')
   .directive('shieldIpAccessControl',
     [
       function () {
@@ -644,17 +598,27 @@ angular
                       fromIpAddress: '',
                       toIpAddress: '',
                       description: '',
-                      ipAddressType: 0
+                      ipAddressType: 0,
+                      isNew: true
                     };
                   } else {
                     ipAccessRule = angular.copy($scope.ipAccessControl.ipAccessRules[$index]);
+                    ipAccessRule.isNew = false;
                   }
 
                   editorService.open({
                     view: '../App_Plugins/Shield/Backoffice/Views/Dialogs/EditIpAccessRule.html',
                     size: 'small',
                     ipAccessRule: ipAccessRule,
-                    submit: function () {
+                    submit: function ($form) {
+                      if ($form.$invalid) {
+                        //validation error, don't save
+                        angular.element(event.target).addClass('show-validation');
+                        return;
+                      }
+
+                      $form.$setPristine();
+
                       if ($index === -1) {
                         $scope.ipAccessControl.ipAccessRules.push(ipAccessRule);
                       } else {
